@@ -25,6 +25,22 @@ class ClockWidget : AppWidgetProvider() {
         super.onReceive(ctx, intent)
         when (intent.action) {
             ACTION_PICK -> pick(ctx, intent.getIntExtra("idx", -1))
+            // "আপডেট লোকেশন": এখনই নতুন অবস্থান চায় (নেট লাগে); পেলে উইজেট নিজে নতুন হয়
+            ACTION_LOCUPD -> {
+                val pr = goAsync()
+                val done = java.util.concurrent.atomic.AtomicBoolean(false)
+                val fin = { if (done.compareAndSet(false, true)) pr.finish() }
+                try {
+                    LocationUpdater.sync(ctx); refresh(ctx)
+                    if (LocationUpdater.hasPerm(ctx)) {
+                        LocationUpdater.fresh(ctx) { refresh(ctx); fin() }
+                        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({ fin() }, 15000)
+                    } else {
+                        ctx.startActivity(Intent(ctx, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                        fin()
+                    }
+                } catch (e: Exception) { fin() }
+            }
             // রিবুট বা অ্যাপ আপডেটের পর অবস্থানের অনুরোধ আবার চালু করতে হয়
             Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 LocationUpdater.register(ctx); refresh(ctx)
@@ -48,6 +64,7 @@ class ClockWidget : AppWidgetProvider() {
     companion object {
         const val ACTION_TICK = "com.rahcare.timewidget.TICK"
         const val ACTION_PICK = "com.rahcare.timewidget.PICK"
+        const val ACTION_LOCUPD = "com.dailyruqyah.app.LOCUPD"
         private const val TICK_MS = 5 * 60 * 1000L // প্রগ্রেস বার নতুন করে আঁকার ব্যবধান
         private const val DUHA_AFTER_SUNRISE = 24 // ইশরাক শুরু (নিষিদ্ধ সময় শেষ): সূর্যোদয়ের ২৪ মিনিট পর (ইসলামিক ফাউন্ডেশনের স্থায়ী সময়সূচির নোট)
         private const val ISHRAQ_END_AFTER_SUNRISE = 60 // ইশরাকের সময় শেষ ধরা হয়েছে: সূর্যোদয়ের প্রায় ১ ঘণ্টা পর; এরপর সালাতুদ্দোহা (চাশত)
@@ -183,6 +200,10 @@ class ClockWidget : AppWidgetProvider() {
                 ctx, 0, Intent(ctx, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
             rv.setOnClickPendingIntent(R.id.root, open)
+            rv.setOnClickPendingIntent(R.id.zz_upd, PendingIntent.getBroadcast(
+                ctx, 30, Intent(ctx, ClockWidget::class.java).setAction(ACTION_LOCUPD),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            ))
             return rv
         }
 
