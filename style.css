@@ -42,7 +42,6 @@ button,input,select{font-family:inherit}
 .dr-nav.on{background:linear-gradient(90deg,var(--accent-light),transparent);color:var(--primary)}
 .dr-nav.on::before{content:"";position:absolute;left:-10px;top:10px;bottom:10px;width:4px;border-radius:0 4px 4px 0;background:var(--accent)}
 .dr-nav.on i{background:var(--primary);color:#fff;border-color:var(--primary)}
-.dr-side-foot{margin:22px 18px 0;padding-top:14px;border-top:1px solid var(--border-light);font-size:11px;line-height:1.7;color:var(--text-muted)}
 /* ---------- মূল কার্ড ---------- */
 .dr-main{padding:14px 12px 0}
 .rs-box{background:var(--card-bg);border:1px solid var(--border-light);border-radius:22px;max-width:660px;margin:0 auto;padding:18px 16px 20px;box-shadow:var(--shadow-card)}
@@ -53,7 +52,6 @@ button,input,select{font-family:inherit}
 .dr-hello::after{content:"";display:block;width:56px;height:2px;margin:12px auto 0;border-radius:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
 .dr-inst{display:none;margin:0 0 12px;padding:9px 12px;border:1px dashed var(--accent);border-radius:14px;font-size:13px;color:var(--text-sub);background:var(--accent-light)}
 .dr-inst button{margin-left:8px;border:0;background:var(--primary);color:#fff;border-radius:999px;padding:6px 16px;font-size:13px;cursor:pointer}
-.dr-foot{max-width:660px;margin:16px auto 0;padding:0 18px;text-align:center;font-size:11.5px;color:var(--text-muted);line-height:1.7}
 .rs-sub{color:var(--text-muted);font-size:13px;margin:0 0 12px;line-height:1.9}
 .rs-sub div{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
 /* সার্চ বার */
@@ -231,7 +229,6 @@ button,input,select{font-family:inherit}
 .dr-end-nav button:disabled{display:none}
 @media (min-width:700px){.dr-main{padding-top:22px}.dr-ay .rs-vt{padding:18px 22px 6px}}
 
-.dr-foot a,.dr-side-foot a{color:var(--primary)}
 
 /* ---------- অ্যাপ আপডেট ---------- */
 
@@ -316,3 +313,14 @@ button,input,select{font-family:inherit}
 .dr-upct[hidden]{display:none}
 .dr-ubtn{pointer-events:auto;width:150px;height:48px;border:0;border-radius:26px;background:var(--accent);color:#06201c;font:inherit;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px -6px rgba(5,46,36,.55)}
 .dr-ubtn.busy{background:linear-gradient(90deg,var(--accent) var(--p,0%),#134a44 var(--p,0%));color:#fff;text-shadow:0 0 4px rgba(0,0,0,.8)}
+.hd-dd{display:flex;align-items:center;justify-content:space-between;width:100%;margin:2px 0 0;padding:12px 16px;border:1px solid var(--border);background:linear-gradient(180deg,var(--primary-light),color-mix(in srgb,var(--primary-light) 60%,var(--card-bg)));color:var(--primary);border-radius:16px;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.hd-dd i{font-style:normal;font-size:18px;color:var(--accent)}
+.hd-ov{position:fixed;inset:0;z-index:70;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);padding:0 14px calc(24px + env(safe-area-inset-bottom))}
+.hd-ovh{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;margin:0 -14px 12px;padding:calc(12px + env(safe-area-inset-top)) 16px 12px;background:linear-gradient(135deg,#052e24 0%,#0a5240 60%,#0d6650 100%);color:#fff;box-shadow:0 1px 0 rgba(216,178,90,.55)}
+.hd-ovh b{font-size:17px}
+.hd-ovx{border:0;background:rgba(255,255,255,.14);color:#fff;width:36px;height:36px;border-radius:50%;font-size:17px;cursor:pointer}
+.hd-ovg{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:660px;margin:0 auto}
+.hd-ovb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:64px;padding:10px 8px;border:1px solid var(--border-light);border-radius:14px;background:var(--card-bg);color:var(--primary);font:inherit;font-size:15px;font-weight:700;text-align:center;line-height:1.35;cursor:pointer;box-shadow:var(--shadow-card)}
+.hd-ovb small{font-size:12px;font-weight:500;color:var(--text-muted)}
+.hd-ovb:active{background:var(--primary);color:#fff}
+.hd-ovb:active small{color:#e4efe9}
