@@ -190,6 +190,8 @@
     ".drw-time span{font-size:12px;color:#3B4A55;padding-bottom:6px}" +
     ".drw-en{text-align:right;line-height:1.25}" +
     ".drw-en b{display:block;font-size:15px;font-weight:800}" +
+    ".drw-lr{display:flex;align-items:center;justify-content:flex-end;gap:6px}" +
+    ".drw-upd{font-size:9px;line-height:1.15;text-align:center;color:#1B7A5A;background:none;border:1px solid currentColor;border-radius:8px;padding:2px 5px;cursor:pointer;font-family:inherit}" +
     ".drw-loc{font-size:12px;color:#3B4A55;cursor:pointer;background:none;border:0;padding:0;font-family:inherit}" +
     ".drw-d{margin-top:2px;font-size:12px;color:#3B4A55;white-space:nowrap}" +
     ".drw-p{display:flex;margin:5px -4px 0}" +
@@ -252,13 +254,30 @@
       el.innerHTML =
         '<div class="drw"><div class="drw-r"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span><span class="drw-sun">' + SUNSET + "সূর্যাস্ত " + fmt(s.sunset) + "</span></div>" +
         '<div class="drw-r"><div class="drw-time"><b>' + hh + ":" + mm + "</b><span>" + (now.getHours() < 12 ? "AM" : "PM") + "</span></div>" +
-        '<div class="drw-en"><b>' + en + '</b><button class="drw-loc" type="button" data-loc="1">' + placeName(loc) + "</button></div></div>" +
+        '<div class="drw-en"><b>' + en + '</b><div class="drw-lr"><button class="drw-upd" type="button" data-upd="1">' + (updBusy ? "হচ্ছে…" : "আপডেট<br>লোকেশন") + '</button><button class="drw-loc" type="button" data-loc="1">' + placeName(loc) + "</button></div></div></div>" +
         '<div class="drw-r drw-d"><span>' + hijriText(now, inBd(loc.lat, loc.lng)) + "</span><span>" + banglaText(addDays(now, BANGLA_ADJ)) + "</span></div>" +
         '<div class="drw-p">' + cells + "</div>" +
         '<div class="drw-b"><span>' + (nf ? nf.name + " শুরু " : "ওয়াক্ত শুরু ") + fmt(bs) + '</span><div class="drw-bar"><u style="width:' + (frac * 100).toFixed(1) + '%"></u></div><span>' + (nf ? "শেষ " : "ওয়াক্ত শেষ ") + fmt(be) + "</span></div></div>";
     }
+    var updBusy = false;
+    // "আপডেট লোকেশন": চাপলে এখনই নতুন অবস্থান নেয় (নেট লাগে); পাওয়া গেলে কার্ড নিজে বদলে যায়
+    function updateLoc() {
+      if (updBusy) return;
+      updBusy = true; render();
+      locate(true);
+      [3000, 8000, 15000].forEach(function (ms, n) {
+        setTimeout(function () {
+          pullCfg().then(function (ch) {
+            if (ch) render();
+            if (n === 2) { updBusy = false; render(); }
+          });
+          if (!NW && n === 2) { updBusy = false; render(); }
+        }, ms);
+      });
+    }
     el.addEventListener("click", function (ev) {
       var t = ev.target;
+      if (t.closest && t.closest("[data-upd]")) { updateLoc(); return; }
       var c = t.closest ? t.closest("[data-i]") : null;
       if (!c) {
         // কার্ডের যেকোনো জায়গায় চাপলে (ওয়াক্তের ঘর বাদে) নেটিভ অ্যাপে টাইম উইজেটের সেটিংস খোলে
