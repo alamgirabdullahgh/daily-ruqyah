@@ -5,7 +5,7 @@
    getJson() প্রথম বাইট দেখে gzip/সাধারণ দুটোই পড়ে। কুরআনের কোডে হাত না দিয়ে ক্যাপচার-লিসেনারে যুক্ত হয়। */
 (function () {
   "use strict";
-  var DV = "5";
+  var DV = "6";
   var D = new URL("data/hadith-chunks/", document.baseURI).href;
   var PAGE = 10;
   /* বানানের ভিন্নতা: একটি লিখলে সবকটি খোঁজা হবে (সাধারণীকৃত রূপে) */
