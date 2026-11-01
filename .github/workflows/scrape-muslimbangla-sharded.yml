@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   scrape:
@@ -37,7 +38,16 @@ jobs:
       - name: Run scraper shard
         env:
           SHARD: ${{ matrix.shard }}/3
-        run: node tools/scrape-muslimbangla.js ${{ inputs.book_id }} shard-out
+        run: |
+          set -o pipefail
+          node tools/scrape-muslimbangla.js ${{ inputs.book_id }} shard-out 2>&1 | tee /tmp/shard.log
+      - name: Report failure log
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          { echo "book ${{ inputs.book_id }} shard ${{ matrix.shard }} ব্যর্থ। লগের শেষ অংশ:"; echo '```'; tail -n 25 /tmp/shard.log | cut -c1-300; echo '```'; } > /tmp/c.txt
+          gh issue comment 24 --body-file /tmp/c.txt
       - name: Save page cache
         if: always()
         uses: actions/cache/save@v4
