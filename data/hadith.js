@@ -8,10 +8,22 @@
   var DV = "2";
   var D = new URL("data/hadith-chunks/", document.baseURI).href;
   var PAGE = 10;
+  /* বানানের ভিন্নতা: একটি লিখলে সবকটি খোঁজা হবে (সাধারণীকৃত রূপে) */
+  var SYN = [
+    ["নিয়ত", "নিয়্যত", "নিয়াত", "নিয়্যাত", "نيه", "نيته", "نيات", "بالنيه", "بالنيات", "بنيته"],
+    ["সদকা", "সাদাকা", "সদাকা", "সাদকা", "সদকাহ", "صدقه"],
+    ["তাওবা", "তওবা", "তাওবাহ", "তওবাহ", "توبه"],
+    ["দুআ", "দোয়া", "দোআ", "দুয়া", "دعاء", "دعا"],
+    ["কুরআন", "কোরআন", "কুরান", "কোরান", "قران"],
+    ["রাসূল", "রাসুল", "রসূল", "রসুল", "رسول"],
+    ["মুমিন", "মোমিন", "মুমীন", "مومن"]
+  ];
+  var SYNMAP = {};
+  SYN.forEach(function (g) { g.forEach(function (w) { SYNMAP[w] = g; }); });
   var $ = function (i) { return document.getElementById(i); };
   if (window.__hdLoaded) return;
   window.__hdLoaded = 1;
-  var SHORT = ["বুখারী", "মুসলিম", "আবূ দাউদ", "তিরমিযী", "নাসাঈ", "ইবনু মাজাহ", "মালিক", "নাবাবী ৪০", "কুদসী ৪০"];
+  var SHORT = ["বুখারী", "মুসলিম", "আবূ দাউদ", "তিরমিযী", "নাসাঈ", "ইবনু মাজাহ", "মালিক", "নাবাবী ৪০", "কুদসী ৪০", "শামাঈল", "আদাবুল মুফরাদ", "রিয়াযুস সালিহীন", "মুসনাদে আহমদ"];
   var ALIAS = [
     ["বুখারী", "বুখারি", "bukhari", "بخاري", "বোখারী"],
     ["মুসলিম", "muslim", "مسلم"],
@@ -21,7 +33,11 @@
     ["ইবনুমাজাহ", "ইবনেমাজাহ", "ইবনমাজাহ", "ibnmajah", "ابنماجه"],
     ["মালিক", "মুয়াত্তা", "মোয়াত্তা", "malik", "موطأ"],
     ["নাবাবী", "নববী", "নাওয়াবী", "নওয়াবী", "nawawi", "نووي"],
-    ["কুদসী", "কুদসি", "qudsi", "قدسي"]
+    ["কুদসী", "কুদসি", "qudsi", "قدسي"],
+    ["শামাঈল", "শামায়েল", "শামাইল", "shamail", "شمائل"],
+    ["আদাবুলমুফরাদ", "আদাব", "আদবুলমুফরাদ", "adab", "الادبالمفرد"],
+    ["রিয়াযুসসালিহীন", "রিয়াদুসসালেহীন", "রিয়াজুসসালেহীন", "riyad", "رياضالصالحين"],
+    ["মুসনাদেআহমদ", "মুসনাদেআহমাদ", "আহমদ", "আহমাদ", "মুসনাদআহমদ", "ahmad", "مسندأحمد"]
   ];
 
 
@@ -49,15 +65,15 @@
 
     var hb = document.createElement("div");
     hb.id = "hdBox";
-    hb.innerHTML = '<div class="hd-sec">📜 হাদিস</div><div class="hd-chips" id="hdChips"></div><div class="hd-info" id="hdInfo"></div><div id="hdOut"></div><button type="button" class="hd-more" id="hdMore" style="display:none"></button>';
+    hb.innerHTML = '<div class="hd-sec">📜 হাদিস</div><div class="hd-books" id="hdBooks"></div><div class="hd-chips" id="hdChips"></div><div class="hd-info" id="hdInfo"></div><div id="hdOut"></div><button type="button" class="hd-more" id="hdMore" style="display:none"></button>';
     var anchor = $("rsOut");
     anchor.parentNode.insertBefore(hb, anchor.nextSibling);
-    var chipsEl = $("hdChips"), infoEl = $("hdInfo"), outEl = $("hdOut"), moreEl = $("hdMore");
+    var booksEl = $("hdBooks"), chipsEl = $("hdChips"), infoEl = $("hdInfo"), outEl = $("hdOut"), moreEl = $("hdMore");
 
     var quranIds = ["rsKb", "rsTp", "rsPad", "rsRs", "rsInfo", "rsOut"];
 
     function syncJump() {
-      if (mode !== "b" || !st || !st.all || !st.all.length) { jump.hidden = true; return; }
+      if (mode !== "b" || !st || st.browse !== undefined || !st.all || !st.all.length) { jump.hidden = true; return; }
       jump.hidden = false;
       jump.textContent = "📜 হাদিসে " + bnum(st.all.length) + "টি পাওয়া গেছে — দেখুন ↓";
     }
@@ -65,6 +81,44 @@
       gen++; st = null;
       outEl.innerHTML = ""; chipsEl.innerHTML = ""; infoEl.innerHTML = ""; moreEl.style.display = "none";
       syncJump();
+      drawBooks();
+    }
+    /* কিতাবের তালিকা: নামে চাপলে ওই কিতাবের সব হাদীস (স্ক্রল করে) */
+    function drawBooks() {
+      booksEl.innerHTML = "";
+      if (mode === "q") return;
+      var my = gen;
+      ensureMeta().then(function (m) {
+        if (my !== gen || st || mode === "q") return;
+        var t = document.createElement("div");
+        t.className = "hd-bt"; t.textContent = "কিতাব বেছে সব হাদীস পড়ুন";
+        booksEl.appendChild(t);
+        m.cols.forEach(function (c, i) {
+          var b = document.createElement("button");
+          b.type = "button"; b.className = "hd-bk";
+          b.textContent = c.bn + " (" + bnum(c.count) + ")";
+          b.onclick = function () { openBook(i); };
+          booksEl.appendChild(b);
+        });
+      }).catch(function () {});
+    }
+    function openBook(i) {
+      var c = META.cols[i], ids = [];
+      for (var x = c.start; x < c.start + c.count; x++) ids.push(x);
+      gen++;
+      st = { all: ids, ids: ids, toks: [], set: new Set(), page: 0, col: -1, counts: null, raw: "", browse: i };
+      outEl.innerHTML = ""; chipsEl.innerHTML = ""; moreEl.style.display = "none";
+      booksEl.innerHTML = "";
+      var back = document.createElement("button");
+      back.type = "button"; back.className = "hd-bk hd-back"; back.textContent = "← কিতাবের তালিকা";
+      back.onclick = function () { clearAll(); hb.scrollIntoView({ block: "start" }); };
+      booksEl.appendChild(back);
+      var h = document.createElement("div");
+      h.className = "hd-bt"; h.textContent = c.bn + " — মোট " + bnum(c.count) + "টি হাদীস";
+      booksEl.appendChild(h);
+      syncJump();
+      hb.scrollIntoView({ block: "start" });
+      show();
     }
     jump.onclick = function () { hb.scrollIntoView({ behavior: "smooth", block: "start" }); };
 
@@ -141,6 +195,14 @@
       var out = new Array(d.length), p = 0;
       for (var i = 0; i < d.length; i++) { p += d[i]; out[i] = p; }
       return out;
+    }
+
+    async function postingsSyn(w) {
+      var g = SYNMAP[w];
+      if (!g) return postings(w);
+      var all = await Promise.all(g.map(postings));
+      var m = [].concat.apply([], all).sort(function (a, b) { return a - b; });
+      return m.filter(function (x, i) { return !i || x !== m[i - 1]; });
     }
 
     /* ───── ছোট সহায়ক ───── */
@@ -233,7 +295,7 @@
         chipsEl.appendChild(b);
       }
       chip("সব", tot, -1);
-      st.counts.forEach(function (n, i) { chip(SHORT[i], n, i); });
+      st.counts.forEach(function (n, i) { chip(SHORT[i] || META.cols[i].bn, n, i); });
     }
     function inCol(ids, c) {
       if (c < 0) return ids;
@@ -258,7 +320,7 @@
       moreEl.style.display = "none";
       infoEl.innerHTML = "";
       var t = document.createElement("div");
-      t.textContent = "বুখারী, মুসলিম, আবূ দাউদ, তিরমিযী, নাসাঈ, ইবনু মাজাহ, মালিক, নাবাবী ৪০ ও কুদসী ৪০ — আরবি ও বাংলা অনুবাদসহ। বাংলা বা আরবি শব্দ লিখে সার্চ করুন, অথবা সংকলনের নাম ও নম্বর দিন।";
+      t.textContent = "নিচের তালিকা থেকে কিতাব বেছে সব হাদীস পড়ুন, অথবা বাংলা বা আরবি শব্দ লিখে সার্চ করুন, কিংবা সংকলনের নাম ও নম্বর দিন (যেমন: বুখারী ১)।";
       infoEl.appendChild(t);
       var l = document.createElement("div");
       ["ঝাড়ফুঁক", "নজর", "الرقية", "সূরা ফাতিহা", "বুখারী ১", "নিয়্যত"].forEach(function (w) {
@@ -268,6 +330,7 @@
         l.appendChild(b);
       });
       infoEl.appendChild(l);
+      drawBooks();
     }
 
     function message(t) { infoEl.textContent = t; syncJump(); }
@@ -306,7 +369,7 @@
       var my = ++gen;
       moreEl.style.display = "none";
       if (!raw) { st = null; return intro(); }
-      outEl.innerHTML = ""; chipsEl.innerHTML = "";
+      outEl.innerHTML = ""; chipsEl.innerHTML = ""; booksEl.innerHTML = "";
       message("⏳ খোঁজা হচ্ছে… (প্রথমবার একটু সময় লাগতে পারে)");
       try {
         await ensureMeta();
@@ -314,14 +377,14 @@
         if (nm) {
           var id = await findNum(nm.ci, nm.num);
           if (my !== gen) return;
-          if (id < 0) return message(SHORT[nm.ci] + "-এ " + bnum(nm.num) + " নম্বর হাদীস পাওয়া যায়নি।");
+          if (id < 0) return message((SHORT[nm.ci] || META.cols[nm.ci].bn) + "-এ " + bnum(nm.num) + " নম্বর হাদীস পাওয়া যায়নি।");
           st = { ids: [id], all: [id], toks: [], set: new Set(), page: 0, col: -1, counts: null, raw: raw };
           infoEl.textContent = "";
           return show();
         }
         var toks = Array.from(new Set(N.tokens(raw)));
         if (!toks.length) return message("বাংলা বা আরবি অক্ষরে শব্দ লিখুন (ইংরেজি অক্ষরে সার্চ চলে না)। সংকলনের নাম ও নম্বর দিয়েও খোঁজা যায়, যেমন: বুখারী ১");
-        var lists = await Promise.all(toks.map(postings));
+        var lists = await Promise.all(toks.map(postingsSyn));
         if (my !== gen) return;
         var order = lists.map(function (l, i) { return i; }).sort(function (a, b) { return lists[a].length - lists[b].length; });
         var ids = lists[order[0]];
@@ -338,7 +401,8 @@
           var miss = toks.filter(function (w, i) { return !lists[i].length; });
           return message("কিছু পাওয়া যায়নি" + (miss.length ? " (“" + miss.join("”, “") + "” শব্দটি কোনো হাদীসে নেই)" : "") + "। অন্য বানানে বা অন্য শব্দে চেষ্টা করুন।");
         }
-        st = { all: ids, ids: ids, toks: toks, set: new Set(toks), page: 0, col: -1, counts: countsOf(ids), raw: raw, note: note, ranked: !!note };
+        var hl = new Set(toks); toks.forEach(function (w) { (SYNMAP[w] || []).forEach(function (v) { hl.add(v); }); });
+        st = { all: ids, ids: ids, toks: toks, set: hl, page: 0, col: -1, counts: countsOf(ids), raw: raw, note: note, ranked: !!note };
         apply();
       } catch (e) {
         if (my === gen) message("⚠ হাদীসের ডেটা আনা যায়নি: " + (e && e.message ? e.message : "ইন্টারনেট দেখুন") + "।");
@@ -358,7 +422,7 @@
       syncJump();
       var from = st.page * PAGE, part = st.ids.slice(from, from + PAGE);
       var total = st.ids.length;
-      infoEl.textContent = (st.note ? st.note + " " : "") + (st.toks.length ? bnum(total) + "টি হাদীস পাওয়া গেছে" : "");
+      infoEl.textContent = st.browse !== undefined ? "" : (st.note ? st.note + " " : "") + (st.toks.length ? bnum(total) + "টি হাদীস পাওয়া গেছে" : "");
       moreEl.style.display = "none";
       try {
         var recs = await Promise.all(part.map(recOf));
@@ -372,6 +436,12 @@
       }
     }
     moreEl.onclick = function () { if (st) show(); };
+    /* নিচে স্ক্রল করলে নিজে থেকেই পরের হাদীসগুলো আসে */
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (es) {
+        if (es[0].isIntersecting && st && moreEl.style.display !== "none" && !moreEl.disabled) { moreEl.disabled = true; show().then(function () { moreEl.disabled = false; }, function () { moreEl.disabled = false; }); }
+      }, { rootMargin: "400px" }).observe(moreEl);
+    }
 
     
     /* ───── কুরআনের সার্চ-বোতামগুলোর সাথে জোড়া ───── */
