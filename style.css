@@ -326,3 +326,6 @@ button,input,select{font-family:inherit}
 .hd-ovb small{font-size:12px;font-weight:500;color:var(--text-muted)}
 .hd-ovb:active{background:var(--primary);color:#fff}
 .hd-ovb:active small{color:#e4efe9}
+
+/* একটাই কার্ড: ব্যাকগ্রাউন্ডের উপর বাইরের বাক্সটি স্বচ্ছ, ভেতরের সার্চ-বার ও ফলাফল-কার্ডই কার্ড */
+.rs-box{background:transparent!important;border:0!important;box-shadow:none!important;padding:6px 0 20px!important}

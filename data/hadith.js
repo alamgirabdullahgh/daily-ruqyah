@@ -71,7 +71,7 @@
     anchor.parentNode.insertBefore(hb, anchor.nextSibling);
     var booksEl = $("hdBooks"), chipsEl = $("hdChips"), infoEl = $("hdInfo"), outEl = $("hdOut"), moreEl = $("hdMore");
 
-    var quranIds = ["rsKb", "rsTp", "rsPad", "rsRs", "rsInfo", "rsOut"];
+    var quranIds = ["rsTp", "rsRs", "rsInfo", "rsOut"];
 
     function syncJump() {
       if (mode !== "b" || !st || st.browse !== undefined || !st.all || !st.all.length) { jump.hidden = true; return; }
@@ -148,7 +148,7 @@
     }
     jump.onclick = function () { hb.scrollIntoView({ behavior: "smooth", block: "start" }); };
 
-    function setPh() { q.placeholder = mode === "h" ? "হাদীসের শব্দ লিখুন (বাংলা/আরবি)" : mode === "b" ? "কুরআন ও হাদিসে সার্চ করুন" : QPH; }
+    function setPh() { q.placeholder = QPH; }
     function setMode(m, run) {
       var prev = mode;
       mode = m;
@@ -352,17 +352,6 @@
       chipsEl.innerHTML = "";
       moreEl.style.display = "none";
       infoEl.innerHTML = "";
-      var t = document.createElement("div");
-      t.textContent = "নিচের তালিকা থেকে কিতাব বেছে সব হাদীস পড়ুন, অথবা বাংলা বা আরবি শব্দ লিখে সার্চ করুন, কিংবা সংকলনের নাম ও নম্বর দিন (যেমন: বুখারী ১)।";
-      infoEl.appendChild(t);
-      var l = document.createElement("div");
-      ["ঝাড়ফুঁক", "নজর", "الرقية", "সূরা ফাতিহা", "বুখারী ১", "নিয়্যত"].forEach(function (w) {
-        var b = document.createElement("button");
-        b.type = "button"; b.className = "hd-ex"; b.textContent = w;
-        b.onclick = function () { q.value = w; search(); };
-        l.appendChild(b);
-      });
-      infoEl.appendChild(l);
       drawBooks();
     }
 
@@ -500,6 +489,11 @@
       search();
     }, true);
     q.addEventListener("input", function () { setPh(); });
+    var padEl = $("rsPad");
+    if (padEl) padEl.addEventListener("click", function (e) {
+      if (mode !== "h" || !e.target.closest || !e.target.closest("button")) return;
+      setTimeout(function () { if (q.value.trim()) search(); else intro(); }, 0);
+    });
     /* সাইডবারের "বিষয়ভিত্তিক আয়াত" কুরআনের নিজস্ব — তাই সেখানে গেলে শুধু কুরআনে ফেরা */
     addEventListener("hashchange", function () { if (/^#topics/.test(location.hash) && mode === "h") setMode("q"); });
 
