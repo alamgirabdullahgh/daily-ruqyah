@@ -16,6 +16,13 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import com.getcapacitor.annotation.ActivityCallback;
+import androidx.activity.result.ActivityResult;
+import android.database.Cursor;
+import android.provider.OpenableColumns;
+import java.io.File;
+import java.io.InputStream;
+import java.io.FileOutputStream;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -85,6 +92,49 @@ public class AudioAlarmPlugin extends Plugin {
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().startActivity(i);
             }
+        } catch (Exception e) { }
+        call.resolve();
+    }
+
+    // ফোন থেকে নিজের অডিও ফাইল বাছা; অ্যাপের ভেতরে কপি করে রাখে (অফলাইনে বাজবে)
+    @PluginMethod
+    public void pickAudio(PluginCall call) {
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.setType("audio/*");
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(call, Intent.createChooser(i, "অডিও বাছুন"), "pickDone");
+    }
+
+    @ActivityCallback
+    private void pickDone(PluginCall call, ActivityResult res) {
+        if (call == null) return;
+        try {
+            Intent d = res.getData();
+            if (res.getResultCode() != android.app.Activity.RESULT_OK || d == null || d.getData() == null) { call.reject("বাতিল"); return; }
+            Uri u = d.getData();
+            String name = "audio";
+            Cursor c = getContext().getContentResolver().query(u, null, null, null, null);
+            if (c != null) { try { int k = c.getColumnIndex(OpenableColumns.DISPLAY_NAME); if (c.moveToFirst() && k >= 0) name = c.getString(k); } finally { c.close(); } }
+            File dir = new File(getContext().getFilesDir(), "alarm_audio");
+            dir.mkdirs();
+            File f = new File(dir, System.currentTimeMillis() + "_" + name.replaceAll("[^A-Za-z0-9._-]", "_"));
+            try (InputStream in = getContext().getContentResolver().openInputStream(u); FileOutputStream out = new FileOutputStream(f)) {
+                byte[] b = new byte[65536]; int n;
+                while ((n = in.read(b)) > 0) out.write(b, 0, n);
+            }
+            JSObject r = new JSObject();
+            r.put("path", f.getAbsolutePath());
+            r.put("name", name);
+            call.resolve(r);
+        } catch (Exception e) { call.reject(String.valueOf(e.getMessage())); }
+    }
+
+    @PluginMethod
+    public void removeFile(PluginCall call) {
+        try {
+            String p = call.getString("path", "");
+            File f = new File(p);
+            if (f.getParentFile() != null && f.getParentFile().getName().equals("alarm_audio")) f.delete();
         } catch (Exception e) { }
         call.resolve();
     }

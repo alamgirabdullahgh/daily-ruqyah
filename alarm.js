@@ -35,7 +35,8 @@
     { k: "kahf", t: "সূরা আল-কাহফ", r: [[18, 1, 110]] },
     { k: "yasin", t: "সূরা ইয়াসীন", r: [[36, 1, 83]] },
     { k: "baqara", t: "সূরা আল-বাকারা (পুরো)", r: [[2, 1, 286]] },
-    { k: "surah", t: "অন্য যেকোনো সূরা (নম্বর দিন)", r: null }
+    { k: "surah", t: "অন্য যেকোনো সূরা (নম্বর দিন)", r: null },
+    { k: "file", t: "📁 ফোনের নিজের অডিও ফাইল (অফলাইনে বাজে)", r: null, file: true }
   ];
 
   var list = [], meta = { exact: true, notif: true, playing: false };
@@ -148,7 +149,17 @@
     var sn = el("input"); sn.type = "number"; sn.min = 1; sn.max = 114; sn.value = 1;
     r2b.appendChild(sn);
     f.appendChild(r2b);
-    sel.onchange = function () { r2b.hidden = !!PRESETS[+sel.value].r; };
+    var r2c = el("div", "al-row"); r2c.hidden = true;
+    var pk = el("button", "al-add", "অডিও ফাইল বাছুন"); pk.type = "button";
+    var pn = el("span", null, "");
+    var picked = null;
+    pk.onclick = function () {
+      P.pickAudio().then(function (r) { picked = r; pn.textContent = " " + r.name; })
+        .catch(function (e) { if (!e || e.message !== "বাতিল") pn.textContent = " ফাইল নেওয়া যায়নি"; });
+    };
+    r2c.appendChild(pk); r2c.appendChild(pn);
+    f.appendChild(r2c);
+    sel.onchange = function () { var q = PRESETS[+sel.value]; r2b.hidden = !!q.r || !!q.file; r2c.hidden = !q.file; };
 
     var r3 = el("div", "al-row");
     r3.appendChild(el("label", null, "কতবার"));
@@ -176,6 +187,11 @@
       if (!on.length) { msg.textContent = "অন্তত একটি দিন বেছে নিন।"; return; }
       var p = PRESETS[+sel.value];
       var urls;
+      if (p.file) {
+        if (!picked) { msg.textContent = "আগে একটি অডিও ফাইল বাছুন।"; return; }
+        urls = [[picked.path]];
+        p = { t: "📁 " + picked.name, r: true };
+      } else
       try { urls = build(p, sn.value); } catch (e) { msg.textContent = "অডিও তৈরি করা যায়নি: " + e.message; return; }
       var title = p.r ? p.t : "সূরা নং " + bn(sn.value);
       list.push({ id: Math.floor(Date.now() / 1000) % 2000000000, time: tm.value || "05:00", days: on.length === 7 ? [] : on.slice().sort(), on: true, title: title, repeat: +rp.value, urls: urls });
@@ -204,6 +220,7 @@
     var del = el("button", "al-i", "🗑"); del.type = "button"; del.title = "মুছুন";
     del.onclick = async function () {
       if (!confirm("এই অ্যালার্মটি মুছে ফেলবেন?")) return;
+      try { var u0 = a.urls && a.urls[0] && a.urls[0][0]; if (u0 && u0.indexOf("/alarm_audio/") > 0) P.removeFile({ path: u0 }); } catch (e) {}
       list = list.filter(function (x) { return x.id !== a.id; });
       try { await persist(); } catch (e) {}
       render();
