@@ -68,7 +68,7 @@ async function fetchUrl(url, enforceRateLimit = true) {
   }
 
   let attempt = 0;
-  const maxAttempts = 4;
+  const maxAttempts = 8;
   let backoffMs = 5000;
 
   while (attempt < maxAttempts) {
@@ -93,6 +93,7 @@ async function fetchUrl(url, enforceRateLimit = true) {
             res.on('end', () => resolve(data));
           }
         );
+        req.setTimeout(60000, () => req.destroy(new Error('timeout 60s')));
         req.on('error', reject);
       });
       return html;
@@ -101,7 +102,7 @@ async function fetchUrl(url, enforceRateLimit = true) {
       if (attempt >= maxAttempts) throw err;
       console.log(`Waiting ${backoffMs / 1000}s before retrying...`);
       await sleep(backoffMs);
-      backoffMs *= 2;
+      backoffMs = Math.min(backoffMs * 2, 120000);
     }
   }
 }
