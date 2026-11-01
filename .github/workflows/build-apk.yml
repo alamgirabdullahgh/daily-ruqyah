@@ -79,6 +79,7 @@ jobs:
                   <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info" />
               </receiver>
               <receiver android:name=".LocationReceiver" android:exported="false" />
+              <provider android:name=".ApkShareProvider" android:authorities="com.dailyruqyah.app.apkshare" android:exported="false" android:grantUriPermissions="true" />
           </application>'''
           m=m.replace('</application>',comp,1)
           open('android/app/src/main/AndroidManifest.xml','w').write(m)
