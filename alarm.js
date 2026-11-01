@@ -19,7 +19,12 @@
   var wb = document.getElementById("drWBar"), ws = document.getElementById("drWSet");
   if (wb && ws) {
     if (NATIVE && W) wb.hidden = false;
-    ws.onclick = openWidget;
+    ws.onclick = function () {
+      if (!W || !W.pin) return;
+      W.pin().then(function (r) {
+        if (r && r.ok === false) alert("এই ফোনের লঞ্চার সরাসরি বসাতে দেয় না। হোম স্ক্রিনে ফাঁকা জায়গায় চেপে ধরে ‘উইজেট’ থেকে “টাইম উইজেট” বেছে নিন।");
+      }).catch(function () {});
+    };
   }
 
   var BD = "০১২৩৪৫৬৭৮৯";

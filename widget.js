@@ -259,9 +259,13 @@
     }
     el.addEventListener("click", function (ev) {
       var t = ev.target;
-      if (t.closest && t.closest("[data-loc]")) { locate(true); return; }
       var c = t.closest ? t.closest("[data-i]") : null;
-      if (!c) return;
+      if (!c) {
+        // কার্ডের যেকোনো জায়গায় চাপলে (ওয়াক্তের ঘর বাদে) নেটিভ অ্যাপে টাইম উইজেটের সেটিংস খোলে
+        if (NW && NW.openSettings) { NW.openSettings().catch(function () {}); return; }
+        if (t.closest && t.closest("[data-loc]")) locate(true);
+        return;
+      }
       var i = +c.getAttribute("data-i"), s = compute(new Date(), loc), shown = shownIndex(s);
       var target = (i === s.cur && nafl(s, s.cur)) ? (shown === NAFL ? s.cur : NAFL) : i;
       pick = target === shown ? -1 : target; pickCur = s.cur;
