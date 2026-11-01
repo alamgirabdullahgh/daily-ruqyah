@@ -614,35 +614,42 @@ function drShell(){
 init();drShell();
 // ---------- অ্যাপের নিজের আপডেট (শুধু ইনস্টল করা APK-তে; ওয়েবে ব্রাউজার নিজেই নতুন করে) ----------
 function drUpdater(){
- const ver=$("drVer"),btn=$("drUpdBtn"),msg=$("drUpdMsg"),ban=$("drBan"),bt=$("drBanTx"),bb=$("drBanBtn"),menu=$("drMenu");
+ const ver=$("drVer"),shr=$("drShare"),fl=$("drUfl"),btn=$("drUbtn"),pc=$("drUpct");
  const C=window.Capacitor,P=C&&C.Plugins&&C.Plugins.AppUpdater,native=!!(C&&C.isNativePlatform&&C.isNativePlatform()&&P);
- if(!native){ver.textContent="ওয়েব সংস্করণ — পেজ খুললেই নিজে নতুন হয়ে যায়।";btn.hidden=true;return}
- let cur=null,nw=null,busy=false,pend=false;
- const show=()=>{const has=!!(nw&&cur&&nw.versionCode>cur.versionCode);ban.hidden=!has;menu.classList.toggle("dot",has);
-  if(has){const t="নতুন সংস্করণ "+nw.tag.replace(/^v/,"")+" এসেছে";bt.textContent=t;btn.textContent="আপডেট করুন — "+nw.tag.replace(/^v/,"");btn.classList.add("new");msg.textContent=""}
-  else{btn.textContent="আপডেট খুঁজুন";btn.classList.remove("new")}};
- const check=async manual=>{if(busy)return;
-  if(manual){btn.disabled=true;btn.textContent="খোঁজা হচ্ছে…";msg.textContent=""}
-  try{if(!cur){cur=await P.info();ver.textContent="সংস্করণ "+cur.versionName}
-   nw=await P.check();lsSet("drChk",String(Date.now()));
-   if(manual&&!(nw.versionCode>cur.versionCode))msg.textContent="✓ আপনার কাছে সবচেয়ে নতুন সংস্করণই আছে।"}
-  catch(e){if(manual)msg.textContent="খুঁজে পাওয়া যায়নি — ইন্টারনেট দেখে আবার চাপুন।"}
-  btn.disabled=false;show()};
- const go=async()=>{if(busy||!nw)return;
+ const NAME="Daily Ruqyah",WEB=location.href.split("#")[0];
+ ver.textContent=NAME;
+ shr.onclick=async()=>{
+  if(native){try{await P.share();return}catch(e){}}
+  try{if(navigator.share){await navigator.share({title:NAME,url:WEB});return}}catch(e){return}
+  try{await navigator.clipboard.writeText(WEB);shr.textContent="Copied";setTimeout(()=>shr.textContent="Share",1800)}catch(e){}};
+ if(!native)return; // ওয়েবে ব্রাউজার নিজেই নতুন করে; আপডেট বোতাম শুধু ইনস্টল করা অ্যাপে
+ let cur=null,nw=null,busy=false,pend=false,can=true,t0=0;
+ // আপডেট বোতাম: আকার একই থাকে, ভেতরে "Update" লেখা প্লেসহোল্ডার হয়ে থাকে; ডাউনলোডে বোতামটাই প্রগ্রেস বার (ভরে যায়), ওপরে শুধু পার্সেন্টেজ
+ const label=()=>{btn.textContent=can?"Update":"Allow update"};
+ const show=()=>{const has=!!(nw&&cur&&nw.versionCode>cur.versionCode);fl.hidden=!(has||busy);if(!busy)label()};
+ const setP=(p,t)=>{btn.style.setProperty("--p",p+"%");pc.textContent=t==null?p+"%":t;pc.hidden=false};
+ const idle=()=>{busy=false;btn.disabled=false;btn.classList.remove("busy");btn.style.removeProperty("--p");pc.hidden=true;pc.textContent="";show()};
+ const toast=t=>{pc.textContent=t;pc.hidden=false;setTimeout(()=>{if(!busy){pc.hidden=true;pc.textContent=""}},4500)};
+ const closeSide=()=>{const sd=$("drSide");sd.classList.remove("on");$("drScrim").classList.remove("on");document.body.classList.remove("dr-lock")};
+ const check=async()=>{if(busy)return;
+  try{cur=await P.info();can=!!cur.canInstall;nw=await P.check();lsSet("drChk",String(Date.now()))}catch(e){}
+  show();
+  if(nw&&cur&&nw.versionCode>cur.versionCode&&can&&!busy&&lsGet("drAutoV","")!==nw.tag){lsSet("drAutoV",nw.tag);go(true)}};
+ const go=async auto=>{if(busy||!nw)return;
   let i;try{i=await P.info()}catch(e){return}
-  if(!i.canInstall){pend=true;msg.textContent="পরের পর্দায় “Allow from this source” চালু করে ফিরে আসুন — আপডেট নিজেই শুরু হবে।";open(false);try{await P.openSettings()}catch(e){}return}
-  busy=true;btn.disabled=true;bb.disabled=true;btn.textContent="ডাউনলোড হচ্ছে… ০%";bt.textContent="ডাউনলোড হচ্ছে…";
-  let h=null;try{h=await P.addListener("progress",e=>{const t="ডাউনলোড হচ্ছে… "+bn2(e.pct)+"%";btn.textContent=t;bt.textContent=t})}catch(e){}
-  try{await P.install({url:nw.url});btn.textContent="ইনস্টল হচ্ছে…";bt.textContent="ইনস্টল হচ্ছে…";msg.textContent="ফোন নিশ্চিত করতে চাইলে ‘আপডেট/Update’ চাপুন। সফল হলে অ্যাপ নিজেই নতুন হয়ে খুলবে।";
-   setTimeout(()=>{busy=false;btn.disabled=false;bb.disabled=false;show()},60000)}
-  catch(e){busy=false;btn.disabled=false;bb.disabled=false;msg.textContent="আপডেট শুরু করা যায়নি ("+(e&&e.message||"")+") — ইন্টারনেট দেখে আবার চেষ্টা করুন।";show()}
+  can=!!i.canInstall;
+  if(!can){if(auto)return;pend=true;toast("পরের পর্দায় “Allow from this source” চালু করে ফিরে আসুন");closeSide();try{await P.openSettings()}catch(e){}return}
+  busy=true;btn.disabled=true;btn.classList.add("busy");fl.hidden=false;t0=Date.now();setP(0);
+  let h=null;try{h=await P.addListener("progress",e=>setP(e.pct))}catch(e){}
+  try{await P.install({url:nw.url});setP(100,"Installing…");setTimeout(idle,60000)}
+  catch(e){idle();toast("আপডেট শুরু করা যায়নি — ইন্টারনেট দেখে আবার চাপুন")}
   if(h&&h.remove)try{h.remove()}catch(e){}};
- const open=on=>{const sd=$("drSide");if(!on){sd.classList.remove("on");$("drScrim").classList.remove("on");document.body.classList.remove("dr-lock")}};
- btn.onclick=()=>nw&&cur&&nw.versionCode>cur.versionCode?go():check(true);
- bb.onclick=go;
+ btn.onclick=()=>go(false);
  document.addEventListener("visibilitychange",async()=>{if(document.hidden)return;
-  if(pend){try{const i=await P.info();if(i.canInstall){pend=false;msg.textContent="";go();return}}catch(e){}}
-  if(Date.now()-(+lsGet("drChk","0")||0)>60*1000)check(false)});
- check(false)}
+  if(pend){try{const i=await P.info();if(i.canInstall){pend=false;can=true;go(false);return}}catch(e){}}
+  if(Date.now()-(+lsGet("drChk","0")||0)>60*1000)check()});
+ setInterval(()=>{if(!document.hidden)check()},5*60*1000);
+ P.info().then(i=>{cur=i;ver.textContent=NAME+" v"+i.versionName}).catch(()=>{});
+ check()}
 drUpdater();
 })();

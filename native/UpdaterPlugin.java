@@ -69,6 +69,27 @@ public class UpdaterPlugin extends Plugin {
         }).start();
     }
 
+    // অ্যাপের APK "Daily Ruqyah.apk" নামে শেয়ার (ফাইলের নাম ApkShareProvider ঠিক করে)
+    @PluginMethod
+    public void share(PluginCall call) {
+        try {
+            Context c = getContext();
+            Uri u = ApkShareProvider.uri(c);
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("application/vnd.android.package-archive");
+            i.putExtra(Intent.EXTRA_STREAM, u);
+            i.putExtra(Intent.EXTRA_SUBJECT, "Daily Ruqyah");
+            i.setClipData(android.content.ClipData.newRawUri(ApkShareProvider.NAME, u));
+            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Intent ch = Intent.createChooser(i, "Daily Ruqyah শেয়ার করুন");
+            ch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            c.startActivity(ch);
+            call.resolve();
+        } catch (Exception e) {
+            call.reject("share failed: " + e.getClass().getSimpleName());
+        }
+    }
+
     @PluginMethod
     public void openSettings(PluginCall call) {
         try {
