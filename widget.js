@@ -12,6 +12,16 @@
   var NAMES = ["ফজর", "যোহর", "আসর", "মাগরিব", "ইশা"];
   var NAFL = 5;
 
+  // অ্যাপে (APK) চললে অবস্থান, মিনিটের সমন্বয়, হানাফি ও তারিখের সেটিং আসে নেটিভ উইজেটের Cfg থেকে — যাতে কার্ড আর হোম-স্ক্রিন উইজেট সবসময় হুবহু এক সময় দেখায়।
+  // ব্রাউজারে/PWA-তে নিজের সেটিং (নিচের ডিফল্ট ও localStorage) চলে।
+  var CAP = window.Capacitor;
+  var NW = CAP && CAP.isNativePlatform && CAP.isNativePlatform() && CAP.Plugins && CAP.Plugins.TimeWidgetNative;
+  var CFG = null;       // নেটিভ থেকে পাওয়া সর্বশেষ সেটিং
+  var HANAFI = true;    // আসরে ছায়া দ্বিগুণ
+  var HIJRI_ADJ = null; // নেটিভ থেকে এলে হিজরি তারিখের সমন্বয় (দিন)
+  var BANGLA_ADJ = 0;
+  var BN_DIGITS = true;
+
   var PLACES = [
     ["ঢাকা", 23.8103, 90.4125], ["চট্টগ্রাম", 22.3569, 91.7832], ["রাজশাহী", 24.3745, 88.6042],
     ["খুলনা", 22.8456, 89.5403], ["বরিশাল", 22.7010, 90.3535], ["সিলেট", 24.8949, 91.8687],
@@ -26,7 +36,7 @@
 
   // ───────── অঙ্ক ─────────
   var BD = "০১২৩৪৫৬৭৮৯";
-  function bn(s) { return String(s).replace(/[0-9]/g, function (c) { return BD.charAt(+c); }); }
+  function bn(s) { return BN_DIGITS ? String(s).replace(/[0-9]/g, function (c) { return BD.charAt(+c); }) : String(s); }
 
   // ───────── তারিখ ─────────
   function isLeap(y) { return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0; }
@@ -48,7 +58,7 @@
   // হিজরি (উম্মুল কুরা); বাংলাদেশে ডিফল্টে −১ দিন (চাঁদ সৌদির একদিন পরে)
   function hijriText(d, inBd) {
     try {
-      var x = addDays(d, inBd ? -1 : 0);
+      var x = addDays(d, HIJRI_ADJ !== null ? HIJRI_ADJ : (inBd ? -1 : 0));
       var parts = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", { day: "numeric", month: "numeric", year: "numeric" }).formatToParts(x);
       var o = {};
       parts.forEach(function (p) { o[p.type] = p.value; });
@@ -106,7 +116,7 @@
     return bn(h + ":" + ("0" + (m % 60)).slice(-2));
   }
   function tzOf(d) { return -d.getTimezoneOffset() / 60; }
-  function tms(d, loc) { return times(d.getFullYear(), d.getMonth() + 1, d.getDate(), loc.lat, loc.lng, tzOf(d), true); }
+  function tms(d, loc) { return times(d.getFullYear(), d.getMonth() + 1, d.getDate(), loc.lat, loc.lng, tzOf(d), HANAFI); }
 
   // ───────── আজকের সব হিসাব ─────────
   function compute(now, loc) {
@@ -157,6 +167,7 @@
   }
   function inBd(lat, lng) { return lat >= 20.5 && lat <= 26.7 && lng >= 87.9 && lng <= 92.8; }
   function placeName(loc) {
+    if (CFG) return CFG.place + (CFG.auto && !CFG.located ? " 📍" : "");
     var best = -1, bd = 1e9, i;
     for (i = 0; i < PLACES.length; i++) {
       var dx = (loc.lat - PLACES[i][1]) * 111.2, dy = (loc.lng - PLACES[i][2]) * 111.2 * Math.cos(rad(loc.lat));
@@ -204,6 +215,24 @@
     var loc = loadLoc();
     var pick = -1, pickCur = -1;
 
+    // নেটিভ সেটিং টেনে এনে কার্ডে বসায়; বদলে থাকলে true
+    function applyCfg(c) {
+      if (!c || !isFinite(c.lat) || !isFinite(c.lng)) return false;
+      var before = JSON.stringify([CFG, loc]);
+      CFG = c;
+      if (c.off && c.off.length === 5) for (var k = 0; k < 5; k++) OFF[k] = +c.off[k] || 0;
+      HANAFI = !!c.hanafi;
+      HIJRI_ADJ = isFinite(c.hijriShift) ? +c.hijriShift : null;
+      BANGLA_ADJ = isFinite(c.banglaAdj) ? +c.banglaAdj : 0;
+      BN_DIGITS = c.bnDigits !== false;
+      loc = { lat: +c.lat, lng: +c.lng, auto: !!c.located };
+      return before !== JSON.stringify([CFG, loc]);
+    }
+    function pullCfg() {
+      if (!NW) return Promise.resolve(false);
+      return NW.config().then(applyCfg, function () { return false; });
+    }
+
     function shownIndex(s) {
       var ok = (pick >= 0 && pick <= 4) || (pick === NAFL && nafl(s, s.cur));
       if (ok && pickCur === s.cur) return pick;
@@ -224,13 +253,13 @@
         '<div class="drw"><div class="drw-r"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span><span class="drw-sun">' + SUNSET + "সূর্যাস্ত " + fmt(s.sunset) + "</span></div>" +
         '<div class="drw-r"><div class="drw-time"><b>' + hh + ":" + mm + "</b><span>" + (now.getHours() < 12 ? "AM" : "PM") + "</span></div>" +
         '<div class="drw-en"><b>' + en + '</b><button class="drw-loc" type="button" data-loc="1">' + placeName(loc) + "</button></div></div>" +
-        '<div class="drw-r drw-d"><span>' + hijriText(now, inBd(loc.lat, loc.lng)) + "</span><span>" + banglaText(now) + "</span></div>" +
+        '<div class="drw-r drw-d"><span>' + hijriText(now, inBd(loc.lat, loc.lng)) + "</span><span>" + banglaText(addDays(now, BANGLA_ADJ)) + "</span></div>" +
         '<div class="drw-p">' + cells + "</div>" +
         '<div class="drw-b"><span>' + (nf ? nf.name + " শুরু " : "ওয়াক্ত শুরু ") + fmt(bs) + '</span><div class="drw-bar"><u style="width:' + (frac * 100).toFixed(1) + '%"></u></div><span>' + (nf ? "শেষ " : "ওয়াক্ত শেষ ") + fmt(be) + "</span></div></div>";
     }
     el.addEventListener("click", function (ev) {
       var t = ev.target;
-      if (t.closest && t.closest("[data-loc]")) { locate(); return; }
+      if (t.closest && t.closest("[data-loc]")) { locate(true); return; }
       var c = t.closest ? t.closest("[data-i]") : null;
       if (!c) return;
       var i = +c.getAttribute("data-i"), s = compute(new Date(), loc), shown = shownIndex(s);
@@ -240,7 +269,15 @@
     });
     // স্বয়ংক্রিয় অবস্থান: খোলার সময়, সামনে ফিরলে ও প্রতি ১০ মিনিটে ফোনের অবস্থান নেয়; ১ কিমির বেশি সরলে শহর ও নামাজের সময় নিজে বদলে যায়
     var locBusy = false;
-    function locate() {
+    var asked = false;
+    function locate(userTap) {
+      if (NW) {
+        // অ্যাপে: নেটিভ উইজেটের অবস্থান-ব্যবস্থাই একমাত্র উৎস (ওয়েবের আলাদা অবস্থান নয়); অনুমতি না থাকলে খোলার সময় একবার, আর নামে চাপলে আবার চায়
+        var ask = userTap === true || !asked;
+        asked = true;
+        NW.locate({ ask: ask }).then(function (c) { if (applyCfg(c)) render(); }, function () { });
+        return;
+      }
       if (!navigator.geolocation || locBusy) return;
       locBusy = true;
       navigator.geolocation.getCurrentPosition(function (p) {
@@ -272,10 +309,11 @@
       }).catch(function () { clearTimeout(to); });
     }
     render();
-    locate();
-    setInterval(render, 30000);
+    pullCfg().then(function (ch) { if (ch) render(); locate(); });
+    if (!NW) locate();
+    setInterval(function () { pullCfg().then(function () { render(); }); }, 30000);
     setInterval(locate, 10 * 60 * 1000);
-    document.addEventListener("visibilitychange", function () { if (!document.hidden) { render(); locate(); } });
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) { pullCfg().then(function () { render(); }); locate(); } });
   }
 
   window.DRWidget = { mount: mount, _compute: compute, _nafl: nafl, _times: times, _fmt: fmt, _banglaText: banglaText };
