@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Daily Ruqyah">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 <header class="dr-bar">
@@ -21,6 +21,7 @@
  <span class="dr-bar-sp"></span>
 </header>
 <div id="drWidget" style="padding:0 12px"></div>
+<div class="dr-wbar" id="drWBar" hidden><button id="drWSet" type="button">⚙ উইজেট সেটিংস · হোম স্ক্রিনে বসান</button></div>
 <div class="dr-scrim" id="drScrim"></div>
 <nav class="dr-side" id="drSide" aria-label="মেনু" aria-hidden="true">
  <div class="dr-side-head">
@@ -36,6 +37,9 @@
  <a class="dr-nav" href="#read/bn" data-nav="read/bn"><i>বা</i><span>কুরআন বাংলা অনুবাদ</span></a>
  <a class="dr-nav" href="#read/arbn" data-nav="read/arbn"><i class="ar">عب</i><span>আরবি ও বাংলা অনুবাদসহ</span></a>
  <a class="dr-nav" href="#read/word" data-nav="read/word"><i>⋯</i><span>শব্দে শব্দে কুরআন</span></a>
+ <div class="dr-side-sec">রুকইয়াহ অডিও ও উইজেট</div>
+ <a class="dr-nav" href="#alarm" data-nav="alarm"><i>⏰</i><span>রুকইয়াহ অডিও অ্যালার্ম</span></a>
+ <a class="dr-nav" href="#timewidget" data-nav="timewidget"><i>🕒</i><span>টাইম উইজেট</span></a>
  <div class="dr-side-sec">অ্যাপ</div>
  <div class="dr-upd">
   <div class="dr-upd-v" id="drVer">সংস্করণ …</div>
@@ -56,10 +60,12 @@
  <div id="rsOut"></div>
 </div>
 <div class="rs-box dr-reader" id="drReader" hidden></div>
+<div class="rs-box" id="drAlarm" hidden></div>
 </main>
 <div class="dr-foot">আয়াত ও অর্থের উৎস: Tanzil, Quranic Arabic Corpus ও অন্যান্য; হাদিস: fawazahmed0/hadith-api — বিবরণ <a href="QURAN-DATA-NOTICE.md">QURAN-DATA-NOTICE.md</a> ও <a href="HADITH-DATA-NOTICE.md">HADITH-DATA-NOTICE.md</a>-এ। গবেষণার তথ্য, ফতোয়া বা চিকিৎসার বিকল্প নয়।</div>
 <script src="widget.js?v=3"></script>
-<script src="app.js?v=6"></script>
+<script src="app.js?v=7"></script>
+<script src="alarm.js?v=1"></script>
 <script src="boot.js?v=5"></script>
 <script src="data/hadith-norm.js?v=1"></script>
 <script src="data/hadith.js?v=3"></script>

@@ -79,6 +79,7 @@ const RECS=[["ar.alafasy","মিশারি আলাফাসি","Alafasy_12
 const gNum=(s,a)=>AYN.slice(0,s-1).reduce((x,y)=>x+y,0)+a;
 const recId=()=>{try{const v=localStorage.getItem("rsRec");if(RECS.some(r=>r[0]===v))return v}catch(e){}return RECS[0][0]};
 const audUrls=(s,a)=>{const r=RECS.find(x=>x[0]===recId())||RECS[0],p3=n=>String(n).padStart(3,"0");return[...[128,64,192].map(b=>"https://cdn.islamic.network/quran/audio/"+b+"/"+r[0]+"/"+gNum(s,a)+".mp3"),"https://everyayah.com/data/"+r[2]+"/"+p3(s)+p3(a)+".mp3"]};
+window.__drAud={urls:audUrls,AYN:AYN}; // alarm.js (রুকইয়াহ অডিও অ্যালার্ম) ব্যবহার করে
 const els=(t,css,x)=>{const e=el(t,null,x);e.style.cssText=css;return e};
 const SELV=new Set(),selUp=[];
 const selChange=()=>selUp.forEach(f=>{try{f()}catch(e){}});
@@ -597,12 +598,16 @@ function drShell(){
  document.addEventListener("keydown",e=>{if(e.key==="Escape")open(false)});
  const navs=[...document.querySelectorAll(".dr-nav")];
  let prev="";
+ let lastH="search";
  const route=()=>{open(false);const h=(location.hash||"#search").replace(/^#/,""),p=h.split("/");
   document.querySelectorAll("audio").forEach(a=>{try{a.pause()}catch(e){}});
+  const al=$("drAlarm");if(al)al.hidden=true;
+  if(p[0]==="timewidget"){window.DRALARM&&DRALARM.openWidget();location.hash="#"+lastH;return}
   let key="search";
-  if(p[0]==="read"&&RMODES.some(m=>m[0]===p[1])){key="read/"+p[1];const s=+p[2]||0;box.hidden=true;rd.hidden=false;renderReader(p[1],s>=1&&s<=114?s:0);window.scrollTo(0,0)}
+  if(p[0]==="alarm"&&al){key="alarm";box.hidden=true;rd.hidden=true;al.hidden=false;window.DRALARM&&DRALARM.show();window.scrollTo(0,0)}
+  else if(p[0]==="read"&&RMODES.some(m=>m[0]===p[1])){key="read/"+p[1];const s=+p[2]||0;box.hidden=true;rd.hidden=false;renderReader(p[1],s>=1&&s<=114?s:0);window.scrollTo(0,0)}
   else{rd.hidden=true;box.hidden=false;RG++;if(p[0]==="topics"){key="topics";SHOWT&&SHOWT(true);window.scrollTo(0,0)}else if(prev.startsWith("read/")||prev==="")window.scrollTo(0,0)}
-  prev=key;navs.forEach(a=>a.classList.toggle("on",a.dataset.nav===key))};
+  prev=key;lastH=h;navs.forEach(a=>a.classList.toggle("on",a.dataset.nav===key))};
  navs.forEach(a=>a.addEventListener("click",e=>{e.preventDefault();const h=a.getAttribute("href");if(location.hash===h)route();else location.hash=h;open(false)}));
  addEventListener("hashchange",route);
  route()}
