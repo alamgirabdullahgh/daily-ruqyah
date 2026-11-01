@@ -6,7 +6,12 @@ const os = require('os');
 const BOOK_MAP = {
   8: { k: 'shamail', bn: 'শামাঈলে তিরমিযী' },
   12: { k: 'adab', bn: 'আল-আদাবুল মুফরাদ' },
+  9: { k: 'tahawi', bn: 'ত্বহাবী শরীফ' },
+  10: { k: 'abuhanifa', bn: 'মুসনাদে আবু হানীফা' },
+  11: { k: 'muwattamuhammad', bn: 'মুওয়াত্তা ইমাম মুহাম্মাদ' },
   13: { k: 'mishkat', bn: 'মিশকাতুল মাসাবীহ' },
+  14: { k: 'fiqhussunan', bn: 'ফিকহুস সুনান' },
+  15: { k: 'akhlaq', bn: 'আখলাকুন্নবী (ﷺ)' },
   16: { k: 'riyad', bn: 'রিয়াযুস সালিহীন' },
   17: { k: 'ahmad', bn: 'মুসনাদে আহমদ' }
 };
