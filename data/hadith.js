@@ -91,17 +91,42 @@
       var my = gen;
       ensureMeta().then(function (m) {
         if (my !== gen || st || mode === "q") return;
-        var t = document.createElement("div");
-        t.className = "hd-bt"; t.textContent = "কিতাব বেছে সব হাদীস পড়ুন";
-        booksEl.appendChild(t);
-        m.cols.forEach(function (c, i) {
-          var b = document.createElement("button");
-          b.type = "button"; b.className = "hd-bk";
-          b.textContent = c.bn + " (" + bnum(c.count) + ")";
-          b.onclick = function () { openBook(i); };
-          booksEl.appendChild(b);
-        });
+        var dd = document.createElement("button");
+        dd.type = "button"; dd.className = "hd-dd";
+        dd.innerHTML = "<span>📚 কিতাবসমূহ</span><i>▾</i>";
+        dd.setAttribute("aria-haspopup", "dialog");
+        dd.onclick = function () { openMenu(m); };
+        booksEl.appendChild(dd);
       }).catch(function () {});
+    }
+    /* কিতাবসমূহ: পুরো পর্দার মেনু, দুই কলামে কিতাবের নাম */
+    function openMenu(m) {
+      var ov = document.createElement("div");
+      ov.className = "hd-ov"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", "কিতাবসমূহ");
+      var hd = document.createElement("div");
+      hd.className = "hd-ovh";
+      hd.innerHTML = "<b>📚 কিতাবসমূহ</b>";
+      var x = document.createElement("button");
+      x.type = "button"; x.className = "hd-ovx"; x.textContent = "✕"; x.setAttribute("aria-label", "বন্ধ করুন");
+      hd.appendChild(x); ov.appendChild(hd);
+      var g = document.createElement("div");
+      g.className = "hd-ovg";
+      function close() { document.removeEventListener("keydown", onKey); document.body.style.overflow = ""; if (ov.parentNode) ov.parentNode.removeChild(ov); }
+      function onKey(e) { if (e.key === "Escape") close(); }
+      m.cols.forEach(function (c, i) {
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "hd-ovb";
+        b.innerHTML = "<span></span><small></small>";
+        b.firstChild.textContent = c.bn;
+        b.lastChild.textContent = bnum(c.count) + "টি হাদীস";
+        b.onclick = function () { close(); openBook(i); };
+        g.appendChild(b);
+      });
+      ov.appendChild(g);
+      x.onclick = close;
+      document.addEventListener("keydown", onKey);
+      document.body.style.overflow = "hidden";
+      document.body.appendChild(ov);
     }
     function openBook(i) {
       var c = META.cols[i], ids = [];
