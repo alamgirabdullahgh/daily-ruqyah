@@ -136,6 +136,33 @@ if (fs.existsSync(mbDir)) {
   }
 }
 
+/* ───── রুকইয়া-সংক্রান্ত ছাঁকনি ─────
+   অ্যাপের নাম "ডেইলি রুকিয়া", তাই শুধু রুকইয়া / সূরা-আয়াতের ফযীলত / সকাল-সন্ধ্যার যিকির /
+   রোগ ও আত্মরক্ষার দোয়া সংক্রান্ত হাদীস রাখা হয় (নিয়ম: tools/ruqyah-filter.js)।
+   বন্ধ করতে: RUQYAH_FILTER=0 node tools/build-hadith.js …    ক্যাটাগরি বাছতে: RUQYAH_CATS=ruqyah,eye,surah,adhkar,illness,ta3awwudh,tibb,mental,quran,durood,jinn */
+if (process.env.RUQYAH_FILTER !== '0') {
+  const RF = require('./ruqyah-filter.js');
+  const RX = require('./ruqyah-filter-ext.js'); // চিকিৎসা, মানসিক, সব সূরার ফযীলত, দরূদ, জিন-শয়তান-তাবিজ-কুলক্ষণ
+  const want = process.env.RUQYAH_CATS ? new Set(process.env.RUQYAH_CATS.split(',')) : null;
+  const before = recs.length, perCat = {};
+  const kept = recs.filter(r => {
+    const t = RF.classify(r[2], r[3]).concat(RX.classifyExt(r[2], r[3])).filter(x => !want || want.has(x));
+    t.forEach(x => { perCat[x] = (perCat[x] || 0) + 1; });
+    return t.length > 0;
+  });
+  recs.length = 0;
+  kept.forEach(r => recs.push(r));
+  let pos = 0;
+  meta.cols.forEach((c, i) => {
+    c.start = pos;
+    c.count = recs.filter(r => r[0] === i).length;
+    pos += c.count;
+  });
+  meta.filter = 'ruqyah';
+  console.log('ছাঁকনির পর: ' + recs.length + ' / ' + before + ' (' + (recs.length / before * 100).toFixed(1) + '%)', JSON.stringify(perCat));
+  meta.cols.forEach(c => console.log('  ' + c.k + ': ' + c.count));
+}
+
 meta.total = recs.length;
 
 fs.rmSync(OUT, { recursive: true, force: true });
