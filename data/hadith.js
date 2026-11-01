@@ -1,5 +1,5 @@
 /* Daily Ruqyah — হাদিস সার্চ। আয়াত-সার্চের ওপরে তিনটি অপশন বসায়: শুধু কুরআন / হাদিস / কুরআন ও হাদিস।
-   ডেটা: data/hadith-chunks/ (বুখারী, মুসলিম, আবূ দাউদ, তিরমিযী, নাসাঈ, ইবনু মাজাহ, মালিক, নাবাবী ৪০, কুদসী ৪০ — ৩৬,১৪৬ হাদীস)।
+   ডেটা: data/hadith-chunks/ (বুখারী, মুসলিম, আবূ দাউদ, তিরমিযী, নাসাঈ, ইবনু মাজাহ, মালিক, নাবাবী ৪০, কুদসী ৪০, শামাঈল, আদাবুল মুফরাদ, রিয়াযুস সালিহীন — শুধু রুকইয়া/সুরক্ষা/সকাল-সন্ধ্যা/রোগের দোয়া সংক্রান্ত হাদীস, tools/ruqyah-filter.js দিয়ে ছাঁটা)।
    শব্দের রূপ: data/hadith-norm.js (ডেটা বানানোর সময়ের সাথে হুবহু এক থাকতে হবে)।
    নোট: ডেটা-ফাইলের নাম .json হলেও ভেতরে gzip থাকে (Android বিল্ড .gz নামের ফাইল নিজে খুলে এক্সটেনশন কেটে দেয়, তাই .gz নাম চলে না);
    getJson() প্রথম বাইট দেখে gzip/সাধারণ দুটোই পড়ে। কুরআনের কোডে হাত না দিয়ে ক্যাপচার-লিসেনারে যুক্ত হয়। */
@@ -11,6 +11,8 @@
   var $ = function (i) { return document.getElementById(i); };
   if (window.__hdLoaded) return;
   window.__hdLoaded = 1;
+  /* হাদিস-ডেটার সংস্করণ: ডেটা ছাঁটলে/বদলালে বাড়াতে হবে, যাতে ফোনে জমে থাকা পুরোনো ক্যাশ বাদ যায় */
+  var HV = "r1";
   var SHORT = ["বুখারী", "মুসলিম", "আবূ দাউদ", "তিরমিযী", "নাসাঈ", "ইবনু মাজাহ", "মালিক", "নাবাবী ৪০", "কুদসী ৪০"];
   var ALIAS = [
     ["বুখারী", "বুখারি", "bukhari", "بخاري", "বোখারী"],
@@ -21,7 +23,10 @@
     ["ইবনুমাজাহ", "ইবনেমাজাহ", "ইবনমাজাহ", "ibnmajah", "ابنماجه"],
     ["মালিক", "মুয়াত্তা", "মোয়াত্তা", "malik", "موطأ"],
     ["নাবাবী", "নববী", "নাওয়াবী", "নওয়াবী", "nawawi", "نووي"],
-    ["কুদসী", "কুদসি", "qudsi", "قدسي"]
+    ["কুদসী", "কুদসি", "qudsi", "قدسي"],
+    ["শামাঈল", "শামায়েল", "শামাইল", "শামায়েলে", "shamail", "shamael", "شمائل"],
+    ["আদাব", "আদাবুলমুফরাদ", "আদাবুলমুফরাদ", "আলআদাবুলমুফরাদ", "adab", "adabulmufrad", "ادب"],
+    ["রিয়াযুসসালিহীন", "রিয়াজুসসালেহীন", "রিয়াযুসসালেহীন", "রিয়াদুসসালিহীন", "riyad", "riyadussalihin", "رياض"]
   ];
 
 
@@ -94,9 +99,9 @@
 
     /* ───── ডেটা আনা (ক্যাশসহ) ───── */
     async function getJson(path) {
-      var url = D + path + "?v=" + DV;
+      var url = D + path + "?v=" + DV + HV;
       var c = null, r = null;
-      try { c = window.caches && await caches.open("hd-" + DV); r = c && await c.match(url); } catch (e) { c = null; }
+      try { c = window.caches && await caches.open("hd-" + DV + HV); r = c && await c.match(url); } catch (e) { c = null; }
       if (!r) {
         r = await fetch(url);
         if (!r.ok) throw new Error(r.status);
@@ -130,7 +135,7 @@
     }
     function ensureMeta() {
       if (META) return Promise.resolve(META);
-      return load("meta.json").then(function (m) { META = m; return m; });
+      return load("meta.json").then(function (m) { META = m; META.cols.forEach(function (c, i) { if (!SHORT[i]) SHORT[i] = c.bn; }); return m; });
     }
     function chunkOf(id) { return load("t/" + Math.floor(id / META.chunk) + ".json"); }
     async function recOf(id) { var c = await chunkOf(id); return c[id % META.chunk]; }
@@ -284,19 +289,17 @@
       if (ci < 0) return null;
       return { ci: ci, num: num };
     }
+    /* নম্বর দিয়ে খোঁজা: ডেটা ছাঁটা (নম্বরে ফাঁক) থাকায় বাইনারি সার্চ */
     async function findNum(ci, num) {
-      var col = META.cols[ci], g = col.start + num - 1;
-      g = Math.max(col.start, Math.min(col.start + col.count - 1, g));
-      for (var k = 0; k < 12; k++) {
-        var rec = await recOf(g);
+      var col = META.cols[ci], lo = col.start, hi = col.start + col.count - 1;
+      while (lo <= hi) {
+        var mid = (lo + hi) >> 1;
+        var rec = await recOf(mid);
         if (!rec) return -1;
-        if (rec[0] === ci && +rec[1] === num) return g;
-        var pos = rec[0] === ci ? +rec[1] : (g < col.start ? 0 : 1e9);
-        var step = Math.round(num - pos);
-        if (step === 0) step = pos < num ? 1 : -1;
-        var ng = Math.max(col.start, Math.min(col.start + col.count - 1, g + step));
-        if (ng === g) return -1;
-        g = ng;
+        var v = +rec[1];
+        if (v === num) return mid;
+        if (isNaN(v)) { lo = mid + 1; continue; }
+        if (v < num) lo = mid + 1; else hi = mid - 1;
       }
       return -1;
     }
