@@ -103,7 +103,10 @@ if (fs.existsSync(mbDir)) {
       .sort((a, b) => (typeof a.n === 'number' && typeof b.n === 'number') ? a.n - b.n : 0);
     mbBooks.push(Object.assign({}, first, { hadiths: merged }));
   }
-  mbBooks.sort((a, b) => Number(a.id) - Number(b.id));
+  /* আগে থেকে অ্যাপে থাকা কিতাবগুলো (৮, ১২, ১৬, ১৭) আগের ক্রমেই থাকে, নতুনগুলো শেষে — যাতে পুরনো হাদীসের আইডি না বদলায় */
+  const KEEP_FIRST = [8, 12, 16, 17];
+  const ord = b => { const i = KEEP_FIRST.indexOf(Number(b.id)); return i >= 0 ? i : 100 + Number(b.id); };
+  mbBooks.sort((a, b) => ord(a) - ord(b));
 
   for (const book of mbBooks) {
     const start = recs.length;
