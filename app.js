@@ -614,7 +614,7 @@ function drShell(){
 init();drShell();
 // ---------- অ্যাপের নিজের আপডেট (শুধু ইনস্টল করা APK-তে; ওয়েবে ব্রাউজার নিজেই নতুন করে) ----------
 function drUpdater(){
- const ver=$("drVer"),shr=$("drShare"),fl=$("drUfl"),btn=$("drUbtn"),pc=$("drUpct");
+ const ver=$("drVer"),shr=$("drShare"),fl=$("drUfl"),btn=$("drUbtn"),ph=$("drUph"),pt=$("drUpt");
  const C=window.Capacitor,P=C&&C.Plugins&&C.Plugins.AppUpdater,native=!!(C&&C.isNativePlatform&&C.isNativePlatform()&&P);
  const NAME="Daily Ruqyah",WEB=location.href.split("#")[0];
  ver.textContent=NAME;
@@ -624,12 +624,12 @@ function drUpdater(){
   try{await navigator.clipboard.writeText(WEB);shr.textContent="Copied";setTimeout(()=>shr.textContent="Share",1800)}catch(e){}};
  if(!native)return; // ওয়েবে ব্রাউজার নিজেই নতুন করে; আপডেট বোতাম শুধু ইনস্টল করা অ্যাপে
  let cur=null,nw=null,busy=false,pend=false,can=true,t0=0;
- // আপডেট বোতাম: আকার একই থাকে, ভেতরে "Update" লেখা প্লেসহোল্ডার হয়ে থাকে; ডাউনলোডে বোতামটাই প্রগ্রেস বার (ভরে যায়), ওপরে শুধু পার্সেন্টেজ
- const label=()=>{btn.textContent=can?"Update":"Allow update"};
+ // আপডেট বোতাম: আকার একই থাকে। চাপলে "Update" ঝাপসা প্লেসহোল্ডার হয়ে যায়, বোতামের ভেতরেই পার্সেন্টেজ/Installing… দেখায় ও বোতামটাই প্রগ্রেস বার
+ const label=()=>{ph.textContent=can?"Update":"Allow update"};
  const show=()=>{const has=!!(nw&&cur&&nw.versionCode>cur.versionCode);fl.hidden=!(has||busy);if(!busy)label()};
- const setP=(p,t)=>{btn.style.setProperty("--p",p+"%");pc.textContent=t==null?p+"%":t;pc.hidden=false};
- const idle=()=>{busy=false;btn.disabled=false;btn.classList.remove("busy");btn.style.removeProperty("--p");pc.hidden=true;pc.textContent="";show()};
- const toast=t=>{pc.textContent=t;pc.hidden=false;setTimeout(()=>{if(!busy){pc.hidden=true;pc.textContent=""}},4500)};
+ const setP=(p,t)=>{btn.style.setProperty("--p",p+"%");pt.textContent=t==null?p+"%":t};
+ const idle=()=>{busy=false;btn.disabled=false;btn.classList.remove("busy");btn.style.removeProperty("--p");pt.textContent="";show()};
+ const toast=t=>{ph.textContent=t;setTimeout(()=>{if(!busy)label()},3500)};
  const closeSide=()=>{const sd=$("drSide");sd.classList.remove("on");$("drScrim").classList.remove("on");document.body.classList.remove("dr-lock")};
  const check=async()=>{if(busy)return;
   try{cur=await P.info();can=!!cur.canInstall;nw=await P.check();lsSet("drChk",String(Date.now()))}catch(e){}
@@ -638,11 +638,11 @@ function drUpdater(){
  const go=async auto=>{if(busy||!nw)return;
   let i;try{i=await P.info()}catch(e){return}
   can=!!i.canInstall;
-  if(!can){if(auto)return;pend=true;toast("পরের পর্দায় “Allow from this source” চালু করে ফিরে আসুন");closeSide();try{await P.openSettings()}catch(e){}return}
+  if(!can){if(auto)return;pend=true;closeSide();try{await P.openSettings()}catch(e){}return}
   busy=true;btn.disabled=true;btn.classList.add("busy");fl.hidden=false;t0=Date.now();setP(0);
   let h=null;try{h=await P.addListener("progress",e=>setP(e.pct))}catch(e){}
   try{await P.install({url:nw.url});setP(100,"Installing…");setTimeout(idle,60000)}
-  catch(e){idle();toast("আপডেট শুরু করা যায়নি — ইন্টারনেট দেখে আবার চাপুন")}
+  catch(e){idle();toast("ব্যর্থ — আবার চাপুন")}
   if(h&&h.remove)try{h.remove()}catch(e){}};
  btn.onclick=()=>go(false);
  document.addEventListener("visibilitychange",async()=>{if(document.hidden)return;

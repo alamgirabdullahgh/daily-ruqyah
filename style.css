@@ -309,10 +309,12 @@ button,input,select{font-family:inherit}
 .dr-share{flex:none;border:1.5px solid var(--accent);background:transparent;color:var(--accent);border-radius:999px;padding:7px 18px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
 .dr-ufl{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
 .dr-ufl[hidden]{display:none}
-.dr-upct{padding:3px 12px;border-radius:999px;background:var(--primary-dark);color:#fff;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
-.dr-upct[hidden]{display:none}
-.dr-ubtn{pointer-events:auto;width:150px;height:48px;border:0;border-radius:26px;background:var(--accent);color:#06201c;font:inherit;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px -6px rgba(5,46,36,.55)}
-.dr-ubtn.busy{background:linear-gradient(90deg,var(--accent) var(--p,0%),#134a44 var(--p,0%));color:#fff;text-shadow:0 0 4px rgba(0,0,0,.8)}
+.dr-ubtn{pointer-events:auto;position:relative;width:160px;height:48px;border:0;border-radius:26px;background:var(--accent);color:#06201c;font:inherit;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px -6px rgba(5,46,36,.55);overflow:hidden}
+.dr-ubtn .ph,.dr-ubtn .pt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+.dr-ubtn .pt{display:none;font-variant-numeric:tabular-nums}
+.dr-ubtn.busy{background:linear-gradient(90deg,var(--accent) var(--p,0%),#134a44 var(--p,0%));color:#fff}
+.dr-ubtn.busy .ph{opacity:.45;color:#fff}
+.dr-ubtn.busy .pt{display:flex;font-size:17px;text-shadow:0 0 4px rgba(0,0,0,.7)}
 .hd-dd{display:flex;align-items:center;justify-content:space-between;width:100%;margin:2px 0 0;padding:12px 16px;border:1px solid var(--border);background:linear-gradient(180deg,var(--primary-light),color-mix(in srgb,var(--primary-light) 60%,var(--card-bg)));color:var(--primary);border-radius:16px;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
 .hd-dd i{font-style:normal;font-size:18px;color:var(--accent)}
 .hd-ov{position:fixed;inset:0;z-index:70;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);padding:0 14px calc(24px + env(safe-area-inset-bottom))}
