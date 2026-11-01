@@ -5,7 +5,7 @@
    getJson() প্রথম বাইট দেখে gzip/সাধারণ দুটোই পড়ে। কুরআনের কোডে হাত না দিয়ে ক্যাপচার-লিসেনারে যুক্ত হয়। */
 (function () {
   "use strict";
-  var DV = "2";
+  var DV = "3";
   var D = new URL("data/hadith-chunks/", document.baseURI).href;
   var PAGE = 10;
   /* বানানের ভিন্নতা: একটি লিখলে সবকটি খোঁজা হবে (সাধারণীকৃত রূপে) */
@@ -21,6 +21,7 @@
   var SYNMAP = {};
   SYN.forEach(function (g) { g.forEach(function (w) { SYNMAP[w] = g; }); });
   var $ = function (i) { return document.getElementById(i); };
+  try { window.caches && caches.keys().then(function (ks) { ks.forEach(function (k) { if (/^hd-/.test(k) && k !== "hd-" + DV) caches.delete(k); }); }); } catch (e) {}
   if (window.__hdLoaded) return;
   window.__hdLoaded = 1;
   var SHORT = ["বুখারী", "মুসলিম", "আবূ দাউদ", "তিরমিযী", "নাসাঈ", "ইবনু মাজাহ", "মালিক", "নাবাবী ৪০", "কুদসী ৪০", "শামাঈল", "আদাবুল মুফরাদ", "রিয়াযুস সালিহীন", "মুসনাদে আহমদ"];
