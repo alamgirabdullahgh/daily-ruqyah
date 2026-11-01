@@ -5,7 +5,7 @@
    getJson() প্রথম বাইট দেখে gzip/সাধারণ দুটোই পড়ে। কুরআনের কোডে হাত না দিয়ে ক্যাপচার-লিসেনারে যুক্ত হয়। */
 (function () {
   "use strict";
-  var DV = "3";
+  var DV = "4";
   var D = new URL("data/hadith-chunks/", document.baseURI).href;
   var PAGE = 10;
   /* বানানের ভিন্নতা: একটি লিখলে সবকটি খোঁজা হবে (সাধারণীকৃত রূপে) */
@@ -187,7 +187,14 @@
       if (META) return Promise.resolve(META);
       return load("meta.json").then(function (m) { META = m; return m; });
     }
-    function chunkOf(id) { return load("t/" + Math.floor(id / META.chunk) + ".json"); }
+    /* muslimbangla থেকে আসা লেখায় কাঁচা <br> থাকে — নতুন লাইনে বদলে নিই (খণ্ড প্রথমবার লোডের সময় একবারই) */
+    function fixTx(s) { return typeof s === "string" ? s.replace(/<br\s*\/?>/gi, "\n").replace(/[ \t]*\n[ \t]*/g, "\n").replace(/\n{3,}/g, "\n\n").trim() : s; }
+    function chunkOf(id) {
+      return load("t/" + Math.floor(id / META.chunk) + ".json").then(function (c) {
+        if (!c.fx) { for (var i = 0; i < c.length; i++) { c[i][2] = fixTx(c[i][2]); c[i][3] = fixTx(c[i][3]); } c.fx = 1; }
+        return c;
+      });
+    }
     async function recOf(id) { var c = await chunkOf(id); return c[id % META.chunk]; }
     async function postings(w) {
       var sh = await load("i/" + N.shard(w) + ".json");

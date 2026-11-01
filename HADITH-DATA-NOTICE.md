@@ -18,5 +18,10 @@ The additional Bengali Hadith books are collected from public pages of [muslimba
 - মিশকাতুল মাসাবীহ (mishkat)
 - রিয়াযুস সালিহীন (riyad)
 - মুসনাদে আহমদ (ahmad)
+- ত্বহাবী শরীফ (tahawi)
+- মুসনাদে আবু হানীফা (abuhanifa)
+- মুওয়াত্তা ইমাম মুহাম্মাদ (muwattamuhammad)
+- ফিকহুস সুনান (fiqhussunan)
+- আখলাকুন্নবী (akhlaq)
 
 Note: অনুবাদের স্বত্ব মূল অনুবাদক/প্রকাশকের; বড় পরিসরে ব্যবহারের আগে যাচাই করুন।
