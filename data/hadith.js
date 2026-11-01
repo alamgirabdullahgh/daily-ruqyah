@@ -1,11 +1,11 @@
 /* Daily Ruqyah — হাদিস সার্চ। আয়াত-সার্চের ওপরে তিনটি অপশন বসায়: শুধু কুরআন / হাদিস / কুরআন ও হাদিস।
-   ডেটা: data/hadith-chunks/ (বুখারী, মুসলিম, আবূ দাউদ, তিরমিযী, নাসাঈ, ইবনু মাজাহ, মালিক, নাবাবী ৪০, কুদসী ৪০ — ৩৬,১৪৬ হাদীস)।
+   ডেটা: data/hadith-chunks/ (বুখারী, মুসলিম, আবূ দাউদ, তিরমিযী, নাসাঈ, ইবনু মাজাহ, মালিক, নাবাবী ৪০, কুদসী ৪০, শামাঈল, আদাবুল মুফরাদ, রিয়াযুস সালিহীন — শুধু রুকইয়া/সুরক্ষা/সকাল-সন্ধ্যা/রোগের দোয়া সংক্রান্ত হাদীস, tools/ruqyah-filter.js দিয়ে ছাঁটা)।
    শব্দের রূপ: data/hadith-norm.js (ডেটা বানানোর সময়ের সাথে হুবহু এক থাকতে হবে)।
    নোট: ডেটা-ফাইলের নাম .json হলেও ভেতরে gzip থাকে (Android বিল্ড .gz নামের ফাইল নিজে খুলে এক্সটেনশন কেটে দেয়, তাই .gz নাম চলে না);
    getJson() প্রথম বাইট দেখে gzip/সাধারণ দুটোই পড়ে। কুরআনের কোডে হাত না দিয়ে ক্যাপচার-লিসেনারে যুক্ত হয়। */
 (function () {
   "use strict";
-  var DV = "4";
+  var DV = "5";
   var D = new URL("data/hadith-chunks/", document.baseURI).href;
   var PAGE = 10;
   /* বানানের ভিন্নতা: একটি লিখলে সবকটি খোঁজা হবে (সাধারণীকৃত রূপে) */
@@ -185,7 +185,7 @@
     }
     function ensureMeta() {
       if (META) return Promise.resolve(META);
-      return load("meta.json").then(function (m) { META = m; return m; });
+      return load("meta.json").then(function (m) { META = m; META.cols.forEach(function (c, i) { if (!SHORT[i]) SHORT[i] = c.bn; }); return m; });
     }
     /* muslimbangla থেকে আসা লেখায় কাঁচা <br> থাকে — নতুন লাইনে বদলে নিই (খণ্ড প্রথমবার লোডের সময় একবারই) */
     function fixTx(s) { return typeof s === "string" ? s.replace(/<br\s*\/?>/gi, "\n").replace(/[ \t]*\n[ \t]*/g, "\n").replace(/\n{3,}/g, "\n\n").trim() : s; }
@@ -355,19 +355,17 @@
       if (ci < 0) return null;
       return { ci: ci, num: num };
     }
+    /* নম্বর দিয়ে খোঁজা: ডেটা ছাঁটা (নম্বরে ফাঁক) থাকায় বাইনারি সার্চ */
     async function findNum(ci, num) {
-      var col = META.cols[ci], g = col.start + num - 1;
-      g = Math.max(col.start, Math.min(col.start + col.count - 1, g));
-      for (var k = 0; k < 12; k++) {
-        var rec = await recOf(g);
+      var col = META.cols[ci], lo = col.start, hi = col.start + col.count - 1;
+      while (lo <= hi) {
+        var mid = (lo + hi) >> 1;
+        var rec = await recOf(mid);
         if (!rec) return -1;
-        if (rec[0] === ci && +rec[1] === num) return g;
-        var pos = rec[0] === ci ? +rec[1] : (g < col.start ? 0 : 1e9);
-        var step = Math.round(num - pos);
-        if (step === 0) step = pos < num ? 1 : -1;
-        var ng = Math.max(col.start, Math.min(col.start + col.count - 1, g + step));
-        if (ng === g) return -1;
-        g = ng;
+        var v = +rec[1];
+        if (v === num) return mid;
+        if (isNaN(v)) { lo = mid + 1; continue; }
+        if (v < num) lo = mid + 1; else hi = mid - 1;
       }
       return -1;
     }

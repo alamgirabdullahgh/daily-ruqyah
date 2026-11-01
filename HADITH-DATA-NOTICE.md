@@ -25,3 +25,23 @@ The additional Bengali Hadith books are collected from public pages of [muslimba
 - আখলাকুন্নবী (akhlaq)
 
 Note: অনুবাদের স্বত্ব মূল অনুবাদক/প্রকাশকের; বড় পরিসরে ব্যবহারের আগে যাচাই করুন।
+
+## Ruqyah-only filter (app size)
+
+The app is *Daily Ruqyah*, so `tools/build-hadith.js` keeps only hadith related to ruqyah and protection/healing supplications; everything else is dropped
+(≈1,065 of 38,917 hadith are kept, `data/hadith-chunks/` shrinks from ≈25 MB to ≈1.8 MB, fully offline).
+Rules live in `tools/ruqyah-filter.js` (keyword/phrase based, Arabic + Bengali). Categories:
+
+- `ruqyah` — ruqyah / jhar-phunk / blowing (nafth)
+- `eye` — evil eye, magic (with remedy), jinn possession, epilepsy
+- `ta3awwudh` — seeking refuge in Allah (a'udhu…), Mu'awwidhat
+- `surah` — virtue/protection of specific surahs & ayat (Fatiha, Ikhlas, Falaq, Nas, Ayat al-Kursi, end of Baqarah, Kahf, Mulk…)
+- `adhkar` — morning/evening and before-sleep protection supplications
+- `illness` — supplications for the sick, pain, fever, bites
+
+Build: `node tools/build-hadith.js <editions-dir>`. `RUQYAH_FILTER=0` disables the filter; `RUQYAH_CATS=ruqyah,eye,surah,adhkar,illness` selects categories
+(omit `ta3awwudh` to drop general "seeking refuge" duas). The filter is heuristic: review borderline hadith before large-scale redistribution.
+
+
+## বর্ধিত পরিসর (রুকইয়া + চিকিৎসা)
+অ্যাপে রুকইয়া ছাড়াও চিকিৎসা (তিব্বে নববী ও সাধারণ), মানসিক সমস্যা ও বিপদের দোয়া, সব সূরা-কুরআনের ফযীলত, দরূদের ফযীলত এবং জিন-শয়তান-গণক-তাবিজ-কুলক্ষণ সংক্রান্ত হাদীস রাখা হয়েছে (`tools/ruqyah-filter.js` + `tools/ruqyah-filter-ext.js`)। ছাঁকনি কিওয়ার্ডভিত্তিক, তাই কিছু অপ্রাসঙ্গিক হাদীস থেকে যেতে পারে; সব হাদীস রাখতে `RUQYAH_FILTER=0` দিয়ে `build-hadith.js` চালান।
