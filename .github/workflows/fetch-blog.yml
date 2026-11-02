@@ -1,0 +1,42 @@
+name: Fetch Daily Ruqyah blog (raw)
+
+on:
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: 'Space-separated page URLs to download raw'
+        required: true
+        default: 'https://dailyruqyah.blogspot.com/p/symptom-diagnosis.html https://dailyruqyah.blogspot.com/p/home.html'
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    env:
+      URLS: ${{ inputs.urls }}
+      BLOG: https://dailyruqyah.blogspot.com
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download raw pages and Blogger feeds
+        run: |
+          mkdir -p blog-src
+          UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36'
+          dl() { f="blog-src/$2"; curl -sSL --max-time 60 -A "$UA" -o "$f" -w "%{http_code} $1 -> $f (%{size_download} bytes)\n" "$1" || echo "FAIL $1"; }
+          for u in $URLS; do
+            name=$(echo "$u" | sed -E 's#https?://##; s#[^A-Za-z0-9._-]+#_#g')
+            dl "$u" "$name"
+          done
+          dl "$BLOG/feeds/pages/default?alt=json&max-results=500" feed-pages.json
+          dl "$BLOG/feeds/posts/default?alt=json&max-results=500" feed-posts.json
+          dl "$BLOG/sitemap.xml" sitemap.xml
+          dl "$BLOG/sitemap-pages.xml" sitemap-pages.xml
+          ls -la blog-src
+      - name: Commit raw files
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add blog-src
+          git commit -m "blog raw download" || echo "No changes"
+          git push
