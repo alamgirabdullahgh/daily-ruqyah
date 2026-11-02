@@ -63,7 +63,10 @@ jobs:
           mkdir -p input
           if echo "$PDF_URL" | grep -q "drive.google.com"; then
             pip install -q --break-system-packages gdown
-            gdown --fuzzy "$PDF_URL" -O "input/book_$(date +%s).pdf"
+            FID=$(echo "$PDF_URL" | sed -n 's|.*/d/\([^/?]*\).*|\1|p')
+            [ -z "$FID" ] && FID=$(echo "$PDF_URL" | sed -n 's|.*[?&]id=\([^&]*\).*|\1|p')
+            echo "Drive file id: $FID"
+            gdown "$FID" -O "input/book_$(date +%s).pdf"
           else
             curl -L "$PDF_URL" -o "input/linked_$(date +%s).pdf"
           fi
