@@ -13,6 +13,9 @@ on:
       pdf_url:
         description: 'ডাইরেক্ট ডাউনলোড লিংক (ঐচ্ছিক)'
         required: false
+      release_id:
+        description: 'Draft/Release ID (ঐচ্ছিক, Publish ছাড়াই PDF নেওয়া যায়)'
+        required: false
 
 permissions:
   contents: write
@@ -38,6 +41,19 @@ jobs:
         run: |
           mkdir -p input
           gh release download "${{ github.event.release.tag_name }}" --pattern '*.pdf' --dir input
+
+      - name: Download PDFs from release by ID (works for drafts)
+        if: ${{ github.event.inputs.release_id != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p input
+          gh api "repos/${{ github.repository }}/releases/${{ github.event.inputs.release_id }}" \
+            --jq '.assets[] | select(.name | endswith(".pdf")) | "\(.id) \(.name)"' |
+          while read -r aid aname; do
+            gh api -H "Accept: application/octet-stream" "repos/${{ github.repository }}/releases/assets/$aid" > "input/$aname"
+          done
+          ls -la input
 
       - name: Download PDF from link (if given)
         if: ${{ github.event.inputs.pdf_url != '' }}
