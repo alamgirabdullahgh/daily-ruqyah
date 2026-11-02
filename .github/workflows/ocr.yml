@@ -57,9 +57,17 @@ jobs:
 
       - name: Download PDF from link (if given)
         if: ${{ github.event.inputs.pdf_url != '' }}
+        env:
+          PDF_URL: ${{ github.event.inputs.pdf_url }}
         run: |
           mkdir -p input
-          curl -L "${{ github.event.inputs.pdf_url }}" -o "input/linked_$(date +%s).pdf"
+          if echo "$PDF_URL" | grep -q "drive.google.com"; then
+            pip install -q --break-system-packages gdown
+            gdown --fuzzy "$PDF_URL" -O "input/book_$(date +%s).pdf"
+          else
+            curl -L "$PDF_URL" -o "input/linked_$(date +%s).pdf"
+          fi
+          ls -la input
 
       - name: Run OCR
         run: |
