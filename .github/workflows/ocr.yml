@@ -68,7 +68,7 @@ jobs:
           for pdf in input/*.pdf; do
             name=$(basename "$pdf" .pdf)
             [ -f "output/$name.txt" ] && continue
-            ocrmypdf -l ben+eng --skip-text --sidecar "output/$name.txt" "$pdf" "work_$name.pdf"
+            ocrmypdf -l ben+eng --skip-text --optimize 0 --jobs 2 --sidecar "output/$name.txt" "$pdf" "work_$name.pdf"
             # ১০০MB-এর কম হলে PDF-ও রিপোতে রাখা হবে
             if [ "$(stat -c%s "work_$name.pdf")" -lt 95000000 ]; then
               mv "work_$name.pdf" "output/$name.pdf"
