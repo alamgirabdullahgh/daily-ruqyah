@@ -16,8 +16,13 @@
     ["দুআ", "দোয়া", "দোআ", "দুয়া", "دعاء", "دعا"],
     ["কুরআন", "কোরআন", "কুরান", "কোরান", "قران"],
     ["রাসূল", "রাসুল", "রসূল", "রসুল", "رسول"],
-    ["মুমিন", "মোমিন", "মুমীন", "مومن"]
+    ["মুমিন", "মোমিন", "মুমীন", "مومن"],
+    ["নজর", "নযর"]
   ];
+  /* বদনজর: বুখারী-মুসলিমের বাংলায় লেখা "বদ-নযর" (দুই শব্দ, ভিন্ন বানান) আর আরবি "العين حق" — সবই একসাথে খোঁজা হয় */
+  var EYEKEY = { "বদনজ": 1, "বদনয": 1, "বদনজর": 1, "বদনযর": 1 };
+  var EYEALT = [["বদনজ"], ["বদনয"], ["বদনজর"], ["বদনযর"], ["বদ", "নজর"], ["বদ", "নযর"], ["عين", "حق"]];
+  var EYEWORDS = ["বদনজ", "বদনয", "বদনজর", "বদনযর", "বদ", "নজর", "নযর", "عين"];
   var SYNMAP = {};
   SYN.forEach(function (g) { g.forEach(function (w) { SYNMAP[w] = g; }); });
   var $ = function (i) { return document.getElementById(i); };
@@ -231,6 +236,14 @@
     }
 
     async function postingsSyn(w) {
+      if (EYEKEY[w]) {
+        var alts = await Promise.all(EYEALT.map(async function (alt) {
+          var ls = await Promise.all(alt.map(postings));
+          return ls.reduce(function (a, b) { return intersect(a, b); });
+        }));
+        var u = [].concat.apply([], alts).sort(function (a, b) { return a - b; });
+        return u.filter(function (x, i) { return !i || x !== u[i - 1]; });
+      }
       var g = SYNMAP[w];
       if (!g) return postings(w);
       var all = await Promise.all(g.map(postings));
@@ -408,7 +421,7 @@
           var miss = toks.filter(function (w, i) { return !lists[i].length; });
           return message("কিছু পাওয়া যায়নি" + (miss.length ? " (“" + miss.join("”, “") + "” শব্দটি কোনো হাদীসে নেই)" : "") + "। অন্য বানানে বা অন্য শব্দে চেষ্টা করুন।");
         }
-        var hl = new Set(toks); toks.forEach(function (w) { (SYNMAP[w] || []).forEach(function (v) { hl.add(v); }); });
+        var hl = new Set(toks); toks.forEach(function (w) { (SYNMAP[w] || []).forEach(function (v) { hl.add(v); }); if (EYEKEY[w]) EYEWORDS.forEach(function (v) { hl.add(v); }); });
         st = { all: ids, ids: ids, toks: toks, set: hl, page: 0, col: -1, counts: countsOf(ids), raw: raw, note: note, ranked: !!note };
         apply();
       } catch (e) {
