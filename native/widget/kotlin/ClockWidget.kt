@@ -252,6 +252,13 @@ class ClockWidget : AppWidgetProvider() {
             }
         }
 
+        // অ্যাপের ভেতরে হুবহু একই উইজেট দেখানোর জন্য (হোম স্ক্রিনের উইজেটের একই RemoteViews)
+        @JvmStatic
+        fun viewFor(ctx: Context, widthDp: Int): RemoteViews {
+            LocationUpdater.sync(ctx)
+            return build(ctx, compute(ctx), widthDp)
+        }
+
         fun refresh(ctx: Context) {
             removeOldLockCard(ctx)
             try {

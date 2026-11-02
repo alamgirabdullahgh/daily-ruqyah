@@ -16,6 +16,12 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
 import kotlin.Unit;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.RemoteViews;
 
 // টাইম উইজেট: সেটিংস পর্দা খোলা, হোম স্ক্রিনে বসানো, এবং অ্যাপের ভেতরের কার্ডের সাথে সেটিং/অবস্থান ভাগ করা।
 // নেটিভ উইজেট (Cfg) আর অ্যাপের ওয়েব-কার্ড (widget.js) যেন সবসময় হুবহু একই সময় দেখায়, তাই কার্ড এখান থেকেই অবস্থান, সমন্বয় ও হানাফি-সেটিং নেয়।
@@ -104,5 +110,67 @@ public class WidgetPlugin extends Plugin {
         } catch (Exception e) {
             call.reject(String.valueOf(e.getMessage()));
         }
+    }
+
+    // ───── অ্যাপের ভেতরে হোম-স্ক্রিনের উইজেটটাই (একই RemoteViews) ওয়েবপেজের নির্দিষ্ট জায়গায় বসানো ─────
+    private View cardView;
+    private int cardW = 0;
+    private final Handler ui = new Handler(Looper.getMainLooper());
+    private final Runnable tick = new Runnable() {
+        @Override public void run() {
+            if (cardView != null && cardView.getVisibility() == View.VISIBLE) redraw();
+            ui.postDelayed(this, 3000);
+        }
+    };
+
+    private void redraw() {
+        try {
+            RemoteViews rv = ClockWidget.Companion.viewFor(getContext(), cardW);
+            rv.reapply(getContext(), cardView);
+        } catch (Exception e) { }
+    }
+
+    @PluginMethod
+    public void card(final PluginCall call) {
+        final boolean vis = Boolean.TRUE.equals(call.getBoolean("visible", true));
+        final double x = call.getDouble("x", 0.0), y = call.getDouble("y", 0.0), w = call.getDouble("w", 0.0);
+        getActivity().runOnUiThread(() -> {
+            try {
+                float d = getContext().getResources().getDisplayMetrics().density;
+                ViewGroup parent = (ViewGroup) getBridge().getWebView().getParent();
+                int wdp = (int) Math.max(200, Math.round(w));
+                if (cardView == null || cardW != wdp) {
+                    if (cardView != null) parent.removeView(cardView);
+                    cardW = wdp;
+                    RemoteViews rv = ClockWidget.Companion.viewFor(getContext(), wdp);
+                    cardView = rv.apply(getContext(), parent);
+                    // কার্ডে চাপলে (ওয়াক্তের ঘর বাদে) উইজেট-সেটিংস খোলে
+                    cardView.setOnClickListener(v -> {
+                        try {
+                            Intent i = new Intent(getContext(), WidgetSettingsActivity.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            getContext().startActivity(i);
+                        } catch (Exception e) { }
+                    });
+                    parent.addView(cardView, new ViewGroup.LayoutParams((int) (wdp * d), ViewGroup.LayoutParams.WRAP_CONTENT));
+                    ui.removeCallbacks(tick);
+                    ui.postDelayed(tick, 3000);
+                }
+                cardView.measure(View.MeasureSpec.makeMeasureSpec((int) (wdp * d), View.MeasureSpec.EXACTLY),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                cardView.layout(0, 0, cardView.getMeasuredWidth(), cardView.getMeasuredHeight());
+                View wv = getBridge().getWebView();
+                cardView.setTranslationX((float) (x * d) + wv.getLeft());
+                cardView.setTranslationY((float) (y * d) + wv.getTop());
+                cardView.setVisibility(vis ? View.VISIBLE : View.INVISIBLE);
+                cardView.bringToFront();
+                if (vis) redraw();
+                JSObject r = new JSObject();
+                r.put("h", cardView.getMeasuredHeight() / d);
+                call.resolve(r);
+            } catch (Exception e) {
+                call.reject(String.valueOf(e.getMessage()));
+            }
+        });
     }
 }

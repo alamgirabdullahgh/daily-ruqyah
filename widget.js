@@ -340,6 +340,42 @@
   }
 
   window.DRWidget = { mount: mount, _compute: compute, _nafl: nafl, _times: times, _fmt: fmt, _banglaText: banglaText };
-  function auto() { mount(document.getElementById("drWidget")); }
+  // অ্যাপে: হোম-স্ক্রিনের নেটিভ উইজেটটাই এই জায়গায় বসে (আলাদা ওয়েব-কার্ড নয়), তাই দুটো হুবহু এক
+  function nativeCard(el) {
+    el.setAttribute("data-drw", "1");
+    el.style.minHeight = "130px";
+    el.style.paddingTop = "12px";
+    var last = "", h = 0, failed = 0;
+    function send(force) {
+      var r = el.getBoundingClientRect(), cs = getComputedStyle(el);
+      var pl = parseFloat(cs.paddingLeft) || 0, pr = parseFloat(cs.paddingRight) || 0;
+      var full = r.width - pl - pr, w = Math.min(full, 660), x = r.left + pl + (full - w) / 2, y = r.top + 12;
+      var top = null;
+      try { top = document.elementFromPoint(Math.max(0, Math.min(innerWidth - 1, r.left + r.width / 2)), Math.max(0, Math.min(innerHeight - 1, r.top + 6))); } catch (e) { }
+      var shown = r.width > 0 && r.bottom > 0 && r.top < innerHeight && !document.hidden && !!top && (top === el || el.contains(top));
+      var key = [shown, Math.round(x), Math.round(y), Math.round(w)].join();
+      if (key === last && !force) return;
+      last = key;
+      NW.card({ visible: shown, x: x, y: y, w: w }).then(function (o) {
+        failed = 0;
+        if (o && o.h && Math.abs(o.h + 12 - h) > 1) { h = o.h + 12; el.style.minHeight = h + "px"; el.style.height = h + "px"; }
+      }, function () { if (++failed > 3) { clearInterval(iv); NW.card({ visible: false, x: 0, y: 0, w: 300 }).catch(function () { }); el.removeAttribute("data-drw"); el.style.cssText = "padding:0 12px"; mount(el); } });
+    }
+    var iv = setInterval(function () { send(false); }, 250);
+    window.addEventListener("scroll", function () { send(false); }, true);
+    window.addEventListener("resize", function () { send(true); });
+    window.addEventListener("hashchange", function () { setTimeout(function () { send(true); }, 50); });
+    document.addEventListener("visibilitychange", function () { send(true); });
+    send(true);
+    // অবস্থান: খোলার সময় একবার (অনুমতি চায়), এরপর সামনে ফিরলে ও প্রতি ১০ মিনিটে
+    function loc(ask) { NW.locate({ ask: ask }).catch(function () { }); }
+    loc(true);
+    setInterval(function () { loc(false); }, 10 * 60 * 1000);
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) loc(false); });
+  }
+  function auto() {
+    var el = document.getElementById("drWidget");
+    if (NW && NW.card) nativeCard(el); else mount(el);
+  }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", auto); else auto();
 })();
