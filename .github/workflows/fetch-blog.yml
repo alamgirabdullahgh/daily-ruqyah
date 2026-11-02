@@ -1,6 +1,9 @@
 name: Fetch Daily Ruqyah blog (raw)
 
 on:
+  push:
+    branches: [blog-import]
+    paths: ['.github/workflows/fetch-blog.yml']
   workflow_dispatch:
     inputs:
       urls:
@@ -15,7 +18,7 @@ jobs:
   fetch:
     runs-on: ubuntu-latest
     env:
-      URLS: ${{ inputs.urls }}
+      URLS: ${{ inputs.urls || 'https://dailyruqyah.blogspot.com/p/symptom-diagnosis.html https://dailyruqyah.blogspot.com/p/home.html' }}
       BLOG: https://dailyruqyah.blogspot.com
     steps:
       - uses: actions/checkout@v4
