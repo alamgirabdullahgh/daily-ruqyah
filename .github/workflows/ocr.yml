@@ -1,0 +1,48 @@
+name: Auto OCR
+
+on:
+  push:
+    paths:
+      - 'input/**'
+  workflow_dispatch:
+    inputs:
+      pdf_url:
+        description: 'বড় PDF-এর ডাইরেক্ট ডাউনলোড লিংক (ঐচ্ছিক)'
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  ocr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install OCR tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ocrmypdf tesseract-ocr-ben tesseract-ocr-eng
+
+      - name: Download PDF from link (if given)
+        if: ${{ github.event.inputs.pdf_url != '' }}
+        run: |
+          mkdir -p input
+          curl -L "${{ github.event.inputs.pdf_url }}" -o "input/linked_$(date +%s).pdf"
+
+      - name: Run OCR
+        run: |
+          mkdir -p output
+          shopt -s nullglob
+          for pdf in input/*.pdf; do
+            name=$(basename "$pdf" .pdf)
+            [ -f "output/$name.pdf" ] && continue
+            ocrmypdf -l ben+eng --skip-text --sidecar "output/$name.txt" "$pdf" "output/$name.pdf"
+          done
+
+      - name: Commit results
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add output
+          git diff --cached --quiet || (git commit -m "Auto OCR results" && git push)
