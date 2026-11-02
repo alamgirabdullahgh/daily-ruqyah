@@ -281,20 +281,7 @@
       else h += '<div class="hd-no">(এই হাদীসের বাংলা অনুবাদ ডেটায় নেই)</div>';
       if (col.src) h += '<div class="hd-src">সূত্র: ' + esc(col.src) + "</div>";
       el.innerHTML = h;
-      var ar = el.querySelector(".hd-ar"), bn = el.querySelector(".hd-bn");
-      var long = (r[2] && r[2].length > 650) || (r[3] && r[3].length > 900);
-      var tg = null;
-      if (long) {
-        if (ar) ar.classList.add("hd-clamp");
-        if (bn) bn.classList.add("hd-clamp");
-        tg = document.createElement("button");
-        tg.type = "button"; tg.className = "hd-ex hd-tg"; tg.textContent = "▼ পুরোটা দেখুন";
-        tg.onclick = function () {
-          var open = !(ar || bn).classList.contains("hd-clamp");
-          [ar, bn].forEach(function (x) { if (x) x.classList.toggle("hd-clamp", open); });
-          tg.textContent = open ? "▼ পুরোটা দেখুন" : "▲ ছোট করুন";
-        };
-      }
+      var tg = null; // হাদীস সবসময় পুরোটা দেখানো হয় (ছোট/বড় করার বোতাম নেই)
       var cp = document.createElement("button");
       cp.type = "button"; cp.className = "hd-ex hd-tg"; cp.textContent = "📋 কপি";
       cp.onclick = async function () {
