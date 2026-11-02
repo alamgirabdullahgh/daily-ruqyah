@@ -334,3 +334,20 @@ button,input,select{font-family:inherit}
 .dr-ubtn .ph{font-size:22px;font-weight:800;letter-spacing:.01em}
 .dr-ubtn.busy .ph{opacity:.45}
 .dr-ubtn.busy .pt{justify-content:center;font-size:17px;font-weight:800}
+
+/* ১৫ লাইনের মুসহাফ-পাঠ */
+.mf-top{padding:12px 14px 4px;text-align:center;font-size:17px;color:var(--primary)}
+.mf-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px}
+.mf-nav2{padding-top:12px}
+.mf-btn{flex:none;border:1.5px solid var(--primary);background:var(--card-bg);color:var(--primary);border-radius:999px;padding:8px 18px;font:inherit;font-size:14px;cursor:pointer}
+.mf-no{font-size:13px;color:var(--text-muted)}
+.mf-jr{display:flex;gap:8px;padding:0 12px 8px}
+.mf-sel{flex:1;min-width:0;height:42px;padding:0 10px;border:1.5px solid var(--border);border-radius:12px;background:var(--card-bg);color:inherit;font:inherit;font-size:14px}
+.mf-in{width:84px;height:42px;padding:0 8px;border:1.5px solid var(--border);border-radius:12px;background:var(--card-bg);color:inherit;font:inherit;font-size:15px;text-align:center}
+.mf-page{margin:0 8px;padding:10px 8px;border:1.5px solid var(--accent);border-radius:14px;background:var(--card-bg);direction:rtl;font-family:"Amiri","Noto Naskh Arabic","Droid Arabic Naskh",serif;touch-action:pan-y}
+.mf-l{display:flex;justify-content:space-between;align-items:center;min-height:2.2em;line-height:2.2;white-space:nowrap}
+.mf-l.mf-c{justify-content:center;gap:.5em}
+.mf-t0{justify-content:center;min-height:2.1em;margin:2px 0;border:1px solid var(--accent);border-radius:8px;background:var(--primary-light)}
+.mf-sh{color:var(--primary);font-weight:700}
+.mf-n{color:var(--accent);font-size:.8em}
+.mf-short .mf-l{min-height:2.6em}
