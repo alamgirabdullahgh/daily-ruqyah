@@ -9,8 +9,11 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.TypedValue
 import android.widget.RemoteViews
+import android.widget.Toast
 import java.time.ZonedDateTime
 
 // হোম স্ক্রিনের একটি উইজেট: সময় + ইংরেজি তারিখ, আরবি + বাংলা তারিখ, পাঁচ ওয়াক্ত নামাজ
@@ -26,21 +29,7 @@ class ClockWidget : AppWidgetProvider() {
         when (intent.action) {
             ACTION_PICK -> pick(ctx, intent.getIntExtra("idx", -1))
             // "আপডেট লোকেশন": এখনই নতুন অবস্থান চায় (নেট লাগে); পেলে উইজেট নিজে নতুন হয়
-            ACTION_LOCUPD -> {
-                val pr = goAsync()
-                val done = java.util.concurrent.atomic.AtomicBoolean(false)
-                val fin = { if (done.compareAndSet(false, true)) pr.finish() }
-                try {
-                    LocationUpdater.sync(ctx); refresh(ctx)
-                    if (LocationUpdater.hasPerm(ctx)) {
-                        LocationUpdater.fresh(ctx) { refresh(ctx); fin() }
-                        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({ fin() }, 15000)
-                    } else {
-                        ctx.startActivity(Intent(ctx, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                        fin()
-                    }
-                } catch (e: Exception) { fin() }
-            }
+            ACTION_LOCUPD -> locUpdate(ctx)
             // রিবুট বা অ্যাপ আপডেটের পর অবস্থানের অনুরোধ আবার চালু করতে হয়
             Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 LocationUpdater.register(ctx); refresh(ctx)
@@ -49,6 +38,42 @@ class ClockWidget : AppWidgetProvider() {
                 refresh(ctx)
             }
         }
+    }
+
+    // "আপডেট লোকেশন": এখনই নতুন অবস্থান নেয় ও ফলাফল টোস্টে জানায়।
+    // ব্রডকাস্ট ধরে রাখার সীমা ১০ সেকেন্ড — তার বেশি হলে অ্যাপ "responding করছে না" দেখায় (আগের ১৫ সেকেন্ডের অপেক্ষায় এটাই হতো), তাই সময়সীমা ৮ সেকেন্ড।
+    private fun locUpdate(ctx: Context) {
+        val app = ctx.applicationContext
+        val ui = Handler(Looper.getMainLooper())
+        fun say(m: String) { ui.post { try { Toast.makeText(app, m, Toast.LENGTH_SHORT).show() } catch (e: Exception) { } } }
+        if (!Cfg(app).auto) { say("স্বয়ংক্রিয় অবস্থান বন্ধ আছে — উইজেট-সেটিংসে চালু করুন"); return }
+        if (!LocationUpdater.hasPerm(app)) {
+            say("আগে অবস্থানের অনুমতি দিন")
+            try { app.startActivity(Intent(app, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) } catch (e: Exception) { }
+            return
+        }
+        val pr = goAsync()
+        val timer = Handler(Looper.getMainLooper())
+        val done = java.util.concurrent.atomic.AtomicBoolean(false)
+        var cancel: (() -> Unit)? = null
+        val fin = {
+            if (done.compareAndSet(false, true)) {
+                timer.removeCallbacksAndMessages(null)
+                try { cancel?.invoke() } catch (e: Exception) { }
+                try { pr.finish() } catch (e: Exception) { }
+            }
+        }
+        val fail = "অবস্থান পাওয়া যায়নি — ফোনের লোকেশন ও নেটওয়ার্ক চালু আছে কিনা দেখুন"
+        try {
+            LocationUpdater.sync(app); refresh(app)
+            say("📍 অবস্থান খোঁজা হচ্ছে…")
+            cancel = LocationUpdater.freshFix(app) { got, moved ->
+                refresh(app)
+                say(if (!got) fail else if (moved) "✓ অবস্থান হালনাগাদ হয়েছে: " + Cfg(app).placeName() else "✓ অবস্থান ঠিকই আছে: " + Cfg(app).placeName())
+                fin()
+            }
+            timer.postDelayed({ if (!done.get()) { say(fail); fin() } }, 8000)
+        } catch (e: Exception) { fin() }
     }
 
     // ws/we = প্রতিটি ওয়াক্তের শুরু ও শেষ (আজ মধ্যরাত থেকে মিনিট; ইশার শেষ পরদিনের ফজরে, তাই ১৪৪০ ছাড়াতে পারে / ফজরের আগে ইশার শুরু ঋণাত্মক হতে পারে); nowMin = এখন (ভগ্নাংশসহ মিনিট)
@@ -200,10 +225,14 @@ class ClockWidget : AppWidgetProvider() {
                 ctx, 0, Intent(ctx, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
             rv.setOnClickPendingIntent(R.id.root, open)
-            rv.setOnClickPendingIntent(R.id.zz_upd, PendingIntent.getBroadcast(
-                ctx, 30, Intent(ctx, ClockWidget::class.java).setAction(ACTION_LOCUPD),
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            ))
+            // অনুমতি না থাকলে সরাসরি অ্যাপ খোলে (সেখানে অনুমতি চায়); নইলে অবস্থান হালনাগাদ — ব্যাকগ্রাউন্ড ব্রডকাস্ট থেকে অ্যাক্টিভিটি খোলা আটকে যেতে পারে বলে এই ভাগ
+            rv.setOnClickPendingIntent(R.id.zz_upd,
+                if (c.auto && !LocationUpdater.hasPerm(ctx)) PendingIntent.getActivity(
+                    ctx, 31, Intent(ctx, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                ) else PendingIntent.getBroadcast(
+                    ctx, 30, Intent(ctx, ClockWidget::class.java).setAction(ACTION_LOCUPD),
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                ))
             return rv
         }
 

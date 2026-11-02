@@ -27,15 +27,15 @@ object LocationUpdater {
     fun hasBg(ctx: Context): Boolean =
         Build.VERSION.SDK_INT < 29 || ctx.checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
 
-    // নতুন অবস্থান রাখে; আগেরটার থেকে ৩ কিমির বেশি সরলে (বা প্রথমবার) true
-    fun save(ctx: Context, l: Location): Boolean {
+    // নতুন অবস্থান রাখে; আগেরটার থেকে minMove মিটারের বেশি সরলে (বা প্রথমবার) true
+    fun save(ctx: Context, l: Location, minMove: Float = MOVE_M): Boolean {
         val c = Cfg(ctx)
         val oldLat = c.autoLat.toDoubleOrNull()
         val oldLng = c.autoLng.toDoubleOrNull()
         val moved = if (oldLat == null || oldLng == null) true else {
             val r = FloatArray(1)
             Location.distanceBetween(oldLat, oldLng, l.latitude, l.longitude, r)
-            r[0] > MOVE_M
+            r[0] > minMove
         }
         if (moved) {
             c.autoLat = l.latitude.toString()
@@ -81,6 +81,35 @@ object LocationUpdater {
             }, Looper.getMainLooper())
         } catch (e: Exception) {
         }
+    }
+
+    // "আপডেট লোকেশন": এখনই নতুন অবস্থান চায়। ফলাফল (পেল কিনা, ০.৩ কিমির বেশি সরেছে কিনা) cb-তে একবারই আসে —
+    // অবস্থান না পেলেও জানায় (আগে চুপচাপ ফিরে যেত, তাই চাপলে কিছু হচ্ছে না মনে হতো)। ফেরত ফাংশনটি ডাকলে অপেক্ষা বাতিল হয়।
+    @Suppress("DEPRECATION")
+    fun freshFix(ctx: Context, cb: (Boolean, Boolean) -> Unit): () -> Unit {
+        val lm = ctx.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val fired = java.util.concurrent.atomic.AtomicBoolean(false)
+        val listener = object : LocationListener {
+            override fun onLocationChanged(l: Location) {
+                if (!fired.compareAndSet(false, true)) return
+                val moved = try { save(ctx, l, 300f) } catch (e: Exception) { false }
+                cb(true, moved)
+            }
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+            override fun onProviderEnabled(provider: String) {}
+            override fun onProviderDisabled(provider: String) {}
+        }
+        val cancel: () -> Unit = { try { lm.removeUpdates(listener) } catch (e: Exception) { } }
+        try {
+            if (!hasPerm(ctx) || !lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                if (fired.compareAndSet(false, true)) cb(false, false)
+                return cancel
+            }
+            lm.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, listener, Looper.getMainLooper())
+        } catch (e: Exception) {
+            if (fired.compareAndSet(false, true)) cb(false, false)
+        }
+        return cancel
     }
 
     private fun pending(ctx: Context): PendingIntent = PendingIntent.getBroadcast(
