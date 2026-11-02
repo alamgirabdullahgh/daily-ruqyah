@@ -1,13 +1,17 @@
 name: Auto OCR
 
 on:
+  # ছোট PDF (২৫MB পর্যন্ত): input/ ফোল্ডারে আপলোড করলে চলবে
   push:
     paths:
       - 'input/**'
+  # বড় PDF (২GB পর্যন্ত): Release-এ PDF সংযুক্ত করে Publish করলে চলবে
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       pdf_url:
-        description: 'বড় PDF-এর ডাইরেক্ট ডাউনলোড লিংক (ঐচ্ছিক)'
+        description: 'ডাইরেক্ট ডাউনলোড লিংক (ঐচ্ছিক)'
         required: false
 
 permissions:
@@ -16,13 +20,24 @@ permissions:
 jobs:
   ocr:
     runs-on: ubuntu-latest
+    timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'release' && 'main' || github.ref }}
 
       - name: Install OCR tools
         run: |
           sudo apt-get update
           sudo apt-get install -y ocrmypdf tesseract-ocr-ben tesseract-ocr-eng
+
+      - name: Download PDFs from release
+        if: ${{ github.event_name == 'release' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p input
+          gh release download "${{ github.event.release.tag_name }}" --pattern '*.pdf' --dir input
 
       - name: Download PDF from link (if given)
         if: ${{ github.event.inputs.pdf_url != '' }}
@@ -36,13 +51,34 @@ jobs:
           shopt -s nullglob
           for pdf in input/*.pdf; do
             name=$(basename "$pdf" .pdf)
-            [ -f "output/$name.pdf" ] && continue
-            ocrmypdf -l ben+eng --skip-text --sidecar "output/$name.txt" "$pdf" "output/$name.pdf"
+            [ -f "output/$name.txt" ] && continue
+            ocrmypdf -l ben+eng --skip-text --sidecar "output/$name.txt" "$pdf" "work_$name.pdf"
+            # ১০০MB-এর কম হলে PDF-ও রিপোতে রাখা হবে
+            if [ "$(stat -c%s "work_$name.pdf")" -lt 95000000 ]; then
+              mv "work_$name.pdf" "output/$name.pdf"
+            fi
           done
+
+      - name: Attach results to release
+        if: ${{ github.event_name == 'release' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          shopt -s nullglob
+          for f in work_*.pdf; do
+            n="${f#work_}"
+            mv "$f" "ocr_$n"
+            gh release upload "${{ github.event.release.tag_name }}" "ocr_$n" --clobber
+          done
+          for f in output/*.txt; do
+            gh release upload "${{ github.event.release.tag_name }}" "$f" --clobber
+          done
+          # বড় PDF যেগুলো output/-এ নেই সেগুলোও উপরে আপলোড হয়েছে
 
       - name: Commit results
         run: |
+          rm -f work_*.pdf
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add output
-          git diff --cached --quiet || (git commit -m "Auto OCR results" && git push)
+          git diff --cached --quiet || (git commit -m "Auto OCR results" && git pull --rebase -q origin main && git push)
