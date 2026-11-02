@@ -191,7 +191,7 @@
     ".drw-en{text-align:right;line-height:1.25}" +
     ".drw-en b{display:block;font-size:15px;font-weight:800}" +
     ".drw-lr{display:flex;align-items:center;justify-content:flex-end;gap:6px}" +
-    ".drw-upd{font-size:9px;line-height:1.15;text-align:center;color:#1B7A5A;background:none;border:1px solid currentColor;border-radius:8px;padding:2px 5px;cursor:pointer;font-family:inherit}" +
+    ".drw-upd{font-size:10px;line-height:1.1;text-align:center;color:#3B4A55;background:none;border:0;padding:0;margin-left:2px;cursor:pointer;font-family:inherit}" +
     ".drw-loc{font-size:12px;color:#3B4A55;cursor:pointer;background:none;border:0;padding:0;font-family:inherit}" +
     ".drw-d{margin-top:2px;font-size:12px;color:#3B4A55;white-space:nowrap}" +
     ".drw-p{display:flex;margin:5px -4px 0}" +
@@ -203,7 +203,7 @@
     ".drw-b span{white-space:nowrap}" +
     ".drw-bar{flex:1;height:4px;border-radius:2px;background:#C9D3DA;overflow:hidden}" +
     ".drw-bar u{display:block;height:100%;background:#1E8E62;border-radius:2px;text-decoration:none}" +
-    "@media (prefers-color-scheme:dark){.drw{background:#16211c;color:#e8f0ea}.drw-sun,.drw-time span,.drw-loc,.drw-d,.drw-c i,.drw-b{color:#b3c9bb}.drw-c.on{background:#1f4a39}.drw-bar{background:#2a4034}}";
+    "@media (prefers-color-scheme:dark){.drw{background:#16211c;color:#e8f0ea}.drw-sun,.drw-time span,.drw-loc,.drw-upd,.drw-d,.drw-c i,.drw-b{color:#b3c9bb}.drw-c.on{background:#1f4a39}.drw-bar{background:#2a4034}}";
 
   var SUNRISE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2v2.6M5 5.6l1.8 1.8M19 5.6l-1.8 1.8M2.4 11.5H5M19 11.5h2.6" stroke="#FFB300" stroke-width="1.7" stroke-linecap="round" fill="none"/><circle cx="12" cy="13" r="5.5" fill="#FFC21A"/><path d="M2 15.5q2.5-2.2 5 0t5 0t5 0t5 0V22H2z" fill="#1E88E5"/><path d="M2 15.5q2.5-2.2 5 0t5 0t5 0t5 0" stroke="#8FD0FF" stroke-width="1" fill="none"/><path d="M9 18.3h6M10.5 20.5h3" stroke="#FFD97A" stroke-width="1.3" stroke-linecap="round"/></svg>';
   var SUNSET = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2v2.6M5 5.6l1.8 1.8M19 5.6l-1.8 1.8M2.4 11.5H5M19 11.5h2.6" stroke="#FF7043" stroke-width="1.7" stroke-linecap="round" fill="none"/><circle cx="12" cy="13" r="5.5" fill="#FF6D3A"/><path d="M2 15.5q2.5-2.2 5 0t5 0t5 0t5 0V22H2z" fill="#1E88E5"/><path d="M2 15.5q2.5-2.2 5 0t5 0t5 0t5 0" stroke="#8FD0FF" stroke-width="1" fill="none"/><path d="M9 18.3h6M10.5 20.5h3" stroke="#FFB59A" stroke-width="1.3" stroke-linecap="round"/></svg>';
