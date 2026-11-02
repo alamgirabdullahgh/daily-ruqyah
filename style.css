@@ -332,5 +332,5 @@ button,input,select{font-family:inherit}
 
 /* আপডেট বোতাম: "Update" লেখা বড় ও পেছনে স্পষ্ট; পার্সেন্ট/ইনস্টল ডানে আলাদা */
 .dr-ubtn .ph{font-size:22px;font-weight:800;letter-spacing:.01em}
-.dr-ubtn.busy .ph{opacity:.55;justify-content:flex-start;padding-left:18px}
-.dr-ubtn.busy .pt{justify-content:flex-end;padding-right:16px;font-size:16px;font-weight:800}
+.dr-ubtn.busy .ph{opacity:.45}
+.dr-ubtn.busy .pt{justify-content:center;font-size:17px;font-weight:800}
