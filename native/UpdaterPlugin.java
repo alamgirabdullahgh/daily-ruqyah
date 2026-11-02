@@ -152,8 +152,9 @@ public class UpdaterPlugin extends Plugin {
                     }
                     s.fsync(out);
                 }
+                BgUpdater.sp(c).edit().putBoolean("reopen", true).apply();
                 PendingIntent pi = PendingIntent.getBroadcast(
-                        c, id, new Intent(c, UpdateResultReceiver.class),
+                        c, id, new Intent(c, UpdateResultReceiver.class).putExtra("silent", Build.VERSION.SDK_INT >= 31),
                         PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
                 s.commit(pi.getIntentSender());
                 call.resolve();

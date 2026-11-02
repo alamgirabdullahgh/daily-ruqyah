@@ -57,6 +57,7 @@ jobs:
           m=m.replace('    <application',perms+'    <application',1)
           comp='''    <receiver android:name=".UpdateResultReceiver" android:exported="false" />
               <receiver android:name=".AlarmReceiver" android:exported="false" />
+              <receiver android:name=".BgUpdater$UpdateTickReceiver" android:exported="false" />
               <receiver android:name=".AlarmBootReceiver" android:exported="true">
                   <intent-filter>
                       <action android:name="android.intent.action.BOOT_COMPLETED" />

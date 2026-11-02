@@ -9,5 +9,7 @@ public class AlarmBootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context c, Intent i) {
         AlarmStore.scheduleAll(c);
+        if (Intent.ACTION_MY_PACKAGE_REPLACED.equals(i.getAction())) BgUpdater.afterUpdate(c);
+        BgUpdater.schedule(c);
     }
 }
