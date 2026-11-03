@@ -19,8 +19,9 @@
 
         <TextView
             android:id="@+id/zz_sunrise"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:drawableStart="@drawable/ic_sunrise"
             android:drawablePadding="5dp"
             android:gravity="center_vertical|start"
@@ -29,31 +30,6 @@
             android:text="সূর্যোদয় ৫:৪৩"
             android:textColor="@color/w_text2"
             android:textSize="11sp" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/zz_pin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:maxLines="1"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
-            android:text="📲 হোম স্ক্রিনে বসান"
-            android:textColor="@color/w_bar_fg"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/zz_sunset"

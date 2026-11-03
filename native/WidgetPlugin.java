@@ -152,13 +152,6 @@ public class WidgetPlugin extends Plugin {
                             getContext().startActivity(i);
                         } catch (Exception e) { }
                     });
-                    View pin = cardView.findViewById(R.id.zz_pin);
-                    if (pin != null) pin.setOnClickListener(v -> {
-                        try {
-                            AppWidgetManager am = AppWidgetManager.getInstance(getContext());
-                            if (am.isRequestPinAppWidgetSupported()) am.requestPinAppWidget(new ComponentName(getContext(), ClockWidget.class), null, null);
-                        } catch (Exception e) { }
-                    });
                     parent.addView(cardView, new ViewGroup.LayoutParams((int) (wdp * d), ViewGroup.LayoutParams.WRAP_CONTENT));
                     ui.removeCallbacks(tick);
                     ui.postDelayed(tick, 3000);

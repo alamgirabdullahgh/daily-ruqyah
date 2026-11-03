@@ -285,9 +285,7 @@ class ClockWidget : AppWidgetProvider() {
         @JvmStatic
         fun viewFor(ctx: Context, widthDp: Int): RemoteViews {
             LocationUpdater.sync(ctx)
-            val rv = build(ctx, compute(ctx), widthDp)
-            rv.setViewVisibility(R.id.zz_pin, android.view.View.VISIBLE) // শুধু অ্যাপের ভেতরে; হোম স্ক্রিনের উইজেটে নয়
-            return rv
+            return build(ctx, compute(ctx), widthDp)
         }
 
         fun refresh(ctx: Context) {
