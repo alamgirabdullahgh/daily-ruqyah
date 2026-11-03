@@ -12,13 +12,13 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Daily Ruqyah">
-<link rel="stylesheet" href="style.css?v=17">
+<link rel="stylesheet" href="style.css?v=18">
 </head>
 <body>
 <header class="dr-bar">
  <button class="dr-menu" id="drMenu" type="button" aria-label="মেনু খুলুন" aria-controls="drSide" aria-expanded="false"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
  <div class="dr-brand"><img src="icons/icon-192.png" alt=""><span>Daily Ruqyah</span></div>
- <span class="dr-bar-sp"></span>
+ <a class="dr-menu dr-sbtn" href="#search" data-nav="search" aria-label="সার্চ"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.2 15.2L20 20" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></a>
 </header>
 <div id="drWidget" style="padding:0 12px"></div>
 <div class="dr-scrim" id="drScrim"></div>
@@ -28,11 +28,6 @@
   <div><b>Daily Ruqyah</b><small>কুরআন · রুকিয়া · আরোগ্য</small></div>
   <button class="dr-x" id="drClose" type="button" aria-label="বন্ধ করুন">✕</button>
  </div>
- <div class="dr-side-sec">হোম</div>
- <a class="dr-nav" href="#home" data-nav="home"><i>🩺</i><span>হোম · রোগ নির্ণয়</span></a>
- <div class="dr-side-sec">আয়াত খুঁজুন</div>
- <a class="dr-nav" href="#search" data-nav="search"><i>🔍</i><span>সার্চ</span></a>
- <a class="dr-nav" href="#topics" data-nav="topics"><i>📚</i><span>বিষয়ভিত্তিক আয়াত</span></a>
  <div class="dr-side-sec">সম্পূর্ণ কুরআন পড়ুন</div>
  <a class="dr-nav" href="#read/ar" data-nav="read/ar"><i class="ar">ع</i><span>কুরআন আরবি (১৫ লাইন)</span></a>
  <a class="dr-nav" href="#read/arbn" data-nav="read/arbn"><i class="ar">عب</i><span>আরবি ও বাংলা অনুবাদসহ</span></a>
@@ -40,6 +35,7 @@
  <a class="dr-nav" href="#alarm" data-nav="alarm"><i>⏰</i><span>রুকইয়াহ অডিও অ্যালার্ম</span></a>
 <div class="dr-vbar"><b id="drVer">Daily Ruqyah</b><button class="dr-share" id="drShare" type="button">Share</button></div>
 </nav>
+<nav class="dr-bnav" aria-label="নেভিগেশন"><a class="dr-bn" href="#topics" data-nav="topics"><i>📚</i><span>বিষয়ভিত্তিক আয়াত</span></a><a class="dr-bn" href="#home" data-nav="home"><i>🏠</i><span>হোম</span></a><a class="dr-bn" href="#diag" data-nav="diag"><i>🩺</i><span>ডায়াগনোসিস</span></a></nav>
 <div class="dr-ufl" id="drUfl" hidden><button class="dr-ubtn" id="drUbtn" type="button"><span class="ph" id="drUph">Update</span><span class="pt" id="drUpt"></span></button></div>
 <main class="dr-main">
 <div class="rs-box" id="drHome" hidden></div>
@@ -56,7 +52,7 @@
 </main>
 <script src="widget.js?v=10"></script>
 <script src="mushaf.js?v=1"></script>
-<script src="app.js?v=12"></script>
+<script src="app.js?v=13"></script>
 <script src="alarm.js?v=3"></script>
 <script src="boot.js?v=5"></script>
 <script src="data/hadith-norm.js?v=2"></script>

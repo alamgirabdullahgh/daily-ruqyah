@@ -585,10 +585,10 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   window.__drHome=()=>{if(built)return;built=true;const H=$("drHome");if(!H)return;
    H.innerHTML="";const lg=k=>lsGet(k,"");
    H.appendChild(els("div","font-weight:800;font-size:18px;color:var(--primary);margin:4px 2px 10px","🩺 রোগ নির্ণয় (ডায়াগনোসিস)"));
-   const card=els("div","padding:12px;border:1px solid var(--border-light);border-radius:16px;background:var(--card-bg);margin:0 0 12px");
+   const card=els("div","display:flex;gap:8px;padding:10px;border:1px solid var(--border-light);border-radius:16px;background:var(--card-bg);margin:0 0 12px");
    
    const nm=document.createElement("input"),ph=document.createElement("input");
-   [[nm,"রোগীর নাম","text","hmName","drPtN"],[ph,"রোগীর WhatsApp নম্বর (যেমন 017XXXXXXXX)","tel","hmPh","drPtP"]].forEach(([i,pl,t,id,key])=>{i.className="dr-find";i.type=t;i.id=id;i.placeholder=pl;i.autocomplete="off";i.value=lg(key);i.oninput=()=>lsSet(key,i.value);if(t==="tel")i.inputMode="tel";card.appendChild(i)});
+   [[nm,"Patient name","text","hmName","drPtN"],[ph,"WhatsApp","tel","hmPh","drPtP"]].forEach(([i,pl,t,id,key])=>{i.className="dr-find";i.style.cssText="flex:1;min-width:0;width:auto;margin:0;";i.type=t;i.id=id;i.placeholder=pl;i.autocomplete="off";i.value=lg(key);i.oninput=()=>lsSet(key,i.value);if(t==="tel")i.inputMode="tel";card.appendChild(i)});
    H.appendChild(card);
    const info=el("div"),out=el("div");H.append(info,out);
    const bar=els("div","margin:18px 0 6px;padding:12px;border:1px solid var(--border-light);border-radius:16px;background:var(--card-bg);text-align:center");
@@ -704,7 +704,7 @@ function drShell(){
  const open=on=>{side.classList.toggle("on",on);scrim.classList.toggle("on",on);document.body.classList.toggle("dr-lock",on);side.setAttribute("aria-hidden",on?"false":"true");menu.setAttribute("aria-expanded",on?"true":"false")};
  menu.onclick=()=>open(true);$("drClose").onclick=scrim.onclick=()=>open(false);
  document.addEventListener("keydown",e=>{if(e.key==="Escape")open(false)});
- const navs=[...document.querySelectorAll(".dr-nav")];
+ const navs=[...document.querySelectorAll(".dr-nav,.dr-bn,.dr-sbtn")];
  let prev="";
  let lastH="home";
  const route=()=>{open(false);const h=(location.hash||"#home").replace(/^#/,""),p=h.split("/");
@@ -712,11 +712,12 @@ function drShell(){
   const al=$("drAlarm");if(al)al.hidden=true;const hm=$("drHome");if(hm)hm.hidden=true;
   if(p[0]==="timewidget"){window.DRALARM&&DRALARM.openWidget();location.hash="#"+lastH;return}
   let key="search";
-  if(p[0]==="home"&&hm){key="home";box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.scrollTo(0,0)}
+  if(p[0]==="diag"&&hm){key="diag";box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.scrollTo(0,0)}
+  else if(p[0]==="home"){key="home";box.hidden=true;rd.hidden=true;window.scrollTo(0,0)}
   else if(p[0]==="alarm"&&al){key="alarm";box.hidden=true;rd.hidden=true;al.hidden=false;window.DRALARM&&DRALARM.show();window.scrollTo(0,0)}
   else if(p[0]==="read"&&RMODES.some(m=>m[0]===p[1])){key="read/"+p[1];const s=+p[2]||0;box.hidden=true;rd.hidden=false;if(p[1]==="ar"&&window.DRMUSHAF){GEN++;DRMUSHAF.open(rd,s>=1&&s<=114?s:0)}else renderReader(p[1],s>=1&&s<=114?s:0);window.scrollTo(0,0)}
   else{rd.hidden=true;box.hidden=false;RG++;if(p[0]==="topics"){key="topics";SHOWT&&SHOWT(true);window.scrollTo(0,0)}else if(prev.startsWith("read/")||prev===""||prev==="home"||prev==="alarm")window.scrollTo(0,0)}
-  prev=key;lastH=h;navs.forEach(a=>a.classList.toggle("on",a.dataset.nav===key))};
+  prev=key;lastH=h;{const wd=$("drWidget");if(wd)wd.style.display=key==="home"?"":"none"}navs.forEach(a=>a.classList.toggle("on",a.dataset.nav===key))};
  navs.forEach(a=>a.addEventListener("click",e=>{e.preventDefault();const h=a.getAttribute("href");if(location.hash===h)route();else location.hash=h;open(false)}));
  addEventListener("hashchange",route);
  route()}
