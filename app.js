@@ -590,6 +590,15 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
    const nm=document.createElement("input"),ph=document.createElement("input");
    [[nm,"Patient name","text","hmName","drPtN"],[ph,"WhatsApp","tel","hmPh","drPtP"]].forEach(([i,pl,t,id,key])=>{i.className="dr-find";i.style.cssText="flex:1;min-width:0;width:auto;margin:0;";i.type=t;i.id=id;i.placeholder=pl;i.autocomplete="off";i.value=lg(key);i.oninput=()=>lsSet(key,i.value);if(t==="tel")i.inputMode="tel";card.appendChild(i)});
    H.appendChild(card);
+   /* সমস্যা কখন বাড়ে — সময়ের ইঙ্গিত; প্রতিটি সময়ের সাথে কুরআনে ওই সময়ের উল্লেখ থাকা আয়াত (তিলাওয়াত/যিকরের সময়সূচির জন্য) */
+   const TM=[["ভোর/ফজর",[[17,78],[11,114],[50,39]]],["সকাল",[[33,42],[40,55],[7,205],[76,25]]],["দুপুর",[[30,18],[2,238]]],["বিকাল/আসর",[[2,238],[20,130],[50,39]]],["সন্ধ্যা/মাগরিব",[[30,17],[33,42],[40,55],[11,114]]],["রাত",[[76,26],[17,79],[11,114]]],["গভীর/শেষ রাত",[[73,6],[51,17],[3,17],[17,79]]]];
+   const TSEL=new Set(),tc=els("div","padding:10px;border:1px solid var(--border-light);border-radius:16px;background:var(--card-bg);margin:0 0 12px"),tl=els("div","font-size:13px;color:var(--text-muted);margin-top:8px;line-height:1.7");
+   tc.appendChild(els("div","font-weight:800;color:var(--primary);margin-bottom:8px","⏱ সমস্যা কখন বাড়ে? (একাধিক বাছা যায়)"));
+   const tw=els("div","display:flex;flex-wrap:wrap;gap:6px");
+   const refTxt=r=>"সূরা "+SBN[r[0]-1]+" "+bn2(r[0])+":"+bn2(r[1]);
+   const upT=()=>{const l=[];TM.forEach(([n,r])=>{if(TSEL.has(n))l.push(n+" → "+r.map(refTxt).join("، "))});tl.textContent=l.length?"এই সময়গুলোতে কুরআনে সময়ের উল্লেখ থাকা আয়াত (এই সময়ে তিলাওয়াত/যিকর): "+l.join(" | "):""};
+   TM.forEach(([n])=>{const b=el("button","hm-t",n);b.type="button";b.style.cssText="padding:6px 12px;border-radius:999px;border:1.5px solid var(--border);background:var(--card-bg);color:var(--text-sub);font:inherit;font-size:13px;cursor:pointer";b.onclick=()=>{if(TSEL.has(n)){TSEL.delete(n);b.style.cssText+=";background:var(--card-bg);color:var(--text-sub);border-color:var(--border)"}else{TSEL.add(n);b.style.cssText+=";background:var(--primary);color:#fff;border-color:var(--primary)"}upT()};tw.appendChild(b)});
+   tc.append(tw,tl);H.appendChild(tc);
    const info=el("div"),out=el("div");H.append(info,out);
    const bar=els("div","margin:18px 0 6px;padding:12px;border:1px solid var(--border-light);border-radius:16px;background:var(--card-bg);text-align:center");
    const cnt=els("div","font-size:13px;color:var(--text-muted);margin-bottom:8px","কোনো আয়াত বাছা হয়নি");
@@ -598,10 +607,11 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
     const name=nm.value.trim();let n=ph.value.replace(/[০-৯]/g,d=>"০১২৩৪৫৬৭৮৯".indexOf(d)).replace(/\D/g,"");
     if(!n){alert("রোগীর WhatsApp নম্বর লিখুন");ph.focus();return}
     if(n.startsWith("00"))n=n.slice(2);else if(n.startsWith("0"))n="88"+n;else if(n.length===10)n="880"+n;
-    if(!SEL.size){alert("কমপক্ষে একটি আয়াতের পাশে টিক দিন");return}
+    if(!SEL.size&&!TSEL.size){alert("কমপক্ষে একটি আয়াতের পাশে টিক দিন বা সমস্যা বাড়ার সময় বাছুন");return}
     const by=new Map();SEL.forEach(x=>{const k=(x.sec?x.sec+" — ":"")+x.name;if(!by.has(k))by.set(k,[]);by.get(k).push("সূরা "+x.sn+" "+bn2(x.s)+":"+bn2(x.a))});
-    let m="আসসালামু আলাইকুম"+(name?", "+name:"")+"।\nরুকইয়াহ রোগ নির্ণয়ে আয়াত শোনার সময় আপনার রিয়্যাকশন হয়েছে যেগুলোতে:\n";
+    let m="আসসালামু আলাইকুম"+(name?", "+name:"")+"।\n"+(SEL.size?"রুকইয়াহ রোগ নির্ণয়ে আয়াত শোনার সময় আপনার রিয়্যাকশন হয়েছে যেগুলোতে:\n":"");
     by.forEach((l,k)=>{m+="\n• "+k+"\n   "+l.join("، ")});
+    if(TSEL.size){m+="\n\n⏱ সমস্যা বাড়ে: "+[...TSEL].join(", ");TM.forEach(([n,r])=>{if(TSEL.has(n))m+="\n   "+n+" — আয়াত: "+r.map(refTxt).join("، ")});m+="\n(এটি সমস্যা-বাড়ার সময়ের ইঙ্গিত; নিশ্চিত রোগনির্ণয় নয়)"}
     m+="\n\n— Daily Ruqyah";
     const a=document.createElement("a");a.href="https://wa.me/"+n+"?text="+encodeURIComponent(m);a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove()});
    send.style.margin="0";bar.append(cnt,send);H.appendChild(bar);
