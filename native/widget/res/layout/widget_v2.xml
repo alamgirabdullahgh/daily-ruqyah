@@ -32,9 +32,25 @@
             android:textSize="11sp" />
 
         <TextView
-            android:id="@+id/zz_sunset"
+            android:id="@+id/zz_pin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            android:text="📲 হোম স্ক্রিনে বসান"
+            android:textColor="@color/w_bar_fg"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/zz_sunset"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:drawableStart="@drawable/ic_sunset"
             android:drawablePadding="5dp"
             android:gravity="center_vertical|end"
