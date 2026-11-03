@@ -29,6 +29,8 @@
   <div><b>Daily Ruqyah</b><small>কুরআন · রুকিয়া · আরোগ্য</small></div>
   <button class="dr-x" id="drClose" type="button" aria-label="বন্ধ করুন">✕</button>
  </div>
+ <div class="dr-side-sec">হোম</div>
+ <a class="dr-nav" href="#home" data-nav="home"><i>🩺</i><span>হোম · রোগ নির্ণয়</span></a>
  <div class="dr-side-sec">আয়াত খুঁজুন</div>
  <a class="dr-nav" href="#search" data-nav="search"><i>🔍</i><span>সার্চ</span></a>
  <a class="dr-nav" href="#topics" data-nav="topics"><i>📚</i><span>বিষয়ভিত্তিক আয়াত</span></a>
@@ -41,7 +43,8 @@
 </nav>
 <div class="dr-ufl" id="drUfl" hidden><button class="dr-ubtn" id="drUbtn" type="button"><span class="ph" id="drUph">Update</span><span class="pt" id="drUpt"></span></button></div>
 <main class="dr-main">
-<div class="rs-box" id="rsBox">
+<div class="rs-box" id="drHome" hidden></div>
+<div class="rs-box" id="rsBox" hidden>
  <div class="dr-inst" id="drInst"></div>
  <div class="rs-bar"><button class="rs-ib" id="rsKb" type="button" title="আরবি কীবোর্ড">⌨</button><input id="rsQ" type="text" dir="auto" enterkeyhint="search" style="text-align:center" placeholder="সার্চ করুন" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"><button class="rs-ib" id="rsX" type="button" title="মুছুন">✕</button><button class="rs-ib" id="rsGo" type="button" title="সার্চ">🔍</button></div>
  <button class="rs-tp" id="rsTp" type="button"><span>📚 বিষয়ভিত্তিক আয়াত</span><i>›</i></button>
@@ -54,7 +57,7 @@
 </main>
 <script src="widget.js?v=10"></script>
 <script src="mushaf.js?v=1"></script>
-<script src="app.js?v=10"></script>
+<script src="app.js?v=11"></script>
 <script src="alarm.js?v=3"></script>
 <script src="boot.js?v=5"></script>
 <script src="data/hadith-norm.js?v=2"></script>
