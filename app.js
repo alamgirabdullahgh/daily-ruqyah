@@ -709,11 +709,11 @@ function drShell(){
  let lastH="home";
  const route=()=>{open(false);const h=(location.hash||"#home").replace(/^#/,""),p=h.split("/");
   document.querySelectorAll("audio").forEach(a=>{try{a.pause()}catch(e){}});
-  const al=$("drAlarm");if(al)al.hidden=true;const hm=$("drHome");if(hm)hm.hidden=true;
+  const al=$("drAlarm");if(al)al.hidden=true;const hm=$("drHome");if(hm)hm.hidden=true;const sy=$("drSym");if(sy)sy.hidden=true;
   if(p[0]==="timewidget"){window.DRALARM&&DRALARM.openWidget();location.hash="#"+lastH;return}
   let key="search";
-  if(p[0]==="diag"&&hm){key="diag";box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.scrollTo(0,0)}
-  else if(p[0]==="home"){key="home";box.hidden=true;rd.hidden=true;window.scrollTo(0,0)}
+  if(p[0]==="home"&&hm){key="home";box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.scrollTo(0,0)}
+  else if(p[0]==="diag"&&sy){key="diag";box.hidden=true;rd.hidden=true;sy.hidden=false;if(window.__drSymInit&&!window.__drSymDone){window.__drSymDone=1;window.__drSymInit()}window.scrollTo(0,0)}
   else if(p[0]==="alarm"&&al){key="alarm";box.hidden=true;rd.hidden=true;al.hidden=false;window.DRALARM&&DRALARM.show();window.scrollTo(0,0)}
   else if(p[0]==="read"&&RMODES.some(m=>m[0]===p[1])){key="read/"+p[1];const s=+p[2]||0;box.hidden=true;rd.hidden=false;if(p[1]==="ar"&&window.DRMUSHAF){GEN++;DRMUSHAF.open(rd,s>=1&&s<=114?s:0)}else renderReader(p[1],s>=1&&s<=114?s:0);window.scrollTo(0,0)}
   else{rd.hidden=true;box.hidden=false;RG++;if(p[0]==="topics"){key="topics";SHOWT&&SHOWT(true);window.scrollTo(0,0)}else if(prev.startsWith("read/")||prev===""||prev==="home"||prev==="alarm")window.scrollTo(0,0)}
