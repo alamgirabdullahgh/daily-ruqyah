@@ -104,7 +104,11 @@ const OFFC="dr-aud-alafasy",OFFID="ar.alafasy",OFFN=6236,OFFU=n=>"https://cdn.is
 const offOn=()=>recId()===OFFID;
 const offSrc=(s,a)=>{const p3=n=>String(n).padStart(3,"0"),n=gNum(s,a);return["https://everyayah.com/data/Alafasy_64kbps/"+p3(s)+p3(a)+".mp3",OFFU(n),"https://everyayah.com/data/Alafasy_128kbps/"+p3(s)+p3(a)+".mp3","https://cdn.islamic.network/quran/audio/128/ar.alafasy/"+n+".mp3"]};
 const offRev=n=>{let s=1;for(const c of AYN){if(n<=c)return[s,n];n-=c;s++}return[114,1]};
-async function offGet(s,a){try{const c=await caches.open(OFFC),r=await c.match(OFFU(gNum(s,a)));return r?await r.arrayBuffer():null}catch(e){return null}}
+const NAO=()=>{try{return window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.OfflineAudio||null}catch(e){return null}};
+let NADIR="";
+async function nativeGet(s,a){const p=NAO();if(!p)return null;try{if(!NADIR)NADIR=(await p.status()).dir||"";if(!NADIR)return null;
+ const r=await fetch(window.Capacitor.convertFileSrc("file://"+NADIR+"/"+gNum(s,a)+".mp3"));if(!r.ok)return null;const b=await r.arrayBuffer();return b.byteLength>1024?b:null}catch(e){return null}}
+async function offGet(s,a){const nb=await nativeGet(s,a);if(nb)return nb;try{const c=await caches.open(OFFC),r=await c.match(OFFU(gNum(s,a)));return r?await r.arrayBuffer():null}catch(e){return null}}
 async function offPut(n,buf){const c=await caches.open(OFFC);await c.put(OFFU(n),new Response(buf,{headers:{"Content-Type":"audio/mpeg"}}))}
 async function offCount(){try{return(await(await caches.open(OFFC)).keys()).length}catch(e){return 0}}
 let OFFRUN=false,OFFTRY=0;
@@ -126,8 +130,22 @@ async function offDownload(){
  if(done>=OFFN){OFFSAY("✅ অফলাইন অডিও সম্পূর্ণ (সব "+bn2(OFFN)+"টি আয়াত)"+(hi?" · ১২৮kbps: "+bn2(hi):""),100);return}
  OFFSAY("📥 অফলাইন অডিও "+bn2(done)+"/"+bn2(OFFN)+" — নেট ঠিক হলে নিজে আবার নামবে"+(lastErr?" ("+lastErr+")":""),done*100/OFFN);
  if(++OFFTRY<=20)setTimeout(offDownload,60000)}
+/* অ্যান্ড্রয়েড অ্যাপে: নামানো নেটিভ ফোরগ্রাউন্ড সার্ভিসে (স্ক্রিন বন্ধ/অন্য অ্যাপে গেলেও চলে); এখানে শুধু অগ্রগতি দেখানো */
+let NATIVE_ON=false;
+async function offNative(p){
+ if(NATIVE_ON)return;NATIVE_ON=true;let lastStart=0;
+ const kick=async()=>{lastStart=Date.now();try{await p.start()}catch(e){}};
+ await kick();
+ const poll=async()=>{
+  try{const r=await p.status();NADIR=r.dir||NADIR;const mb=Math.round(r.bytes/1048576);
+   if(r.done>=r.total){OFFSAY("✅ অফলাইন অডিও সম্পূর্ণ (সব "+bn2(r.total)+"টি আয়াত · "+bn2(mb)+" MB)",100);try{caches.delete(OFFC)}catch(e){}return}
+   OFFSAY("📥 অফলাইন অডিও "+bn2(r.done)+"/"+bn2(r.total)+" · "+bn2(mb)+" MB"+(r.running?" — ব্যাকগ্রাউন্ডেও নামছে":" — থেমে আছে, নেট এলে নিজে চলবে")+(!r.running&&r.last?" ("+String(r.last).slice(0,30)+")":""),r.done*100/r.total);
+   if(!r.running&&Date.now()-lastStart>30000)await kick()}catch(e){}
+  setTimeout(poll,2500)};
+ poll()}
 async function offAuto(){
- try{if(OFFRUN||!window.caches)return;
+ try{const np=NAO();if(np){offNative(np);return}
+  if(OFFRUN||!window.caches)return;
   if(lsGet("drOff64","")!=="1"){try{await caches.delete(OFFC)}catch(e){}lsSet("drOff64","1")} // আগের (১২৮kbps) ফাইল মুছে ৬৪kbps-এ নতুন করে
   const n=await offCount();if(n>=OFFN){OFFSAY("✅ অফলাইন অডিও সম্পূর্ণ (সব "+bn2(OFFN)+"টি আয়াত)",100);return}
   OFFSAY("📥 অফলাইন অডিও শুরু হচ্ছে…",n*100/OFFN);offDownload()}catch(e){}}

@@ -51,7 +51,7 @@ jobs:
           open('android/app/build.gradle','w').write(g)
           m=open('android/app/src/main/AndroidManifest.xml').read()
           m=m.replace('<application','<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />\n    <uses-permission android:name="android.permission.UPDATE_PACKAGES_WITHOUT_USER_ACTION" />\n    <application',1)
-          perms=''.join('    <uses-permission android:name="android.permission.%s" />\n'%x for x in ['ACCESS_BACKGROUND_LOCATION','RECEIVE_BOOT_COMPLETED','WAKE_LOCK','FOREGROUND_SERVICE','FOREGROUND_SERVICE_MEDIA_PLAYBACK','POST_NOTIFICATIONS','USE_EXACT_ALARM'])
+          perms=''.join('    <uses-permission android:name="android.permission.%s" />\n'%x for x in ['ACCESS_BACKGROUND_LOCATION','RECEIVE_BOOT_COMPLETED','WAKE_LOCK','FOREGROUND_SERVICE','FOREGROUND_SERVICE_MEDIA_PLAYBACK','FOREGROUND_SERVICE_DATA_SYNC','POST_NOTIFICATIONS','USE_EXACT_ALARM'])
           perms+='    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />\n'
           perms+='    <uses-feature android:name="android.hardware.location" android:required="false" />\n'
           m=m.replace('    <application',perms+'    <application',1)
@@ -66,6 +66,7 @@ jobs:
                       <action android:name="android.intent.action.TIMEZONE_CHANGED" />
                   </intent-filter>
               </receiver>
+              <service android:name=".OfflineAudioService" android:exported="false" android:foregroundServiceType="dataSync" />
               <service android:name=".RuqyahAudioService" android:exported="false" android:foregroundServiceType="mediaPlayback" />
               <activity android:name=".WidgetSettingsActivity" android:exported="false" android:label="@string/tw_widget_name" android:theme="@android:style/Theme.Material.NoActionBar" />
               <receiver android:name=".ClockWidget" android:exported="true" android:label="@string/tw_widget_name">

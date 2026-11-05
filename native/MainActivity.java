@@ -25,6 +25,7 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(UpdaterPlugin.class);
         registerPlugin(AudioAlarmPlugin.class);
         registerPlugin(WidgetPlugin.class);
+        registerPlugin(OfflineAudioPlugin.class);
         super.onCreate(savedInstanceState);
         try {
             WebView w = getBridge().getWebView();
