@@ -102,6 +102,8 @@ function selBox(s,a){const k=s+":"+a,l=els("label","display:inline-flex;align-it
 /* ───── মিশারি আলাফাসির অডিও অফলাইনে: একবার নামালে ফোনের ভেতরে (Cache) থাকে; মার্জ/শোনা আগে সেখান থেকে, না থাকলে নেট থেকে ───── */
 const OFFC="dr-aud-alafasy",OFFID="ar.alafasy",OFFN=6236,OFFU=n=>"https://cdn.islamic.network/quran/audio/64/ar.alafasy/"+n+".mp3";
 const offOn=()=>recId()===OFFID;
+const offSrc=(s,a)=>{const p3=n=>String(n).padStart(3,"0"),n=gNum(s,a);return["https://everyayah.com/data/Alafasy_64kbps/"+p3(s)+p3(a)+".mp3","https://everyayah.com/data/Alafasy_128kbps/"+p3(s)+p3(a)+".mp3",OFFU(n),"https://cdn.islamic.network/quran/audio/128/ar.alafasy/"+n+".mp3"]};
+const offRev=n=>{let s=1;for(const c of AYN){if(n<=c)return[s,n];n-=c;s++}return[114,1]};
 async function offGet(s,a){try{const c=await caches.open(OFFC),r=await c.match(OFFU(gNum(s,a)));return r?await r.arrayBuffer():null}catch(e){return null}}
 async function offPut(n,buf){const c=await caches.open(OFFC);await c.put(OFFU(n),new Response(buf,{headers:{"Content-Type":"audio/mpeg"}}))}
 async function offCount(){try{return(await(await caches.open(OFFC)).keys()).length}catch(e){return 0}}
@@ -116,10 +118,10 @@ async function offDownload(btn,auto){
  OFFRUN=true;OFFSTOP=false;try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
  let c;try{c=await caches.open(OFFC)}catch(e){OFFRUN=false;OFFSAY("এই ফোনে অফলাইন সংরক্ষণ চালু করা যায়নি");return}
  const have=new Set((await c.keys()).map(r=>r.url)),todo=[];for(let n=1;n<=OFFN;n++)if(!have.has(OFFU(n)))todo.push(n);
- let done=OFFN-todo.length,fail=0,i=0,bytes=0,full="";
- const show=()=>{const mb=bytes/1048576,est=done>OFFN-todo.length?Math.round(mb/(done-(OFFN-todo.length))*todo.length):0;OFFSAY("📥 অফলাইন অডিও নামছে "+bn2(done)+"/"+bn2(OFFN)+(fail?" · ব্যর্থ "+bn2(fail):"")+(est?" · মোট আনুমানিক "+bn2(est)+" MB":"")+" — থামাতে চাপুন",true)};
+ let done=OFFN-todo.length,fail=0,i=0,bytes=0,full="",lastErr="";
+ const show=()=>{const mb=bytes/1048576,est=done>OFFN-todo.length?Math.round(mb/(done-(OFFN-todo.length))*todo.length):0;OFFSAY("📥 অফলাইন অডিও নামছে "+bn2(done)+"/"+bn2(OFFN)+(fail?" · ব্যর্থ "+bn2(fail)+(lastErr?" ("+lastErr+")":""):"")+(est?" · মোট আনুমানিক "+bn2(est)+" MB":"")+" — থামাতে চাপুন",true)};
  const work=async()=>{while(!OFFSTOP&&i<todo.length){const n=todo[i++];let ok=false;
-   for(const u of [OFFU(n),"https://cdn.islamic.network/quran/audio/128/ar.alafasy/"+n+".mp3"]){let b;try{const r=await fetch(u);if(!r.ok)continue;b=await r.arrayBuffer()}catch(e){continue}
+   const sa=offRev(n);for(const u of offSrc(sa[0],sa[1])){let b;try{const r=await fetch(u);if(!r.ok){lastErr="HTTP "+r.status;continue}b=await r.arrayBuffer()}catch(e){lastErr=String(e&&e.message||e).slice(0,30);continue}
     try{await offPut(n,b);bytes+=b.byteLength;ok=true}catch(e){OFFSTOP=true;full="ফোনের জায়গা শেষ — কিছু ফাইল মুছে আবার চাপুন"}break}
    if(ok)done++;else if(!OFFSTOP)fail++;if((done+fail)%5===0)show()}};
  show();await Promise.all([work(),work(),work(),work()]);OFFRUN=false;
