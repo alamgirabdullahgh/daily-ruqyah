@@ -388,8 +388,9 @@ function audioBar(info,all,cb,title){if(!all.length)return;const box=els("div","
  b1.onclick=()=>mergeAudio(all,out,t=>note.textContent=t);
  b2.onclick=()=>{const l=[...SELV].map(k=>k.split(":").map(Number)).sort((x,y)=>x[0]-y[0]||x[1]-y[1]);if(!l.length)return alert("আগে আয়াতের নিচের “বাছাই” বক্সে টিক দিন");mergeAudio(l,out,t=>note.textContent=t)};
  selUp.push(()=>{b2.textContent="🔊 বাছাই করা আয়াত মার্জ ("+bn2(SELV.size)+")"});
- const sc=el("select","rs-sel");[["full","পুরো আয়াত"],["wq","সংশ্লিষ্ট অংশ (ওয়াক্ফ চিহ্ন অনুযায়ী)"],["dg","অর্থ অনুযায়ী — রোগ নির্ণয় (ছোট অংশ)"],["tr","অর্থ অনুযায়ী — চিকিৎসা (পুরো অংশ)"],["p3","সংশ্লিষ্ট শব্দ + আগে-পরে ৩ শব্দ"],["p0","শুধু সংশ্লিষ্ট শব্দ"]].forEach(x=>{const o=document.createElement("option");o.value=x[0];o.textContent="অডিও: "+x[1];sc.appendChild(o)});sc.value=cutMode();
-  const rp=el("select","rs-sel");[1,2,3,4,5,7,10].forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent="প্রতিটি আয়াত: "+bn2(n)+" বার";rp.appendChild(o)});rp.value=String(repAll());
+ const sc=el("select","rs-sel");const CUTL={full:["পুরো আয়াত","অডিও: পুরো আয়াত"],wq:["ওয়াক্ফ অংশ","অডিও: সংশ্লিষ্ট অংশ (ওয়াক্ফ চিহ্ন অনুযায়ী)"],dg:["অর্থ: নির্ণয়","অডিও: অর্থ অনুযায়ী — রোগ নির্ণয় (ছোট অংশ)"],tr:["অর্থ: চিকিৎসা","অডিও: অর্থ অনুযায়ী — চিকিৎসা (পুরো অংশ)"],p3:["শব্দ ± ৩","অডিও: সংশ্লিষ্ট শব্দ + আগে-পরে ৩ শব্দ"],p0:["শুধু শব্দ","অডিও: শুধু সংশ্লিষ্ট শব্দ"]};
+ Object.keys(CUTL).forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=CUTL[k][0];sc.appendChild(o)});sc.value=cutMode();
+  const rp=el("select","rs-sel");[1,2,3,4,5,7,10].forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent="প্রতিটি "+bn2(n)+" বার";rp.appendChild(o)});rp.value=String(repAll());
   rp.onchange=()=>{try{localStorage.setItem("rsRep",rp.value)}catch(e){}};
   const hint=()=>{note.textContent=(cutMode()!=="full"?"সংশ্লিষ্ট অংশ অডিও বিশ্লেষণ করে আনুমানিকভাবে কাটা হয়; শুরু/শেষে সামান্য এদিক-ওদিক হতে পারে, পুরো আয়াত বেছে নিলে কোনো কাটাছেঁড়া নেই। ":"")+(all.length>100?"আয়াত বেশি হলে সময় লাগবে — নেট চালু রাখুন ও পেজ খোলা রাখুন; সব আয়াত ক্রমানুসারে একটাই MP3 ফাইলে হবে":"")};sc.onchange=()=>{try{localStorage.setItem("rsCut",sc.value)}catch(e){}hint()};hint();
   const b3=el("button","rs-wb","📚 বাছাই করা আয়াত বিষয়ে যোগ ("+bn2(SELV.size)+")"),b4=el("button","rs-wb","✂ বাছাই করা আয়াতের অংশ কেটে মার্জ"),pn=el("div"),ed=el("div");b3.type=b4.type="button";b3.className=b4.className="rs-wb rs-act";
@@ -397,7 +398,8 @@ function audioBar(info,all,cb,title){if(!all.length)return;const box=els("div","
   b4.onclick=()=>{const l=selList();if(!l.length)return alert("আগে আয়াতের নিচের “বাছাই” বক্সে টিক দিন");cutEditor(l,ed,out,t=>note.textContent=t,CURT)};
   selUp.push(()=>{b3.textContent="📚 বাছাই করা আয়াত বিষয়ে যোগ ("+bn2(SELV.size)+")"});
     const grp=(t,cls,...k)=>{const g=el("div","rs-grp"),r=el("div","rs-gr"+(cls?" "+cls:""));g.append(el("div","rs-gh",t));r.append(...k);g.appendChild(r);return g};
-  const panel=el("div","rs-panel");panel.append(grp("সব আয়াত","",...(cb?[cb]:[]),b1,b5),grp("বাছাই করা আয়াত","",b2,b6,b4,b3),grp("অডিও সেটিং","one",sel,sc,rp));
+  const panel=el("div","rs-panel");const ag=grp("অডিও সেটিং","one",sel,sc,rp),hl=el("div","rs-hint");const hs=()=>{hl.textContent=(CUTL[sc.value]||CUTL.full)[1]+" · প্রতিটি আয়াত "+bn2(rp.value)+" বার"};sc.addEventListener("change",hs);rp.addEventListener("change",hs);hs();ag.appendChild(hl);
+  panel.append(grp("সব আয়াত","",...(cb?[cb]:[]),b1,b5),grp("বাছাই করা আয়াত","",b2,b6,b4,b3),ag);
   box.append(panel,note,pn,ed,out);info.appendChild(box)}
 const SB={n:0,t:0,m:new Map,set(u){this.t=u.size;this.m=new Map([...u].map((k,i)=>[k,i+1]))}};
 function verses(host,refs,fgl,off){let shown=0,fail=[];const step=15,g=GEN;
@@ -433,7 +435,6 @@ function card(it,exact){const r=it.r,c=el("div","rs-root"),h=el("div","rs-rh"),
  [...r.r].forEach(x=>l.appendChild(el("span",null,x)));h.append(l,m,ch);const fb=el("div","rs-forms");c.append(h,fb);let built=false;
  const list=lst(it,exact),base=SB.n;SB.n+=vset(list).o;
  h.onclick=()=>{c.classList.toggle("open");if(built)return;built=true;
-  {const L=lst(it,exact),v=vset(L),sm=el("div","rs-sum"),b=el("b",null,bn2(v.o)+"টি ফলাফল");sm.append(b," — ",el("span","rs-ar",[...r.r].join(" ")));if(v.o!==r.n&&!(it.bn&&!ALLF))sm.append(" (রুটে মোট "+bn2(r.n)+"টি)");fb.append(sm)}
   {const set=new Set();list.forEach(f=>f.refs.forEach(r=>set.add(r.split(":").slice(0,2).join(":"))));const all=[...set].map(r=>r.split(":").map(Number)).sort((x,y)=>x[0]-y[0]||x[1]-y[1]);
    const cb=copyBtn("📋 এই শব্দের সব আয়াত কপি ("+bn2(all.length)+")",async()=>{await Promise.all([...new Set(all.map(x=>x[0]))].map(z=>Promise.all([chunk("a",z),chunk(TR,z)])));const o=[];for(const [z,y] of all)o.push(await vtext(z,y));return o.join("\n\n")});
    cb.style.margin="6px 0";fb.append(cb)}
