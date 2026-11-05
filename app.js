@@ -102,38 +102,38 @@ function selBox(s,a){const k=s+":"+a,l=els("label","display:inline-flex;align-it
 /* ───── মিশারি আলাফাসির অডিও অফলাইনে: একবার নামালে ফোনের ভেতরে (Cache) থাকে; মার্জ/শোনা আগে সেখান থেকে, না থাকলে নেট থেকে ───── */
 const OFFC="dr-aud-alafasy",OFFID="ar.alafasy",OFFN=6236,OFFU=n=>"https://cdn.islamic.network/quran/audio/64/ar.alafasy/"+n+".mp3";
 const offOn=()=>recId()===OFFID;
-const offSrc=(s,a)=>{const p3=n=>String(n).padStart(3,"0"),n=gNum(s,a);return["https://everyayah.com/data/Alafasy_64kbps/"+p3(s)+p3(a)+".mp3","https://everyayah.com/data/Alafasy_128kbps/"+p3(s)+p3(a)+".mp3",OFFU(n),"https://cdn.islamic.network/quran/audio/128/ar.alafasy/"+n+".mp3"]};
+const offSrc=(s,a)=>{const p3=n=>String(n).padStart(3,"0"),n=gNum(s,a);return["https://everyayah.com/data/Alafasy_64kbps/"+p3(s)+p3(a)+".mp3",OFFU(n),"https://everyayah.com/data/Alafasy_128kbps/"+p3(s)+p3(a)+".mp3","https://cdn.islamic.network/quran/audio/128/ar.alafasy/"+n+".mp3"]};
 const offRev=n=>{let s=1;for(const c of AYN){if(n<=c)return[s,n];n-=c;s++}return[114,1]};
 async function offGet(s,a){try{const c=await caches.open(OFFC),r=await c.match(OFFU(gNum(s,a)));return r?await r.arrayBuffer():null}catch(e){return null}}
 async function offPut(n,buf){const c=await caches.open(OFFC);await c.put(OFFU(n),new Response(buf,{headers:{"Content-Type":"audio/mpeg"}}))}
 async function offCount(){try{return(await(await caches.open(OFFC)).keys()).length}catch(e){return 0}}
-let OFFRUN=false,OFFSTOP=false,OFFBTN=null,OFFTXT="",OFFPILL=null;
-const OFFSAY=(t,pill)=>{OFFTXT=t;if(OFFBTN&&OFFBTN.isConnected)OFFBTN.textContent=t;
- if(pill){if(!OFFPILL){OFFPILL=els("div","position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom));z-index:35;max-width:92vw;padding:8px 16px;border-radius:999px;background:var(--primary-dark);color:#fff;font-size:12.5px;font-weight:600;box-shadow:0 8px 22px -8px rgba(0,0,0,.5);text-align:center");OFFPILL.onclick=()=>offDownload(null);document.body.appendChild(OFFPILL)}OFFPILL.textContent=t;OFFPILL.style.display=""}
- else if(OFFPILL)OFFPILL.style.display="none"};
-async function offDownload(btn,auto){
- if(btn)OFFBTN=btn;
- if(OFFRUN){OFFSTOP=true;lsSet("drOffOff","1");OFFSAY("থামানো হচ্ছে…");return}
- if(!auto)lsSet("drOffOff","");
- OFFRUN=true;OFFSTOP=false;try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
- let c;try{c=await caches.open(OFFC)}catch(e){OFFRUN=false;OFFSAY("এই ফোনে অফলাইন সংরক্ষণ চালু করা যায়নি");return}
+let OFFRUN=false,OFFTRY=0;
+const OFFSAY=(t,pct)=>{const e=document.getElementById("drOff");if(!e)return;const x=e.querySelector(".off-t"),f=e.querySelector(".off-f");if(x)x.textContent=t;if(f)f.style.width=Math.max(0,Math.min(100,pct||0))+"%"};
+/* পুরো মিশারি আলাফাসি ৬৪kbps — অ্যাপ খুললেই নিজে নামে, সাইডবারে অগ্রগতি; ব্যর্থ হলে নিজে আবার চেষ্টা করে */
+async function offDownload(){
+ if(OFFRUN)return;OFFRUN=true;
+ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+ let c;try{c=await caches.open(OFFC)}catch(e){OFFRUN=false;OFFSAY("অফলাইন অডিও: এই ফোনে সংরক্ষণ চালু করা যায়নি");return}
  const have=new Set((await c.keys()).map(r=>r.url)),todo=[];for(let n=1;n<=OFFN;n++)if(!have.has(OFFU(n)))todo.push(n);
- let done=OFFN-todo.length,fail=0,i=0,bytes=0,full="",lastErr="";
- const show=()=>{const mb=bytes/1048576,est=done>OFFN-todo.length?Math.round(mb/(done-(OFFN-todo.length))*todo.length):0;OFFSAY("📥 অফলাইন অডিও নামছে "+bn2(done)+"/"+bn2(OFFN)+(fail?" · ব্যর্থ "+bn2(fail)+(lastErr?" ("+lastErr+")":""):"")+(est?" · মোট আনুমানিক "+bn2(est)+" MB":"")+" — থামাতে চাপুন",true)};
- const work=async()=>{while(!OFFSTOP&&i<todo.length){const n=todo[i++];let ok=false;
-   const sa=offRev(n);for(const u of offSrc(sa[0],sa[1])){let b;try{const r=await fetch(u);if(!r.ok){lastErr="HTTP "+r.status;continue}b=await r.arrayBuffer()}catch(e){lastErr=String(e&&e.message||e).slice(0,30);continue}
-    try{await offPut(n,b);bytes+=b.byteLength;ok=true}catch(e){OFFSTOP=true;full="ফোনের জায়গা শেষ — কিছু ফাইল মুছে আবার চাপুন"}break}
-   if(ok)done++;else if(!OFFSTOP)fail++;if((done+fail)%5===0)show()}};
+ let done=OFFN-todo.length,i=0,bytes=0,stop=false,full="",lastErr="",hi=0;const base=done;
+ const show=()=>{const mb=bytes/1048576,est=done>base?Math.round(mb/(done-base)*todo.length):0;OFFSAY("📥 অফলাইন অডিও নামছে "+bn2(done)+"/"+bn2(OFFN)+(est?" · আনুমানিক মোট "+bn2(est)+" MB":"")+(hi?" · ১২৮kbps: "+bn2(hi):""),done*100/OFFN)};
+ const work=async()=>{while(!stop&&i<todo.length){const n=todo[i++];let ok=false;const sa=offRev(n);
+   for(const u of offSrc(sa[0],sa[1])){let b;try{const r=await fetch(u);if(!r.ok){lastErr="HTTP "+r.status;continue}b=await r.arrayBuffer()}catch(e){lastErr=String(e&&e.message||e).slice(0,30);continue}
+    try{await offPut(n,b);bytes+=b.byteLength;ok=true;if(u.indexOf("128kbps")>=0||u.indexOf("/audio/128/")>=0)hi++}catch(e){stop=true;full="📥 অফলাইন অডিও: ফোনের জায়গা শেষ — কিছু ফাইল মুছুন"}break}
+   if(ok)done++;if(done%5===0)show()}};
  show();await Promise.all([work(),work(),work(),work()]);OFFRUN=false;
- OFFSAY(full||(done>=OFFN?"✅ মিশারি অডিও অফলাইনে আছে (সব "+bn2(OFFN)+"টি আয়াত)":"📥 মিশারি অফলাইন অডিও: "+bn2(done)+"/"+bn2(OFFN)+" — চাপলে বাকিটা নামবে"))}
-/* অ্যাপ খোলার পর নিজে থেকেই বাকি অডিও নামানো শুরু (নতুন ইনস্টল বা আপডেটের পর); ব্যবহারকারী নিজে থামালে আর নিজে শুরু হয় না */
+ if(full){OFFSAY(full,done*100/OFFN);return}
+ if(done>=OFFN){OFFSAY("✅ অফলাইন অডিও সম্পূর্ণ (সব "+bn2(OFFN)+"টি আয়াত)"+(hi?" · ১২৮kbps: "+bn2(hi):""),100);return}
+ OFFSAY("📥 অফলাইন অডিও "+bn2(done)+"/"+bn2(OFFN)+" — নেট ঠিক হলে নিজে আবার নামবে"+(lastErr?" ("+lastErr+")":""),done*100/OFFN);
+ if(++OFFTRY<=20)setTimeout(offDownload,60000)}
 async function offAuto(){
- try{if(OFFRUN||lsGet("drOffOff","")==="1"||!window.caches)return;const n=await offCount();if(n>=OFFN)return;
-  const c=navigator.connection;if(c&&(c.type==="cellular"||c.saveData===true)){const a=lsGet("drOffCell","");
-   if(a==="0")return;if(a!=="1"){const ok=confirm("মিশারি আলাফাসির পুরো অডিও অফলাইনের জন্য নামাতে হবে (কয়েকশ MB)। এখন মোবাইল ডেটায় নামাবেন?\n\nনা চাপলে পরে Wi‑Fi-তে বা সার্চ ফলাফলের নিচের বোতাম থেকে নামাতে পারবেন।");lsSet("drOffCell",ok?"1":"0");if(!ok)return}}
-  offDownload(null,true)}catch(e){}}
-window.addEventListener("load",()=>setTimeout(offAuto,8000));
-async function fetchAud(s,a){if(offOn()){const b=await offGet(s,a);if(b)return b}let e;for(const u of audUrls(s,a)){try{const r=await fetch(u);if(r.ok){const b=await r.arrayBuffer();if(offOn())offPut(gNum(s,a),b.slice(0)).catch(()=>{});return b}}catch(x){e=x}}throw e||new Error("audio")}
+ try{if(OFFRUN||!window.caches)return;
+  if(lsGet("drOff64","")!=="1"){try{await caches.delete(OFFC)}catch(e){}lsSet("drOff64","1")} // আগের (১২৮kbps) ফাইল মুছে ৬৪kbps-এ নতুন করে
+  const n=await offCount();if(n>=OFFN){OFFSAY("✅ অফলাইন অডিও সম্পূর্ণ (সব "+bn2(OFFN)+"টি আয়াত)",100);return}
+  OFFSAY("📥 অফলাইন অডিও শুরু হচ্ছে…",n*100/OFFN);offDownload()}catch(e){}}
+window.addEventListener("load",()=>setTimeout(offAuto,3000));
+window.addEventListener("online",()=>{OFFTRY=0;offAuto()});
+async function fetchAud(s,a){if(offOn()){const b=await offGet(s,a);if(b)return b}let e;for(const u of audUrls(s,a)){try{const r=await fetch(u);if(r.ok)return await r.arrayBuffer()}catch(x){e=x}}throw e||new Error("audio")}
 function wavOf(parts,sr){let n=0;parts.forEach(p=>n+=p.length);const buf=new ArrayBuffer(44+n*2),v=new DataView(buf),w=(o,t)=>[...t].forEach((c,i)=>v.setUint8(o+i,c.charCodeAt(0)));
  w(0,"RIFF");v.setUint32(4,36+n*2,true);w(8,"WAVEfmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,"data");v.setUint32(40,n*2,true);
  let o=44;for(const p of parts)for(let i=0;i<p.length;i++){const x=Math.max(-1,Math.min(1,p[i]));v.setInt16(o,x<0?x*32768:x*32767,true);o+=2}return new Blob([buf],{type:"audio/wav"})}
@@ -311,9 +311,8 @@ function audioBar(info,all,cb){if(!all.length)return;const box=els("div","margin
   b3.onclick=()=>topicAddPanel(pn);
   b4.onclick=()=>{const l=selList();if(!l.length)return alert("আগে আয়াতের নিচের “বাছাই” বক্সে টিক দিন");cutEditor(l,ed,out,t=>note.textContent=t,CURT)};
   selUp.push(()=>{b3.textContent="📚 বাছাই করা আয়াত বিষয়ে যোগ ("+bn2(SELV.size)+")"});
-  const ob=el("button","rs-wb rs-act","📥 মিশারি আলাফাসির অডিও অফলাইনের জন্য নামান");ob.type="button";OFFBTN=ob;offCount().then(n=>{if(OFFRUN&&OFFTXT)ob.textContent=OFFTXT;else if(n>=OFFN)ob.textContent="✅ মিশারি অডিও অফলাইনে আছে (সব "+bn2(OFFN)+"টি আয়াত)";else if(n)ob.textContent="📥 মিশারি অফলাইন অডিও: "+bn2(n)+"/"+bn2(OFFN)+" — চাপলে বাকিটা নামবে"});ob.onclick=()=>{try{lsSet("drOffCell","1")}catch(e){}offDownload(ob)};
-  const grp=(t,cls,...k)=>{const g=el("div","rs-grp"),r=el("div","rs-gr"+(cls?" "+cls:""));g.append(el("div","rs-gh",t));r.append(...k);g.appendChild(r);return g};
-  const panel=el("div","rs-panel");panel.append(grp("সব আয়াত","",...(cb?[cb]:[]),b1),grp("বাছাই করা আয়াত","",b2,b4,b3),grp("অডিও সেটিং","one",sel,sc,rp,ob));
+    const grp=(t,cls,...k)=>{const g=el("div","rs-grp"),r=el("div","rs-gr"+(cls?" "+cls:""));g.append(el("div","rs-gh",t));r.append(...k);g.appendChild(r);return g};
+  const panel=el("div","rs-panel");panel.append(grp("সব আয়াত","",...(cb?[cb]:[]),b1),grp("বাছাই করা আয়াত","",b2,b4,b3),grp("অডিও সেটিং","one",sel,sc,rp));
   box.append(panel,note,pn,ed,out);info.appendChild(box)}
 const SB={n:0,t:0,m:new Map,set(u){this.t=u.size;this.m=new Map([...u].map((k,i)=>[k,i+1]))}};
 function verses(host,refs,fgl,off){let shown=0,fail=[];const step=15,g=GEN;
