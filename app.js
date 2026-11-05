@@ -64,8 +64,15 @@ function bnHit(w,toks){w=fb(bnw(w));if(w.length<2)return false;for(let k of toks
 const BSYN=[["জিনা","জেনা","যিনা","যেনা"],["ইবলিস","ইবলীস","ইবলিশ","ইবলীশ"],["চুল","কেশ","কেশগুচ্ছ","কেশরাজি","কেশদাম","ঝুঁটি"],["মাথা","মস্তক","শির","শিরোদেশ"],["চোখ","নয়ন","চক্ষু","আঁখি","দৃষ্টি"],["হাত","হস্ত"],["পা","চরণ"],["মুখ","চেহারা","মুখমণ্ডল","বদন","আনন"],["কান","কর্ণ","শ্রবণ"],["পেট","উদর","জঠর"],["পিঠ","পৃষ্ঠ","পৃষ্ঠদেশ"],["বুক","বক্ষ","সিনা","ছাতি"],["ঘাড়","গর্দান","গ্রীবা","গলা"],["কণ্ঠ","কণ্ঠদেশ","কণ্ঠনালী"],["অন্তর","হৃদয়","মন","কলব"],["রক্ত","খুন","শোণিত"],["কপাল","ললাট","ভ্রূ"],["জিহ্বা","জিভ","জবান","রসনা"],["দাঁত","দন্ত"],["নাক","নাসিকা","নাসারন্ধ্র"],["আঙুল","অঙ্গুলি","আঙ্গুল"]];
 /* আরবির মতো সরাসরি অবস্থান: quran-chunks/m — প্রতিটা আয়াতে "আরবি শব্দ নং:অনুবাদের শব্দ-শুরু-শেষ"। না থাকলে নিচের আন্দাজ-পদ্ধতি (markBn) কাজ করে */
 function alRange(str,w){for(const it of String(str||"").split(",")){const p=it.split(":");if(+p[0]===w&&p[1]){const r=p[1].split("-").map(Number);if(r.length===2&&r[0]>=0&&r[1]>=r[0])return r}}return null}
-function markRange(box,text,r){box.textContent="";const ws=String(text||"").split(" ");if(r[0]>=ws.length)return false;const b=r[0],e=Math.min(r[1],ws.length-1);for(let i=0;i<ws.length;i++){if(i)box.appendChild(document.createTextNode(" "));if(i===b){box.appendChild(el("mark",null,ws.slice(b,e+1).join(" ")));i=e}else box.appendChild(document.createTextNode(ws[i]))}return true}
-function markBn(box,text,gloss){box.textContent="";const toks=bnw(String(gloss||"").replace(/[()]/g," ")).split(/\s+/).map(bnw).filter(x=>x.length>1&&!BSTOP.has(x));for(const g of BSYN)if(toks.some(k=>bnHit(g[0],[k])||g.some(x=>fb(x)===fb(k))))for(const x of g)toks.push(x);
+function markRange(box,text,r){const ws=String(text||"").split(" ");if(r[0]>=ws.length)return false;const b=r[0],e=Math.min(r[1],ws.length-1);if(ws.slice(b,e+1).every(x=>LV.test(bnw(x))))return false;box.textContent="";for(let i=0;i<ws.length;i++){if(i)box.appendChild(document.createTextNode(" "));if(i===b){box.appendChild(el("mark",null,ws.slice(b,e+1).join(" ")));i=e}else box.appendChild(document.createTextNode(ws[i]))}return true}
+/* বাংলা সার্চে: যে শব্দ লিখে খোঁজা হয়েছে অনুবাদে সরাসরি সেই শব্দই মার্ক হয় (আন্দাজ নয়); পেলে true */
+const QX=new Set(["কাজেই"]);
+function markQ(box,text,q){q=String(q||"").trim();if(!q||!/[\u0980-\u09FF]/.test(q))return false;const toks=q.split(/[\s,،，、]+/).map(bnw).filter(x=>x.length>1&&!BSTOP.has(x));if(!toks.length)return false;
+ const ws=String(text||"").split(" "),hit=ws.map(w=>{const n=bnw(w);return !!n&&!QX.has(n)&&bnHit(w,toks)});if(!hit.some(Boolean))return false;box.textContent="";let i=0;
+ while(i<ws.length){if(i)box.appendChild(document.createTextNode(" "));if(hit[i]){let j=i;while(j+1<ws.length&&hit[j+1])j++;box.appendChild(el("mark",null,ws.slice(i,j+1).join(" ")));i=j+1}else{box.appendChild(document.createTextNode(ws[i]));i++}}return true}
+/* "করছ/কর/হও" জাতীয় সাধারণ ক্রিয়া একা মার্ক করা হয় না — এতে ভুল জায়গায় মার্ক পড়ত */
+const LV=/^(কর|করছ|করছো|করেছ|করেছো|করবে|করবো|করো|করুন|করে|করেন|করল|করলো|করত|করতে|করি|করব|করা|হও|হই|হয়|হবে|হলো|হল|দাও|দেয়|দেন|নিন|নাও)$/;
+function markBn(box,text,gloss){box.textContent="";const toks=bnw(String(gloss||"").replace(/[()]/g," ")).split(/\s+/).map(bnw).filter(x=>x.length>1&&!BSTOP.has(x)&&!LV.test(x));for(const g of BSYN)if(toks.some(k=>bnHit(g[0],[k])||g.some(x=>fb(x)===fb(k))))for(const x of g)toks.push(x);
  const ws=String(text||"").split(" "),hit=ws.map(w=>toks.length&&bnHit(w,toks));let i=0;
  while(i<ws.length){if(i)box.appendChild(document.createTextNode(" "));if(hit[i]){let j=i;while(j+1<ws.length&&hit[j+1])j++;box.appendChild(el("mark",null,ws.slice(i,j+1).join(" ")));i=j+1}else{box.appendChild(document.createTextNode(ws[i]));i++}}}
 async function vtext(s,a){const t=((await chunk("a",s))||[])[a-1],b=((await chunk(TR,s))||[])[a-1];return t==null?"":"সূরা "+SN[s-1]+" — "+s+":"+a+"\n"+t+"\n"+(b||"")}
@@ -248,7 +255,7 @@ function topicTools(t){const d=els("div","display:flex;flex-wrap:wrap;gap:6px;ma
    t.refs=t.refs.filter(k=>!l.includes(k));l.forEach(k=>{SELV.delete(k);delete t.cuts[k];CUT.delete(k)});selChange();await TS.save();openTopic(t)}),
   mkBtn("✏ নাম বদলান",async()=>{const n=prompt("বিষয়ের নতুন নাম",t.name);if(n&&n.trim()){t.name=n.trim().slice(0,60);await TS.save();openTopic(t)}}),
   mkBtn("❌ বিষয়টি মুছুন",async()=>{if(!confirm("“"+t.name+"” বিষয়টি (এর "+bn2(t.refs.length)+"টি আয়াতের তালিকাসহ) মুছে ফেলবেন? আয়াত নিজে মুছবে না, শুধু এই তালিকাটা।"))return;TS.list=TS.list.filter(x=>x!==t);await TS.save();$("rsOut").innerHTML="";$("rsInfo").textContent="";CURT=null;SHOWT&&SHOWT(true)}));return d}
-async function openTopic(t){GEN++;CURT=t;SELV.clear();selChange();const out=$("rsOut"),info=$("rsInfo");out.innerHTML="";info.textContent="";window.__sq=t.name;
+async function openTopic(t){window.__bq="";GEN++;CURT=t;SELV.clear();selChange();const out=$("rsOut"),info=$("rsInfo");out.innerHTML="";info.textContent="";window.__sq=t.name;
  CUT.clear();Object.keys(t.cuts||{}).forEach(k=>{const v=t.cuts[k];if(Array.isArray(v)&&v.length===2)CUT.set(k,v)});
  if(!t.refs.length){info.textContent="“"+t.name+"” বিষয়ে এখনো কোনো আয়াত নেই। সার্চ করে আয়াত বাছাই করে ‘বিষয়ে যোগ’ করুন।";info.appendChild(topicTools(t));return}
  SB.set(new Set(t.refs));info.textContent="📚 বিষয়: “"+t.name+"” — "+bn2(t.refs.length)+"টি আয়াত (আপনার সংরক্ষিত তালিকা)";
@@ -280,8 +287,8 @@ function verses(host,refs,fgl,off){let shown=0,fail=[];const step=15,g=GEN;
    if(n){const nb=els("span","display:inline-block;margin:0 0 4px;padding:1px 9px;border-radius:10px;background:color-mix(in srgb,var(--primary) 14%,transparent);color:var(--primary);font-size:12px;font-weight:700","ক্রমিক "+bn2(n)+" / "+bn2(SB.t));rf.prepend(nb,document.createElement("br"))}
    const tx=el("div","rs-vt rs-ar"),tb=el("div","rs-vb"),wb=el("button","rs-wb","শব্দে শব্দে অর্থ"),wh=el("div","rs-ww");
    wb.type="button";
-   markBn(tb,bn[a-1]||"",fgl);
-   chunk("w",s,1).then(async W=>{const m=(W[a-1]||"").split("|")[w-1];let ok=false;try{const M=await chunk("m",s,1);const r=alRange((M||[])[a-1],w);if(r)ok=markRange(tb,bn[a-1]||"",r)}catch(e){}if(!ok&&m&&m!==fgl)markBn(tb,bn[a-1]||"",m)}).catch(()=>{});
+   if(!markQ(tb,bn[a-1]||"",window.__bq)){markBn(tb,bn[a-1]||"",fgl);
+   chunk("w",s,1).then(async W=>{const m=(W[a-1]||"").split("|")[w-1];let ok=false;try{const M=await chunk("m",s,1);const r=alRange((M||[])[a-1],w);if(r)ok=markRange(tb,bn[a-1]||"",r)}catch(e){}if(!ok&&m&&m!==fgl)markBn(tb,bn[a-1]||"",m)}).catch(()=>{});}
    arFill(tx,s,a,t,w);
    let wl=false;wb.onclick=async()=>{wh.classList.toggle("on");if(wl)return;wl=true;wh.textContent="লোড হচ্ছে…";
     try{const m=((await chunk("w",s))||[])[a-1].split("|");wh.textContent="";t.split(" ").forEach((x,i)=>{const c=el("div","rs-wc"+(i===w-1?" hl":"")),ar=el("div","rs-wa rs-ar",x),b=el("div","rs-wm",m[i]||"");c.append(ar,b);wh.appendChild(c)})}catch(e){wh.textContent="লোড করা যায়নি — আবার চাপুন";wl=false}};
@@ -481,7 +488,7 @@ async function runMulti(parts,out,info,intro,ordered){
  G.forEach(g=>{
   out.appendChild(els("div","margin:16px 0 6px;padding:6px 12px;border-radius:10px;font-weight:700;background:color-mix(in srgb,var(--primary) 14%,transparent);color:var(--primary)","“"+g.t+"” — "+(g.u?bn2(g.u)+"টি আয়াত":(g.note||"কিছু পাওয়া যায়নি"))));
   g.items.forEach(it=>{const c=card(it,ex(it));out.appendChild(c);if(bud>0){c.querySelector(".rs-rh").click();bud-=Math.min(vset(lst(it,ex(it))).o,24)}})})}
-async function run(topic){GEN++;CURT=null;if(topic&&!topic.terms)topic=null;const raw=topic?topic.name:$("rsQ").value;window.__sq=raw;const q=nz(raw),out=$("rsOut"),info=$("rsInfo");out.innerHTML="";if(!R)info.textContent="⏳ ডেটা লোড হচ্ছে… (প্রথমবার ইন্টারনেট ধীর হলে সময় লাগে, পরে দ্রুত হবে)";
+async function run(topic){window.__bq="";GEN++;CURT=null;if(topic&&!topic.terms)topic=null;const raw=topic?topic.name:$("rsQ").value;window.__sq=raw;const q=nz(raw),out=$("rsOut"),info=$("rsInfo");out.innerHTML="";if(!R)info.textContent="⏳ ডেটা লোড হচ্ছে… (প্রথমবার ইন্টারনেট ধীর হলে সময় লাগে, পরে দ্রুত হবে)";
  if(topic)return runMulti(topic.terms,out,info,topic.intro,topic.ordered);
  {const parts=raw.split(/[,،，、]/).map(x=>x.trim()).filter(Boolean);if(parts.length>1)return runMulti(parts,out,info)}
  const bq=raw.trim();
@@ -555,7 +562,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   const ft=el("div","dr-bak"),fi=document.createElement("input");fi.type="file";fi.accept=".json,application/json";fi.style.display="none";fi.onchange=()=>{if(fi.files[0])importTopics(fi.files[0]);fi.value=""};
   ft.append(mkBtn("📥 নিজের তালিকার ব্যাকআপ নামান",exportTopics),mkBtn("📤 ব্যাকআপ ফেরান",()=>fi.click()),fi);ft.style.position="static";rs.appendChild(ft)};
 // ---------- রোগ নির্ণয়ের তালিকা (quran-diagnosis.json) ----------
- const showDiag=async(cfg)=>{const CF=Object.assign({file:"quran-diagnosis.json?v="+DV+"d12",title:"🩺 রোগ নির্ণয় (ডায়াগনোসিস)",sq:"রোগ নির্ণয়",nm:"নির্ণয়",badge:["আয়াতে সরাসরি আছে","শব্দভিত্তিক"],intro:null},cfg&&(cfg.file||cfg.host)?cfg:{});GEN++;CURT=null;rs.classList.remove("on");pad.classList.remove("on");const out=CF.host||$("rsOut"),info=CF.infoEl||$("rsInfo");out.innerHTML="";info.textContent="লোড হচ্ছে…";q.value="";setDir();window.__sq=CF.sq;
+ const showDiag=async(cfg)=>{window.__bq="";const CF=Object.assign({file:"quran-diagnosis.json?v="+DV+"d12",title:"🩺 রোগ নির্ণয় (ডায়াগনোসিস)",sq:"রোগ নির্ণয়",nm:"নির্ণয়",badge:["আয়াতে সরাসরি আছে","শব্দভিত্তিক"],intro:null},cfg&&(cfg.file||cfg.host)?cfg:{});GEN++;CURT=null;rs.classList.remove("on");pad.classList.remove("on");const out=CF.host||$("rsOut"),info=CF.infoEl||$("rsInfo");out.innerHTML="";info.textContent="লোড হচ্ছে…";q.value="";setDir();window.__sq=CF.sq;
   let D;try{D=await rsFetch(BASE+CF.file)}catch(e){info.textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
   info.textContent="";if(!CF.host)info.appendChild(els("div","font-weight:700;color:var(--primary);margin-bottom:4px",CF.title));
   if(!CF.host)info.appendChild(els("div","font-size:13px;line-height:1.7",CF.intro||"ক্রম: প্রথমে বদনজর, তারপর জাদু, তারপর জিন। প্রতিটি রোগ বা ধরনের জন্য ১–২টি মূল আয়াত (শুধু প্রাসঙ্গিক অংশ)। এই অংশ শুনে/পড়ে রোগ ধরা হবে; রোগ ধরা পড়লে ওই রোগের সব আয়াতের তালিকা ও অডিও ‘চিকিৎসা’ বোতামে। “শব্দভিত্তিক” চিহ্নিতগুলোতে কুরআনে ওই ধরনের নাম সরাসরি নেই — সবচেয়ে কাছের শব্দের আয়াত নেওয়া হয়েছে। খসড়া তালিকা: ব্যবহারের আগে আলেমের পর্যালোচনা প্রয়োজন।"));
