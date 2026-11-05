@@ -297,9 +297,76 @@ async function openTopic(t){window.__bq="";GEN++;CURT=t;SELV.clear();selChange()
  allCopy(info,[{refs:t.refs}],t.refs.map(r=>r.split(":").map(Number)));info.appendChild(topicTools(t));verses(out,t.refs.map(r=>r+":0"),"",0)}
 function exportTopics(){const b=new Blob([JSON.stringify({v:1,topics:TS.list},null,1)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="research-topics-backup.json";document.body.appendChild(a);a.click();a.remove()}
 async function importTopics(file){try{const d=TS.clean(JSON.parse(await file.text()));let n=0;d.forEach(t=>{const r=TS.addRefs(t.name,t.refs);Object.assign(r.t.cuts,t.cuts);n+=r.added});await TS.save();alert(bn2(d.length)+"টি বিষয় ফেরানো হয়েছে ("+bn2(n)+"টি আয়াত যোগ হয়েছে)");SHOWT&&SHOWT(true)}catch(e){alert("ফাইলটি পড়া যায়নি — এটি এই পেজ থেকে নামানো ব্যাকআপ ফাইল তো?")}}
-function audioBar(info,all,cb){if(!all.length)return;const box=els("div","margin-top:8px"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),out=el("div"),row=els("div","display:flex;flex-wrap:wrap;gap:6px;align-items:center");
+// ---------- আয়াত PDF ডাউনলোড: প্রতিটি পেজ ক্যানভাসে আঁকা হয় (ব্রাউজারের নিজের টেক্সট ইঞ্জিনে, তাই আরবি ও বাংলা হরফ ঠিকঠাক জোড়া লাগে), তারপর ছবিগুলো একটি PDF ফাইলে জোড়া হয় ----------
+function jpegPdf(imgs,W,H){
+ const enc=new TextEncoder(),parts=[],offs=[],N=imgs.length;let len=0;
+ const add=d=>{const u=typeof d==="string"?enc.encode(d):d;parts.push(u);len+=u.length};
+ const obj=(n,fn)=>{offs[n]=len;add(n+" 0 obj\n");fn();add("\nendobj\n")};
+ const PW=595.28,PH=Math.round(595.28*H/W*100)/100;
+ add("%PDF-1.4\n");
+ obj(1,()=>add("<< /Type /Catalog /Pages 2 0 R >>"));
+ obj(2,()=>add("<< /Type /Pages /Count "+N+" /Kids ["+imgs.map((_,i)=>(3+i*3)+" 0 R").join(" ")+"] >>"));
+ imgs.forEach((u8,i)=>{const pg=3+i*3,ct=pg+1,im=pg+2,cs="q "+PW+" 0 0 "+PH+" 0 0 cm /Im0 Do Q";
+  obj(pg,()=>add("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+PW+" "+PH+"] /Resources << /XObject << /Im0 "+im+" 0 R >> >> /Contents "+ct+" 0 R >>"));
+  obj(ct,()=>add("<< /Length "+cs.length+" >>\nstream\n"+cs+"\nendstream"));
+  obj(im,()=>{add("<< /Type /XObject /Subtype /Image /Width "+W+" /Height "+H+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+u8.length+" >>\nstream\n");add(u8);add("\nendstream")})});
+ const xr=len,T=3+3*N;let x="xref\n0 "+T+"\n0000000000 65535 f \n";
+ for(let i=1;i<T;i++)x+=String(offs[i]).padStart(10,"0")+" 00000 n \n";
+ add(x+"trailer\n<< /Size "+T+" /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF\n");
+ return new Blob(parts,{type:"application/pdf"})}
+async function ayatPdf(list,title,say){
+ const W=1240,H=1754,M=96,CW=W-2*M,FOOT=70,BOT=H-M-FOOT;
+ const AR='"Amiri","Noto Naskh Arabic","Droid Arabic Naskh","Traditional Arabic",serif',BNF='"Noto Sans Bengali","Hind Siliguri","Siyam Rupali","Nirmala UI",sans-serif';
+ const f=(w,px,fam)=>w+" "+px+"px "+fam;
+ say("⏳ আয়াত লোড হচ্ছে…");
+ try{await Promise.all([document.fonts.load(f(400,38,AR),"بِسْمِ"),document.fonts.load(f(700,38,AR),"بِسْمِ"),document.fonts.load(f(400,26,BNF),"আয়াত"),document.fonts.load(f(700,26,BNF),"আয়াত")])}catch(e){}
+ await Promise.all([...new Set(list.map(x=>x[0]))].map(z=>Promise.all([chunk("a",z),chunk(TR,z)])));
+ const mc=document.createElement("canvas").getContext("2d");
+ const wrap=(text,font,maxW,rtl)=>{mc.font=font;mc.direction=rtl?"rtl":"ltr";const ws=String(text||"").split(/\s+/).filter(Boolean),out=[];let cur="";
+  for(const w of ws){const t=cur?cur+" "+w:w;if(cur&&mc.measureText(t).width>maxW){out.push(cur);cur=w}else cur=t}
+  if(cur)out.push(cur);return out};
+ const pages=[[]];let y=M;
+ const put=(o,h)=>{if(y+h>BOT){pages.push([]);y=M}o.y=y;pages[pages.length-1].push(o);y+=h};
+ // শিরোনাম (প্রথম পেজ)
+ let dt="";try{dt=new Date().toLocaleDateString("bn-BD",{year:"numeric",month:"long",day:"numeric"})}catch(e){}
+ put({t:"Daily Ruqyah",font:f(700,40,BNF),c:"#0a5240",x:M,al:"left",dir:"ltr"},60);
+ wrap(title,f(700,34,BNF),CW,false).forEach(l=>put({t:l,font:f(700,34,BNF),c:"#111",x:M,al:"left",dir:"ltr"},50));
+ put({t:"মোট "+bn2(list.length)+"টি আয়াত"+(dt?" · "+dt:""),font:f(400,22,BNF),c:"#666",x:M,al:"left",dir:"ltr"},40);
+ put({line:1,c:"#0a5240",w:3},30);
+ for(let i=0;i<list.length;i++){
+  const[s,a]=list[i],A=((await chunk("a",s))||[])[a-1],B=((await chunk(TR,s))||[])[a-1];if(A==null)continue;
+  const al=wrap(A,f(400,38,AR),CW,true),bl=wrap(B||"",f(400,26,BNF),CW,false);
+  const ref="সূরা "+(typeof SBN!=="undefined"?SBN[s-1]:SN[s-1])+" — "+bn2(s)+":"+bn2(a),hh=44+al.length*76+(bl.length?10+bl.length*42:0)+40;
+  if(hh<=BOT-M&&y+hh>BOT){pages.push([]);y=M}
+  put({t:ref,font:f(700,24,BNF),c:"#0a5240",x:M,al:"left",dir:"ltr"},44);
+  al.forEach(l=>put({t:l,font:f(400,38,AR),c:"#111",x:W-M,al:"right",dir:"rtl"},76));
+  if(bl.length){y+=10;bl.forEach(l=>put({t:l,font:f(400,26,BNF),c:"#333",x:M,al:"left",dir:"ltr"},42))}
+  put({line:1,c:"#d8e2dd",w:1},40);
+  if(i%10===9){say("⏳ সাজানো হচ্ছে… "+bn2(i+1)+"/"+bn2(list.length));await new Promise(r=>setTimeout(r))}}
+ const N=pages.length,imgs=[];
+ for(let p=0;p<N;p++){
+  say("⏳ পেজ বানানো হচ্ছে… "+bn2(p+1)+"/"+bn2(N));
+  const cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
+  g.fillStyle="#fff";g.fillRect(0,0,W,H);g.textBaseline="alphabetic";
+  for(const o of pages[p]){
+   if(o.line){g.fillStyle=o.c;g.fillRect(M,o.y+o.w,CW,o.w);continue}
+   g.font=o.font;g.fillStyle=o.c;g.direction=o.dir;g.textAlign=o.al;
+   const fs=parseInt(o.font.match(/(\d+)px/)[1]);g.fillText(o.t,o.x,o.y+Math.round(fs*(o.dir==="rtl"?1.25:1.05)))}
+  g.direction="ltr";g.fillStyle="#d8e2dd";g.fillRect(M,H-M-FOOT+18,CW,1);
+  g.font=f(400,20,BNF);g.fillStyle="#777";g.textAlign="left";g.fillText("Daily Ruqyah",M,H-M-FOOT+52);
+  g.textAlign="right";g.fillText("পৃষ্ঠা "+bn2(p+1)+" / "+bn2(N),W-M,H-M-FOOT+52);
+  const bl=await new Promise(r=>cv.toBlob(r,"image/jpeg",0.85));
+  imgs.push(new Uint8Array(await bl.arrayBuffer()));cv.width=cv.height=0;
+  await new Promise(r=>setTimeout(r))}
+ say("⏳ PDF ফাইল জোড়া হচ্ছে…");
+ const pdf=jpegPdf(imgs,W,H),nm=("আয়াত-"+String(title).replace(/[\\\/:*?"<>|\n\r]+/g," ").trim().slice(0,40)).trim()+".pdf";
+ await saveBlob(pdf,nm);return N}
+function audioBar(info,all,cb,title){if(!all.length)return;const box=els("div","margin-top:8px"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),out=el("div"),row=els("div","display:flex;flex-wrap:wrap;gap:6px;align-items:center");
  const sel=el("select","rs-sel");RECS.forEach(r=>{const o=document.createElement("option");o.value=r[0];o.textContent=r[1];sel.appendChild(o)});sel.value=recId();sel.onchange=()=>{try{localStorage.setItem("rsRec",sel.value)}catch(e){}};
  const b1=el("button","rs-wb","🔊 সব আয়াত মার্জ অডিও ("+bn2(all.length)+")"),b2=el("button","rs-wb","🔊 বাছাই করা আয়াত মার্জ (০)");b1.type=b2.type="button";b1.className="rs-wb rs-act pri";b2.className="rs-wb rs-act";
+ const pdfB=(label,get,empty)=>{const b=el("button","rs-wb rs-act",label);b.type="button";b.onclick=async()=>{const l=get();if(!l.length)return alert("আগে আয়াতের নিচের “বাছাই” বক্সে টিক দিন");if(l.length>300&&!confirm("আয়াত অনেক ("+bn2(l.length)+"টি) — PDF বানাতে সময় লাগবে ও ফাইল বড় হবে। চালিয়ে যাবেন?"))return;b.disabled=true;const o=b.textContent;let ok=false;try{await ayatPdf(l,title||window.__sq||"কুরআনের আয়াত",t=>{b.textContent=t});ok=true}catch(e){console.error(e)}b.textContent=ok?"✅ PDF সেভ হয়েছে":"PDF বানানো যায়নি";setTimeout(()=>{b.textContent=o;b.disabled=false},2500)};return b};
+ const b5=pdfB("📄 সব আয়াত PDF ("+bn2(all.length)+")",()=>all),b6=pdfB("📄 বাছাই করা আয়াত PDF (০)",()=>selList());
+ selUp.push(()=>{b6.textContent="📄 বাছাই করা আয়াত PDF ("+bn2(SELV.size)+")"});
  b1.onclick=()=>mergeAudio(all,out,t=>note.textContent=t);
  b2.onclick=()=>{const l=[...SELV].map(k=>k.split(":").map(Number)).sort((x,y)=>x[0]-y[0]||x[1]-y[1]);if(!l.length)return alert("আগে আয়াতের নিচের “বাছাই” বক্সে টিক দিন");mergeAudio(l,out,t=>note.textContent=t)};
  selUp.push(()=>{b2.textContent="🔊 বাছাই করা আয়াত মার্জ ("+bn2(SELV.size)+")"});
@@ -312,7 +379,7 @@ function audioBar(info,all,cb){if(!all.length)return;const box=els("div","margin
   b4.onclick=()=>{const l=selList();if(!l.length)return alert("আগে আয়াতের নিচের “বাছাই” বক্সে টিক দিন");cutEditor(l,ed,out,t=>note.textContent=t,CURT)};
   selUp.push(()=>{b3.textContent="📚 বাছাই করা আয়াত বিষয়ে যোগ ("+bn2(SELV.size)+")"});
     const grp=(t,cls,...k)=>{const g=el("div","rs-grp"),r=el("div","rs-gr"+(cls?" "+cls:""));g.append(el("div","rs-gh",t));r.append(...k);g.appendChild(r);return g};
-  const panel=el("div","rs-panel");panel.append(grp("সব আয়াত","",...(cb?[cb]:[]),b1),grp("বাছাই করা আয়াত","",b2,b4,b3),grp("অডিও সেটিং","one",sel,sc,rp));
+  const panel=el("div","rs-panel");panel.append(grp("সব আয়াত","",...(cb?[cb]:[]),b1,b5),grp("বাছাই করা আয়াত","",b2,b6,b4,b3),grp("অডিও সেটিং","one",sel,sc,rp));
   box.append(panel,note,pn,ed,out);info.appendChild(box)}
 const SB={n:0,t:0,m:new Map,set(u){this.t=u.size;this.m=new Map([...u].map((k,i)=>[k,i+1]))}};
 function verses(host,refs,fgl,off){let shown=0,fail=[];const step=15,g=GEN;
@@ -714,7 +781,7 @@ async function surahView(body,mode,s,g){
  const jr=els("div","display:flex;gap:8px;margin:0 0 12px"),ji=document.createElement("input");ji.className="dr-find";ji.style.margin="0";ji.type="number";ji.inputMode="numeric";ji.min=1;ji.max=N;ji.placeholder="আয়াত নং (১–"+bn2(N)+")";
  const jb=el("button","rs-wb","যান");jb.type="button";jb.style.cssText="margin:0;flex:none;padding:0 20px;border-radius:14px";jr.append(ji,jb);body.appendChild(jr);
  const ad=el("details","dr-audio"),as=el("summary",null,"🎧 অডিও ও অন্যান্য অপশন"),ab=el("div");ad.append(as,ab);body.appendChild(ad);
- audioBar(ab,Array.from({length:N},(_,i)=>[s,i+1]));
+ audioBar(ab,Array.from({length:N},(_,i)=>[s,i+1]),null,"সূরা "+SBN[s-1]);
  const host=el("div");body.appendChild(host);
  host.appendChild(el("div","rs-info","লোড হচ্ছে…"));
  let A,B,W=null;
