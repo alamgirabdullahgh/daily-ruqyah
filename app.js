@@ -562,7 +562,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   const ft=el("div","dr-bak"),fi=document.createElement("input");fi.type="file";fi.accept=".json,application/json";fi.style.display="none";fi.onchange=()=>{if(fi.files[0])importTopics(fi.files[0]);fi.value=""};
   ft.append(mkBtn("📥 নিজের তালিকার ব্যাকআপ নামান",exportTopics),mkBtn("📤 ব্যাকআপ ফেরান",()=>fi.click()),fi);ft.style.position="static";rs.appendChild(ft)};
 // ---------- রোগ নির্ণয়ের তালিকা (quran-diagnosis.json) ----------
- const showDiag=async(cfg)=>{window.__bq="";const CF=Object.assign({file:"quran-diagnosis.json?v="+DV+"d12",title:"🩺 রোগ নির্ণয় (ডায়াগনোসিস)",sq:"রোগ নির্ণয়",nm:"নির্ণয়",badge:["আয়াতে সরাসরি আছে","শব্দভিত্তিক"],intro:null},cfg&&(cfg.file||cfg.host)?cfg:{});GEN++;CURT=null;rs.classList.remove("on");pad.classList.remove("on");const out=CF.host||$("rsOut"),info=CF.infoEl||$("rsInfo");out.innerHTML="";info.textContent="লোড হচ্ছে…";q.value="";setDir();window.__sq=CF.sq;
+ const showDiag=async(cfg)=>{window.__bq="";const CF=Object.assign({file:"quran-diagnosis.json?v="+DV+"d13",title:"🩺 রোগ নির্ণয় (ডায়াগনোসিস)",sq:"রোগ নির্ণয়",nm:"নির্ণয়",badge:["আয়াতে সরাসরি আছে","শব্দভিত্তিক"],intro:null},cfg&&(cfg.file||cfg.host)?cfg:{});GEN++;CURT=null;rs.classList.remove("on");pad.classList.remove("on");const out=CF.host||$("rsOut"),info=CF.infoEl||$("rsInfo");out.innerHTML="";info.textContent="লোড হচ্ছে…";q.value="";setDir();window.__sq=CF.sq;
   let D;try{D=await rsFetch(BASE+CF.file)}catch(e){info.textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
   info.textContent="";if(!CF.host)info.appendChild(els("div","font-weight:700;color:var(--primary);margin-bottom:4px",CF.title));
   if(!CF.host)info.appendChild(els("div","font-size:13px;line-height:1.7",CF.intro||"ক্রম: প্রথমে বদনজর, তারপর জাদু, তারপর জিন। প্রতিটি রোগ বা ধরনের জন্য ১–২টি মূল আয়াত (শুধু প্রাসঙ্গিক অংশ)। এই অংশ শুনে/পড়ে রোগ ধরা হবে; রোগ ধরা পড়লে ওই রোগের সব আয়াতের তালিকা ও অডিও ‘চিকিৎসা’ বোতামে। “শব্দভিত্তিক” চিহ্নিতগুলোতে কুরআনে ওই ধরনের নাম সরাসরি নেই — সবচেয়ে কাছের শব্দের আয়াত নেওয়া হয়েছে। খসড়া তালিকা: ব্যবহারের আগে আলেমের পর্যালোচনা প্রয়োজন।"));
@@ -573,8 +573,8 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   let curSec="";
   for(const g of D.groups){
    if(g.section&&g.section!==curSec){curSec=g.section;const sg=D.groups.filter(x=>x.section===curSec),sc=sg.flatMap(x=>x.cats);
-    out.appendChild(els("div","margin:22px 0 4px;padding:9px 12px;border-radius:10px;font-weight:800;font-size:16px;background:var(--primary);color:#fff","শুধু "+curSec+"-এর "+CF.nm+" — "+bn2(sc.length)+"টি"));
-    out.appendChild(audio(sc,"শুধু "+curSec+"-এর "+CF.nm+" অডিও"))}
+    out.appendChild(els("div","margin:22px 0 4px;padding:9px 12px;border-radius:10px;font-weight:800;font-size:16px;background:var(--primary);color:#fff",(g.sechd||("শুধু "+curSec+"-এর "+CF.nm))+" — "+bn2(sc.length)+"টি"));
+    out.appendChild(audio(sc,(g.sechd||("শুধু "+curSec+"-এর "+CF.nm))+" অডিও"))}
    const multi=D.groups.filter(x=>x.section===g.section).length>1;
    if(multi){out.appendChild(els("div","margin:14px 0 4px;padding:5px 12px;border-radius:10px;font-weight:700;background:color-mix(in srgb,var(--primary) 14%,transparent);color:var(--primary)",g.name+" — "+bn2(g.cats.length)+"টি"));out.appendChild(audio(g.cats,"এই ভাগের "+CF.nm+" অডিও"))}
    for(const c of g.cats){
@@ -606,22 +606,8 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
    const nm=document.createElement("input"),ph=document.createElement("input");
    [[nm,"Patient name","text","hmName","drPtN"],[ph,"WhatsApp","tel","hmPh","drPtP"]].forEach(([i,pl,t,id,key])=>{i.className="dr-find";i.style.cssText="flex:1;min-width:0;width:auto;margin:0;";i.type=t;i.id=id;i.placeholder=pl;i.autocomplete="off";i.value=lg(key);i.oninput=()=>lsSet(key,i.value);if(t==="tel")i.inputMode="tel";card.appendChild(i)});
    H.appendChild(card);
-   /* সমস্যা কখন বাড়ে — সময়ের ইঙ্গিত; প্রতিটি সময়ের সাথে কুরআনে ওই সময়ের উল্লেখ থাকা আয়াত (তিলাওয়াত/যিকরের সময়সূচির জন্য) */
-   const TM=[["ভোর/ফজর",[[17,78],[11,114],[50,39]]],["সকাল",[[33,42],[40,55],[7,205],[76,25]]],["দুপুর",[[30,18],[2,238]]],["বিকাল/আসর",[[2,238],[20,130],[50,39]]],["সন্ধ্যা/মাগরিব",[[30,17],[33,42],[40,55],[11,114]]],["রাত",[[76,26],[17,79],[11,114]]],["গভীর/শেষ রাত",[[73,6],[51,17],[3,17],[17,79]]]];
-   const TSEL=new Set(),tc=els("div","padding:10px;border:1px solid var(--border-light);border-radius:16px;background:var(--card-bg);margin:0 0 12px"),tl=els("div","font-size:13px;color:var(--text-muted);margin-top:8px;line-height:1.7");
-   tc.appendChild(els("div","font-weight:800;color:var(--primary);margin-bottom:8px","⏱ সমস্যা কখন বাড়ে? (একাধিক বাছা যায়)"));
-   const tw=els("div","display:flex;flex-wrap:wrap;gap:6px");
-   const refTxt=r=>"সূরা "+SBN[r[0]-1]+" "+bn2(r[0])+":"+bn2(r[1]);
-   const upT=()=>{const l=[];TM.forEach(([n,r])=>{if(TSEL.has(n))l.push(n+" → "+r.map(refTxt).join("، "))});tl.textContent=l.length?"এই সময়গুলোতে কুরআনে সময়ের উল্লেখ থাকা আয়াত (এই সময়ে তিলাওয়াত/যিকর): "+l.join(" | "):""};
-   TM.forEach(([n])=>{const b=el("button","hm-t",n);b.type="button";b.style.cssText="padding:6px 12px;border-radius:999px;border:1.5px solid var(--border);background:var(--card-bg);color:var(--text-sub);font:inherit;font-size:13px;cursor:pointer";b.onclick=()=>{if(TSEL.has(n)){TSEL.delete(n);b.style.cssText+=";background:var(--card-bg);color:var(--text-sub);border-color:var(--border)"}else{TSEL.add(n);b.style.cssText+=";background:var(--primary);color:#fff;border-color:var(--primary)"}upT()};tw.appendChild(b)});
-   tc.append(tw,tl);H.appendChild(tc);
-   /* সমস্যা কত সময় ধরে — কুরআনে উল্লেখ থাকা সময়ের একক (দিন, সপ্তাহ=সাত দিন, মাস, বছর) ও সেগুলোর আয়াত */
-   const DU=[["কয়েক দিন",[[2,184],[2,196],[11,65]]],["এক সপ্তাহ (সাত দিন)",[[69,7],[2,196]]],["কয়েক মাস",[[2,185],[65,4],[2,226],[9,36]]],["এক বছর",[[9,36],[10,5],[17,12]]],["কয়েক বছর",[[12,47],[46,15],[10,5]]],["অনেক বছর (১০+)",[[29,14],[46,15],[2,259]]]];
-   let DSEL=null;const dc=els("div","padding:10px;border:1px solid var(--border-light);border-radius:16px;background:var(--card-bg);margin:0 0 12px"),dl=els("div","font-size:13px;color:var(--text-muted);margin-top:8px;line-height:1.7"),dw=els("div","display:flex;flex-wrap:wrap;gap:6px"),dbs=[];
-   dc.appendChild(els("div","font-weight:800;color:var(--primary);margin-bottom:8px","⏳ সমস্যা কত সময় ধরে?"));
-   const sty=(b,on)=>{b.style.background=on?"var(--primary)":"var(--card-bg)";b.style.color=on?"#fff":"var(--text-sub)";b.style.borderColor=on?"var(--primary)":"var(--border)"};
-   DU.forEach(([n,r])=>{const b=el("button","hm-t",n);b.type="button";b.style.cssText="padding:6px 12px;border-radius:999px;border:1.5px solid var(--border);background:var(--card-bg);color:var(--text-sub);font:inherit;font-size:13px;cursor:pointer";b.onclick=()=>{DSEL=DSEL===n?null:n;dbs.forEach(([x,m])=>sty(x,m===DSEL));dl.textContent=DSEL?"কুরআনে এই সময়-এককের উল্লেখ থাকা আয়াত: "+r.map(refTxt).join("، "):""};dbs.push([b,n]);dw.appendChild(b)});
-   dc.append(dw,dl);H.appendChild(dc);
+   /* সময়/মেয়াদের আয়াত এখন রোগ নির্ণয়ের অন্য ভাগগুলোর মতোই তালিকার একেবারে নিচে (data/quran-diagnosis.json) */
+   const TM=[],DU=[],TSEL=new Set();let DSEL=null;const refTxt=r=>"সূরা "+SBN[r[0]-1]+" "+bn2(r[0])+":"+bn2(r[1]);
    const info=el("div"),out=el("div");H.append(info,out);
    const bar=els("div","margin:18px 0 6px;padding:12px;border:1px solid var(--border-light);border-radius:16px;background:var(--card-bg);text-align:center");
    const cnt=els("div","font-size:13px;color:var(--text-muted);margin-bottom:8px","কোনো আয়াত বাছা হয়নি");
