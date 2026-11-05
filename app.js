@@ -92,13 +92,34 @@ const SELV=new Set(),selUp=[];
 const selChange=()=>selUp.forEach(f=>{try{f()}catch(e){}});
 function playBtn(s,a){const b=el("button","rs-wb","🔊 শুনুন");b.type="button";let au=null;
  b.onclick=()=>{if(au){au.remove();au=null;b.textContent="🔊 শুনুন";return}
-  au=document.createElement("audio");au.controls=true;au.autoplay=true;au.style.cssText="display:block;width:100%;margin-top:8px";const u=audUrls(s,a);let i=0;au.src=u[0];au.onerror=()=>{if(++i<u.length){au.src=u[i];au.play().catch(()=>{})}else{b.textContent="অডিও পাওয়া যায়নি"}};
+  au=document.createElement("audio");au.controls=true;au.autoplay=true;au.style.cssText="display:block;width:100%;margin-top:8px";const u=audUrls(s,a);let i=0;au.onerror=()=>{if(++i<u.length){au.src=u[i];au.play().catch(()=>{})}else{b.textContent="অডিও পাওয়া যায়নি"}};
+  if(offOn())offGet(s,a).then(x=>{if(!au)return;au.src=x?URL.createObjectURL(new Blob([x],{type:"audio/mpeg"})):u[0]});else au.src=u[0];
   b.parentNode.appendChild(au);b.textContent="⏹ বন্ধ"};return b}
 function selBox(s,a){const k=s+":"+a,l=els("label","display:inline-flex;align-items:center;gap:5px;margin:6px 0 0 6px;font-size:12px;color:var(--primary);cursor:pointer"),c=document.createElement("input");c.type="checkbox";c.checked=SELV.has(k);c.onchange=()=>{c.checked?SELV.add(k):SELV.delete(k);selChange()};l.append(c,document.createTextNode("বাছাই"));
  const rs=els("select","margin-left:8px;border:1px solid var(--border-light);border-radius:6px;padding:2px 4px;background:var(--card-bg);color:inherit;font-size:12px");rs.title="মার্জ অডিওতে এই আয়াত কত বার";
  [["","বার: সাধারণ"],...[1,2,3,4,5,7,10].map(n=>[String(n),"বার: "+bn2(n)])].forEach(x=>{const o=document.createElement("option");o.value=x[0];o.textContent=x[1];rs.appendChild(o)});rs.value=REP.has(k)?String(REP.get(k)):"";
  rs.onchange=()=>{rs.value?REP.set(k,+rs.value):REP.delete(k)};l.appendChild(rs);return l}
-async function fetchAud(s,a){let e;for(const u of audUrls(s,a)){try{const r=await fetch(u);if(r.ok)return await r.arrayBuffer()}catch(x){e=x}}throw e||new Error("audio")}
+/* ───── মিশারি আলাফাসির অডিও অফলাইনে: একবার নামালে ফোনের ভেতরে (Cache) থাকে; মার্জ/শোনা আগে সেখান থেকে, না থাকলে নেট থেকে ───── */
+const OFFC="dr-aud-alafasy",OFFID="ar.alafasy",OFFN=6236,OFFU=n=>"https://cdn.islamic.network/quran/audio/64/ar.alafasy/"+n+".mp3";
+const offOn=()=>recId()===OFFID;
+async function offGet(s,a){try{const c=await caches.open(OFFC),r=await c.match(OFFU(gNum(s,a)));return r?await r.arrayBuffer():null}catch(e){return null}}
+async function offPut(n,buf){const c=await caches.open(OFFC);await c.put(OFFU(n),new Response(buf,{headers:{"Content-Type":"audio/mpeg"}}))}
+async function offCount(){try{return(await(await caches.open(OFFC)).keys()).length}catch(e){return 0}}
+let OFFRUN=false,OFFSTOP=false;
+async function offDownload(btn,done0){
+ if(OFFRUN){OFFSTOP=true;btn.textContent="থামানো হচ্ছে…";return}
+ OFFRUN=true;OFFSTOP=false;try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+ let c;try{c=await caches.open(OFFC)}catch(e){OFFRUN=false;btn.textContent="এই ফোনে অফলাইন সংরক্ষণ চালু করা যায়নি";return}
+ const have=new Set((await c.keys()).map(r=>r.url)),todo=[];for(let n=1;n<=OFFN;n++)if(!have.has(OFFU(n)))todo.push(n);
+ let done=OFFN-todo.length,fail=0,i=0,bytes=0,full="";
+ const show=()=>{const mb=bytes/1048576,est=done>OFFN-todo.length?Math.round(mb/(done-(OFFN-todo.length))*todo.length):0;btn.textContent="⏸ নামছে "+bn2(done)+"/"+bn2(OFFN)+(fail?" · ব্যর্থ "+bn2(fail):"")+(est?" · মোট আনুমানিক "+bn2(est)+" MB":"")+" — থামাতে চাপুন"};
+ const work=async()=>{while(!OFFSTOP&&i<todo.length){const n=todo[i++];let ok=false;
+   for(const u of [OFFU(n),"https://cdn.islamic.network/quran/audio/128/ar.alafasy/"+n+".mp3"]){let b;try{const r=await fetch(u);if(!r.ok)continue;b=await r.arrayBuffer()}catch(e){continue}
+    try{await offPut(n,b);bytes+=b.byteLength;ok=true}catch(e){OFFSTOP=true;full="ফোনের জায়গা শেষ — কিছু ফাইল মুছে আবার চাপুন"}break}
+   if(ok)done++;else if(!OFFSTOP)fail++;if((done+fail)%5===0)show()}};
+ show();await Promise.all([work(),work(),work(),work()]);OFFRUN=false;
+ btn.textContent=full||(done>=OFFN?"✅ মিশারি অডিও অফলাইনে আছে (সব "+bn2(OFFN)+"টি আয়াত)":"📥 মিশারি অফলাইন অডিও: "+bn2(done)+"/"+bn2(OFFN)+" — চাপলে বাকিটা নামবে")}
+async function fetchAud(s,a){if(offOn()){const b=await offGet(s,a);if(b)return b}let e;for(const u of audUrls(s,a)){try{const r=await fetch(u);if(r.ok){const b=await r.arrayBuffer();if(offOn())offPut(gNum(s,a),b.slice(0)).catch(()=>{});return b}}catch(x){e=x}}throw e||new Error("audio")}
 function wavOf(parts,sr){let n=0;parts.forEach(p=>n+=p.length);const buf=new ArrayBuffer(44+n*2),v=new DataView(buf),w=(o,t)=>[...t].forEach((c,i)=>v.setUint8(o+i,c.charCodeAt(0)));
  w(0,"RIFF");v.setUint32(4,36+n*2,true);w(8,"WAVEfmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,"data");v.setUint32(40,n*2,true);
  let o=44;for(const p of parts)for(let i=0;i<p.length;i++){const x=Math.max(-1,Math.min(1,p[i]));v.setInt16(o,x<0?x*32768:x*32767,true);o+=2}return new Blob([buf],{type:"audio/wav"})}
@@ -276,8 +297,9 @@ function audioBar(info,all,cb){if(!all.length)return;const box=els("div","margin
   b3.onclick=()=>topicAddPanel(pn);
   b4.onclick=()=>{const l=selList();if(!l.length)return alert("আগে আয়াতের নিচের “বাছাই” বক্সে টিক দিন");cutEditor(l,ed,out,t=>note.textContent=t,CURT)};
   selUp.push(()=>{b3.textContent="📚 বাছাই করা আয়াত বিষয়ে যোগ ("+bn2(SELV.size)+")"});
+  const ob=el("button","rs-wb rs-act","📥 মিশারি আলাফাসির অডিও অফলাইনের জন্য নামান");ob.type="button";offCount().then(n=>{if(n>=OFFN)ob.textContent="✅ মিশারি অডিও অফলাইনে আছে (সব "+bn2(OFFN)+"টি আয়াত)";else if(n)ob.textContent="📥 মিশারি অফলাইন অডিও: "+bn2(n)+"/"+bn2(OFFN)+" — চাপলে বাকিটা নামবে"});ob.onclick=()=>offDownload(ob);
   const grp=(t,cls,...k)=>{const g=el("div","rs-grp"),r=el("div","rs-gr"+(cls?" "+cls:""));g.append(el("div","rs-gh",t));r.append(...k);g.appendChild(r);return g};
-  const panel=el("div","rs-panel");panel.append(grp("সব আয়াত","",...(cb?[cb]:[]),b1),grp("বাছাই করা আয়াত","",b2,b4,b3),grp("অডিও সেটিং","one",sel,sc,rp));
+  const panel=el("div","rs-panel");panel.append(grp("সব আয়াত","",...(cb?[cb]:[]),b1),grp("বাছাই করা আয়াত","",b2,b4,b3),grp("অডিও সেটিং","one",sel,sc,rp,ob));
   box.append(panel,note,pn,ed,out);info.appendChild(box)}
 const SB={n:0,t:0,m:new Map,set(u){this.t=u.size;this.m=new Map([...u].map((k,i)=>[k,i+1]))}};
 function verses(host,refs,fgl,off){let shown=0,fail=[];const step=15,g=GEN;
