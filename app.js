@@ -180,9 +180,16 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;
  try{ctx.close()}catch(x){}try{wl&&wl.release()}catch(x){}
  if(!ok){console.error("merge failed");note("একটা ফাইলে জোড়া লাগানো যায়নি (অডিও সার্ভার ফাইল দিতে দেয়নি), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");out.textContent="";playList(list,out);return}
  const f=enc.flush();if(f.length)mp3.push(new Uint8Array(f));const blob=new Blob(mp3,{type:"audio/mpeg"}),ext="mp3";
- const url=URL.createObjectURL(blob),au=document.createElement("audio");au.controls=true;au.setAttribute("controlsList","nodownload");au.src=url;au.style.cssText="display:block;width:100%;margin-top:8px";
- const dl=els("a","display:inline-flex;flex-direction:column;align-items:center;gap:2px;margin-top:8px;padding:9px 22px;border-radius:12px;background:var(--primary);color:#fff;text-decoration:none;font-weight:600;line-height:1.3","");const FN=(String(window.__sq||"").trim().replace(/\s*[,،，、]\s*/g,"-").replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g,"_").replace(/^[-_.]+|[-_.]+$/g,"").slice(0,60)||"quran-audio")+"."+ext;dl.href=url;{const t1=document.createElement("span"),t2=document.createElement("span");t1.textContent="⬇ Download";t2.textContent=(Math.round(blob.size/1048576*10)/10)+" MB";t2.style.cssText="font-size:12px;font-weight:400;opacity:.9";dl.append(t1,t2)}dl.download=FN;out.append(au,dl);
+ const url=URL.createObjectURL(blob),au=document.createElement("audio");au.controls=true;au.src=url;au.style.cssText="display:block;width:100%;margin-top:8px";
+ const dl=els("a","display:inline-flex;flex-direction:column;align-items:center;gap:2px;margin-top:8px;padding:9px 22px;border-radius:12px;background:var(--primary);color:#fff;text-decoration:none;font-weight:600;line-height:1.3","");const FN=(String(window.__sq||"").trim().replace(/\s*[,،，、]\s*/g,"-").replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g,"_").replace(/^[-_.]+|[-_.]+$/g,"").slice(0,60)||"quran-audio")+"."+ext;dl.href=url;{const t1=document.createElement("span"),t2=document.createElement("span");t1.textContent="⬇ Download";t2.textContent=(Math.round(blob.size/1048576*10)/10)+" MB";t2.style.cssText="font-size:12px;font-weight:400;opacity:.9";dl.append(t1,t2)}dl.download=FN;window.__lastFN=FN;dl.onclick=e=>{if(window.DRDl){e.preventDefault();saveBlob(blob,FN)}};out.append(au,dl);
  note("✅ "+bn2(ok)+"টি আয়াতের অডিও একটি ফাইলে তৈরি হয়েছে"+(cutN?" (অংশ কাটা: "+bn2(cutN)+"টি আয়াত)":"")+(bad?" · "+bn2(bad)+"টির অডিও পাওয়া যায়নি, বাদ গেছে":""));au.play().catch(()=>{})}
+// ---------- অ্যাপের ভেতরে ফাইল সেভ (ওয়েবভিউ blob ডাউনলোড করে না, তাই নেটিভ DRDl দিয়ে Downloads ফোল্ডারে) ----------
+async function saveBlob(blob,name){
+ if(!window.DRDl){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();return}
+ try{const id=String(Date.now()),S=3*512*1024;DRDl.begin(id,name,blob.type||"audio/mpeg");
+  for(let o=0;o<blob.size;o+=S){const u8=new Uint8Array(await blob.slice(o,o+S).arrayBuffer());let b="";for(let i=0;i<u8.length;i+=8192)b+=String.fromCharCode.apply(null,u8.subarray(i,i+8192));DRDl.chunk(id,btoa(b))}
+  DRDl.end(id)}catch(e){try{DRDl.fail(String(e))}catch(x){}}}
+window.__drSave=(b)=>saveBlob(b,window.__lastFN||"quran-audio.mp3");
 // ---------- আয়াতের অডিও থেকে অংশ কাটা ----------
 const CUT=new Map(); // "সূরা:আয়াত" → [শুরু সেকেন্ড, শেষ সেকেন্ড]
 const selList=()=>[...SELV].map(k=>k.split(":").map(Number)).sort((x,y)=>x[0]-y[0]||x[1]-y[1]);
