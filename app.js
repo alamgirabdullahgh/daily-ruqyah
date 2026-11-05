@@ -811,8 +811,8 @@ function drUpdater(){
  btn.onclick=()=>go(false);
  document.addEventListener("visibilitychange",async()=>{if(document.hidden)return;
   if(pend){try{const i=await P.info();if(i.canInstall){pend=false;can=true;go(false);return}}catch(e){}}
-  if(Date.now()-(+lsGet("drChk","0")||0)>60*1000)check()});
- setInterval(()=>{if(!document.hidden)check()},5*60*1000);
+  if(Date.now()-(+lsGet("drChk","0")||0)>10*1000)check()});
+ setInterval(()=>{if(!document.hidden)check()},30*1000);
  P.info().then(i=>{cur=i;ver.textContent=NAME+" v"+i.versionName}).catch(()=>{});
  check()}
 drUpdater();
