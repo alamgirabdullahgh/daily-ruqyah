@@ -56,6 +56,10 @@ class Cfg(ctx: Context) {
     var pickCur: Int
         get() = sp.getInt("pickCur", -1)
         set(v) = sp.edit().putInt("pickCur", v).apply()
+    // চাপার সময়ের রাত/দিন (ওয়াক্তের দিন, epoch day) — শুধু ওয়াক্ত-নম্বর মিললে পরদিনের একই ওয়াক্তে পুরনো বাছাই ফিরে আসত
+    var pickDay: Long
+        get() = sp.getLong("pickDay", -1L)
+        set(v) = sp.edit().putLong("pickDay", v).apply()
 
     // ফজর, যোহর, আসর, মাগরিব, ইশা — মিনিটের সমন্বয়। ডিফল্ট: যোহর +১, মাগরিব +৩ (সূর্যাস্তের পর সতর্কতার মিনিট)
     private val defOff = intArrayOf(0, 1, 0, 3, 0)

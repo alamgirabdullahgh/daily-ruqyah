@@ -243,8 +243,12 @@ class ClockWidget : AppWidgetProvider() {
 
         // নিচের সারিতে এখন কী দেখানো হচ্ছে: 0–৪ = সেই ওয়াক্ত, NAFL = চলতি ওয়াক্তের নফল সালাত
         private const val NAFL = 5
+        // চলতি ওয়াক্ত কোন দিনের: ফজরের আগের ইশা গতকালের ওয়াক্ত (পুরনো বাছাই পরদিনের একই ওয়াক্তে ফিরে আসা ঠেকাতে)
+        private fun windowDay(s: Snap): Long =
+            java.time.LocalDate.now().toEpochDay() - (if (s.cur == 4 && s.nowMin < s.min[0]) 1L else 0L)
+
         private fun shownIndex(c: Cfg, s: Snap): Int {
-            val picked = (c.pick in 0..4 || (c.pick == NAFL && nafl(s, s.cur) != null)) && c.pickCur == s.cur
+            val picked = (c.pick in 0..4 || (c.pick == NAFL && nafl(s, s.cur) != null)) && c.pickCur == s.cur && c.pickDay == windowDay(s)
             return if (picked) c.pick else if (naflByDefault(s)) NAFL else s.cur
         }
 
@@ -258,6 +262,7 @@ class ClockWidget : AppWidgetProvider() {
             val target = if (i == s.cur && nafl(s, s.cur) != null) (if (shown == NAFL) s.cur else NAFL) else i
             c.pick = if (target == shown) -1 else target
             c.pickCur = s.cur
+            c.pickDay = windowDay(s)
             refresh(ctx)
         }
 
