@@ -222,9 +222,14 @@ const WQL={"ۖ":"صلى","ۗ":"قلى","ۘ":"م","ۙ":"لا","ۚ":"ج","ۛ":"∴
 const arFill=(box,s,a,t,hl,pr)=>{const m=wqMarks(s,a);let seg=null;t.split(" ").forEach((x,i)=>{const inP=!!(pr&&i+1>=pr[0]&&i+1<=pr[1]);if(i)(inP&&seg?seg:box).appendChild(document.createTextNode(" "));if(inP&&!seg){seg=el("span","rs-gold");box.appendChild(seg)}else if(!inP)seg=null;const h=seg||box;
  if(i===hl-1)h.appendChild(el("mark",null,x));else h.appendChild(document.createTextNode(x));const k=m[i+1];if(k){h.appendChild(document.createTextNode(" "));h.appendChild(el("span","rs-wq",[...k].map(c=>WQL[c]||"").filter(Boolean).join(" ")))}})};
 /* সংশ্লিষ্ট অংশ (আরবি শব্দ-সীমা, ১-ভিত্তিক): অডিও কাটার নিয়মেরই হুবহু একই — ওয়াক্ফ-চিহ্নের মধ্যবর্তী বাক্যাংশ; অর্থ-অনুযায়ী কাটার তালিকায় (quran-meaning-cuts.json, tr) থাকলে সেটাই */
-const arPortion=(s,a,w,N)=>{if(!w||!N)return null;const stops=wqStops(s,a);let lo=1,hi=N;for(const k of stops)if(k<w)lo=k+1;for(const k of stops)if(k>=w){hi=k;break}
- if(hi-lo+1>10){/* হালকা থামার চিহ্নেও (ۖ ۛ) বাক্যাংশ শেষ ধরা হয়, যাতে অর্থ অসম্পূর্ণ না কাটে */const al=wqAll(s,a);lo=1;hi=N;for(const k of al)if(k<w)lo=k+1;for(const k of al)if(k>=w){hi=k;break}}
- if(hi-lo+1>12){lo=Math.max(lo,w-6);hi=Math.min(hi,w+5)}
+const AR_DIA=/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g,arNz=x=>x.replace(AR_DIA,"").replace(/[ٱأإآ]/g,"ا").replace(/ى/g,"ي");
+/* বাক্য শুরু করে এমন শব্দ (ফামা, ইয, লাকাদ, ছুম্মা, কুল, কালূ…): মিলে যাওয়া শব্দের বাক্যাংশ এখান থেকে শুরু/এখানে শেষ ধরা হয় */
+const AR_ST=new Set("فما فلما فاذا فان فمن فهل فكيف فقد ولقد لقد ولما لما واذ اذ واذا اذا حتي ثم بل لكن ولكن انما وانما كيف هل ام الم افلم افلا اولم انه انهم انا اننا وانه وانا قل قال وقال فقال قالوا وقالوا فقالوا يا لو ولو لولا ومن فلا".split(" "));
+const arPortion=(s,a,w,N,t)=>{if(!w||!N)return null;const al=wqAll(s,a),st=[];(t?t.split(" "):[]).forEach((x,i)=>{if(AR_ST.has(arNz(x)))st.push(i+1)});
+ let lo=1,hi=N;for(const k of al)if(k<w)lo=Math.max(lo,k+1);for(const k of st)if(k<=w)lo=Math.max(lo,k);
+ for(const k of al)if(k>=w)hi=Math.min(hi,k);for(const k of st)if(k>w)hi=Math.min(hi,k-1);
+ if(hi-lo+1<4){const c=[N,...al.filter(k=>k>hi),...st.filter(k=>k-1>hi).map(k=>k-1)];hi=Math.min(Math.min(...c),lo+9)}
+ if(hi-lo+1>14){lo=Math.max(lo,w-6);hi=Math.min(hi,w+5)}
  const ce=MC&&Array.isArray(MC[s+":"+a])?MC[s+":"+a].find(c=>c.w&&c.w.includes(w)&&Array.isArray(c.tr)):null;if(ce){lo=Math.max(1,ce.tr[0]);hi=Math.min(N,ce.tr[1])}
  return[Math.min(lo,w),Math.max(hi,w)]};
 const wqAll=(s,a)=>{const v=WQ&&WQ[s+":"+a];return v?v.split(",").map(x=>{const m=/^(\d+)/.exec(x);return m?+m[1]:0}).filter(Boolean):[]};
@@ -444,7 +449,7 @@ function verses(host,refs,fgl,off){let shown=0,fail=[];const step=15,g=GEN;
    if(!markQ(tb,bn[a-1]||"",window.__bq)){markBn(tb,bn[a-1]||"",fgl);
    chunk("w",s,1).then(async W=>{const m=(W[a-1]||"").split("|")[w-1];let ok=false;try{const M=await chunk("m",s,1);const r=alRange((M||[])[a-1],w);if(r)ok=markRange(tb,bn[a-1]||"",r)}catch(e){}if(!ok&&m&&m!==fgl)markBn(tb,bn[a-1]||"",m)}).catch(()=>{});}
    try{await meanLoad()}catch(e){}
-   const NW=t.split(" ").length,PR=arPortion(s,a,w,NW);
+   const NW=t.split(" ").length,PR=arPortion(s,a,w,NW,t);
    arFill(tx,s,a,t,w,PR);
    if(PR){const nb=(bn[a-1]||"").split(" ").length;if(PR[0]<=1&&PR[1]>=NW)setBnPort(tb,[0,nb-1]);else chunk("m",s,1).then(M=>{const r=bnPortion((M||[])[a-1],PR,NW,nb);if(r)setBnPort(tb,r)}).catch(()=>{})}
    let wl=false;wb.onclick=async()=>{wh.classList.toggle("on");if(wl)return;wl=true;wh.textContent="লোড হচ্ছে…";
