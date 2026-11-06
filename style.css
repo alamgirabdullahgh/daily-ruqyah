@@ -430,3 +430,5 @@ body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
 .rs-num::-webkit-outer-spin-button,.rs-num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .rs-num:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
 .rs-num-s{width:46px;min-height:26px;font-size:12px;border-radius:7px;margin-left:6px}
+
+html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bottom:0}
