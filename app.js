@@ -184,7 +184,7 @@ const WORDS=new Map();
 const REP=new Map();
 const repAll=()=>{try{const v=+localStorage.getItem("rsRep");if(v>=1&&v<=20)return v}catch(e){}return 1};
 const repOf=(s,a)=>REP.get(s+":"+a)||repAll();
-const cutMode=()=>{try{const v=localStorage.getItem("rsCut");if(v==="p3"||v==="p0"||v==="wq"||v==="dg"||v==="tr")return v}catch(e){}return"full"};
+const cutMode=()=>"full"; // সব ডাউনলোড সবসময় পুরো আয়াত
 // শব্দের সীমা অনুমান: অডিওর শক্তি-রেখার (energy) গর্তগুলো থেকে ডিপি দিয়ে বাছাই, শব্দের অক্ষর-সংখ্যার অনুপাতে সময় মিলিয়ে — তাই যেকোনো ক্বারীর অডিওতে চলে, বাইরের সার্ভিস লাগে না; ফল আনুমানিক
 function wordBounds(x,sr,W){
  const F=Math.round(sr*0.01),nF=Math.floor(x.length/F),N=W.length;if(N<1||nF<N*3)return null;
@@ -233,26 +233,29 @@ function i16(ch,a,b,fd){const n=Math.max(0,b-a),o=new Int16Array(n);for(let k=0;
 async function rangeSegs(s,a,x,sr,rg){const t=((await chunk("a",s))||[])[a-1];if(!t)return null;const words=String(t).split(" "),N=words.length;
  const W=words.map(w=>Math.max(1,nz(w,true).length)),b=wordBounds(x,sr,W);if(!b)return null;const lo=Math.max(1,rg[0]),hi=Math.min(N,rg[1]);if(hi<lo||(lo===1&&hi===N))return null;const mg=Math.round(sr*0.04);
  return[[Math.max(0,b[lo-1]-mg),Math.min(x.length,b[hi]+mg)]]}
+// পুরো আয়াত অক্ষত রেখে শুধু শুরু-শেষের ফাঁকা নীরবতা ছাঁটা + ভলিউম সমান + ছোট ফেড: ফলে আয়াত জোড়ার জায়গা (এমনকি ভিন্ন সূরার আয়াত) কানে ধরা পড়ে না
+function smoothAyah(ch,sr){const n=ch.length;let pk=0;for(let i=0;i<n;i++){const v=Math.abs(ch[i]);if(v>pk)pk=v}
+ if(pk<=0.0005)return new Int16Array(Math.round(sr*0.05));
+ const th=pk*0.02;let a=0,b=n-1;while(a<n&&Math.abs(ch[a])<th)a++;while(b>a&&Math.abs(ch[b])<th)b--;
+ a=Math.max(0,a-Math.round(sr*0.03));b=Math.min(n,b+1+Math.round(sr*0.06));const m=b-a;if(m<=0)return new Int16Array(0);
+ let e=0;for(let i=a;i<b;i++)e+=ch[i]*ch[i];const rms=Math.sqrt(e/m)||0.1;let g=Math.max(0.6,Math.min(1.8,0.1/rms));g=Math.min(g,0.97/pk);
+ const fi=Math.min(Math.round(sr*0.02),m>>1),fo=Math.min(Math.round(sr*0.04),m>>1),o=new Int16Array(m);
+ for(let k=0;k<m;k++){let v=ch[a+k]*g;if(k<fi)v*=k/fi;else if(m-k<fo)v*=(m-k)/fo;v=Math.max(-1,Math.min(1,v));o[k]=v<0?v*32768:v*32767}return o}
 async function mergeAudio(list,out,note,opt){if(!list.length)return;
  // কোনো সীমা নেই: প্রতিটি আয়াত নামিয়েই সাথে সাথে MP3-তে এনকোড হয়, মেমোরিতে শুধু ছোট MP3 টুকরো জমে — তাই হাজারো আয়াতেও একটাই ফাইল
  out.textContent="";let L=null;try{L=await loadLame()}catch(e){console.error(e)}
  if(!L){note("MP3 বানানোর লাইব্রেরি পাওয়া যায়নি (ইন্টারনেট দেখুন), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");playList(list,out);return}
- const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.5));
+ const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));
  let wl=null;try{wl=await navigator.wakeLock.request("screen")}catch(e){}
  const push=pcm=>{for(let i=0;i<pcm.length;i+=B){const m=enc.encodeBuffer(pcm.subarray(i,i+B));if(m.length)mp3.push(new Uint8Array(m))}};
- const W=4,pf=[],get=i=>pf[i]||(pf[i]=fetchAud(list[i][0],list[i][1]).catch(()=>null));let ok=0,bad=0,cutN=0;const cm=cutMode();if(cm==="wq"||cm==="dg"||cm==="tr")await wqLoad();if(cm==="dg"||cm==="tr")await meanLoad();const gap2=new Int16Array(Math.round(sr*0.25));
+ const W=4,pf=[],get=i=>pf[i]||(pf[i]=fetchAud(list[i][0],list[i][1]).catch(()=>null));let ok=0,bad=0,cutN=0;
  for(let i=0;i<list.length;i++){for(let j=i;j<Math.min(i+W,list.length);j++)get(j);
   note("অডিও নামানো ও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+(bad?" (বাদ: "+bn2(bad)+")":"")+"…");
   const ab=await get(i);pf[i]=null;
   if(!ab){bad++;if(!ok&&bad>=5)break;continue}
-  try{const d=await ctx.decodeAudioData(ab),ch=d.getChannelData(0);let sg=null;
-   if(opt&&opt.rg){const rg=opt.rg[i];if(rg&&list[i][1]>1){try{sg=await rangeSegs(list[i][0],list[i][1],ch,sr,rg)}catch(e){sg=null}}}
-   else if(cm!=="full"&&list[i][1]>1){const ws=WORDS.get(list[i][0]+":"+list[i][1]);if(ws&&ws.size){try{sg=await verseSegs(list[i][0],list[i][1],ch,sr,ws,cm==="p3"?3:(cm==="wq"||cm==="dg"||cm==="tr")?-1:0,cm==="dg"||cm==="tr"?cm:"")}catch(e){sg=null}}}
-   if(!(opt&&opt.rg)){const cr=CUT.get(list[i][0]+":"+list[i][1]);if(cr){const a0=Math.max(0,Math.floor(cr[0]*sr)),b0=Math.min(ch.length,Math.ceil(cr[1]*sr));if(b0>a0)sg=[[a0,b0]]}}
-    const rp=opt&&opt.rg?1:repOf(list[i][0],list[i][1]);if(sg)cutN++;
-   for(let q=0;q<rp;q++){if(sg){sg.forEach((r,ix)=>{push(i16(ch,r[0],r[1],Math.round(sr*0.012)));if(ix<sg.length-1)push(gap2)})}else push(i16(ch,0,ch.length,0));
-    push(gap)}
-   ok++}catch(e){bad++;if(!ok&&bad>=5)break}
+  try{const d=await ctx.decodeAudioData(ab),ch=d.getChannelData(0),pcm=smoothAyah(ch,sr),rp=repOf(list[i][0],list[i][1]);
+    for(let q=0;q<rp;q++){push(pcm);push(gap)}
+    ok++}catch(e){bad++;if(!ok&&bad>=5)break}
   if(i%10===0)await new Promise(r=>setTimeout(r))}
  try{ctx.close()}catch(x){}try{wl&&wl.release()}catch(x){}
  if(!ok){console.error("merge failed");note("একটা ফাইলে জোড়া লাগানো যায়নি (অডিও সার্ভার ফাইল দিতে দেয়নি), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");out.textContent="";playList(list,out);return}
@@ -405,18 +408,15 @@ function audioBar(info,all,cb,title){if(!all.length)return;const box=els("div","
  b1.onclick=()=>mergeAudio(all,out,t=>note.textContent=t);
  b2.onclick=()=>{const l=[...SELV].map(k=>k.split(":").map(Number)).sort((x,y)=>x[0]-y[0]||x[1]-y[1]);if(!l.length)return alert("আগে আয়াতের নিচের “বাছাই” বক্সে টিক দিন");mergeAudio(l,out,t=>note.textContent=t)};
  selUp.push(()=>{b2.textContent="🔊 বাছাই করা আয়াত মার্জ ("+bn2(SELV.size)+")"});
- const sc=el("select","rs-sel");const CUTL={full:["পুরো আয়াত","অডিও: পুরো আয়াত"],wq:["ওয়াক্ফ অংশ","অডিও: সংশ্লিষ্ট অংশ (ওয়াক্ফ চিহ্ন অনুযায়ী)"],dg:["অর্থ: নির্ণয়","অডিও: অর্থ অনুযায়ী — রোগ নির্ণয় (ছোট অংশ)"],tr:["অর্থ: চিকিৎসা","অডিও: অর্থ অনুযায়ী — চিকিৎসা (পুরো অংশ)"],p3:["শব্দ ± ৩","অডিও: সংশ্লিষ্ট শব্দ + আগে-পরে ৩ শব্দ"],p0:["শুধু শব্দ","অডিও: শুধু সংশ্লিষ্ট শব্দ"]};
- Object.keys(CUTL).forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=CUTL[k][0];sc.appendChild(o)});sc.value=cutMode();
-  const rp=el("select","rs-sel");[1,2,3,4,5,7,10].forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent="প্রতিটি "+bn2(n)+" বার";rp.appendChild(o)});rp.value=String(repAll());
+ const rp=el("select","rs-sel");[1,2,3,4,5,7,10].forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent="প্রতিটি "+bn2(n)+" বার";rp.appendChild(o)});rp.value=String(repAll());
   rp.onchange=()=>{try{localStorage.setItem("rsRep",rp.value)}catch(e){}};
-  const hint=()=>{note.textContent=(cutMode()!=="full"?"সংশ্লিষ্ট অংশ অডিও বিশ্লেষণ করে আনুমানিকভাবে কাটা হয়; শুরু/শেষে সামান্য এদিক-ওদিক হতে পারে, পুরো আয়াত বেছে নিলে কোনো কাটাছেঁড়া নেই। ":"")+(all.length>100?"আয়াত বেশি হলে সময় লাগবে — নেট চালু রাখুন ও পেজ খোলা রাখুন; সব আয়াত ক্রমানুসারে একটাই MP3 ফাইলে হবে":"")};sc.onchange=()=>{try{localStorage.setItem("rsCut",sc.value)}catch(e){}hint()};hint();
-  const b3=el("button","rs-wb","📚 বাছাই করা আয়াত বিষয়ে যোগ ("+bn2(SELV.size)+")"),b4=el("button","rs-wb","✂ বাছাই করা আয়াতের অংশ কেটে মার্জ"),pn=el("div"),ed=el("div");b3.type=b4.type="button";b3.className=b4.className="rs-wb rs-act";
+  const hint=()=>{note.textContent=(all.length>100?"আয়াত বেশি হলে সময় লাগবে — নেট চালু রাখুন ও পেজ খোলা রাখুন; সব আয়াত ক্রমানুসারে একটাই MP3 ফাইলে হবে":"")};hint();
+  const b3=el("button","rs-wb","📚 বাছাই করা আয়াত বিষয়ে যোগ ("+bn2(SELV.size)+")"),pn=el("div"),ed=el("div");b3.type="button";b3.className="rs-wb rs-act";
   b3.onclick=()=>topicAddPanel(pn);
-  b4.onclick=()=>{const l=selList();if(!l.length)return alert("আগে আয়াতের নিচের “বাছাই” বক্সে টিক দিন");cutEditor(l,ed,out,t=>note.textContent=t,CURT)};
   selUp.push(()=>{b3.textContent="📚 বাছাই করা আয়াত বিষয়ে যোগ ("+bn2(SELV.size)+")"});
     const grp=(t,cls,...k)=>{const g=el("div","rs-grp"),r=el("div","rs-gr"+(cls?" "+cls:""));g.append(el("div","rs-gh",t));r.append(...k);g.appendChild(r);return g};
-  const panel=el("div","rs-panel");const ag=grp("অডিও সেটিং","one",sel,sc,rp),hl=el("div","rs-hint");const hs=()=>{hl.textContent=(CUTL[sc.value]||CUTL.full)[1]+" · প্রতিটি আয়াত "+bn2(rp.value)+" বার"};sc.addEventListener("change",hs);rp.addEventListener("change",hs);hs();ag.appendChild(hl);
-  panel.append(grp("সব আয়াত","",...(cb?[cb]:[]),b1,b5),grp("বাছাই করা আয়াত","",b2,b6,b4,b3),ag);
+  const panel=el("div","rs-panel");const ag=grp("অডিও সেটিং","one",sel,rp),hl=el("div","rs-hint");const hs=()=>{hl.textContent="অডিও: পুরো আয়াত · প্রতিটি আয়াত "+bn2(rp.value)+" বার"};rp.addEventListener("change",hs);hs();ag.appendChild(hl);
+  panel.append(grp("সব আয়াত","",...(cb?[cb]:[]),b1,b5),grp("বাছাই করা আয়াত","",b2,b6,b3),ag);
   box.append(panel,note,pn,ed,out);info.appendChild(box)}
 const SB={n:0,t:0,m:new Map,set(u){this.t=u.size;this.m=new Map([...u].map((k,i)=>[k,i+1]))}};
 function verses(host,refs,fgl,off){let shown=0,fail=[];const step=15,g=GEN;
@@ -717,9 +717,9 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   info.textContent="";if(!CF.host)info.appendChild(els("div","font-weight:700;color:var(--primary);margin-bottom:4px",CF.title));
   if(!CF.host)info.appendChild(els("div","font-size:13px;line-height:1.7",CF.intro||"ক্রম: প্রথমে বদনজর, তারপর জাদু, তারপর জিন। প্রতিটি রোগ বা ধরনের জন্য ১–২টি মূল আয়াত (শুধু প্রাসঙ্গিক অংশ)। এই অংশ শুনে/পড়ে রোগ ধরা হবে; রোগ ধরা পড়লে ওই রোগের সব আয়াতের তালিকা ও অডিও ‘চিকিৎসা’ বোতামে। “শব্দভিত্তিক” চিহ্নিতগুলোতে কুরআনে ওই ধরনের নাম সরাসরি নেই — সবচেয়ে কাছের শব্দের আয়াত নেওয়া হয়েছে। খসড়া তালিকা: ব্যবহারের আগে আলেমের পর্যালোচনা প্রয়োজন।"));
   const resolve=sel=>{const terms=[];sel.forEach(x=>{const t=TOPICS.find(y=>y.name===x.topic);if(t)t.terms.forEach(y=>{if(x.all||(x.prefix?y[0].split(" — ")[0]===x.prefix:(x.titles||[]).includes(y[0])))terms.push(y)})});return terms};
-  const keyList=cs=>{const list=[],rg=[];cs.forEach(c=>c.keys.forEach(k=>{list.push([k.s,k.a]);rg.push([k.from,k.to])}));return{list,rg}};
-  const audio=(cs,label)=>{const w=els("div","margin-top:6px"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),res=el("div"),b=mkBtn("🔊 "+label,()=>{window.__sq=CF.sq+" "+(cs.length===1?cs[0].name:label);const k=keyList(cs);mergeAudio(k.list,res,t=>note.textContent=t,{rg:k.rg})});b.style.margin="0";w.append(b,note,res);return w};
-  const allB=audio(D.groups.flatMap(g=>g.cats),"সব রোগের "+CF.nm+" অডিও একসাথে ("+bn2(D.groups.reduce((n,g)=>n+g.cats.reduce((m,c)=>m+c.keys.length,0),0))+"টি অংশ)");allB.style.marginBottom="10px";out.appendChild(allB);
+  const keyList=cs=>{const list=[],seen=new Set();cs.forEach(c=>c.keys.forEach(k=>{const id=k.s+":"+k.a;if(!seen.has(id)){seen.add(id);list.push([k.s,k.a])}}));return{list}};
+  const audio=(cs,label)=>{const w=els("div","margin-top:6px"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),res=el("div"),b=mkBtn("🔊 "+label,()=>{window.__sq=CF.sq+" "+(cs.length===1?cs[0].name:label);const k=keyList(cs);mergeAudio(k.list,res,t=>note.textContent=t)});b.style.margin="0";w.append(b,note,res);return w};
+  const allB=audio(D.groups.flatMap(g=>g.cats),"সব রোগের "+CF.nm+" অডিও একসাথে ("+bn2(new Set(D.groups.flatMap(g=>g.cats.flatMap(c=>c.keys.map(k=>k.s+":"+k.a)))).size)+"টি আয়াত)");allB.style.marginBottom="10px";out.appendChild(allB);
   let curSec="";
   for(const g of D.groups){
    if(g.section&&g.section!==curSec){curSec=g.section;const sg=D.groups.filter(x=>x.section===curSec),sc=sg.flatMap(x=>x.cats);
