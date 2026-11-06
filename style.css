@@ -154,7 +154,7 @@ button,input,select{font-family:inherit}
 .rs-vw{font-size:19px;color:var(--primary);direction:rtl}
 .rs-vm{font-weight:600;color:var(--text-main)}
 .rs-va{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 10px 10px}
-.rs-va .rs-wb{margin:0}.rs-va label{margin:0!important}
+.rs-va .rs-wb{margin:0}.rs-va1{flex-wrap:nowrap;gap:5px;padding:6px 8px 10px}.rs-va1 .rs-wb{padding:5px 9px;font-size:12px;white-space:nowrap;flex:0 0 auto}.rs-va label{margin:0!important}
 .rs-ww{margin:0 10px 10px}
 /* ---------- বিষয়ের তালিকা ---------- */
 .dr-sec{display:flex;align-items:center;gap:10px;margin:18px 4px 8px;font-size:11.5px;font-weight:800;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
