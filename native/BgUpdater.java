@@ -147,8 +147,8 @@ public class BgUpdater {
     static void notify(Context c, int id, String chan, String chanName, int imp, String title, String text, Intent go) {
         try {
             NotificationManager nm = c.getSystemService(NotificationManager.class);
-            nm.createNotificationChannel(new NotificationChannel(chan, chanName, imp));
-            Notification.Builder b = new Notification.Builder(c, chan)
+            nm.createNotificationChannel(new NotificationChannel(chan + "_q", chanName, NotificationManager.IMPORTANCE_LOW)); // নীরব: শব্দ/পপআপ নেই
+            Notification.Builder b = new Notification.Builder(c, chan + "_q")
                     .setSmallIcon(android.R.drawable.stat_sys_download_done)
                     .setContentTitle(title).setContentText(text).setAutoCancel(true);
             if (go != null) b.setContentIntent(PendingIntent.getActivity(c, id, go, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
@@ -185,9 +185,8 @@ public class BgUpdater {
         Intent go = openApp(c);
         // ১) সরাসরি খোলার চেষ্টা (নতুন Android ব্যাকগ্রাউন্ড থেকে খুলতে না দিলে নিঃশব্দে ব্যর্থ হয়)
         try { c.startActivity(go); } catch (Exception e) { }
-        // ২) ব্যর্থ হলে ভরসা: চাপলেই খোলে এমন নোটিফিকেশন
-        notify(c, 33, "updated", "আপডেট সম্পন্ন", NotificationManager.IMPORTANCE_HIGH,
-                "Daily Ruqyah আপডেট হয়েছে", "সংস্করণ " + cur(c) + " চালু আছে। অ্যাপ খুলতে চাপুন", go);
+        // আপডেটের পর কোনো নোটিফিকেশন নয়; পুরোনো "updated" চ্যানেলও মুছে দিই
+        try { c.getSystemService(NotificationManager.class).deleteNotificationChannel("updated"); } catch (Exception e) { }
     }
 
     // ───── রিসিভার: ~১০ মিনিট পরপর জাগে ─────
