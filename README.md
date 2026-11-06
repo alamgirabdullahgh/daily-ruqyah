@@ -5,7 +5,7 @@
 ## চালু করার নিয়ম
 1. GitHub → এই রিপোর **Settings → Pages**
 2. Source: **Deploy from a branch** → Branch: `main` / `(root)` → Save
-3. ১-২ মিনিট পর লিংক: `https://raqialamgirabdullah-rgb.github.io/daily-ruqyah/`
+3. ১-২ মিনিট পর লিংক: `https://alamgirabdullahgh.github.io/daily-ruqyah/`
 4. ফোনের Chrome-এ লিংক খুলে ⋮ → **Add to Home screen / Install app**
    (iPhone: Safari → Share → Add to Home Screen)
 

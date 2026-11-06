@@ -23,7 +23,7 @@ import java.net.URL;
 // অ্যাপের নিজের আপডেট: GitHub-এর "latest release" দেখে, APK নামিয়ে PackageInstaller দিয়ে ইনস্টল করে
 @CapacitorPlugin(name = "AppUpdater")
 public class UpdaterPlugin extends Plugin {
-    static final String REPO = "raqialamgirabdullah-rgb/daily-ruqyah";
+    static final String REPO = "alamgirabdullahgh/daily-ruqyah";
     static final int BASE = 100;
     private volatile boolean busy = false;
 
