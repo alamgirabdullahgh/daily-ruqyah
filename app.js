@@ -185,8 +185,9 @@ const repAll=()=>{try{return repClamp(localStorage.getItem("rsRep"))}catch(e){}r
 const setAll=()=>{try{return repClamp(localStorage.getItem("rsSet"))}catch(e){}return 1}; // পুরো সেট একটানা কতবার
 const REPBX=[];
 const numBox=(cls,val,on)=>{const i=document.createElement("input");i.type="number";i.min="1";i.max="999";i.step="1";i.inputMode="numeric";i.className=cls;i.value=String(val);i.onchange=()=>{const v=repClamp(i.value);i.value=String(v);on(v)};i.onfocus=()=>{try{i.select()}catch(e){}};return i};
+function spdBox(){const l=el("label","rs-rb"),sp=el("span","rs-rt","গতি"),i=document.createElement("input");i.type="number";i.min="0.8";i.max="1.6";i.step="0.05";i.inputMode="decimal";i.className="rs-num";i.value=String(spdOf());i.onchange=()=>{const v=spdClamp(i.value);i.value=String(v);try{localStorage.setItem("rsSpd",String(v))}catch(e){}};i.onfocus=()=>{try{i.select()}catch(e){}};l.append(sp,i,el("span",null,"×"));return l}
 function repCtl(){const w=el("div","rs-rep"),mk=(t,key,val,cb)=>{const l=el("label","rs-rb"),sp=el("span","rs-rt",t),b=numBox("rs-num",val,v=>{try{localStorage.setItem(key,String(v))}catch(e){}cb&&cb(v)});l.append(sp,b,el("span",null,"বার"));return l};
- w.append(mk("প্রতিটি আয়াত","rsRep",repAll(),()=>{for(let n=REPBX.length;n--;){const x=REPBX[n];if(!x.i.isConnected)REPBX.splice(n,1);else if(!REP.has(x.k))x.i.value=String(repAll())}}),mk("পুরো সেট","rsSet",setAll()));return w}
+ w.append(mk("প্রতিটি আয়াত","rsRep",repAll(),()=>{for(let n=REPBX.length;n--;){const x=REPBX[n];if(!x.i.isConnected)REPBX.splice(n,1);else if(!REP.has(x.k))x.i.value=String(repAll())}}),mk("পুরো সেট","rsSet",setAll()),spdBox());return w}
 const repOf=(s,a)=>REP.get(s+":"+a)||repAll();
 const cutMode=()=>"full"; // সব ডাউনলোড সবসময় পুরো আয়াত
 // শব্দের সীমা অনুমান: অডিওর শক্তি-রেখার (energy) গর্তগুলো থেকে ডিপি দিয়ে বাছাই, শব্দের অক্ষর-সংখ্যার অনুপাতে সময় মিলিয়ে — তাই যেকোনো ক্বারীর অডিওতে চলে, বাইরের সার্ভিস লাগে না; ফল আনুমানিক
@@ -222,9 +223,11 @@ const arFill=(box,s,a,t,hl,pr)=>{const m=wqMarks(s,a);let seg=null;t.split(" ").
  if(i===hl-1)h.appendChild(el("mark",null,x));else h.appendChild(document.createTextNode(x));const k=m[i+1];if(k){h.appendChild(document.createTextNode(" "));h.appendChild(el("span","rs-wq",[...k].map(c=>WQL[c]||"").filter(Boolean).join(" ")))}})};
 /* সংশ্লিষ্ট অংশ (আরবি শব্দ-সীমা, ১-ভিত্তিক): অডিও কাটার নিয়মেরই হুবহু একই — ওয়াক্ফ-চিহ্নের মধ্যবর্তী বাক্যাংশ; অর্থ-অনুযায়ী কাটার তালিকায় (quran-meaning-cuts.json, tr) থাকলে সেটাই */
 const arPortion=(s,a,w,N)=>{if(!w||!N)return null;const stops=wqStops(s,a);let lo=1,hi=N;for(const k of stops)if(k<w)lo=k+1;for(const k of stops)if(k>=w){hi=k;break}
- lo=Math.max(lo,w-6);hi=Math.min(hi,w+3);/* ওয়াক্ফ-সীমা অনেক লম্বা হলে শব্দের আশেপাশের বাক্যাংশেই থামে */
+ if(hi-lo+1>10){/* হালকা থামার চিহ্নেও (ۖ ۛ) বাক্যাংশ শেষ ধরা হয়, যাতে অর্থ অসম্পূর্ণ না কাটে */const al=wqAll(s,a);lo=1;hi=N;for(const k of al)if(k<w)lo=k+1;for(const k of al)if(k>=w){hi=k;break}}
+ if(hi-lo+1>12){lo=Math.max(lo,w-6);hi=Math.min(hi,w+5)}
  const ce=MC&&Array.isArray(MC[s+":"+a])?MC[s+":"+a].find(c=>c.w&&c.w.includes(w)&&Array.isArray(c.tr)):null;if(ce){lo=Math.max(1,ce.tr[0]);hi=Math.min(N,ce.tr[1])}
  return[Math.min(lo,w),Math.max(hi,w)]};
+const wqAll=(s,a)=>{const v=WQ&&WQ[s+":"+a];return v?v.split(",").map(x=>{const m=/^(\d+)/.exec(x);return m?+m[1]:0}).filter(Boolean):[]};
 const wqStops=(s,a)=>{const v=WQ&&WQ[s+":"+a];if(!v)return[];return v.split(",").map(x=>{const m=/^(\d+)(.+)$/.exec(x);return m&&/[ۘۗۚۜۙ]/.test(m[2])?+m[1]:0}).filter(Boolean)};
 async function verseSegs(s,a,x,sr,ws,pad,mm){const t=((await chunk("a",s))||[])[a-1];if(!t)return null;const words=String(t).split(" "),N=words.length;
  const W=words.map(w=>Math.max(1,nz(w,true).length)),b=wordBounds(x,sr,W);if(!b)return null;
@@ -238,6 +241,15 @@ async function rangeSegs(s,a,x,sr,rg){const t=((await chunk("a",s))||[])[a-1];if
  const W=words.map(w=>Math.max(1,nz(w,true).length)),b=wordBounds(x,sr,W);if(!b)return null;const lo=Math.max(1,rg[0]),hi=Math.min(N,rg[1]);if(hi<lo||(lo===1&&hi===N))return null;const mg=Math.round(sr*0.04);
  return[[Math.max(0,b[lo-1]-mg),Math.min(x.length,b[hi]+mg)]]}
 // পুরো আয়াত অক্ষত রেখে শুধু শুরু-শেষের ফাঁকা নীরবতা ছাঁটা + ভলিউম সমান + ছোট ফেড: ফলে আয়াত জোড়ার জায়গা (এমনকি ভিন্ন সূরার আয়াত) কানে ধরা পড়ে না
+/* গতি: পিচ না বদলে সময় ছোট করা (WSOLA); rate>1 মানে দ্রুত। ডিফল্ট ১.১৫ */
+const spdClamp=v=>{v=parseFloat(v);return v>=0.8&&v<=1.6?Math.round(v*100)/100:1.15};
+const spdOf=()=>{try{const v=localStorage.getItem("rsSpd");return v==null?1.15:spdClamp(v)}catch(e){}return 1.15};
+function tsm(x,sr,rate){if(!(rate>1.005||rate<0.995))return x;const n=x.length,N=2*Math.round(sr*0.015),H=N/2,Ha=H*rate,D=Math.round(sr*0.008),L=Math.ceil(n/rate)+N,y=new Float32Array(L),nw=new Float32Array(L),w=new Float32Array(N);
+ if(n<N*3)return x;for(let i=0;i<N;i++)w[i]=0.5-0.5*Math.cos(2*Math.PI*i/N);let prev=0,end=0;
+ for(let k=0;;k++){const o=k*H;if(o+N>L)break;let s=Math.round(k*Ha);
+  if(k>0){const t=prev+H;let best=s,bc=-1e30;if(t+H<=n)for(let d=-D;d<=D;d+=4){const c=s+d;if(c<0||c+N>n)continue;let r=0;for(let i=0;i<H;i+=8)r+=x[c+i]*x[t+i];if(r>bc){bc=r;best=c}}s=best}
+  if(s+N>n)break;for(let i=0;i<N;i++){y[o+i]+=x[s+i]*w[i];nw[o+i]+=w[i]}prev=s;end=o+N}
+ for(let i=0;i<end;i++)if(nw[i]>1e-3)y[i]/=nw[i];return y.subarray(0,end)}
 function smoothAyah(ch,sr){const n=ch.length;let pk=0;for(let i=0;i<n;i++){const v=Math.abs(ch[i]);if(v>pk)pk=v}
  if(pk<=0.0005)return new Int16Array(Math.round(sr*0.05));
  const th=pk*0.02;let a=0,b=n-1;while(a<n&&Math.abs(ch[a])<th)a++;while(b>a&&Math.abs(ch[b])<th)b--;
@@ -257,7 +269,7 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;
   note("অডিও নামানো ও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+(bad?" (বাদ: "+bn2(bad)+")":"")+"…");
   const ab=await get(i);pf[i]=null;
   if(!ab){bad++;if(!ok&&bad>=5)break;continue}
-  try{const d=await ctx.decodeAudioData(ab),ch=d.getChannelData(0),pcm=smoothAyah(ch,sr),rp=repOf(list[i][0],list[i][1]);
+  try{const d=await ctx.decodeAudioData(ab),ch=d.getChannelData(0),pcm=smoothAyah(tsm(ch,sr,spdOf()),sr),rp=repOf(list[i][0],list[i][1]);
     for(let q=0;q<rp;q++){push(pcm);push(gap)}
     ok++}catch(e){bad++;if(!ok&&bad>=5)break}
   if(i%10===0)await new Promise(r=>setTimeout(r))}
