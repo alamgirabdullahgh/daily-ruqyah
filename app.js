@@ -208,7 +208,7 @@ function wordBounds(x,sr,W){
  return nodes.map(n=>P[n]*F)}
 // ওয়াক্ফ চিহ্নের অবস্থান (quran-waqf.json: "সূরা:আয়াত" → "শব্দনম্বর+চিহ্ন,…"); কেবল থামার চিহ্ন (ۘ ۗ ۚ ۜ ۙ) অংশের সীমা; ۖ (মিলিয়ে পড়া) ও ۛ (দুইয়ের একটিতে থামা) সীমা ধরা হয় না
 // অর্থ অনুযায়ী কাটার তালিকা (quran-meaning-cuts.json): রোগ নির্ণয় (dg) ও চিকিৎসা (tr) আলাদা সীমা
-let MC=null;const meanLoad=async()=>{if(MC)return MC;try{MC=await rsFetch(BASE+"quran-meaning-cuts.json?v="+DV+"m2")}catch(e){MC={}}return MC};
+let MC=null;const meanLoad=async()=>{if(MC)return MC;try{MC=await rsFetch(BASE+"quran-meaning-cuts.json?v="+DV+"m3")}catch(e){MC={}}return MC};
 let WQ=null;const wqLoad=async()=>{if(WQ)return WQ;try{WQ=await rsFetch(BASE+"quran-waqf.json?v="+DV)}catch(e){WQ={}}return WQ};
 // আয়াতের শব্দ-নম্বর → ওয়াক্ফ চিহ্ন (শব্দের গায়ে লাগিয়ে দেখানো হয়)
 const wqMarks=(s,a)=>{const v=WQ&&WQ[s+":"+a],m={};if(v)v.split(",").forEach(x=>{const r=/^(\d+)(.+)$/.exec(x);if(r)m[+r[1]]=r[2]});return m};
@@ -711,7 +711,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   const ft=el("div","dr-bak"),fi=document.createElement("input");fi.type="file";fi.accept=".json,application/json";fi.style.display="none";fi.onchange=()=>{if(fi.files[0])importTopics(fi.files[0]);fi.value=""};
   ft.append(mkBtn("📥 নিজের তালিকার ব্যাকআপ নামান",exportTopics),mkBtn("📤 ব্যাকআপ ফেরান",()=>fi.click()),fi);ft.style.position="static";rs.appendChild(ft)};
 // ---------- রোগ নির্ণয়ের তালিকা (quran-diagnosis.json) ----------
- const showDiag=async(cfg)=>{window.__bq="";const CF=Object.assign({file:"quran-diagnosis.json?v="+DV+"d16",title:"🩺 রোগ নির্ণয় (ডায়াগনোসিস)",sq:"রোগ নির্ণয়",nm:"নির্ণয়",badge:["আয়াতে সরাসরি আছে","শব্দভিত্তিক"],intro:null},cfg&&(cfg.file||cfg.host)?cfg:{});GEN++;CURT=null;rs.classList.remove("on");pad.classList.remove("on");const out=CF.host||$("rsOut"),info=CF.infoEl||$("rsInfo");out.innerHTML="";info.textContent="লোড হচ্ছে…";q.value="";setDir();window.__sq=CF.sq;
+ const showDiag=async(cfg)=>{window.__bq="";const CF=Object.assign({file:"quran-diagnosis.json?v="+DV+"d17",title:"🩺 রোগ নির্ণয় (ডায়াগনোসিস)",sq:"রোগ নির্ণয়",nm:"নির্ণয়",badge:["আয়াতে সরাসরি আছে","শব্দভিত্তিক"],intro:null},cfg&&(cfg.file||cfg.host)?cfg:{});GEN++;CURT=null;rs.classList.remove("on");pad.classList.remove("on");const out=CF.host||$("rsOut"),info=CF.infoEl||$("rsInfo");out.innerHTML="";info.textContent="লোড হচ্ছে…";q.value="";setDir();window.__sq=CF.sq;
   let D;try{D=await rsFetch(BASE+CF.file)}catch(e){info.textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
   info.textContent="";if(!CF.host)info.appendChild(els("div","font-weight:700;color:var(--primary);margin-bottom:4px",CF.title));
   if(!CF.host)info.appendChild(els("div","font-size:13px;line-height:1.7",CF.intro||"ক্রম: প্রথমে বদনজর, তারপর জাদু, তারপর জিন। প্রতিটি রোগ বা ধরনের জন্য ১–২টি মূল আয়াত (শুধু প্রাসঙ্গিক অংশ)। এই অংশ শুনে/পড়ে রোগ ধরা হবে; রোগ ধরা পড়লে ওই রোগের সব আয়াতের তালিকা ও অডিও ‘চিকিৎসা’ বোতামে। “শব্দভিত্তিক” চিহ্নিতগুলোতে কুরআনে ওই ধরনের নাম সরাসরি নেই — সবচেয়ে কাছের শব্দের আয়াত নেওয়া হয়েছে। খসড়া তালিকা: ব্যবহারের আগে আলেমের পর্যালোচনা প্রয়োজন।"));
