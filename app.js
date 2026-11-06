@@ -64,21 +64,32 @@ function bnHit(w,toks){w=fb(bnw(w));if(w.length<2)return false;for(let k of toks
 const BSYN=[["জিনা","জেনা","যিনা","যেনা"],["ইবলিস","ইবলীস","ইবলিশ","ইবলীশ"],["চুল","কেশ","কেশগুচ্ছ","কেশরাজি","কেশদাম","ঝুঁটি"],["মাথা","মস্তক","শির","শিরোদেশ"],["চোখ","নয়ন","চক্ষু","আঁখি","দৃষ্টি"],["হাত","হস্ত"],["পা","চরণ"],["মুখ","চেহারা","মুখমণ্ডল","বদন","আনন"],["কান","কর্ণ","শ্রবণ"],["পেট","উদর","জঠর"],["পিঠ","পৃষ্ঠ","পৃষ্ঠদেশ"],["বুক","বক্ষ","সিনা","ছাতি"],["ঘাড়","গর্দান","গ্রীবা","গলা"],["কণ্ঠ","কণ্ঠদেশ","কণ্ঠনালী"],["অন্তর","হৃদয়","মন","কলব"],["রক্ত","খুন","শোণিত"],["কপাল","ললাট","ভ্রূ"],["জিহ্বা","জিভ","জবান","রসনা"],["দাঁত","দন্ত"],["নাক","নাসিকা","নাসারন্ধ্র"],["আঙুল","অঙ্গুলি","আঙ্গুল"]];
 /* আরবির মতো সরাসরি অবস্থান: quran-chunks/m — প্রতিটা আয়াতে "আরবি শব্দ নং:অনুবাদের শব্দ-শুরু-শেষ"। না থাকলে নিচের আন্দাজ-পদ্ধতি (markBn) কাজ করে */
 function alRange(str,w){for(const it of String(str||"").split(",")){const p=it.split(":");if(+p[0]===w&&p[1]){const r=p[1].split("-").map(Number);if(r.length===2&&r[0]>=0&&r[1]>=r[0])return r}}return null}
-function markRange(box,text,r){const ws=String(text||"").split(" ");if(r[0]>=ws.length)return false;const b=r[0],e=Math.min(r[1],ws.length-1);if(ws.slice(b,e+1).every(x=>LV.test(bnw(x))))return false;box.textContent="";for(let i=0;i<ws.length;i++){if(i)box.appendChild(document.createTextNode(" "));if(i===b){box.appendChild(el("mark",null,ws.slice(b,e+1).join(" ")));i=e}else box.appendChild(document.createTextNode(ws[i]))}return true}
+/* দুই রঙের মার্ক: <mark> = মূল শব্দ; span.rs-seg = সমস্যার সাথে সংশ্লিষ্ট অংশ (box.__port = [শুরু, শেষ], ০-ভিত্তিক শব্দ-সূচক) */
+function paintBn(box,ws,hit){box.__st={ws,hit};const pr=box.__port;box.textContent="";let seg=null,i=0;
+ while(i<ws.length){const inP=!!(pr&&i>=pr[0]&&i<=pr[1]);
+  if(i)(inP&&seg?seg:box).appendChild(document.createTextNode(" "));
+  if(inP&&!seg){seg=el("span","rs-seg");box.appendChild(seg)}else if(!inP)seg=null;
+  const h=seg||box;
+  if(hit[i]){let j=i;while(j+1<ws.length&&hit[j+1]&&(!pr||((j+1>=pr[0]&&j+1<=pr[1])===inP)))j++;h.appendChild(el("mark",null,ws.slice(i,j+1).join(" ")));i=j+1}
+  else{h.appendChild(document.createTextNode(ws[i]));i++}}}
+/* আরবি অংশ → বাংলা অনুবাদের শব্দ-সীমা (০-ভিত্তিক): অ্যালাইনমেন্ট (quran-chunks/m) থেকে ওই অংশের শব্দগুলোর সবচেয়ে বাঁয়ের ও ডানের বাংলা শব্দ; আয়াতের শুরু/শেষ ছুঁয়ে থাকলে অনুবাদের শুরু/শেষ পর্যন্ত */
+function bnPortion(al,PR,N,nb){let b=1e9,e=-1;for(const it of String(al||"").split(",")){const p=it.split(":");const w=+p[0];if(!p[1]||w<PR[0]||w>PR[1])continue;const r=p[1].split("-").map(Number);if(r.length!==2||!(r[1]>=r[0]))continue;b=Math.min(b,r[0]);e=Math.max(e,r[1])}
+ if(e<0)return null;if(PR[0]<=1)b=0;if(PR[1]>=N)e=nb-1;e=Math.min(e,nb-1);return b<=e?[b,e]:null}
+function setBnPort(box,r){box.__port=r;if(box.__st)paintBn(box,box.__st.ws,box.__st.hit)}
+function markRange(box,text,r){const ws=String(text||"").split(" ");if(r[0]>=ws.length)return false;const b=r[0],e=Math.min(r[1],ws.length-1);if(ws.slice(b,e+1).every(x=>LV.test(bnw(x))))return false;const hit=ws.map((x,i)=>i>=b&&i<=e);paintBn(box,ws,hit);return true}
 /* বাংলা সার্চে: যে শব্দ লিখে খোঁজা হয়েছে অনুবাদে সরাসরি সেই শব্দই মার্ক হয় (আন্দাজ নয়); পেলে true */
 const QX=new Set(["কাজেই"]);
 function markQ(box,text,q){q=String(q||"").trim();if(!q||!/[\u0980-\u09FF]/.test(q))return false;const toks=q.split(/[\s,،，、]+/).map(bnw).filter(x=>x.length>1&&!BSTOP.has(x));if(!toks.length)return false;
- const ws=String(text||"").split(" "),hit=ws.map(w=>{const n=bnw(w);return !!n&&!QX.has(n)&&bnHit(w,toks)});if(!hit.some(Boolean))return false;box.textContent="";let i=0;
- while(i<ws.length){if(i)box.appendChild(document.createTextNode(" "));if(hit[i]){let j=i;while(j+1<ws.length&&hit[j+1])j++;box.appendChild(el("mark",null,ws.slice(i,j+1).join(" ")));i=j+1}else{box.appendChild(document.createTextNode(ws[i]));i++}}return true}
+ const ws=String(text||"").split(" "),hit=ws.map(w=>{const n=bnw(w);return !!n&&!QX.has(n)&&bnHit(w,toks)});if(!hit.some(Boolean))return false;paintBn(box,ws,hit);return true}
 /* "করছ/কর/হও" জাতীয় সাধারণ ক্রিয়া একা মার্ক করা হয় না — এতে ভুল জায়গায় মার্ক পড়ত */
 const LV=/^(কর|করছ|করছো|করেছ|করেছো|করবে|করবো|করো|করুন|করে|করেন|করল|করলো|করত|করতে|করি|করব|করা|হও|হই|হয়|হবে|হলো|হল|দাও|দেয়|দেন|নিন|নাও)$/;
 function markBn(box,text,gloss){box.textContent="";const toks=bnw(String(gloss||"").replace(/[()]/g," ")).split(/\s+/).map(bnw).filter(x=>x.length>1&&!BSTOP.has(x)&&!LV.test(x));for(const g of BSYN)if(toks.some(k=>bnHit(g[0],[k])||g.some(x=>fb(x)===fb(k))))for(const x of g)toks.push(x);
- const ws=String(text||"").split(" "),hit=ws.map(w=>toks.length&&bnHit(w,toks));let i=0;
- while(i<ws.length){if(i)box.appendChild(document.createTextNode(" "));if(hit[i]){let j=i;while(j+1<ws.length&&hit[j+1])j++;box.appendChild(el("mark",null,ws.slice(i,j+1).join(" ")));i=j+1}else{box.appendChild(document.createTextNode(ws[i]));i++}}}
+ const ws=String(text||"").split(" "),hit=ws.map(w=>!!(toks.length&&bnHit(w,toks)));paintBn(box,ws,hit)}
 async function vtext(s,a){const t=((await chunk("a",s))||[])[a-1],b=((await chunk(TR,s))||[])[a-1];return t==null?"":"সূরা "+SN[s-1]+" — "+s+":"+a+"\n"+t+"\n"+(b||"")}
 async function copyTxt(x){try{await navigator.clipboard.writeText(x);return true}catch(e){try{const t=document.createElement("textarea");t.value=x;t.style.cssText="position:fixed;opacity:0";document.body.appendChild(t);t.select();const ok=document.execCommand("copy");t.remove();return ok}catch(e2){return false}}}
 function copyBtn(label,get){const b=el("button","rs-wb",label);b.type="button";b.onclick=async()=>{b.disabled=true;const o=b.textContent;b.textContent="কপি হচ্ছে…";let ok=false;try{ok=await copyTxt(await get())}catch(e){}b.textContent=ok?"✅ কপি হয়েছে":"কপি করা যায়নি";setTimeout(()=>{b.textContent=o;b.disabled=false},1500)};return b}
-function allCopy(info,forms,ord){const set=new Set();WORDS.clear();forms.forEach(f=>f.refs.forEach(r=>{const p=r.split(":");if(p.length>2&&+p[2]){const k=p[0]+":"+p[1];let st=WORDS.get(k);if(!st){st=new Set();WORDS.set(k,st)}st.add(+p[2])}}));forms.forEach(f=>f.refs.forEach(r=>set.add(r.split(":").slice(0,2).join(":"))));const all=ord&&ord.length?ord:[...set].map(r=>r.split(":").map(Number)).sort((x,y)=>x[0]-y[0]||x[1]-y[1]);if(!all.length)return;
+function legend(info){if(info.querySelector(".rs-lgd"))return;const d=els("div","margin:6px 0;font-size:12.5px;line-height:2","");d.className="rs-lgd";const k=el("span","rs-lg-k","মূল শব্দ"),p=el("span","rs-lg-p","সমস্যার সাথে সংশ্লিষ্ট অংশ (যতটুকু পড়তে হবে)");d.append("মার্কের রঙ: ",k," ",p," — আরবি ও বাংলা দুই জায়গাতেই");info.appendChild(d)}
+function allCopy(info,forms,ord){legend(info);const set=new Set();WORDS.clear();forms.forEach(f=>f.refs.forEach(r=>{const p=r.split(":");if(p.length>2&&+p[2]){const k=p[0]+":"+p[1];let st=WORDS.get(k);if(!st){st=new Set();WORDS.set(k,st)}st.add(+p[2])}}));forms.forEach(f=>f.refs.forEach(r=>set.add(r.split(":").slice(0,2).join(":"))));const all=ord&&ord.length?ord:[...set].map(r=>r.split(":").map(Number)).sort((x,y)=>x[0]-y[0]||x[1]-y[1]);if(!all.length)return;
  const b=copyBtn("📋 সব আয়াত কপি ("+bn2(all.length)+")",async()=>{await Promise.all([...new Set(all.map(x=>x[0]))].map(z=>Promise.all([chunk("a",z),chunk(TR,z)])));const o=[];for(const [z,y] of all)o.push(await vtext(z,y));return o.join("\n\n")});
  b.className="rs-wb rs-act";audioBar(info,all,b)}
 const AYN=[7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
@@ -203,7 +214,12 @@ let WQ=null;const wqLoad=async()=>{if(WQ)return WQ;try{WQ=await rsFetch(BASE+"qu
 const wqMarks=(s,a)=>{const v=WQ&&WQ[s+":"+a],m={};if(v)v.split(",").forEach(x=>{const r=/^(\d+)(.+)$/.exec(x);if(r)m[+r[1]]=r[2]});return m};
 const WQL={"ۖ":"صلى","ۗ":"قلى","ۘ":"م","ۙ":"لا","ۚ":"ج","ۛ":"∴","ۜ":"س"};
 // চিহ্ন শব্দের গায়ে না লাগিয়ে মুদ্রিত কুরআনের মতো শব্দের মাঝে আলাদা ছোট অক্ষর (ج, قلى, صلى, م, ∴…) হিসেবে বসে
-const arFill=(box,s,a,t,hl)=>{const m=wqMarks(s,a);t.split(" ").forEach((x,i)=>{if(i)box.appendChild(document.createTextNode(" "));if(i===hl-1)box.appendChild(el("mark",null,x));else box.appendChild(document.createTextNode(x));const k=m[i+1];if(k){box.appendChild(document.createTextNode(" "));box.appendChild(el("span","rs-wq",[...k].map(c=>WQL[c]||"").filter(Boolean).join(" ")))}})};
+const arFill=(box,s,a,t,hl,pr)=>{const m=wqMarks(s,a);let seg=null;t.split(" ").forEach((x,i)=>{const inP=!!(pr&&i+1>=pr[0]&&i+1<=pr[1]);if(i)(inP&&seg?seg:box).appendChild(document.createTextNode(" "));if(inP&&!seg){seg=el("span","rs-seg");box.appendChild(seg)}else if(!inP)seg=null;const h=seg||box;
+ if(i===hl-1)h.appendChild(el("mark",null,x));else h.appendChild(document.createTextNode(x));const k=m[i+1];if(k){h.appendChild(document.createTextNode(" "));h.appendChild(el("span","rs-wq",[...k].map(c=>WQL[c]||"").filter(Boolean).join(" ")))}})};
+/* সংশ্লিষ্ট অংশ (আরবি শব্দ-সীমা, ১-ভিত্তিক): অডিও কাটার নিয়মেরই হুবহু একই — ওয়াক্ফ-চিহ্নের মধ্যবর্তী বাক্যাংশ; অর্থ-অনুযায়ী কাটার তালিকায় (quran-meaning-cuts.json, tr) থাকলে সেটাই */
+const arPortion=(s,a,w,N)=>{if(!w||!N)return null;const stops=wqStops(s,a);let lo=1,hi=N;for(const k of stops)if(k<w)lo=k+1;for(const k of stops)if(k>=w){hi=k;break}
+ const ce=MC&&Array.isArray(MC[s+":"+a])?MC[s+":"+a].find(c=>c.w&&c.w.includes(w)&&Array.isArray(c.tr)):null;if(ce){lo=Math.max(1,ce.tr[0]);hi=Math.min(N,ce.tr[1])}
+ return[Math.min(lo,w),Math.max(hi,w)]};
 const wqStops=(s,a)=>{const v=WQ&&WQ[s+":"+a];if(!v)return[];return v.split(",").map(x=>{const m=/^(\d+)(.+)$/.exec(x);return m&&/[ۘۗۚۜۙ]/.test(m[2])?+m[1]:0}).filter(Boolean)};
 async function verseSegs(s,a,x,sr,ws,pad,mm){const t=((await chunk("a",s))||[])[a-1];if(!t)return null;const words=String(t).split(" "),N=words.length;
  const W=words.map(w=>Math.max(1,nz(w,true).length)),b=wordBounds(x,sr,W);if(!b)return null;
@@ -411,7 +427,10 @@ function verses(host,refs,fgl,off){let shown=0,fail=[];const step=15,g=GEN;
    wb.type="button";
    if(!markQ(tb,bn[a-1]||"",window.__bq)){markBn(tb,bn[a-1]||"",fgl);
    chunk("w",s,1).then(async W=>{const m=(W[a-1]||"").split("|")[w-1];let ok=false;try{const M=await chunk("m",s,1);const r=alRange((M||[])[a-1],w);if(r)ok=markRange(tb,bn[a-1]||"",r)}catch(e){}if(!ok&&m&&m!==fgl)markBn(tb,bn[a-1]||"",m)}).catch(()=>{});}
-   arFill(tx,s,a,t,w);
+   try{await meanLoad()}catch(e){}
+   const NW=t.split(" ").length,PR=arPortion(s,a,w,NW);
+   arFill(tx,s,a,t,w,PR);
+   if(PR){const nb=(bn[a-1]||"").split(" ").length;if(PR[0]<=1&&PR[1]>=NW)setBnPort(tb,[0,nb-1]);else chunk("m",s,1).then(M=>{const r=bnPortion((M||[])[a-1],PR,NW,nb);if(r)setBnPort(tb,r)}).catch(()=>{})}
    let wl=false;wb.onclick=async()=>{wh.classList.toggle("on");if(wl)return;wl=true;wh.textContent="লোড হচ্ছে…";
     try{const m=((await chunk("w",s))||[])[a-1].split("|");wh.textContent="";t.split(" ").forEach((x,i)=>{const c=el("div","rs-wc"+(i===w-1?" hl":"")),ar=el("div","rs-wa rs-ar",x),b=el("div","rs-wm",m[i]||"");c.append(ar,b);wh.appendChild(c)})}catch(e){wh.textContent="লোড করা যায়নি — আবার চাপুন";wl=false}};
    const ft=el("div","rs-vf"),va=el("div","rs-va");ft.append(rf,el("span","rs-vw rs-ar",t.split(" ")[w-1]||""),el("span","rs-vm",fgl||""));va.append(wb,copyBtn("📋 কপি",()=>vtext(s,a)),playBtn(s,a),selBox(s,a));box.append(tx,tb,ft,va,wh);return box};
