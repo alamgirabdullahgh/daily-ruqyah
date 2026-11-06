@@ -93,7 +93,6 @@
     host.innerHTML = "";
     var hello = el("div", "dr-hello");
     hello.appendChild(el("b", null, "রুকইয়াহ অডিও অ্যালার্ম"));
-    hello.appendChild(el("span", null, "সময় ঠিক করে দিন — ফোন নিজেই ওই সময়ে রুকইয়ার আয়াতের তিলাওয়াত চালাবে"));
     host.appendChild(hello);
 
     if (!NATIVE || !P) {
@@ -128,10 +127,8 @@
 
     if (adding) host.appendChild(form());
 
-    if (!list.length && !adding) host.appendChild(el("div", "al-note", "এখনো কোনো অ্যালার্ম নেই। “নতুন অ্যালার্ম” চেপে সময় ও অডিও বেছে নিন।"));
     list.slice().sort(function (a, b) { return a.time < b.time ? -1 : 1; }).forEach(function (a) { host.appendChild(card(a)); });
 
-    host.appendChild(el("div", "al-note", "অডিও ইন্টারনেট থেকে চলে (অ্যাপে বাছা ক্বারীর তিলাওয়াত)। ফোনের ব্যাটারি-সেভার এই অ্যাপকে আটকালে সেটিংসে অ্যাপটিকে “সীমাহীন/Unrestricted” করে দিন।"));
   }
 
   function form() {
