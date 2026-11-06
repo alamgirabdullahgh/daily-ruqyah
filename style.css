@@ -416,8 +416,8 @@ body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
 .rs-hint{grid-column:1/-1;margin-top:8px;font-size:11.5px;line-height:1.5;color:var(--text-sub)}
 
 /* দুই রঙের মার্ক: মূল শব্দ (লাল/সবুজ) + সংশ্লিষ্ট অংশ (সোনালি পটভূমি) */
-.rs-seg{background:rgba(216,178,90,.30);border-radius:6px;padding:1px 3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
-.rs-vb .rs-seg mark{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.rs-gold{display:inline;background:rgba(216,178,90,.30);border-radius:6px;padding:1px 3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.rs-vb .rs-gold mark{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .rs-lg-k{display:inline-block;padding:0 8px;border-radius:6px;background:var(--primary);color:#fff;font-weight:700}
 .rs-lg-p{display:inline-block;padding:0 8px;border-radius:6px;background:rgba(216,178,90,.30)}
-@media (prefers-color-scheme:dark){.rs-seg{background:rgba(216,178,90,.26)}}
+@media (prefers-color-scheme:dark){.rs-gold{background:rgba(216,178,90,.26)}}

@@ -64,11 +64,11 @@ function bnHit(w,toks){w=fb(bnw(w));if(w.length<2)return false;for(let k of toks
 const BSYN=[["জিনা","জেনা","যিনা","যেনা"],["ইবলিস","ইবলীস","ইবলিশ","ইবলীশ"],["চুল","কেশ","কেশগুচ্ছ","কেশরাজি","কেশদাম","ঝুঁটি"],["মাথা","মস্তক","শির","শিরোদেশ"],["চোখ","নয়ন","চক্ষু","আঁখি","দৃষ্টি"],["হাত","হস্ত"],["পা","চরণ"],["মুখ","চেহারা","মুখমণ্ডল","বদন","আনন"],["কান","কর্ণ","শ্রবণ"],["পেট","উদর","জঠর"],["পিঠ","পৃষ্ঠ","পৃষ্ঠদেশ"],["বুক","বক্ষ","সিনা","ছাতি"],["ঘাড়","গর্দান","গ্রীবা","গলা"],["কণ্ঠ","কণ্ঠদেশ","কণ্ঠনালী"],["অন্তর","হৃদয়","মন","কলব"],["রক্ত","খুন","শোণিত"],["কপাল","ললাট","ভ্রূ"],["জিহ্বা","জিভ","জবান","রসনা"],["দাঁত","দন্ত"],["নাক","নাসিকা","নাসারন্ধ্র"],["আঙুল","অঙ্গুলি","আঙ্গুল"]];
 /* আরবির মতো সরাসরি অবস্থান: quran-chunks/m — প্রতিটা আয়াতে "আরবি শব্দ নং:অনুবাদের শব্দ-শুরু-শেষ"। না থাকলে নিচের আন্দাজ-পদ্ধতি (markBn) কাজ করে */
 function alRange(str,w){for(const it of String(str||"").split(",")){const p=it.split(":");if(+p[0]===w&&p[1]){const r=p[1].split("-").map(Number);if(r.length===2&&r[0]>=0&&r[1]>=r[0])return r}}return null}
-/* দুই রঙের মার্ক: <mark> = মূল শব্দ; span.rs-seg = সমস্যার সাথে সংশ্লিষ্ট অংশ (box.__port = [শুরু, শেষ], ০-ভিত্তিক শব্দ-সূচক) */
+/* দুই রঙের মার্ক: <mark> = মূল শব্দ; span.rs-gold = সমস্যার সাথে সংশ্লিষ্ট অংশ (box.__port = [শুরু, শেষ], ০-ভিত্তিক শব্দ-সূচক) */
 function paintBn(box,ws,hit){box.__st={ws,hit};const pr=box.__port;box.textContent="";let seg=null,i=0;
  while(i<ws.length){const inP=!!(pr&&i>=pr[0]&&i<=pr[1]);
   if(i)(inP&&seg?seg:box).appendChild(document.createTextNode(" "));
-  if(inP&&!seg){seg=el("span","rs-seg");box.appendChild(seg)}else if(!inP)seg=null;
+  if(inP&&!seg){seg=el("span","rs-gold");box.appendChild(seg)}else if(!inP)seg=null;
   const h=seg||box;
   if(hit[i]){let j=i;while(j+1<ws.length&&hit[j+1]&&(!pr||((j+1>=pr[0]&&j+1<=pr[1])===inP)))j++;h.appendChild(el("mark",null,ws.slice(i,j+1).join(" ")));i=j+1}
   else{h.appendChild(document.createTextNode(ws[i]));i++}}}
@@ -214,7 +214,7 @@ let WQ=null;const wqLoad=async()=>{if(WQ)return WQ;try{WQ=await rsFetch(BASE+"qu
 const wqMarks=(s,a)=>{const v=WQ&&WQ[s+":"+a],m={};if(v)v.split(",").forEach(x=>{const r=/^(\d+)(.+)$/.exec(x);if(r)m[+r[1]]=r[2]});return m};
 const WQL={"ۖ":"صلى","ۗ":"قلى","ۘ":"م","ۙ":"لا","ۚ":"ج","ۛ":"∴","ۜ":"س"};
 // চিহ্ন শব্দের গায়ে না লাগিয়ে মুদ্রিত কুরআনের মতো শব্দের মাঝে আলাদা ছোট অক্ষর (ج, قلى, صلى, م, ∴…) হিসেবে বসে
-const arFill=(box,s,a,t,hl,pr)=>{const m=wqMarks(s,a);let seg=null;t.split(" ").forEach((x,i)=>{const inP=!!(pr&&i+1>=pr[0]&&i+1<=pr[1]);if(i)(inP&&seg?seg:box).appendChild(document.createTextNode(" "));if(inP&&!seg){seg=el("span","rs-seg");box.appendChild(seg)}else if(!inP)seg=null;const h=seg||box;
+const arFill=(box,s,a,t,hl,pr)=>{const m=wqMarks(s,a);let seg=null;t.split(" ").forEach((x,i)=>{const inP=!!(pr&&i+1>=pr[0]&&i+1<=pr[1]);if(i)(inP&&seg?seg:box).appendChild(document.createTextNode(" "));if(inP&&!seg){seg=el("span","rs-gold");box.appendChild(seg)}else if(!inP)seg=null;const h=seg||box;
  if(i===hl-1)h.appendChild(el("mark",null,x));else h.appendChild(document.createTextNode(x));const k=m[i+1];if(k){h.appendChild(document.createTextNode(" "));h.appendChild(el("span","rs-wq",[...k].map(c=>WQL[c]||"").filter(Boolean).join(" ")))}})};
 /* সংশ্লিষ্ট অংশ (আরবি শব্দ-সীমা, ১-ভিত্তিক): অডিও কাটার নিয়মেরই হুবহু একই — ওয়াক্ফ-চিহ্নের মধ্যবর্তী বাক্যাংশ; অর্থ-অনুযায়ী কাটার তালিকায় (quran-meaning-cuts.json, tr) থাকলে সেটাই */
 const arPortion=(s,a,w,N)=>{if(!w||!N)return null;const stops=wqStops(s,a);let lo=1,hi=N;for(const k of stops)if(k<w)lo=k+1;for(const k of stops)if(k>=w){hi=k;break}
