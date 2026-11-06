@@ -1,5 +1,5 @@
 (()=>{"use strict";
-const BASE=new URL("data/",location.href).href,DV="2",$=i=>document.getElementById(i);
+const BASE=new URL("data/",location.href).href,DV="3",$=i=>document.getElementById(i);
 const SN="الفاتحة,البقرة,آل عمران,النساء,المائدة,الأنعام,الأعراف,الأنفال,التوبة,يونس,هود,يوسف,الرعد,إبراهيم,الحجر,النحل,الإسراء,الكهف,مريم,طه,الأنبياء,الحج,المؤمنون,النور,الفرقان,الشعراء,النمل,القصص,العنكبوت,الروم,لقمان,السجدة,الأحزاب,سبأ,فاطر,يس,الصافات,ص,الزمر,غافر,فصلت,الشورى,الزخرف,الدخان,الجاثية,الأحقاف,محمد,الفتح,الحجرات,ق,الذاريات,الطور,النجم,القمر,الرحمن,الواقعة,الحديد,المجادلة,الحشر,الممتحنة,الصف,الجمعة,المنافقون,التغابن,الطلاق,التحريم,الملك,القلم,الحاقة,المعارج,نوح,الجن,المزمل,المدثر,القيامة,الإنسان,المرسلات,النبأ,النازعات,عبس,التكوير,الانفطار,المطففين,الانشقاق,البروج,الطارق,الأعلى,الغاشية,الفجر,البلد,الشمس,الليل,الضحى,الشرح,التين,العلق,القدر,البينة,الزلزلة,العاديات,القارعة,التكاثر,العصر,الهمزة,الفيل,قريش,الماعون,الكوثر,الكافرون,النصر,المسد,الإخلاص,الفلق,الناس".split(",");
 const MARKS=/[\u0610-\u061A\u064B-\u065F\u06D6-\u06ED\u0640]/g;
 const nz=(s,dag)=>String(s||"").replace(/\u0670/g,dag?"ا":"").replace(MARKS,"").replace(/[أإآٱ]/g,"ا").replace(/ؤ/g,"و").replace(/ئ/g,"ي").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/[^\u0621-\u064A]/g,"");
@@ -218,6 +218,7 @@ const arFill=(box,s,a,t,hl,pr)=>{const m=wqMarks(s,a);let seg=null;t.split(" ").
  if(i===hl-1)h.appendChild(el("mark",null,x));else h.appendChild(document.createTextNode(x));const k=m[i+1];if(k){h.appendChild(document.createTextNode(" "));h.appendChild(el("span","rs-wq",[...k].map(c=>WQL[c]||"").filter(Boolean).join(" ")))}})};
 /* সংশ্লিষ্ট অংশ (আরবি শব্দ-সীমা, ১-ভিত্তিক): অডিও কাটার নিয়মেরই হুবহু একই — ওয়াক্ফ-চিহ্নের মধ্যবর্তী বাক্যাংশ; অর্থ-অনুযায়ী কাটার তালিকায় (quran-meaning-cuts.json, tr) থাকলে সেটাই */
 const arPortion=(s,a,w,N)=>{if(!w||!N)return null;const stops=wqStops(s,a);let lo=1,hi=N;for(const k of stops)if(k<w)lo=k+1;for(const k of stops)if(k>=w){hi=k;break}
+ lo=Math.max(lo,w-6);hi=Math.min(hi,w+3);/* ওয়াক্ফ-সীমা অনেক লম্বা হলে শব্দের আশেপাশের বাক্যাংশেই থামে */
  const ce=MC&&Array.isArray(MC[s+":"+a])?MC[s+":"+a].find(c=>c.w&&c.w.includes(w)&&Array.isArray(c.tr)):null;if(ce){lo=Math.max(1,ce.tr[0]);hi=Math.min(N,ce.tr[1])}
  return[Math.min(lo,w),Math.max(hi,w)]};
 const wqStops=(s,a)=>{const v=WQ&&WQ[s+":"+a];if(!v)return[];return v.split(",").map(x=>{const m=/^(\d+)(.+)$/.exec(x);return m&&/[ۘۗۚۜۙ]/.test(m[2])?+m[1]:0}).filter(Boolean)};
