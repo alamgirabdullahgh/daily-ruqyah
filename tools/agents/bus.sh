@@ -11,10 +11,14 @@ for try in 1 2 3 4 5; do
   if git ls-remote --exit-code --heads "$U" $BR >/dev/null 2>&1; then git clone -q --depth 1 -b $BR "$U" "$W/r" 2>&1 | mask >&2
   else git init -q "$W/r"; git -C "$W/r" checkout -q --orphan $BR; echo '{"tasks":[],"agents":{},"events":[]}' > "$W/r/bus.json"; fi
   python3 - "$W/r/bus.json" "$cmd" "$@" <<'PY'
-import sys,json,time
+import sys,json,time,os,shutil
 f,cmd,*a=sys.argv[1:]; d=json.load(open(f)); now=time.strftime('%Y-%m-%d %H:%M'); ch=True
 def ev(m): d['events'].append({'t':now,'msg':m}); d['events']=d['events'][-60:]
 def T(i): return next(t for t in d['tasks'] if t['id']==int(i))
+def rmf(t):
+    for x in t.get('files',[]):
+        try: os.remove(os.path.join(os.path.dirname(f),x['path']))
+        except Exception: pass
 def ag(n,**k): d['agents'].setdefault(n,{}).update(k,seen=now)
 if cmd=='init': pass
 elif cmd=='add':
@@ -28,10 +32,13 @@ elif cmd=='next':
         else: ev(f"{n} কাজ #{t['id']} শুরু করল")
         t.update(status='running',agent=n,updated=now); ag(n,state='working',task=t['id'])
         print(f"#{t['id']}: {t['text']}\nআগের নোট: {t['note'] or '—'}\nঅগ্রগতি: {t['progress']}%")
+        for x in t.get('files',[]):
+            src=os.path.join(os.path.dirname(f),x['path']); os.makedirs('/tmp/agent-files',exist_ok=True); dst='/tmp/agent-files/'+os.path.basename(x['path']).split('-',2)[-1]
+            if os.path.exists(src): shutil.copy(src,dst); print(f"📎 ফাইল ({x.get('type','')}, {x.get('size',0)} বাইট, আসল নাম: {x['name']}): {dst}")
 elif cmd=='progress':
     t=T(a[0]); t.update(progress=int(a[1]),note=a[2] if len(a)>2 else t['note'],updated=now); ag(t['agent'] or '?',state='working',task=t['id']); print('ok')
 elif cmd=='done':
-    t=T(a[0]); t.update(status='done',progress=100,note=a[1] if len(a)>1 else t['note'],updated=now); ag(t['agent'] or '?',state='idle',task=0); ev(f"কাজ #{t['id']} শেষ ({t['agent']})"); print('ok')
+    t=T(a[0]); t.update(status='done',progress=100,note=a[1] if len(a)>1 else t['note'],updated=now); ag(t['agent'] or '?',state='idle',task=0); ev(f"কাজ #{t['id']} শেষ ({t['agent']})"); rmf(t); print('ok')
 elif cmd=='limit':
     n=a[0]; note=a[1] if len(a)>1 else ''
     for t in d['tasks']:
