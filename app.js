@@ -213,7 +213,7 @@ function wordBounds(x,sr,W){
  return nodes.map(n=>P[n]*F)}
 // ওয়াক্ফ চিহ্নের অবস্থান (quran-waqf.json: "সূরা:আয়াত" → "শব্দনম্বর+চিহ্ন,…"); কেবল থামার চিহ্ন (ۘ ۗ ۚ ۜ ۙ) অংশের সীমা; ۖ (মিলিয়ে পড়া) ও ۛ (দুইয়ের একটিতে থামা) সীমা ধরা হয় না
 // অর্থ অনুযায়ী কাটার তালিকা (quran-meaning-cuts.json): রোগ নির্ণয় (dg) ও চিকিৎসা (tr) আলাদা সীমা
-let MC=null;const meanLoad=async()=>{if(MC)return MC;try{MC=await rsFetch(BASE+"quran-meaning-cuts.json?v="+DV+"m3")}catch(e){MC={}}return MC};
+let MC=null;const meanLoad=async()=>{if(MC)return MC;try{MC=await rsFetch(BASE+"quran-meaning-cuts.json?v="+DV+"m4")}catch(e){MC={}}return MC};
 let WQ=null;const wqLoad=async()=>{if(WQ)return WQ;try{WQ=await rsFetch(BASE+"quran-waqf.json?v="+DV)}catch(e){WQ={}}return WQ};
 // আয়াতের শব্দ-নম্বর → ওয়াক্ফ চিহ্ন (শব্দের গায়ে লাগিয়ে দেখানো হয়)
 const wqMarks=(s,a)=>{const v=WQ&&WQ[s+":"+a],m={};if(v)v.split(",").forEach(x=>{const r=/^(\d+)(.+)$/.exec(x);if(r)m[+r[1]]=r[2]});return m};
@@ -451,7 +451,7 @@ function verses(host,refs,fgl,off){let shown=0,fail=[];const step=15,g=GEN;
    try{await meanLoad()}catch(e){}
    const NW=t.split(" ").length,PR=arPortion(s,a,w,NW,t);
    arFill(tx,s,a,t,w,PR);
-   if(PR){const nb=(bn[a-1]||"").split(" ").length;if(PR[0]<=1&&PR[1]>=NW)setBnPort(tb,[0,nb-1]);else chunk("m",s,1).then(M=>{const r=bnPortion((M||[])[a-1],PR,NW,nb);if(r)setBnPort(tb,r)}).catch(()=>{})}
+   if(PR){const nb=(bn[a-1]||"").split(" ").length;const ceb=MC&&Array.isArray(MC[s+":"+a])?MC[s+":"+a].find(c=>c.w&&c.w.includes(w)&&Array.isArray(c.bn)&&c.bn.length===2&&c.bn[0]>=1&&c.bn[1]>=c.bn[0]):null;if(ceb)setBnPort(tb,[ceb.bn[0]-1,Math.min(ceb.bn[1],nb)-1]);else if(PR[0]<=1&&PR[1]>=NW)setBnPort(tb,[0,nb-1]);else chunk("m",s,1).then(M=>{const r=bnPortion((M||[])[a-1],PR,NW,nb);if(r)setBnPort(tb,r)}).catch(()=>{})}
    let wl=false;wb.onclick=async()=>{wh.classList.toggle("on");if(wl)return;wl=true;wh.textContent="লোড হচ্ছে…";
     try{const m=((await chunk("w",s))||[])[a-1].split("|");wh.textContent="";t.split(" ").forEach((x,i)=>{const c=el("div","rs-wc"+(i===w-1?" hl":"")),ar=el("div","rs-wa rs-ar",x),b=el("div","rs-wm",m[i]||"");c.append(ar,b);wh.appendChild(c)})}catch(e){wh.textContent="লোড করা যায়নি — আবার চাপুন";wl=false}};
    const ft=el("div","rs-vf"),va=el("div","rs-va");ft.append(rf,el("span","rs-vw rs-ar",t.split(" ")[w-1]||""),el("span","rs-vm",fgl||""));va.append(wb,copyBtn("📋 কপি",()=>vtext(s,a)),playBtn(s,a),selBox(s,a));box.append(tx,tb,ft,va,wh);return box};
