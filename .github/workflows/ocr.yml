@@ -182,7 +182,7 @@ jobs:
       - name: Install OCR tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y ocrmypdf tesseract-ocr-ben tesseract-ocr-eng
+          sudo apt-get install -y ocrmypdf qpdf tesseract-ocr-ben tesseract-ocr-eng
           pip install -q --break-system-packages -U gdown
       - name: Download and OCR
         env:
