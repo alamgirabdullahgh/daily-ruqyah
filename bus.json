@@ -3,19 +3,29 @@
   {
    "id": 1,
    "text": "পরীক্ষা: মার্ক যাচাই",
-   "status": "queued",
-   "agent": "",
+   "status": "running",
+   "agent": "claude",
    "progress": 0,
    "note": "",
    "created": "2026-11-07 08:16",
    "updated": "2026-11-07 08:16"
   }
  ],
- "agents": {},
+ "agents": {
+  "claude": {
+   "state": "working",
+   "task": 1,
+   "seen": "2026-11-07 08:16"
+  }
+ },
  "events": [
   {
    "t": "2026-11-07 08:16",
    "msg": "নতুন কাজ #1: পরীক্ষা: মার্ক যাচাই"
+  },
+  {
+   "t": "2026-11-07 08:16",
+   "msg": "claude কাজ #1 শুরু করল"
   }
  ]
 }
