@@ -19,3 +19,4 @@ fi
 tools/handoff/handoff.sh fetch 2>/dev/null | sed 's/^/ছবি: /' || true
 echo "── অবস্থা ──"; tail -n 6 tools/treat-marking/PROGRESS.md
 [ -f tools/handoff/STATE.md ] && { echo "── শেষ থামার জায়গা ──"; cat tools/handoff/STATE.md; }
+exit 0
