@@ -22,10 +22,10 @@ def rmf(t):
 def ag(n,**k): d['agents'].setdefault(n,{}).update(k,seen=now)
 if cmd=='init': pass
 elif cmd=='add':
-    i=max([t['id'] for t in d['tasks']]+[0])+1
+    i=max([t['id'] for t in d['tasks']]+[d.get('seq',0),0])+1; d['seq']=i
     d['tasks'].append(dict(id=i,text=a[0],status='queued',agent='',progress=0,note='',created=now,updated=now)); ev(f'নতুন কাজ #{i}: {a[0][:60]}'); print(i)
 elif cmd=='next':
-    n=a[0]; t=next((t for t in d['tasks'] if t['status']=='queued'),None)
+    n=a[0]; t=next((t for t in d['tasks'] if t['status']=='queued' and (t.get('target') in ('',None,n) or d['agents'].get(t.get('target'),{}).get('state')=='limit')),None)
     if not t: ag(n,state='idle',task=0); print('কোনো কাজ নেই'); 
     else:
         if t['agent'] and t['agent']!=n: ev(f"এজেন্ট বদল: {t['agent']} → {n} (কাজ #{t['id']})")
