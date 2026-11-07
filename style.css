@@ -1,6 +1,9 @@
 /* Daily Ruqyah — premium থিম: গভীর পান্না-সবুজ + সোনালি, হাতির-দাঁতের মতো উষ্ণ জমিন */
 @font-face{font-family:"Amiri";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/amiri-arabic-400-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE80-FEFC}
 @font-face{font-family:"Amiri";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/amiri-arabic-700-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE80-FEFC}
+:root{--mf-paper:#fbf6e9;--mf-ink:#2d3a6b;--mf-accent:#c2762b;--mf-line:#c9c3a8;--mf-head:#ece9f6;--mf-font:"Scheherazade New","Amiri","Noto Naskh Arabic","Droid Arabic Naskh",serif}
+@font-face{font-family:"Scheherazade New";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/scheherazade-new-arabic-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Scheherazade New";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/scheherazade-new-arabic-700-normal.woff2) format("woff2")}
 :root{--primary:#0a5240;--primary-dark:#073b2e;--primary-light:#e4efe9;--accent:#b8923a;--accent-light:#f6efdc;--danger:#c0392b;--danger-light:#fbe4e0;--info:#0b6aa0;--info-light:#e0f0f8;--success:#16794c;--warning:#b36b00;--warning-light:#fff6e0;--bg:#f3efe4;--card-bg:#fffdf9;--border:#d9d1b8;--border-light:#e8e2d0;--text-main:#16241e;--text-sub:#3c5247;--text-muted:#68786f;--radius-sm:8px;--radius-md:12px;--radius-lg:18px;--shadow-card:0 1px 0 rgba(255,255,255,.8) inset,0 12px 32px -14px rgba(7,59,46,.28),0 2px 6px rgba(7,59,46,.06);--shadow-pop:0 10px 30px rgba(7,59,46,.25);--bar-h:56px;--ar-size:26px;--font-main:system-ui,-apple-system,"Segoe UI","Hind Siliguri","Noto Sans Bengali",Roboto,sans-serif;--font-display:Georgia,"Iowan Old Style","Palatino Linotype","Times New Roman",serif}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--bar-h) + 12px)}
@@ -335,22 +338,33 @@ button,input,select{font-family:inherit}
 .dr-ubtn.busy .ph{opacity:.45}
 .dr-ubtn.busy .pt{justify-content:center;font-size:17px;font-weight:800}
 
-/* ১৫ লাইনের মুসহাফ-পাঠ */
-.mf-top{padding:12px 14px 4px;text-align:center;font-size:17px;color:var(--primary)}
-.mf-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px}
-.mf-nav2{padding-top:12px}
-.mf-btn{flex:none;border:1.5px solid var(--primary);background:var(--card-bg);color:var(--primary);border-radius:999px;padding:8px 18px;font:inherit;font-size:14px;cursor:pointer}
+/* ১৫ লাইনের মুসহাফ-পাঠ: নীল-কালি ও জাফরান থিম, পাতা-ওল্টানো বই */
+.mf-top{padding:12px 14px 4px;text-align:center;font-size:17px;color:var(--mf-ink)}
+.mf-jr{display:flex;gap:8px;padding:4px 12px 8px}
+.mf-sel{flex:1;min-width:0;height:42px;padding:0 10px;border:1.5px solid var(--mf-line);border-radius:12px;background:var(--card-bg);color:inherit;font:inherit;font-size:14px}
+.mf-in{width:84px;height:42px;padding:0 8px;border:1.5px solid var(--mf-line);border-radius:12px;background:var(--card-bg);color:inherit;font:inherit;font-size:15px;text-align:center}
+.mf-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 12px 84px}
+.mf-btn{flex:none;border:1.5px solid var(--mf-ink);background:var(--card-bg);color:var(--mf-ink);border-radius:999px;padding:8px 20px;font:inherit;font-size:14px;cursor:pointer}
+.mf-btn:disabled{opacity:.35}
+.mf-btn:active:not(:disabled){background:var(--mf-ink);color:var(--mf-paper)}
 .mf-no{font-size:13px;color:var(--text-muted)}
-.mf-jr{display:flex;gap:8px;padding:0 12px 8px}
-.mf-sel{flex:1;min-width:0;height:42px;padding:0 10px;border:1.5px solid var(--border);border-radius:12px;background:var(--card-bg);color:inherit;font:inherit;font-size:14px}
-.mf-in{width:84px;height:42px;padding:0 8px;border:1.5px solid var(--border);border-radius:12px;background:var(--card-bg);color:inherit;font:inherit;font-size:15px;text-align:center}
-.mf-page{margin:0 8px;padding:10px 8px;border:1.5px solid var(--accent);border-radius:14px;background:var(--card-bg);direction:rtl;font-family:"Amiri","Noto Naskh Arabic","Droid Arabic Naskh",serif;touch-action:pan-y}
-.mf-l{display:flex;justify-content:space-between;align-items:center;min-height:2.2em;line-height:2.2;white-space:nowrap}
+.mf-wrap{display:flex;justify-content:center;padding:6px 0 2px;position:relative;min-height:120px;color:var(--text-muted);font-size:14px;text-align:center}
+.mf-book{margin:0 auto;position:relative;touch-action:none;filter:drop-shadow(0 10px 18px rgba(30,36,72,.28))}
+.mf-measure{position:absolute;left:-9999px;top:0;visibility:hidden;direction:rtl;font-family:var(--mf-font);white-space:nowrap}
+.mf-pg{background:var(--mf-paper);background-image:linear-gradient(90deg,rgba(45,58,107,.07),transparent 9%,transparent 94%,rgba(45,58,107,.05));overflow:hidden;direction:rtl;color:var(--mf-ink);border:1px solid var(--mf-line);border-radius:6px;position:relative}
+.mf-pg::before{content:"";position:absolute;inset:6px;border:1.5px solid var(--mf-line);border-radius:4px;pointer-events:none}
+.mf-pt{position:absolute;top:9px;left:16px;right:16px;display:flex;justify-content:flex-start;font-family:var(--mf-font);font-size:13px;color:var(--mf-accent);line-height:1.2}
+.mf-pf{position:absolute;bottom:7px;left:0;right:0;display:flex;justify-content:center}
+.mf-pn{min-width:30px;padding:1px 10px;border-radius:999px;background:var(--mf-ink);color:var(--mf-paper);font-family:var(--font-main);font-size:12px;text-align:center;line-height:1.7}
+.mf-lines{position:absolute;top:34px;left:14px;right:14px;font-family:var(--mf-font);display:flex;flex-direction:column;justify-content:center}
+.mf-l{display:flex;justify-content:space-between;align-items:center;white-space:nowrap;flex:none}
 .mf-l.mf-c{justify-content:center;gap:.5em}
-.mf-t0{justify-content:center;min-height:2.1em;margin:2px 0;border:1px solid var(--accent);border-radius:8px;background:var(--primary-light)}
-.mf-sh{color:var(--primary);font-weight:700}
-.mf-n{color:var(--accent);font-size:.8em}
-.mf-short .mf-l{min-height:2.6em}
+.mf-t0{justify-content:center;border:1.2px solid var(--mf-accent);border-radius:8px;background:var(--mf-head);margin:1px 0}
+.mf-sh{color:var(--mf-ink);font-weight:700}
+.mf-n{display:inline-flex;align-items:center;justify-content:center;min-width:1.6em;height:1.6em;padding:0 .25em;border:1.3px solid var(--mf-accent);border-radius:50%;color:var(--mf-accent);font-size:.62em;line-height:1;font-weight:700}
+@media (prefers-color-scheme:dark){
+ :root{--mf-paper:#171c33;--mf-ink:#dfe4fa;--mf-accent:#e6a25c;--mf-line:#3a4472;--mf-head:#222a4d}
+}
 
 /* নিচের নেভিগেশন বার (স্ক্রলে সরে না) */
 .dr-sbtn{text-decoration:none}
