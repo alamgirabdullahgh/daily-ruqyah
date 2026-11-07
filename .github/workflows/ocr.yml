@@ -194,7 +194,8 @@ jobs:
           # এনক্রিপ্টেড (owner-password) PDF হলে আগে ডিক্রিপ্ট
           qpdf --password= --decrypt input/book.pdf input/dec.pdf || true   # কোড ৩ = সতর্কতা, আউটপুট তবু তৈরি হয়
           if [ -s input/dec.pdf ]; then mv input/dec.pdf input/book.pdf; echo decrypted; else echo "ডিক্রিপ্ট হয়নি"; qpdf --show-encryption input/book.pdf || true; fi
-          ocrmypdf -l ben+eng --force-ocr --optimize 0 --jobs 2 --output-type pdf --sidecar "output/$BNAME.txt" input/book.pdf work.pdf
+          echo "::notice::DIAG size=$(stat -c%s input/book.pdf) head=$(head -c 8 input/book.pdf | tr -c '[:print:]' '?') enc=$(qpdf --show-encryption input/book.pdf 2>&1 | tr '\n' ' ' | cut -c1-300) check=$(qpdf --check input/book.pdf 2>&1 | tail -3 | tr '\n' ' ' | cut -c1-200)"
+          ocrmypdf -l ben+eng --force-ocr --optimize 0 --jobs 2 --output-type pdf --sidecar "output/$BNAME.txt" input/book.pdf work.pdf 2>&1 | tail -15 | while read -r l; do echo "::warning::OCRLOG $l"; done; test -s "output/$BNAME.txt"
           ls -la output
       - uses: actions/upload-artifact@v4
         with:
