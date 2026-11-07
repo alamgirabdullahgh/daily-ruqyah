@@ -16,8 +16,11 @@ for(const f of fs.readdirSync(mdir).filter(x=>x.endsWith('.json')).sort()){
   if(!m.w.every(w=>w>=lo&&w<=hi)){err('মিলে যাওয়া শব্দ tr-এর বাইরে');continue}
   if(!m.w.every(w=>v.ws.some(x=>x.w===w))){err('w worklist-এর জোড়ায় নেই');continue}
   if(m.bn!==undefined&&!(Array.isArray(m.bn)&&m.bn.length===2&&m.bn[0]>=1&&m.bn[1]>=m.bn[0])){err('bn [শুরু,শেষ] (১-ভিত্তিক) ঠিক নেই');continue}
-  const arr=mc[m.id]||(mc[m.id]=[]);const e=arr.find(c=>c.w&&c.w.some(w=>m.w.includes(w)));
-  if(e){e.w=[...new Set([...e.w,...m.w])].sort((a,b)=>a-b);e.tr=[lo,hi];if(m.bn)e.bn=m.bn;if(m.note)e.note=m.note;if(m.topic&&!e.topic)e.topic=m.topic;upd++}
+  const arr=mc[m.id]||(mc[m.id]=[]);
+  /* পুরনো এন্ট্রি একাধিক w ঢাকলে (যেমন ২৪:৩১-এ w5+w7 একসাথে) এবং নতুন মার্ক তার একটি অংশই ঢাকলে — পুরনোটা থেকে ওই w বাদ দিয়ে আলাদা এন্ট্রি হয় */
+  for(const c of arr.slice())if(c.w&&c.w.some(w=>m.w.includes(w))&&c.w.some(w=>!m.w.includes(w))){c.w=c.w.filter(w=>!m.w.includes(w))}
+  const e=arr.find(c=>c.w&&c.w.some(w=>m.w.includes(w)));
+  if(e){e.w=m.w.slice().sort((a,b)=>a-b);e.tr=[lo,hi];if(m.bn)e.bn=m.bn;if(m.note)e.note=m.note;if(m.topic&&!e.topic)e.topic=m.topic;upd++}
   else{arr.push(Object.assign({topic:m.topic||'',w:m.w.slice().sort((a,b)=>a-b),tr:[lo,hi]},m.bn?{bn:m.bn}:{},{note:m.note||''}));add++}
  }}
 if(bad){console.error(bad+'টি ভুলের কারণে লেখা হয়নি');process.exit(1)}

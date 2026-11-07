@@ -36,7 +36,7 @@ for(const it of wl)for(const x of it.ws){
   if(!covered.has(it.id+'|'+x.w)){missing++;errs.push('মার্ক নেই: '+it.id+' w'+x.w)}
 }
 // একই জোড়া একাধিক ব্যাচে
-for(const[k,v]of covered)if(v.length>1)warns.push('একাধিক মার্ক: '+k+' → '+v.join(','));
+for(const[k,v]of covered)if(v.length>1)warns.push('সংশোধিত (পরের ফাইলের মার্কই চলে): '+k+' → '+v.join(','));
 // ডেটা-ফাইলে আছে কিনা
 const cuts=JSON.parse(fs.readFileSync(path.join(R,'data','quran-meaning-cuts.json'),'utf8'));
 let notInData=0;
