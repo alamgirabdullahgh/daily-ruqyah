@@ -7,7 +7,7 @@
   var TOTAL = 604, NEAR = 3, KEEP = 8;
   function bn(n) { return String(n).replace(/[0-9]/g, function (c) { return BD.charAt(+c); }); }
   var DATA = null, loading = null, SURAH_PAGE = null;
-  var host = null, pf = null, pageEls = [], filled = {}, page = 1, geo = null, ui = null, measure = null;
+  var host = null, pf = null, fb = null, pageEls = [], filled = {}, page = 1, geo = null, ui = null, measure = null;
 
   function load() {
     if (DATA) return Promise.resolve(DATA);
@@ -98,7 +98,7 @@
 
   function destroy() {
     if (pf) { try { pf.destroy(); } catch (e) { } pf = null; }
-    pageEls = []; filled = {};
+    pageEls = []; filled = {}; fb = null;
   }
 
   function build(startPage) {
@@ -120,7 +120,19 @@
     }
     page = startPage;
     fillAround(idxOf(page));
-    if (!window.St || !window.St.PageFlip) { book.textContent = "পাতা-ওল্টানোর অংশ লোড হয়নি।"; return; }
+    if (!window.St || !window.St.PageFlip) {
+      // লাইব্রেরি না এলেও কুরআন যেন উধাও না হয়: ওল্টানো ছাড়া সাধারণ পাতা, বাটন ও সোয়াইপ চালু
+      fb = book; showFb();
+      var sx = null;
+      book.addEventListener("touchstart", function (e) { sx = e.touches[0].clientX; }, { passive: true });
+      book.addEventListener("touchend", function (e) {
+        if (sx == null) return;
+        var dx = e.changedTouches[0].clientX - sx; sx = null;
+        if (Math.abs(dx) > 50) go(page + (dx > 0 ? 1 : -1));
+      }, { passive: true });
+      sync(); return;
+    }
+    fb = null;
     pf = new window.St.PageFlip(book, {
       width: pw, height: ph, size: "fixed", usePortrait: true, showCover: false,
       startPage: idxOf(page), drawShadow: true, maxShadowOpacity: 0.45, flippingTime: 650,
@@ -133,8 +145,15 @@
     sync();
   }
 
+  function showFb() {
+    var i = idxOf(page);
+    fillAround(i);
+    fb.innerHTML = ""; fb.appendChild(pageEls[i]);
+  }
+
   function go(n, animate) {
     n = Math.max(1, Math.min(TOTAL, Math.round(+n) || 1));
+    if (fb && n !== page) { page = n; showFb(); sync(); window.scrollTo({ top: 0 }); return; }
     if (n === page || !pf) { if (ui) sync(); return; }
     var i = idxOf(n);
     fillAround(i);
