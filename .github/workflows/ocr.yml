@@ -130,7 +130,10 @@ jobs:
           pip install -q --break-system-packages gdown
           python3 - <<'PY'
           import gdown, json, os, re
-          fs = gdown.download_folder(url=os.environ['FOLDER_URL'], skip_download=True, quiet=True, use_cookies=False, remaining_ok=True) or []
+          try:
+              fs = gdown.download_folder(url=os.environ['FOLDER_URL'], skip_download=True, quiet=True, use_cookies=False, remaining_ok=True) or []
+          except BaseException as e:
+              print('::error::LISTFAIL ' + type(e).__name__ + ': ' + re.sub(r'\s+', ' ', str(e))[:500]); raise
           books, skipped = [], []
           for f in fs:
               p = f.path
