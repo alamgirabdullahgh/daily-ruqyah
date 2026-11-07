@@ -44,12 +44,17 @@ const BROOT=[[["জিনা","জেনা","যিনা","যেনা"],"ز�
 const BEXT=[[["চোখ","নয়ন","চক্ষু","আঁখি","দৃষ্টি"],["অন্ধ"]]];
 // বাদ-দেওয়া বাক্যাংশ: গুচ্ছের কোনো শব্দ লিখলে যেসব অর্থে (ইডিয়ম) আসল অঙ্গ বোঝায় না সেগুলো বাদ। যেমন "মুখ ফিরিয়ে নেওয়া" মুখের আয়াত নয়
 const BEXCL=[[["মুখ","চেহারা","মুখমণ্ডল","বদন","আনন"],["মুখ ফির","মুখ ফের","মুখ ঘুর"]]];
+// জিন-জাতি গুচ্ছ (একমুখী): জিন/জ্বিন লিখলে জিন, শয়তান, ইবলিস, মারিদ, ইফরিত, খান্নাস ইত্যাদির সব আয়াত আসে (উল্টোটা হয় না: শুধু "শয়তান" লিখলে সব জিন আসবে না)
+const JINNL=new Set(["جِنّ","جانّ","شَيْطان","إِبْلِيس","مارِد","مَرِيد","عِفْرِيت","خَنّاس"]);
+const BLEM=[[["জিন","জ্বিন","জ্বীন","জীন","জিন জাতি","জ্বিন জাতি","জিনজাতি","জিনের","জিনদের"],f=>JINNL.has(f.l)||(f.l==="جِنَّة"&&/জ্বিন|জিন/.test(f.m))||/শয়তান|ইবলিস|ইবলীস|মারিদ|ইফরিত|জ্বিন/.test(f.m)]];
 function searchBn(q){const out=[];const xs=[];for(const[k,ph]of BEXCL)if(k.some(x=>fb(x)===fb(q)))ph.forEach(p=>xs.push(fb(p)));let qs=[q];for(const g of BSYN)if(g.some(x=>fb(x)===fb(q))){qs=g.slice();break}
  for(const[k,ex]of BEXT)if(k.some(x=>fb(x)===fb(q)))qs=qs.concat(ex.filter(x=>!qs.includes(x)));
  const fq=qs.map(fb);
+ const lm=[];for(const[g,fn]of BLEM)if(g.some(x=>fb(x)===fb(q)))lm.push(fn);
  const rt=[];for(const[g,rr]of BROOT)if(g.some(x=>fb(x)===fb(q)))rt.push(rr);
  for(const r of R){const ex=[],pt=[];for(const f of r.forms){if(!f.m)continue;const fm=f._b||(f._b=fb(f.m));if(xs.length&&xs.some(p=>fm.includes(p)))continue;if(fq.some(k=>fm===k))ex.push(f);else if(fq.some(k=>wordHas(fm,k)))pt.push(f)}
   if(rt.some(rr=>r.r===rr||r.rn===nz(rr))){const seen=new Set(ex.concat(pt));r.forms.forEach(f=>{if(!seen.has(f))ex.push(f)})}
+  if(lm.length){const seen=new Set(ex.concat(pt));r.forms.forEach(f=>{if(!seen.has(f)&&lm.some(fn=>fn(f)))ex.push(f)})}
   if(ex.length||pt.length)out.push({r,sc:ex.length?60:40,mf:ex.concat(pt),bn:1})}
  return out.sort((a,b)=>b.sc-a.sc||b.mf.length-a.mf.length||b.r.n-a.r.n)}
 // কাছাকাছি শব্দ: কিছু না পেলে অনুবাদের শব্দভান্ডার থেকে ১ অক্ষর ভুল বা একই শুরুর শব্দ দেখায় (বেশি আয়াতে থাকা শব্দ আগে)
