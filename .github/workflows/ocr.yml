@@ -16,6 +16,12 @@ on:
       release_id:
         description: 'Draft/Release ID (ঐচ্ছিক, Publish ছাড়াই PDF নেওয়া যায়)'
         required: false
+      list_only:
+        description: 'শুধু ফোল্ডারের তালিকা দেখাও, OCR করো না (true/false)'
+        required: false
+      skip_names:
+        description: 'বাদ দেওয়ার নামের অংশ, কমা দিয়ে আলাদা (ফোল্ডার মোডে)'
+        required: false
       folder_url:
         description: 'Google Drive ফোল্ডারের লিংক (ঐচ্ছিক): ফোল্ডারের প্রতিটি PDF আলাদা জবে OCR হয়ে output/-এ .txt হবে'
         required: false
@@ -126,6 +132,8 @@ jobs:
         id: l
         env:
           FOLDER_URL: ${{ github.event.inputs.folder_url }}
+          LIST_ONLY: ${{ github.event.inputs.list_only }}
+          SKIP_NAMES: ${{ github.event.inputs.skip_names }}
         run: |
           pip install -q --break-system-packages -U gdown
           python3 - <<'PY'
@@ -140,9 +148,13 @@ jobs:
               if not p.lower().endswith('.pdf'):
                   skipped.append(p); continue
               name = re.sub(r'[\\/:*?"<>|]+', '_', os.path.splitext(p)[0]).strip()
+              if any(k.strip() and k.strip() in p for k in os.environ.get('SKIP_NAMES','').split(',')):
+                  skipped.append(p + ' (বাদ তালিকায়)'); continue
               if os.path.exists(f'output/{name}.txt'):
                   skipped.append(p + ' (আগেই আছে)'); continue
               books.append({'id': f.id, 'name': name})
+          print('::notice::FILES ' + ' || '.join(f.path for f in fs)[:3000])
+          if os.environ.get('LIST_ONLY') == 'true': books = []
           print('PDF:', len(books), '| বাদ:', len(skipped))
           for b in books: print(' -', b['name'])
           for x in skipped: print(' skip', x)
