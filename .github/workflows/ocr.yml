@@ -192,7 +192,8 @@ jobs:
           mkdir -p input output
           gdown "$BID" -O input/book.pdf
           # এনক্রিপ্টেড (owner-password) PDF হলে আগে ডিক্রিপ্ট
-          qpdf --decrypt input/book.pdf input/dec.pdf 2>/dev/null && mv input/dec.pdf input/book.pdf || true
+          qpdf --password= --decrypt input/book.pdf input/dec.pdf || true   # কোড ৩ = সতর্কতা, আউটপুট তবু তৈরি হয়
+          if [ -s input/dec.pdf ]; then mv input/dec.pdf input/book.pdf; echo decrypted; else echo "ডিক্রিপ্ট হয়নি"; qpdf --show-encryption input/book.pdf || true; fi
           ocrmypdf -l ben+eng --force-ocr --optimize 0 --jobs 2 --output-type pdf --sidecar "output/$BNAME.txt" input/book.pdf work.pdf
           ls -la output
       - uses: actions/upload-artifact@v4
