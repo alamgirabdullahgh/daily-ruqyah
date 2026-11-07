@@ -16,12 +16,16 @@ on:
       release_id:
         description: 'Draft/Release ID (ঐচ্ছিক, Publish ছাড়াই PDF নেওয়া যায়)'
         required: false
+      folder_url:
+        description: 'Google Drive ফোল্ডারের লিংক (ঐচ্ছিক): ফোল্ডারের প্রতিটি PDF আলাদা জবে OCR হয়ে output/-এ .txt হবে'
+        required: false
 
 permissions:
   contents: write
 
 jobs:
   ocr:
+    if: ${{ github.event.inputs.folder_url == '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
@@ -109,3 +113,85 @@ jobs:
           git config user.email "actions@github.com"
           git add output
           git diff --cached --quiet || (git commit -m "Auto OCR results" && git pull --rebase -q origin main && git push)
+
+  # ---------- Drive ফোল্ডার: প্রতিটি বই আলাদা জবে (একই ocrmypdf সেটিংস) ----------
+  list-folder:
+    if: ${{ github.event.inputs.folder_url != '' }}
+    runs-on: ubuntu-latest
+    outputs:
+      books: ${{ steps.l.outputs.books }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: List PDFs in Drive folder
+        id: l
+        env:
+          FOLDER_URL: ${{ github.event.inputs.folder_url }}
+        run: |
+          pip install -q --break-system-packages gdown
+          python3 - <<'PY'
+          import gdown, json, os, re
+          fs = gdown.download_folder(url=os.environ['FOLDER_URL'], skip_download=True, quiet=True, use_cookies=False, remaining_ok=True) or []
+          books, skipped = [], []
+          for f in fs:
+              p = f.path
+              if not p.lower().endswith('.pdf'):
+                  skipped.append(p); continue
+              name = re.sub(r'[\\/:*?"<>|]+', '_', os.path.splitext(p)[0]).strip()
+              if os.path.exists(f'output/{name}.txt'):
+                  skipped.append(p + ' (আগেই আছে)'); continue
+              books.append({'id': f.id, 'name': name})
+          print('PDF:', len(books), '| বাদ:', len(skipped))
+          for b in books: print(' -', b['name'])
+          for x in skipped: print(' skip', x)
+          open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8').write('books=' + json.dumps(books, ensure_ascii=False) + '\n')
+          PY
+
+  ocr-book:
+    needs: list-folder
+    if: ${{ needs.list-folder.outputs.books != '[]' && needs.list-folder.outputs.books != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        book: ${{ fromJson(needs.list-folder.outputs.books) }}
+    steps:
+      - name: Install OCR tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ocrmypdf tesseract-ocr-ben tesseract-ocr-eng
+          pip install -q --break-system-packages gdown
+      - name: Download and OCR
+        env:
+          BID: ${{ matrix.book.id }}
+          BNAME: ${{ matrix.book.name }}
+        run: |
+          mkdir -p input output
+          gdown "$BID" -O input/book.pdf
+          ocrmypdf -l ben+eng --force-ocr --optimize 0 --jobs 2 --output-type pdf --sidecar "output/$BNAME.txt" input/book.pdf work.pdf
+          ls -la output
+      - uses: actions/upload-artifact@v4
+        with:
+          name: txt-${{ strategy.job-index }}
+          path: output/*.txt
+
+  commit-folder:
+    needs: ocr-book
+    if: ${{ !cancelled() && needs.ocr-book.result != 'skipped' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: txt-*
+          path: collected
+          merge-multiple: true
+      - name: Commit results
+        run: |
+          mkdir -p output
+          cp -n collected/*.txt output/ 2>/dev/null || true
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add output
+          git diff --cached --quiet || (git commit -m "Auto OCR results (Drive folder)" && git pull --rebase -q origin main && git push)
