@@ -17,5 +17,5 @@ if git ls-remote --exit-code --heads "$U" wip >/dev/null 2>&1; then
   git diff --quiet HEAD FETCH_HEAD -- 2>/dev/null || { git checkout -q FETCH_HEAD -- . && echo "▶ অসমাপ্ত কাজ (wip) তোলা হয়েছে: $(git log -1 --format=%s FETCH_HEAD)"; }
 fi
 tools/handoff/handoff.sh fetch 2>/dev/null | sed 's/^/ছবি: /' || true
-echo "── অবস্থা ──"; tail -n 6 tools/treat-marking/PROGRESS.md | cut -c1-300
+echo "── অবস্থা ──"; tail -n 6 tools/treat-marking/PROGRESS.md
 [ -f tools/handoff/STATE.md ] && { echo "── শেষ থামার জায়গা ──"; cat tools/handoff/STATE.md; }
