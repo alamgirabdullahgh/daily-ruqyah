@@ -19,30 +19,12 @@
    "note": "",
    "created": "2026-11-07 08:49",
    "updated": "2026-11-07 08:51"
-  },
-  {
-   "id": 900,
-   "text": "TEST",
-   "status": "done",
-   "agent": "claude",
-   "progress": 100,
-   "note": "test",
-   "created": "x",
-   "updated": "2026-11-07 08:52",
-   "files": [
-    {
-     "name": "test.txt",
-     "path": "files/999-0-test.txt",
-     "size": 10,
-     "type": "text/plain"
-    }
-   ]
   }
  ],
  "agents": {
   "claude": {
-   "state": "idle",
-   "task": 0,
+   "state": "working",
+   "task": 2,
    "seen": "2026-11-07 08:52"
   }
  },
@@ -74,14 +56,6 @@
   {
    "t": "2026-11-07 08:51",
    "msg": "claude কাজ #2 শুরু করল"
-  },
-  {
-   "t": "2026-11-07 08:52",
-   "msg": "claude কাজ #900 শুরু করল"
-  },
-  {
-   "t": "2026-11-07 08:52",
-   "msg": "কাজ #900 শেষ (claude)"
   }
  ]
 }
