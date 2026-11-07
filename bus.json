@@ -3,8 +3,8 @@
   {
    "id": 1,
    "text": "পরীক্ষা: মার্ক যাচাই",
-   "status": "queued",
-   "agent": "claude",
+   "status": "running",
+   "agent": "gemini",
    "progress": 40,
    "note": "লিমিট শেষ — wip থেকে চালিয়ে যাও",
    "created": "2026-11-07 08:16",
@@ -15,6 +15,11 @@
   "claude": {
    "state": "limit",
    "task": 0,
+   "seen": "2026-11-07 08:16"
+  },
+  "gemini": {
+   "state": "working",
+   "task": 1,
    "seen": "2026-11-07 08:16"
   }
  },
@@ -30,6 +35,10 @@
   {
    "t": "2026-11-07 08:16",
    "msg": "claude-এর লিমিট শেষ → কাজ #1 সারিতে ফিরল"
+  },
+  {
+   "t": "2026-11-07 08:16",
+   "msg": "এজেন্ট বদল: claude → gemini (কাজ #1)"
   }
  ]
 }
