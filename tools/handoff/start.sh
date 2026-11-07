@@ -7,7 +7,7 @@ REPO=${REPO:-alamgirabdullahgh/daily-ruqyah}; D=${D:-/home/claude/daily-ruqyah}
 U="https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
 if [ ! -d "$D/.git" ]; then
   git clone -q --depth 1 --filter=blob:none --sparse "$U" "$D" 2>&1 | sed 's/github_pat_[A-Za-z0-9_]*/***/g'
-  git -C "$D" sparse-checkout set tools/treat-marking tools/handoff data/quran-chunks data/quran-meaning-cuts.json app.js sw.js
+  git -C "$D" sparse-checkout set --no-cone /tools/treat-marking/ /tools/handoff/ /data/quran-chunks/ /data/quran-meaning-cuts.json /app.js /sw.js
   git -C "$D" remote set-url origin "https://github.com/${REPO}.git"
 fi
 cd "$D"; git config user.name Claude; git config user.email noreply@anthropic.com
