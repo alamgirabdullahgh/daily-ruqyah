@@ -66,7 +66,7 @@ jobs:
         run: |
           mkdir -p input
           if echo "$PDF_URL" | grep -q "drive.google.com"; then
-            pip install -q --break-system-packages gdown
+            pip install -q --break-system-packages -U gdown
             FID=$(echo "$PDF_URL" | sed -n 's|.*/d/\([^/?]*\).*|\1|p')
             [ -z "$FID" ] && FID=$(echo "$PDF_URL" | sed -n 's|.*[?&]id=\([^&]*\).*|\1|p')
             echo "Drive file id: $FID"
@@ -127,11 +127,11 @@ jobs:
         env:
           FOLDER_URL: ${{ github.event.inputs.folder_url }}
         run: |
-          pip install -q --break-system-packages gdown
+          pip install -q --break-system-packages -U gdown
           python3 - <<'PY'
           import gdown, json, os, re
           try:
-              fs = gdown.download_folder(url=os.environ['FOLDER_URL'], skip_download=True, quiet=True, use_cookies=False, remaining_ok=True) or []
+              fs = gdown.download_folder(url=os.environ['FOLDER_URL'], skip_download=True, quiet=True, use_cookies=False) or []
           except BaseException as e:
               print('::error::LISTFAIL ' + type(e).__name__ + ': ' + re.sub(r'\s+', ' ', str(e))[:500]); raise
           books, skipped = [], []
@@ -164,7 +164,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ocrmypdf tesseract-ocr-ben tesseract-ocr-eng
-          pip install -q --break-system-packages gdown
+          pip install -q --break-system-packages -U gdown
       - name: Download and OCR
         env:
           BID: ${{ matrix.book.id }}
