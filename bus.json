@@ -3,13 +3,13 @@
   {
    "id": 38,
    "text": "talabah2022@gmail.com\n***\nএই জিমেইল এবং পাসওয়ার্ড দিয়ে ওয়ার্ক স্পেসে থাকা একটি ওয়ার্ক স্পেস এ লগ ইন করো",
-   "status": "running",
-   "agent": "browser",
+   "status": "queued",
+   "agent": "",
    "target": "claude",
-   "progress": 15,
-   "note": "🤖 Gemini কাজ করছে…",
+   "progress": 0,
+   "note": "Gemini ব্যর্থ (gemini-flash-latest: SocketTimeoutException) — সাধারণ পথে",
    "created": "2026-11-08 13:41",
-   "updated": "2026-11-08 13:42"
+   "updated": "2026-11-08 13:43"
   }
  ],
  "agents": {
@@ -23,6 +23,10 @@
   {
    "t": "2026-11-08 13:41",
    "msg": "নতুন কাজ #38 → claude: talabah2022@gmail.com\n22**44##\nএই জিমেইল এবং পাসওয়ার্ড দিয়"
+  },
+  {
+   "t": "2026-11-08 13:43",
+   "msg": "টাস্ক #38: Gemini ব্যর্থ"
   }
  ],
  "seq": 38,
