@@ -19,7 +19,7 @@ const jf=n=>fetch(BASE+n+"?v="+DV).then(r=>r.json());
 const CH={c:{},a:{},b:{},w:{},m:{}};
 let actN=0;const qN=[],qL=[];const lim=(f,low)=>new Promise((ok,no)=>{const run=()=>{actN++;f().then(ok,no).finally(()=>{actN--;const n=qN.shift()||qL.shift();n&&n()})};if(actN<5&&(!low||!qN.length))run();else(low?qL:qN).push(run)});
 const CS=new Set([6,11,15,17,21,24,29,31,44,48,114]);const TR="c";
-const chunk=(k,s,low)=>k==="c"&&!CS.has(s)?chunk("b",s,low):CH[k][s]||(CH[k][s]=lim(async()=>{for(let i=0;;i++){try{return await rsFetch(BASE+"quran-chunks/"+k+"/"+s+".json?v="+DV)}catch(e){if(i>=3)throw e;await new Promise(z=>setTimeout(z,500*(i+1)))}}},low).catch(e=>{delete CH[k][s];throw e}));
+const chunk=(k,s,low)=>k==="c"&&!CS.has(s)?chunk("b",s,low):CH[k][s]||(CH[k][s]=lim(async()=>{for(let i=0;;i++){try{return await rsFetch(BASE+"quran-chunks/"+k+"/"+s+".json?v="+DV)}catch(e){if(i>=3)throw e;await new Promise(z=>setTimeout(z,500*(i+1)))}}},low).catch(e=>{delete CH[k][s];throw e}));window.__drChunk=chunk;
 function search(q){const out=[];for(const r of R){let sc=0,mf=null;
  if(r.rn===q)sc=100;
  else{const ex=r.forms.filter(f=>f.k1===q||f.k2===q||lessAl(f.k1)===q||lessAl(f.k2)===q);
@@ -906,14 +906,15 @@ function drShell(){
  let lastH="home";
  const route=()=>{open(false);const h=(location.hash||"#home").replace(/^#/,""),p=h.split("/");
   document.querySelectorAll("audio").forEach(a=>{try{a.pause()}catch(e){}});
-  const al=$("drAlarm");if(al)al.hidden=true;const hm=$("drHome");if(hm)hm.hidden=true;const sy=$("drSym");if(sy)sy.hidden=true;
+  const al=$("drAlarm");if(al)al.hidden=true;const hm=$("drHome");if(hm)hm.hidden=true;const am=$("drAmol");if(am)am.hidden=true;const sy=$("drSym");if(sy)sy.hidden=true;
   if(p[0]==="timewidget"){window.DRALARM&&DRALARM.openWidget();location.hash="#"+lastH;return}
   let key="search";
   if(p[0]==="home"&&hm){key="home";box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.scrollTo(0,0)}
   else if(p[0]==="diag"&&sy){key="diag";box.hidden=true;rd.hidden=true;sy.hidden=false;if(window.__drSymInit&&!window.__drSymDone){window.__drSymDone=1;window.__drSymInit()}window.scrollTo(0,0)}
+  else if(p[0]==="amol"&&am){key="amol";box.hidden=true;rd.hidden=true;am.hidden=false;window.__drAmol&&window.__drAmol(p[1]);window.scrollTo(0,0)}
   else if(p[0]==="alarm"&&al){key="alarm";box.hidden=true;rd.hidden=true;al.hidden=false;window.DRALARM&&DRALARM.show();window.scrollTo(0,0)}
   else if(p[0]==="read"&&RMODES.some(m=>m[0]===p[1])){key="read/"+p[1];const s=+p[2]||0;box.hidden=true;rd.hidden=false;if(p[1]==="ar"&&window.DRMUSHAF){GEN++;DRMUSHAF.open(rd,s>=1&&s<=114?s:0)}else renderReader(p[1],s>=1&&s<=114?s:0);window.scrollTo(0,0)}
-  else{rd.hidden=true;box.hidden=false;RG++;if(p[0]==="topics"){key="topics";SHOWT&&SHOWT(true);window.scrollTo(0,0)}else if(prev.startsWith("read/")||prev===""||prev==="home"||prev==="alarm")window.scrollTo(0,0)}
+  else{rd.hidden=true;box.hidden=false;RG++;if(p[0]==="topics"){key="topics";SHOWT&&SHOWT(true);window.scrollTo(0,0)}else if(prev.startsWith("read/")||prev===""||prev==="home"||prev==="alarm"||prev==="amol")window.scrollTo(0,0)}
   prev=key;lastH=h;{const sh=key==="home"?"":"none";["drWidget","drWBar"].forEach(i=>{const x=$(i);if(x)x.style.display=sh})}navs.forEach(a=>a.classList.toggle("on",a.dataset.nav===key))};
  navs.forEach(a=>a.addEventListener("click",e=>{e.preventDefault();const h=a.getAttribute("href");if(location.hash===h)route();else location.hash=h;open(false)}));
  addEventListener("hashchange",route);

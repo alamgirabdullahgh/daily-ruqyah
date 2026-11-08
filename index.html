@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Daily Ruqyah">
-<link rel="stylesheet" href="style.css?v=22">
+<link rel="stylesheet" href="style.css?v=23">
 </head>
 <body>
 <header class="dr-bar">
@@ -35,6 +35,8 @@
  <a class="dr-nav" href="#read/arbn" data-nav="read/arbn"><i class="ar">عب</i><span>আরবি ও বাংলা অনুবাদসহ</span></a>
  <div class="dr-side-sec">রুকইয়াহ অডিও ও উইজেট</div>
  <a class="dr-nav" href="#alarm" data-nav="alarm"><i>⏰</i><span>রুকইয়াহ অডিও অ্যালার্ম</span></a>
+ <div class="dr-side-sec">আমল ও নির্দেশিকা</div>
+ <a class="dr-nav" href="#amol" data-nav="amol"><i>📖</i><span>আমল ও চিকিৎসা-নির্দেশিকা</span></a>
 <div class="dr-vbar"><b id="drVer">Daily Ruqyah</b><button class="dr-share" id="drShare" type="button">Share</button></div>
 </nav>
 <nav class="dr-bnav" aria-label="নেভিগেশন"><a class="dr-bn" href="#topics" data-nav="topics"><i>📚</i><span>বিষয়ভিত্তিক আয়াত</span></a><a class="dr-bn" href="#home" data-nav="home"><i>🏠</i><span>হোম</span></a><a class="dr-bn" href="#diag" data-nav="diag"><i>🩺</i><span>ডায়াগনোসিস</span></a></nav>
@@ -54,13 +56,15 @@
 </div>
 <div class="rs-box dr-reader" id="drReader" hidden></div>
 <div class="rs-box" id="drAlarm" hidden></div>
+<div class="rs-box" id="drAmol" hidden></div>
 </main>
 <script src="widget.js?v=10"></script>
 <script src="symptom.js?v=1"></script>
 <script src="vendor/page-flip.browser.js?v=1"></script>
 <script src="mushaf.js?v=3"></script>
-<script src="app.js?v=22"></script>
+<script src="app.js?v=23"></script>
 <script src="alarm.js?v=3"></script>
+<script src="amol.js?v=1"></script>
 <script src="boot.js?v=6"></script>
 <script src="data/hadith-norm.js?v=2"></script>
 <script src="data/hadith.js?v=11"></script>
