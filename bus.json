@@ -10,6 +10,17 @@
    "note": "🤖 Gemini:\nআমি আপনার দেওয়া ইমেলগুলি ব্যবহার করে ৬টি ওয়ার্কস্পেসে (৭, ৮, ৯, ১০, ১১, ১২) লগইন করার চেষ্টা করেছি।\n\nতবে, ওয়ার্কস্পেস ৭ (talabah2022@gmail.com), ৮ (ruqyahmedicalcenter@gmail.com), ৯ (raqiabdullahmail@gmail.com), ১০ (rahgroupmail@gmail.com), ১১ (alamgirabdullahmail@gmail.com) এবং ১২ (raqialamgirabdullah@gmail.com) এখনও লগইন পেজে আছে বলে মনে হচ্ছে। সম্ভবত এগুলোর জন্য ম্যানুয়াল হস্তক্ষেপের প্রয়োজন হতে পারে, যেমন ক্যাপচা পূরণ করা বা ২-ধাপ যাচাইকরণ।",
    "created": "2026-11-08 12:47",
    "updated": "2026-11-08 12:48"
+  },
+  {
+   "id": 33,
+   "text": "লগইন হয়নি আবার চেষ্টা করো",
+   "status": "queued",
+   "agent": "",
+   "target": "claude",
+   "progress": 0,
+   "note": "",
+   "created": "2026-11-08 12:57",
+   "updated": "2026-11-08 12:57"
   }
  ],
  "agents": {
@@ -27,94 +38,98 @@
   {
    "t": "2026-11-08 12:48",
    "msg": "টাস্ক #32: Gemini শেষ করল"
+  },
+  {
+   "t": "2026-11-08 12:57",
+   "msg": "নতুন কাজ #33 → claude: লগইন হয়নি আবার চেষ্টা করো"
   }
  ],
- "seq": 32,
+ "seq": 33,
  "sites_backup": [
   {
    "id": "s1794132254333",
    "n": "99alamgir22@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132265333",
    "n": "alamgirabdullah24@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132273461",
    "n": "abrar2001fahad@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132277355",
    "n": "alamgir1641999@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132281171",
    "n": "alamgirabdullah2024@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132284785",
    "n": "alamgirabdullahall@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132289006",
    "n": "alamgirabdullahofficial@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132294840",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132298475",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132302842",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132306487",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132310107",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132313945",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132317213",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132320639",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132324506",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132330393",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   }
  ]
 }
