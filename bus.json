@@ -1,5 +1,17 @@
 {
- "tasks": [],
+ "tasks": [
+  {
+   "id": 31,
+   "text": "alamgirabdullahofficial@gmail.com\nwww.gmail4.com\n\ntalabah2022@gmail.com\n22**44##\n\nruqyahmedicalcenter@gmail.com\n22**44##Rmc\n\nraqiabdullahmail@gmail.com \n22**44##Ra\n\nrahgroupmail@gmail.com\n22**44##Rgm\n\nalamgirabdullahmail@gmail.com\n22**44##Aa\n\nraqialamgirabdullah@gmail.com\n22**44##Raa\n\nখালি থাকা বাকি ওয়ার্ক স্পেস গুলোতে এক একটা জিমেইল এবং পাসওয়ার্ড দিয়ে লগইন কর",
+   "status": "queued",
+   "agent": "",
+   "target": "claude",
+   "progress": 0,
+   "note": "",
+   "created": "2026-11-08 12:30",
+   "updated": "2026-11-08 12:30"
+  }
+ ],
  "agents": {
   "claude": {
    "state": "limit",
@@ -7,8 +19,13 @@
    "seen": "2026-11-08 09:15"
   }
  },
- "events": [],
- "seq": 30,
+ "events": [
+  {
+   "t": "2026-11-08 12:30",
+   "msg": "নতুন কাজ #31 → claude: alamgirabdullahofficial@gmail.com\nwww.gmail4.com\n\ntalabah202"
+  }
+ ],
+ "seq": 31,
  "sites_backup": [
   {
    "id": "s1794132254333",
