@@ -1,17 +1,5 @@
 {
- "tasks": [
-  {
-   "id": 7,
-   "text": "হরিণের গল্প\n@gemini @audio @image @video",
-   "status": "queued",
-   "agent": "",
-   "target": "claude",
-   "progress": 0,
-   "note": "",
-   "created": "2026-11-08 06:21",
-   "updated": "2026-11-08 06:21"
-  }
- ],
+ "tasks": [],
  "agents": {
   "claude": {
    "state": "limit",
@@ -23,6 +11,10 @@
   {
    "t": "2026-11-08 06:21",
    "msg": "নতুন কাজ #7 → claude: হরিণের গল্প\n@gemini @audio @image @video"
+  },
+  {
+   "t": "2026-11-08 06:21",
+   "msg": "কাজ #7 বাতিল করা হলো"
   }
  ],
  "seq": 7
