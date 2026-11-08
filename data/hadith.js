@@ -226,12 +226,14 @@
       });
     }
     async function recOf(id) { var c = await chunkOf(id); return c[id % META.chunk]; }
+    /* শুধু "বদনজর সত্য" জাতীয় হাদিস (চিকিৎসা/ঝাড়ফুঁকের কোনো নির্দেশ নেই) — সার্চ থেকে বাদ */
+    var HIDE = {1295:1,1350:1,3450:1,4117:1,6079:1,6080:1,6958:1,8178:1,8180:1,8183:1,10657:1,10690:1};
     async function postings(w) {
       var sh = await load("i/" + N.shard(w) + ".json");
       var d = sh[w];
       if (!d) return [];
-      var out = new Array(d.length), p = 0;
-      for (var i = 0; i < d.length; i++) { p += d[i]; out[i] = p; }
+      var out = [], p = 0;
+      for (var i = 0; i < d.length; i++) { p += d[i]; if (!HIDE[p]) out.push(p); }
       return out;
     }
 

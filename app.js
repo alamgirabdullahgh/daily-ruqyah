@@ -773,7 +773,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
      let WW=null;
      wb.onclick=()=>{wh.classList.toggle("on");if(wh.firstChild||!WW)return;WW.forEach(([x,m])=>{const cl=el("div","rs-wc"),a2=el("div","rs-wa rs-ar",x),b2=el("div","rs-wm",m||"");cl.append(a2,b2);wh.appendChild(cl)})};
      const cpb=copyBtn("📋",()=>"সূরা "+SN[k.s-1]+" — "+k.s+":"+k.a+"\n"+ar.textContent+"\n"+bn.textContent,1);cpb.title="কপি";va.append(wb,cpb);KV={va,wb,cpb};
-     v.append(rf,ar,bn,va,wh);if(CF.pick)v.prepend(CF.pick(c,k,g));box.appendChild(v);
+     if(CF.pick)va.append(CF.pick(c,k,g));v.append(rf,ar,bn,va,wh);box.appendChild(v);
      Promise.all([chunk("a",k.s),chunk(TR,k.s),chunk("w",k.s).catch(()=>null),wqLoad()]).then(([A,B,W])=>{const t=((A||[])[k.a-1]||"").split(" "),mk=wqMarks(k.s,k.a),sl=t.slice(k.from-1,k.to);sl.forEach((x,i)=>{if(i)ar.appendChild(document.createTextNode(" "));ar.appendChild(document.createTextNode(x));const q=mk[k.from+i];if(q){ar.appendChild(document.createTextNode(" "));ar.appendChild(el("span","rs-wq",[...q].map(c=>WQL[c]||"").filter(Boolean).join(" ")))}});
       const ms=((W||[])[k.a-1]||"").split("|").slice(k.from-1,k.to);WW=sl.map((x,i)=>[x,ms[i]]);
       const part=!(k.from<=1&&k.to>=t.length);let x=(B||[])[k.a-1]||"";if(k.bn)x=k.bn;else if(part){/* আয়াতের শুধু দেখানো অংশের অর্থ: bn না থাকলে শব্দার্থ — পুরো আয়াতের অনুবাদ নয় */const m=ms.join(" ").replace(/["“”]/g,"").trim();x=m?"শব্দার্থ: "+m:""}bn.textContent=x}).catch(()=>{ar.textContent="লোড করা যায়নি"})}
@@ -812,10 +812,10 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
     m+="\n\n— Daily Ruqyah";
     const a=document.createElement("a");a.href="https://wa.me/"+n+"?text="+encodeURIComponent(m);a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove()});
    send.style.margin="0";bar.append(cnt,send);H.appendChild(bar);
-   const pick=(c,k,g)=>{const id=c.name+"|"+k.s+":"+k.a+":"+k.from,lb=els("label","display:flex;align-items:center;gap:8px;margin:0 0 6px;padding:6px 10px;border:1px dashed var(--accent);border-radius:10px;font-size:13.5px;color:var(--primary);cursor:pointer"),cb=document.createElement("input");
-    cb.type="checkbox";cb.style.cssText="width:20px;height:20px;accent-color:var(--primary)";cb.checked=SEL.has(id);
+   const pick=(c,k,g)=>{const id=c.name+"|"+k.s+":"+k.a+":"+k.from,lb=els("label","display:inline-flex;align-items:center;gap:6px;margin:0 0 0 auto;padding:4px 10px;border:1px dashed var(--accent);border-radius:999px;font-size:12.5px;color:var(--primary);cursor:pointer;white-space:nowrap"),cb=document.createElement("input");
+    cb.type="checkbox";cb.style.cssText="width:18px;height:18px;accent-color:var(--primary)";cb.checked=SEL.has(id);
     cb.onchange=()=>{if(cb.checked)SEL.set(id,{sec:g.section||"",name:c.name,s:k.s,a:k.a,sn:SN[k.s-1]});else SEL.delete(id);upd()};
-    lb.append(cb,els("span",null,"এই আয়াতে রোগীর রিয়্যাকশন হয়েছে"));return lb};
+    lb.append(els("span",null,"রিয়্যাকশন হয়েছে"),cb);return lb};
    showDiag({host:out,infoEl:info,pick})};}
  SHOWT=showTopics;$("rsTp").onclick=()=>showTopics();
  document.querySelectorAll(".rs-ex").forEach(b=>b.onclick=()=>{q.value=b.dataset.q;go()});

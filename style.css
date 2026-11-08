@@ -440,9 +440,12 @@ body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
 @media (prefers-color-scheme:dark){.rs-gold{background:rgba(216,178,90,.26)}}
 
 /* পুনরাবৃত্তির সংখ্যা-বক্স */
-.rs-rep{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px}
+.rs-rep{grid-column:1/-1;display:flex;flex-wrap:nowrap;gap:6px}
 .rs-rb{flex:1 1 150px;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border:1px solid var(--border);border-radius:13px;background:var(--card-bg);font-size:13px}
 .rs-rt{flex:1}
+.rs-rep .rs-rb{flex:1 1 0;min-width:0;display:grid;grid-template-columns:1fr auto;align-items:center;justify-items:center;gap:3px 4px;padding:6px 6px;font-size:12px}
+.rs-rep .rs-rt{grid-column:1/-1;text-align:center;font-size:12px;white-space:nowrap}
+.rs-rep .rs-num{width:100%;min-width:0;max-width:56px}
 .rs-num{width:62px;min-height:34px;padding:0 4px;border:1px solid var(--border);border-radius:9px;background:transparent;color:inherit;text-align:center;font:inherit;font-size:14px;font-weight:700;-moz-appearance:textfield;appearance:textfield}
 .rs-num::-webkit-outer-spin-button,.rs-num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .rs-num:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
