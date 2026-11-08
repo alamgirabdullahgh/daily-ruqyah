@@ -1,6 +1,7 @@
 package com.dailyruqyah.app;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -56,6 +57,7 @@ public class MainActivity extends BridgeActivity {
     private class Dl {
         private final Map<String, OutputStream> os = new HashMap<>();
         private final Map<String, String> where = new HashMap<>();
+        private final Map<String, Uri> uris = new HashMap<>();
 
         @JavascriptInterface public void begin(String id, String name, String mime) {
             try {
@@ -67,6 +69,7 @@ public class MainActivity extends BridgeActivity {
                     v.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/DailyRuqyah");
                     Uri u = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, v);
                     o = getContentResolver().openOutputStream(u);
+                    uris.put(id, u);
                 } else {
                     File d = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
                     d.mkdirs();
@@ -88,8 +91,27 @@ public class MainActivity extends BridgeActivity {
                 OutputStream o = os.remove(id);
                 if (o != null) { o.flush(); o.close(); }
                 String w = where.remove(id);
+                uris.remove(id);
                 toast(w == null ? "✅ ডাউনলোড হয়েছে — Downloads/DailyRuqyah ফোল্ডারে" : "✅ সেভ হয়েছে: " + w);
             } catch (Exception e) { toast("সেভ শেষ করা যায়নি: " + e.getMessage()); }
+        }
+
+        /** শেয়ার: ফাইল সেভ শেষ করে (Downloads/DailyRuqyah-এ একটা কপি থাকে) Android-এর শেয়ার-শিট খোলে */
+        @JavascriptInterface public void endShare(String id, String mime) {
+            try {
+                OutputStream o = os.remove(id);
+                if (o != null) { o.flush(); o.close(); }
+                where.remove(id);
+                Uri u = uris.remove(id);
+                if (u == null) { toast("শেয়ার করা যায়নি (এই ফোনের Android পুরনো)"); return; }
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType(mime == null || mime.isEmpty() ? "audio/mpeg" : mime);
+                i.putExtra(Intent.EXTRA_STREAM, u);
+                i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                Intent ch = Intent.createChooser(i, "শেয়ার করুন");
+                ch.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                runOnUiThread(() -> { try { startActivity(ch); } catch (Exception e) { toast("শেয়ার খোলা যায়নি: " + e.getMessage()); } });
+            } catch (Exception e) { toast("শেয়ার করা যায়নি: " + e.getMessage()); }
         }
 
         @JavascriptInterface public void fail(String m) { toast("ডাউনলোড ব্যর্থ: " + m); }

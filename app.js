@@ -317,7 +317,9 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;
  if(!ok){console.error("merge failed");note("একটা ফাইলে জোড়া লাগানো যায়নি (অডিও সার্ভার ফাইল দিতে দেয়নি), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");out.textContent="";playList(setAll()>1?Array.from({length:setAll()},()=>list).flat():list,out);return}
  if(!pool){const f=enc.flush();if(f.length)mp3.push(new Uint8Array(f))}const SR=setAll(),parts=[];for(let q=0;q<SR;q++)for(const c of mp3)parts.push(c);const blob=new Blob(parts,{type:"audio/mpeg"}),ext="mp3";
  const url=URL.createObjectURL(blob),au=document.createElement("audio");au.controls=true;au.src=url;au.style.cssText="display:block;width:100%;margin-top:8px";
- const FN=(String(window.__sq||"").trim().replace(/\s*[,،，、]\s*/g,"-").replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g,"_").replace(/^[-_.]+|[-_.]+$/g,"").slice(0,60)||"quran-audio")+"."+ext;window.__lastFN=FN;out.append(au);
+ const FN=(String(window.__sq||"").trim().replace(/\s*[,،，、]\s*/g,"-").replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g,"_").replace(/^[-_.]+|[-_.]+$/g,"").slice(0,60)||"quran-audio")+"."+ext;window.__lastFN=FN;{const row=els("div","display:flex;align-items:center;gap:8px;margin-top:8px"),sh=document.createElement("button");au.style.cssText="flex:1 1 0;min-width:0;width:100%;margin:0";sh.type="button";sh.title="শেয়ার";sh.setAttribute("aria-label","শেয়ার");sh.style.cssText="flex:none;width:42px;height:42px;border-radius:50%;border:0;background:var(--primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0";
+  sh.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 16.1c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>';
+  sh.onclick=()=>shareBlob(blob,FN);row.append(au,sh);out.append(row)};
  note("✅ "+bn2(ok)+"টি আয়াতের অডিও একটি ফাইলে তৈরি হয়েছে"+(SR>1?" · পুরো সেট "+bn2(SR)+" বার":"")+(cutN?" (অংশ কাটা: "+bn2(cutN)+"টি আয়াত)":"")+(bad?" · "+bn2(bad)+"টির অডিও পাওয়া যায়নি, বাদ গেছে":"")+(AS.net?" · "+bn2(AS.net)+"টি আয়াত নেট থেকে এসেছে (ফোনে ফাইল ছিল না)":""));au.play().catch(()=>{})}
 // ---------- অ্যাপের ভেতরে ফাইল সেভ (ওয়েবভিউ blob ডাউনলোড করে না, তাই নেটিভ DRDl দিয়ে Downloads ফোল্ডারে) ----------
 async function saveBlob(blob,name){
@@ -326,6 +328,13 @@ async function saveBlob(blob,name){
   for(let o=0;o<blob.size;o+=S){const u8=new Uint8Array(await blob.slice(o,o+S).arrayBuffer());let b="";for(let i=0;i<u8.length;i+=8192)b+=String.fromCharCode.apply(null,u8.subarray(i,i+8192));DRDl.chunk(id,btoa(b))}
   DRDl.end(id)}catch(e){try{DRDl.fail(String(e))}catch(x){}}}
 window.__drSave=(b)=>saveBlob(b,window.__lastFN||"quran-audio.mp3");
+// ---------- শেয়ার: প্রথমে ব্রাউজারের নিজস্ব ফাইল-শেয়ার, না চললে নেটিভ শেয়ার-শিট (DRDl.endShare) ----------
+async function shareBlob(blob,name){
+ try{const f=new File([blob],name,{type:blob.type||"audio/mpeg"});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name.replace(/\.[^.]+$/,"")});return}}catch(e){if(e&&e.name==="AbortError")return}
+ if(!window.DRDl||!DRDl.endShare){alert("এই ফোনে শেয়ার চালু করা যায়নি");return}
+ try{const id="s"+Date.now(),S=3*512*1024;DRDl.begin(id,name,blob.type||"audio/mpeg");
+  for(let o=0;o<blob.size;o+=S){const u8=new Uint8Array(await blob.slice(o,o+S).arrayBuffer());let b="";for(let i=0;i<u8.length;i+=8192)b+=String.fromCharCode.apply(null,u8.subarray(i,i+8192));DRDl.chunk(id,btoa(b))}
+  DRDl.endShare(id,blob.type||"audio/mpeg")}catch(e){try{DRDl.fail(String(e))}catch(x){}}}
 // ---------- আয়াতের অডিও থেকে অংশ কাটা ----------
 const CUT=new Map(); // "সূরা:আয়াত" → [শুরু সেকেন্ড, শেষ সেকেন্ড]
 const selList=()=>[...SELV].map(k=>k.split(":").map(Number)).sort((x,y)=>x[0]-y[0]||x[1]-y[1]);
