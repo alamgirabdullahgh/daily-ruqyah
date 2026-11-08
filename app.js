@@ -108,11 +108,17 @@ window.__drAud={urls:audUrls,AYN:AYN}; // alarm.js (রুকইয়াহ অ
 const els=(t,css,x)=>{const e=el(t,null,x);e.style.cssText=css;return e};
 const SELV=new Set(),selUp=[];
 const selChange=()=>selUp.forEach(f=>{try{f()}catch(e){}});
+/* একটি আয়াত শোনা: ফোনে ফাইল থাকলে সরাসরি সেই ফাইল প্লেয়ারে (নামানো/মেমরিতে কপি ছাড়াই, সঙ্গে সঙ্গে চলে); না থাকলে নেট থেকে। নামানো দরকার শুধু মার্জের সময় (fetchAud) */
+async function localUrl(s,a){const p=NAO();if(!p)return null;try{if(!NADIR)NADIR=(await p.status()).dir||"";if(!NADIR)return null;return window.Capacitor.convertFileSrc("file://"+NADIR+"/"+gNum(s,a)+".mp3")}catch(e){return null}}
 function playBtn(s,a){const b=el("button","rs-wb","🔊 শুনুন");b.type="button";let au=null;
- b.onclick=()=>{if(au){au.remove();au=null;b.textContent="🔊 শুনুন";return}
-  au=document.createElement("audio");au.controls=true;au.autoplay=true;au.style.cssText="flex:1 1 0;min-width:0;width:100%;height:38px;margin:0";const u=audUrls(s,a);let i=0;au.onerror=()=>{if(++i<u.length){au.src=u[i];au.play().catch(()=>{})}else{b.textContent="অডিও পাওয়া যায়নি"}};
-  if(offOn())offGet(s,a).then(x=>{if(!au)return;au.src=x?URL.createObjectURL(new Blob([x],{type:"audio/mpeg"})):u[0]});else au.src=u[0];
-  b.parentNode.appendChild(au);b.textContent="⏹ বন্ধ"};return b}
+ b.onclick=async()=>{if(au){au.remove();au=null;b.textContent="🔊 শুনুন";return}
+  const me=document.createElement("audio");au=me;me.controls=true;me.autoplay=true;me.style.cssText="flex:1 1 0;min-width:0;width:100%;height:38px;margin:0";
+  b.parentNode.appendChild(me);b.textContent="⏹ বন্ধ";
+  const c=[];
+  if(offOn()){const lu=await localUrl(s,a);if(au!==me)return;if(lu)c.push(lu);else{const x=await offGet(s,a);if(au!==me)return;if(x)c.push(URL.createObjectURL(new Blob([x],{type:"audio/mpeg"})))}}
+  c.push(...audUrls(s,a));let i=0;
+  me.onerror=()=>{if(au!==me)return;if(++i<c.length){me.src=c[i];me.play().catch(()=>{})}else{b.textContent="অডিও পাওয়া যায়নি"}};
+  me.src=c[0]};return b}
 function selBox(s,a){const k=s+":"+a,l=els("label","display:inline-flex;align-items:center;gap:5px;margin:6px 0 0 6px;font-size:12px;color:var(--primary);cursor:pointer"),c=document.createElement("input");c.type="checkbox";c.checked=SELV.has(k);c.onchange=()=>{c.checked?SELV.add(k):SELV.delete(k);selChange()};l.append(c,document.createTextNode("বাছাই"));
  const rs=numBox("rs-num rs-num-s",REP.get(k)||repAll(),v=>{REP.set(k,v)});rs.title="এই আয়াত কতবার";REPBX.push({k,i:rs});l.append(rs,document.createTextNode(" বার"));return l}
 /* ───── মিশারি আলাফাসির অডিও অফলাইনে: একবার নামালে ফোনের ভেতরে (Cache) থাকে; মার্জ/শোনা আগে সেখান থেকে, না থাকলে নেট থেকে ───── */
