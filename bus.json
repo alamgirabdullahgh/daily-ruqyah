@@ -1,39 +1,5 @@
 {
- "tasks": [
-  {
-   "id": 32,
-   "text": "talabah2022@gmail.com\n***\n\nruqyahmedicalcenter@gmail.com\n***\n\nraqiabdullahmail@gmail.com \n***\n\nrahgroupmail@gmail.com\n***\n\nalamgirabdullahmail@gmail.com\n***\n\nraqialamgirabdullah@gmail.com\n***\nলগইন করা হয়নি এরকম ওয়ার্ক এসপেস গুলোতে এই ইমেইল গুলো দিয়ে লগইন করে দাও\nলগইন করা হয়নি এরকম",
-   "status": "done",
-   "agent": "browser",
-   "target": "claude",
-   "progress": 100,
-   "note": "🤖 Gemini:\nআমি আপনার দেওয়া ইমেলগুলি ব্যবহার করে ৬টি ওয়ার্কস্পেসে (৭, ৮, ৯, ১০, ১১, ১২) লগইন করার চেষ্টা করেছি।\n\nতবে, ওয়ার্কস্পেস ৭ (talabah2022@gmail.com), ৮ (ruqyahmedicalcenter@gmail.com), ৯ (raqiabdullahmail@gmail.com), ১০ (rahgroupmail@gmail.com), ১১ (alamgirabdullahmail@gmail.com) এবং ১২ (raqialamgirabdullah@gmail.com) এখনও লগইন পেজে আছে বলে মনে হচ্ছে। সম্ভবত এগুলোর জন্য ম্যানুয়াল হস্তক্ষেপের প্রয়োজন হতে পারে, যেমন ক্যাপচা পূরণ করা বা ২-ধাপ যাচাইকরণ।",
-   "created": "2026-11-08 12:47",
-   "updated": "2026-11-08 12:48"
-  },
-  {
-   "id": 33,
-   "text": "লগইন হয়নি আবার চেষ্টা করো",
-   "status": "done",
-   "agent": "browser",
-   "target": "claude",
-   "progress": 100,
-   "note": "🤖 Gemini:\nআমি আবার ৬টি ওয়ার্কস্পেসে লগইন করার চেষ্টা করেছি।\n\nওয়ার্কস্পেস ৭ (talabah2022@gmail.com), ৮ (ruqyahmedicalcenter@gmail.com) এবং ৯ (raqiabdullahmail@gmail.com) এখনও লগইন পেজে আছে।\n\nওয়ার্কস্পেস ১০ (rahgroupmail@gmail.com) খোলা আছে কিন্তু লগইন অবস্থা নিশ্চিত নয়।\n\nওয়ার্কস্পেস ১১ (alamgirabdullahmail@gmail.com) এবং ১২ (raqialamgirabdullah@gmail.com) খোলা হয়নি এবং তাদের লগইন অবস্থাও নিশ্চিত নয়।\n\nমনে হচ্ছে এই ওয়ার্কস্পেসগুলোতে ম্যানুয়াল হস্তক্ষেপের প্রয়োজন হতে পারে।",
-   "created": "2026-11-08 12:57",
-   "updated": "2026-11-08 12:58"
-  },
-  {
-   "id": 34,
-   "text": "আচ্ছা তুমি যে কোন একটাতে চেষ্টা করো",
-   "status": "done",
-   "agent": "browser",
-   "target": "claude",
-   "progress": 100,
-   "note": "🤖 Gemini:\nআমি ওয়ার্কস্পেস ৭ (talabah2022@gmail.com) এ আবার লগইন করার চেষ্টা করেছি, কিন্তু এটি এখনও লগইন পেজে আছে বলে মনে হচ্ছে। সম্ভবত ম্যানুয়াল হস্তক্ষেপের প্রয়োজন হতে পারে।",
-   "created": "2026-11-08 12:59",
-   "updated": "2026-11-08 13:00"
-  }
- ],
+ "tasks": [],
  "agents": {
   "claude": {
    "state": "limit",
@@ -41,52 +7,7 @@
    "seen": "2026-11-08 12:45"
   }
  },
- "events": [
-  {
-   "t": "2026-11-08 12:47",
-   "msg": "নতুন কাজ #32 → claude: talabah2022@gmail.com\n22**44##\n\nruqyahmedicalcenter@gmail.co"
-  },
-  {
-   "t": "2026-11-08 12:48",
-   "msg": "টাস্ক #32: Gemini শেষ করল"
-  },
-  {
-   "t": "2026-11-08 12:57",
-   "msg": "নতুন কাজ #33 → claude: লগইন হয়নি আবার চেষ্টা করো"
-  },
-  {
-   "t": "2026-11-08 12:58",
-   "msg": "টাস্ক #33: Gemini শেষ করল"
-  },
-  {
-   "t": "2026-11-08 12:59",
-   "msg": "নতুন কাজ #34 → claude: আচ্ছা তুমি যে কোন একটাতে চেষ্টা করো"
-  },
-  {
-   "t": "2026-11-08 13:00",
-   "msg": "টাস্ক #34: Gemini শেষ করল"
-  },
-  {
-   "t": "2026-11-08 13:00",
-   "msg": "নতুন কাজ #35 → claude: তুমি তো লগইনের জন্য কন্টিনিউ উইথ গুগল অপশন এ ক্লিক করোনি"
-  },
-  {
-   "t": "2026-11-08 13:01",
-   "msg": "নতুন কাজ #36 → claude: মনে হচ্ছে কোন সমস্যা হয়েছে তুমি আবার চেষ্টা করো"
-  },
-  {
-   "t": "2026-11-08 13:02",
-   "msg": "কাজ #35 বাতিল করা হলো"
-  },
-  {
-   "t": "2026-11-08 13:04",
-   "msg": "টাস্ক #36: Gemini ব্যর্থ"
-  },
-  {
-   "t": "2026-11-08 13:34",
-   "msg": "কাজ #36 বাতিল করা হলো"
-  }
- ],
+ "events": [],
  "seq": 36,
  "sites_backup": [
   {
