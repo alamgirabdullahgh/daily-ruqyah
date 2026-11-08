@@ -21,6 +21,17 @@
    "note": "🤖 Gemini:\nঅবশ্যই! আপনি আপনার জিমেইল ঠিকানাগুলো এবং কোন ওয়েবসাইটে (যেমন: Google, Claude, ChatGPT ইত্যাদি) লগইন করতে চান তা আমাকে জানান। নিরাপত্তার স্বার্থে পাসওয়ার্ড শেয়ার করার প্রয়োজন নেই, শুধু ইমেইল এবং ওয়েবসাইটের নাম দিলেই আমি ব্রাউজারের জন্য ওয়ার্কস্পেস তৈরির নির্দেশ তৈরি করে দিতে পারব।",
    "created": "2026-11-08 11:57",
    "updated": "2026-11-08 11:57"
+  },
+  {
+   "id": 22,
+   "text": "work space তৈরি করা আছে শুধু লগইন করতে হবে",
+   "status": "queued",
+   "agent": "",
+   "target": "claude",
+   "progress": 0,
+   "note": "",
+   "created": "2026-11-08 11:58",
+   "updated": "2026-11-08 11:58"
   }
  ],
  "agents": {
@@ -46,104 +57,108 @@
   {
    "t": "2026-11-08 11:57",
    "msg": "টাস্ক #21: 🤖 Gemini:\nঅবশ্যই! আপনি আপনার জিমেইল ঠিকানাগুলো এবং কোন ওয়েবসাইটে (যেমন: Google, Claude, ChatGPT ইত্যাদি) লগইন করতে চান তা আমাকে জানান। নিরাপত্তার স্বার্থে পাসওয়ার্ড শেয়ার করার প্রয়োজন নেই, শুধু ইমেইল এবং ওয়েবসাইটের নাম দিলেই আমি ব্রাউজারের জন্য ওয়ার্কস্পেস তৈরির নির্দেশ তৈরি করে দিতে পারব।"
+  },
+  {
+   "t": "2026-11-08 11:58",
+   "msg": "নতুন কাজ #22 → claude: work space তৈরি করা আছে শুধু লগইন করতে হবে"
   }
  ],
- "seq": 21,
+ "seq": 22,
  "sites_backup": [
   {
    "id": "s1794132254333",
    "n": "99alamgir22@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132265333",
    "n": "alamgirabdullah24@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132273461",
    "n": "abrar2001fahad@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132277355",
    "n": "alamgir1641999@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132281171",
    "n": "alamgirabdullah2024@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132284785",
    "n": "alamgirabdullahall@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132289006",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132294840",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132298475",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132302842",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132306487",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132310107",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132313945",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132317213",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132320639",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132324506",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132330393",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794138336431",
    "n": "P",
-   "u": "https:\/\/www.gmail1.com"
+   "u": "https://www.gmail1.com"
   },
   {
    "id": "s1794138336434",
    "n": "P",
-   "u": "https:\/\/www.gmail4.com"
+   "u": "https://www.gmail4.com"
   }
  ]
 }
