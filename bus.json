@@ -87,6 +87,17 @@
    "note": "AI বুঝে 6টি বিদ্যমান ওয়ার্কস্পেসে লগইন চালু করেছে (99alamgir22@gmail.com, alamgirabdullah24@gmail.com, abrar2001fahad@gmail.com, alamgir1641999@gmail.com, alamgirabdullah2) — পাসওয়ার্ড দেওয়া হয়নি: alamgirabdullah24@gmail.com, abrar2001fahad@gmail.com, alamgir1641999@gmail.com, alamgirabdullah2024@gmail.com, alamgirabdullahall@gmail.com (মেনু → লগইন তথ্য থেকে দিন)",
    "created": "2026-11-08 12:09",
    "updated": "2026-11-08 12:09"
+  },
+  {
+   "id": 28,
+   "text": "আমি কয়টি ইমেইল দিয়েছি তোমাকে হিসাব করো তো",
+   "status": "queued",
+   "agent": "",
+   "target": "claude",
+   "progress": 0,
+   "note": "",
+   "created": "2026-11-08 12:12",
+   "updated": "2026-11-08 12:12"
   }
  ],
  "agents": {
@@ -160,94 +171,98 @@
   {
    "t": "2026-11-08 12:09",
    "msg": "টাস্ক #27: AI বুঝে 6টি বিদ্যমান ওয়ার্কস্পেসে লগইন চালু করেছে (99alamgir22@gmail.com, alamgirabdullah24@gmail.com, abrar2001fahad@gmail.com, alamgir1641999@gmail.com, alamgirabdullah2) — পাসওয়ার্ড দেওয়া হয়নি: alamgirabdullah24@gmail.com, abrar2001fahad@gmail.com, alamgir1641999@gmail.com, alamgirabdullah2024@gmail.com, alamgirabdullahall@gmail.com (মেনু → লগইন তথ্য থেকে দিন)"
+  },
+  {
+   "t": "2026-11-08 12:12",
+   "msg": "নতুন কাজ #28 → claude: আমি কয়টি ইমেইল দিয়েছি তোমাকে হিসাব করো তো"
   }
  ],
- "seq": 27,
+ "seq": 28,
  "sites_backup": [
   {
    "id": "s1794132254333",
    "n": "99alamgir22@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132265333",
    "n": "alamgirabdullah24@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132273461",
    "n": "abrar2001fahad@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132277355",
    "n": "alamgir1641999@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132281171",
    "n": "alamgirabdullah2024@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132284785",
    "n": "alamgirabdullahall@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132289006",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132294840",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132298475",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132302842",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132306487",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132310107",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132313945",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132317213",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132320639",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132324506",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132330393",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   }
  ]
 }
