@@ -99,13 +99,26 @@ public class WidgetPlugin extends Plugin {
         }
     }
 
+    // হোম স্ক্রিনে বসানো: লঞ্চার নিজে পাতা বেছে নেয় (শেষ দেখা পাতায় বসাতে পারে)। তাই আগে ফোনকে হোমে পাঠাই যেন লঞ্চার তার মূল পাতায় ফেরে,
+    // তারপর একটু থেমে বসানোর অনুরোধ পাঠাই। (পরীক্ষামূলক — ফোনে না চললে ok=false/কিছু না হলে আগের সরাসরি পদ্ধতিতে ফেরা হবে)
     @PluginMethod
     public void pin(PluginCall call) {
         try {
-            AppWidgetManager m = AppWidgetManager.getInstance(getContext());
-            boolean ok = m.isRequestPinAppWidgetSupported() && m.requestPinAppWidget(new ComponentName(getContext(), ClockWidget.class), null, null);
+            final Context c = getContext();
+            final AppWidgetManager m = AppWidgetManager.getInstance(c);
+            boolean sup = m.isRequestPinAppWidgetSupported();
             JSObject r = new JSObject();
-            r.put("ok", ok);
+            r.put("ok", sup);
+            if (!sup) { call.resolve(r); return; }
+            try {
+                Intent home = new Intent(Intent.ACTION_MAIN);
+                home.addCategory(Intent.CATEGORY_HOME);
+                home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                c.startActivity(home);
+            } catch (Exception e) { }
+            ui.postDelayed(() -> {
+                try { m.requestPinAppWidget(new ComponentName(c, ClockWidget.class), null, null); } catch (Exception e) { }
+            }, 900);
             call.resolve(r);
         } catch (Exception e) {
             call.reject(String.valueOf(e.getMessage()));
