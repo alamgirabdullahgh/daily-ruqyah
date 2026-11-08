@@ -1,5 +1,28 @@
 {
- "tasks": [],
+ "tasks": [
+  {
+   "id": 8,
+   "text": "@gemini হরিণের গল্প",
+   "status": "queued",
+   "agent": "",
+   "target": "claude",
+   "progress": 0,
+   "note": "",
+   "created": "2026-11-08 06:22",
+   "updated": "2026-11-08 06:22"
+  },
+  {
+   "id": 9,
+   "text": "@image @video",
+   "status": "queued",
+   "agent": "",
+   "target": "audio",
+   "progress": 0,
+   "note": "",
+   "created": "2026-11-08 06:22",
+   "updated": "2026-11-08 06:22"
+  }
+ ],
  "agents": {
   "claude": {
    "state": "limit",
@@ -15,7 +38,15 @@
   {
    "t": "2026-11-08 06:21",
    "msg": "কাজ #7 বাতিল করা হলো"
+  },
+  {
+   "t": "2026-11-08 06:22",
+   "msg": "নতুন কাজ #8 → claude: @gemini হরিণের গল্প"
+  },
+  {
+   "t": "2026-11-08 06:22",
+   "msg": "নতুন কাজ #9 → audio: @image @video"
   }
  ],
- "seq": 7
+ "seq": 9
 }
