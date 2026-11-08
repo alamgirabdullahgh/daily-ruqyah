@@ -1,17 +1,5 @@
 {
- "tasks": [
-  {
-   "id": 3,
-   "text": "99alamgir22@gmail.com\np:22**44## \n\nalamgirabdullah24@gmail.com\nP:22**44##Aa\n\nAbrar2001fahad@gmail.com\nPassword: abrarf2001\n\nAlamgir1641999@gmail.com\nP:www.gmail1.com\n\nalamgirabdullah2024@gmail.com\nP:www.gmail3.com\n\nalamgirabdullahall@gmail.com\nP:www.gmail2.com\n\nalamgirabdullahofficial@gmail.com\nP:www.gmail4.com\n\ntalabah2022@gmail.com\np:22**44##\n\nruqyahmedicalcenter@gmail.com\nP:22**44##Rmc\n\nraqiabdullahmail@gmail.com \nP:22**44##Ra\n\nrahgroupmail@gmail.com\n22**44##Rgm\n-----------------------------\nalamgirabdullahmail@gmail.com\nP:22**44##Aa\n\nraqialamgirabdullah@gmail.com\n22**44##Raa\nএই সবগুলো জিমেইল এবং পাসওয়ার্ড দিয়ে ওয়ার্ক স্পেস এ নতুন ওয়ার্ক স্পেস তৈরি করবে এবং যেমনির লিংক তৈরি করবে এবং প্রতিটাতে এই gmailএবং পাসওয়ার্ড দিয়ে লগইন করবে\n\nএই সবগুলো",
-   "status": "queued",
-   "agent": "",
-   "target": "gemini",
-   "progress": 0,
-   "note": "",
-   "created": "2026-11-07 10:32",
-   "updated": "2026-11-07 10:32"
-  }
- ],
+ "tasks": [],
  "agents": {
   "claude": {
    "state": "limit",
@@ -31,6 +19,10 @@
   {
    "t": "2026-11-08 00:15",
    "msg": "কাজ #4 বাতিল করা হলো"
+  },
+  {
+   "t": "2026-11-08 00:15",
+   "msg": "কাজ #3 বাতিল করা হলো"
   }
  ],
  "seq": 6
