@@ -359,6 +359,9 @@ button,input,select{font-family:inherit}
 .mf-lines{position:absolute;top:34px;left:14px;right:14px;font-family:var(--mf-font);display:flex;flex-direction:column;justify-content:center}
 .mf-l{display:flex;justify-content:space-between;align-items:center;white-space:nowrap;flex:none}
 .mf-l.mf-c{justify-content:center;gap:.5em}
+/* ১৫ লাইন: প্রতিটি লাইনের নিচে হালকা দাগ (উচ্চতা না বদলিয়ে), সূরার শিরোনাম-লাইনে নয় */
+.mf-lines .mf-l:not(.mf-t0){background-image:linear-gradient(color-mix(in srgb,var(--mf-line) 70%,transparent),color-mix(in srgb,var(--mf-line) 70%,transparent));background-size:100% 1px;background-repeat:no-repeat;background-position:left bottom}
+.mf-lines .mf-l:last-child{background-image:none}
 .mf-t0{justify-content:center;border:1.2px solid var(--mf-accent);border-radius:8px;background:var(--mf-head);margin:1px 0}
 .mf-sh{color:var(--mf-ink);font-weight:700}
 .mf-n{display:inline-flex;align-items:center;justify-content:center;min-width:1.6em;height:1.6em;padding:0 .25em;border:1.3px solid var(--mf-accent);border-radius:50%;color:var(--mf-accent);font-size:.62em;line-height:1;font-weight:700}
