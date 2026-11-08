@@ -21,6 +21,17 @@
    "note": "🤖 Gemini:\nআমি আবার ৬টি ওয়ার্কস্পেসে লগইন করার চেষ্টা করেছি।\n\nওয়ার্কস্পেস ৭ (talabah2022@gmail.com), ৮ (ruqyahmedicalcenter@gmail.com) এবং ৯ (raqiabdullahmail@gmail.com) এখনও লগইন পেজে আছে।\n\nওয়ার্কস্পেস ১০ (rahgroupmail@gmail.com) খোলা আছে কিন্তু লগইন অবস্থা নিশ্চিত নয়।\n\nওয়ার্কস্পেস ১১ (alamgirabdullahmail@gmail.com) এবং ১২ (raqialamgirabdullah@gmail.com) খোলা হয়নি এবং তাদের লগইন অবস্থাও নিশ্চিত নয়।\n\nমনে হচ্ছে এই ওয়ার্কস্পেসগুলোতে ম্যানুয়াল হস্তক্ষেপের প্রয়োজন হতে পারে।",
    "created": "2026-11-08 12:57",
    "updated": "2026-11-08 12:58"
+  },
+  {
+   "id": 34,
+   "text": "আচ্ছা তুমি যে কোন একটাতে চেষ্টা করো",
+   "status": "queued",
+   "agent": "",
+   "target": "claude",
+   "progress": 0,
+   "note": "",
+   "created": "2026-11-08 12:59",
+   "updated": "2026-11-08 12:59"
   }
  ],
  "agents": {
@@ -46,94 +57,98 @@
   {
    "t": "2026-11-08 12:58",
    "msg": "টাস্ক #33: Gemini শেষ করল"
+  },
+  {
+   "t": "2026-11-08 12:59",
+   "msg": "নতুন কাজ #34 → claude: আচ্ছা তুমি যে কোন একটাতে চেষ্টা করো"
   }
  ],
- "seq": 33,
+ "seq": 34,
  "sites_backup": [
   {
    "id": "s1794132254333",
    "n": "99alamgir22@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132265333",
    "n": "alamgirabdullah24@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132273461",
    "n": "abrar2001fahad@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132277355",
    "n": "alamgir1641999@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132281171",
    "n": "alamgirabdullah2024@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132284785",
    "n": "alamgirabdullahall@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132289006",
    "n": "alamgirabdullahofficial@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132294840",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132298475",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132302842",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132306487",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132310107",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132313945",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132317213",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132320639",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132324506",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132330393",
    "n": "claude.ai",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   }
  ]
 }
