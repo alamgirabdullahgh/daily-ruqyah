@@ -177,7 +177,24 @@ async function offAuto(){
   OFFSAY("📥 অফলাইন অডিও শুরু হচ্ছে…",n*100/OFFN);offDownload()}catch(e){}}
 window.addEventListener("load",()=>setTimeout(offAuto,3000));
 window.addEventListener("online",()=>{OFFTRY=0;offAuto()});
-async function fetchAud(s,a){if(offOn()){const b=await offGet(s,a);if(b)return b}let e;for(const u of audUrls(s,a)){try{const r=await fetch(u);if(r.ok)return await r.arrayBuffer()}catch(x){e=x}}throw e||new Error("audio")}
+const AS={loc:0,net:0}; // মার্জে কয়টা আয়াত ফোনের ফাইল থেকে, কয়টা নেট থেকে এল
+async function fetchAud(s,a){if(offOn()){const b=await offGet(s,a);if(b){AS.loc++;return b}}let e;for(const u of audUrls(s,a)){try{const r=await fetch(u);if(r.ok){AS.net++;return await r.arrayBuffer()}}catch(x){e=x}}throw e||new Error("audio")}
+/* ───── MP3 এনকোডিং একাধিক কোরে (Web Worker পুল): প্রতিটি আয়াত আলাদা এনকোড হয়ে ক্রমানুসারে জোড়া লাগে; Worker না চললে আগের মতো মূল থ্রেডে ───── */
+function encWorkerMain(){self.onmessage=function(e){var d=e.data;try{var en=new lamejs.Mp3Encoder(1,d.sr,64),o=[],t=0,p=d.pcm,i,m;for(i=0;i<p.length;i+=1152){m=en.encodeBuffer(p.subarray(i,i+1152));if(m.length){o.push(new Uint8Array(m));t+=m.length}}m=en.flush();if(m.length){o.push(new Uint8Array(m));t+=m.length}var r=new Uint8Array(t),q=0;for(i=0;i<o.length;i++){r.set(o[i],q);q+=o[i].length}self.postMessage({mp3:r},[r.buffer])}catch(x){self.postMessage({err:String(x)})}}}
+function encMain(L,p,sr){const en=new L.Mp3Encoder(1,sr,64),o=[];let t=0,m;for(let i=0;i<p.length;i+=1152){m=en.encodeBuffer(p.subarray(i,i+1152));if(m.length){o.push(new Uint8Array(m));t+=m.length}}m=en.flush();if(m.length){o.push(new Uint8Array(m));t+=m.length}const r=new Uint8Array(t);let q=0;for(const x of o){r.set(x,q);q+=x.length}return r}
+async function mkEncPool(){if(typeof Worker==="undefined")return null;const src=await(await fetch(BASE+"lame.min.js?v=1")).text();
+ const url=URL.createObjectURL(new Blob([src+";("+encWorkerMain.toString()+")();"],{type:"application/javascript"}));
+ const n=Math.max(2,Math.min(6,(navigator.hardwareConcurrency||4)-1)),ws=[],idle=[],q=[],waiters=[];let inflight=0;
+ const wake=()=>{waiters.splice(0).forEach(r=>r())};
+ const pump=()=>{while(idle.length&&q.length){const w=idle.pop(),j=q.shift();w.cur=j;const c=j.pcm.slice();w.postMessage({sr:j.sr,pcm:c},[c.buffer])}};
+ for(let i=0;i<n;i++){const w=new Worker(url);w.cur=null;
+  w.onmessage=e=>{const j=w.cur;w.cur=null;inflight--;idle.push(w);const d=e.data;j&&j.res(d&&d.mp3?d.mp3:null);wake();pump()};
+  w.onerror=()=>{const j=w.cur;w.cur=null;if(j){inflight--;j.res(null)}try{w.terminate()}catch(x){}const k=ws.indexOf(w);if(k>=0)ws.splice(k,1);const id=idle.indexOf(w);if(id>=0)idle.splice(id,1);
+   if(!ws.length)while(q.length){inflight--;q.shift().res(null)}wake();pump()};
+  ws.push(w);idle.push(w)}
+ return{run:(pcm,sr)=>new Promise(res=>{if(!ws.length)return res(null);inflight++;q.push({pcm,sr,res});pump()}),
+  room:async()=>{while(inflight>=n*2&&ws.length)await new Promise(r=>waiters.push(r))},
+  close:()=>{ws.forEach(w=>{try{w.terminate()}catch(x){}});try{URL.revokeObjectURL(url)}catch(x){}}}}
 function wavOf(parts,sr){let n=0;parts.forEach(p=>n+=p.length);const buf=new ArrayBuffer(44+n*2),v=new DataView(buf),w=(o,t)=>[...t].forEach((c,i)=>v.setUint8(o+i,c.charCodeAt(0)));
  w(0,"RIFF");v.setUint32(4,36+n*2,true);w(8,"WAVEfmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,"data");v.setUint32(40,n*2,true);
  let o=44;for(const p of parts)for(let i=0;i<p.length;i++){const x=Math.max(-1,Math.min(1,p[i]));v.setInt16(o,x<0?x*32768:x*32767,true);o+=2}return new Blob([buf],{type:"audio/wav"})}
@@ -283,24 +300,25 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;
  // কোনো সীমা নেই: প্রতিটি আয়াত নামিয়েই সাথে সাথে MP3-তে এনকোড হয়, মেমোরিতে শুধু ছোট MP3 টুকরো জমে — তাই হাজারো আয়াতেও একটাই ফাইল
  out.textContent="";let L=null;try{L=await loadLame()}catch(e){console.error(e)}
  if(!L){note("MP3 বানানোর লাইব্রেরি পাওয়া যায়নি (ইন্টারনেট দেখুন), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");playList(setAll()>1?Array.from({length:setAll()},()=>list).flat():list,out);return}
- const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));
+ const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));AS.loc=AS.net=0;let pool=null;try{pool=await mkEncPool()}catch(e){console.error(e);pool=null}const jobs=[];
  let wl=null;try{wl=await navigator.wakeLock.request("screen")}catch(e){}
  const push=pcm=>{for(let i=0;i<pcm.length;i+=B){const m=enc.encodeBuffer(pcm.subarray(i,i+B));if(m.length)mp3.push(new Uint8Array(m))}};
  const W=4,pf=[],get=i=>pf[i]||(pf[i]=fetchAud(list[i][0],list[i][1]).catch(()=>null));let ok=0,bad=0,cutN=0;
  for(let i=0;i<list.length;i++){for(let j=i;j<Math.min(i+W,list.length);j++)get(j);
-  note("অডিও নামানো ও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+(bad?" (বাদ: "+bn2(bad)+")":"")+"…");
+  note("অডিও প্রস্তুত ও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+(bad?" (বাদ: "+bn2(bad)+")":"")+"…");
   const ab=await get(i);pf[i]=null;
   if(!ab){bad++;if(!ok&&bad>=5)break;continue}
   try{const d=await ctx.decodeAudioData(ab),ch=d.getChannelData(0),pcm=smoothAyah(tsm(ch,sr,spdOf()),sr),rp=repOf(list[i][0],list[i][1]);
-    for(let q=0;q<rp;q++){push(pcm);push(gap)}
+    if(pool){const fl=new Int16Array(pcm.length+gap.length);fl.set(pcm);fl.set(gap,pcm.length);await pool.room();jobs.push({p:pool.run(fl,sr),pcm:fl,rp})}else for(let q=0;q<rp;q++){push(pcm);push(gap)}
     ok++}catch(e){bad++;if(!ok&&bad>=5)break}
   if(i%10===0)await new Promise(r=>setTimeout(r))}
  try{ctx.close()}catch(x){}try{wl&&wl.release()}catch(x){}
+ if(pool){note("MP3 ফাইল শেষ করা হচ্ছে…");for(const j of jobs){let c=await j.p;if(!c)c=encMain(L,j.pcm,sr);for(let q=0;q<j.rp;q++)mp3.push(c)}pool.close()}
  if(!ok){console.error("merge failed");note("একটা ফাইলে জোড়া লাগানো যায়নি (অডিও সার্ভার ফাইল দিতে দেয়নি), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");out.textContent="";playList(setAll()>1?Array.from({length:setAll()},()=>list).flat():list,out);return}
- const f=enc.flush();if(f.length)mp3.push(new Uint8Array(f));const SR=setAll(),parts=[];for(let q=0;q<SR;q++)for(const c of mp3)parts.push(c);const blob=new Blob(parts,{type:"audio/mpeg"}),ext="mp3";
+ if(!pool){const f=enc.flush();if(f.length)mp3.push(new Uint8Array(f))}const SR=setAll(),parts=[];for(let q=0;q<SR;q++)for(const c of mp3)parts.push(c);const blob=new Blob(parts,{type:"audio/mpeg"}),ext="mp3";
  const url=URL.createObjectURL(blob),au=document.createElement("audio");au.controls=true;au.src=url;au.style.cssText="display:block;width:100%;margin-top:8px";
  const FN=(String(window.__sq||"").trim().replace(/\s*[,،，、]\s*/g,"-").replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g,"_").replace(/^[-_.]+|[-_.]+$/g,"").slice(0,60)||"quran-audio")+"."+ext;window.__lastFN=FN;out.append(au);
- note("✅ "+bn2(ok)+"টি আয়াতের অডিও একটি ফাইলে তৈরি হয়েছে"+(SR>1?" · পুরো সেট "+bn2(SR)+" বার":"")+(cutN?" (অংশ কাটা: "+bn2(cutN)+"টি আয়াত)":"")+(bad?" · "+bn2(bad)+"টির অডিও পাওয়া যায়নি, বাদ গেছে":""));au.play().catch(()=>{})}
+ note("✅ "+bn2(ok)+"টি আয়াতের অডিও একটি ফাইলে তৈরি হয়েছে"+(SR>1?" · পুরো সেট "+bn2(SR)+" বার":"")+(cutN?" (অংশ কাটা: "+bn2(cutN)+"টি আয়াত)":"")+(bad?" · "+bn2(bad)+"টির অডিও পাওয়া যায়নি, বাদ গেছে":"")+(AS.net?" · "+bn2(AS.net)+"টি আয়াত নেট থেকে এসেছে (ফোনে ফাইল ছিল না)":""));au.play().catch(()=>{})}
 // ---------- অ্যাপের ভেতরে ফাইল সেভ (ওয়েবভিউ blob ডাউনলোড করে না, তাই নেটিভ DRDl দিয়ে Downloads ফোল্ডারে) ----------
 async function saveBlob(blob,name){
  if(!window.DRDl){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();return}
