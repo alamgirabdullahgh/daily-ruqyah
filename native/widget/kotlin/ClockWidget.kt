@@ -293,8 +293,24 @@ class ClockWidget : AppWidgetProvider() {
             return build(ctx, compute(ctx), widthDp)
         }
 
+        /** হোম-স্ক্রিনে উইজেট বসানোর তালিকায়/পিন-শিটে লাইভ প্রিভিউ (Android 15+: setWidgetPreview); আগের ভার্সনে এই API নেই, তখন ছবির প্রিভিউই থাকে */
+        @JvmStatic
+        fun pushPreview(ctx: Context, force: Boolean = false) {
+            if (android.os.Build.VERSION.SDK_INT < 35) return
+            val now = System.currentTimeMillis()
+            if (!force && now - lastPreviewAt < 10 * 60 * 1000L) return
+            try {
+                lastPreviewAt = now
+                val mgr = AppWidgetManager.getInstance(ctx)
+                val m = AppWidgetManager::class.java.getMethod("setWidgetPreview", ComponentName::class.java, Int::class.javaPrimitiveType, RemoteViews::class.java)
+                m.invoke(mgr, ComponentName(ctx, ClockWidget::class.java), 1, viewFor(ctx, 250))   // 1 = WIDGET_CATEGORY_HOME_SCREEN
+            } catch (e: Exception) { }
+        }
+        @Volatile private var lastPreviewAt = 0L
+
         fun refresh(ctx: Context) {
             removeOldLockCard(ctx)
+            pushPreview(ctx)
             try {
                 val mgr = AppWidgetManager.getInstance(ctx)
                 val ids = mgr.getAppWidgetIds(ComponentName(ctx, ClockWidget::class.java))

@@ -103,6 +103,7 @@ public class WidgetPlugin extends Plugin {
     public void pin(PluginCall call) {
         try {
             AppWidgetManager m = AppWidgetManager.getInstance(getContext());
+            ClockWidget.pushPreview(getContext(), true); // শিটে আসল (লাইভ) প্রিভিউ
             boolean ok = m.isRequestPinAppWidgetSupported() && m.requestPinAppWidget(new ComponentName(getContext(), ClockWidget.class), null, null);
             JSObject r = new JSObject();
             r.put("ok", ok);

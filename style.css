@@ -489,3 +489,10 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 .am-ex summary{cursor:pointer;padding:11px 14px;font-weight:700;font-size:14.5px;color:var(--text-main)}
 .am-ex ul{margin:0;padding:0 14px 12px 32px;font-size:13.5px;line-height:1.7;color:var(--text-sub)}
 .am-empty,.am-load{text-align:center;color:var(--text-muted);padding:22px 8px;font-size:14px}
+
+/* রোগ নির্ণয়: "প্রতিটি আয়াত / পুরো সেট / সব রোগের অডিও" এক লাইনে, ছোট ঘর */
+.rs-top{display:flex;flex-wrap:nowrap;align-items:stretch;gap:6px;margin:0 0 8px}
+.rs-top .rs-rb{flex:0 0 auto;width:74px;min-height:0;padding:4px 4px;gap:2px 3px;font-size:11px;border-radius:12px}
+.rs-top .rs-rt{font-size:11px;line-height:1.25;white-space:normal}
+.rs-top .rs-num{max-width:38px;min-height:28px;font-size:13px;border-radius:8px}
+.rs-top .rs-mb{flex:1 1 0;min-width:0;margin:0!important;padding:6px 8px;font-size:12px;line-height:1.35;border-radius:12px;text-align:center}

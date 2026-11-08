@@ -783,7 +783,9 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   const resolve=sel=>{const terms=[];sel.forEach(x=>{const t=TOPICS.find(y=>y.name===x.topic);if(t)t.terms.forEach(y=>{if(x.all||(x.prefix?y[0].split(" — ")[0]===x.prefix:(x.titles||[]).includes(y[0])))terms.push(y)})});return terms};
   const keyList=cs=>{const list=[],seen=new Set();cs.forEach(c=>c.keys.forEach(k=>{const id=k.s+":"+k.a;if(!seen.has(id)){seen.add(id);list.push([k.s,k.a])}}));return{list}};
   const audio=(cs,label)=>{const w=els("div","margin-top:6px"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),res=el("div"),b=mkBtn("🔊 "+label,()=>{window.__sq=CF.sq+" "+(cs.length===1?cs[0].name:label);const k=keyList(cs);if(k.list.length===1&&setAll()<=1&&repOf(k.list[0][0],k.list[0][1])<=1){playOne(k.list[0][0],k.list[0][1],res,note);return}mergeAudio(k.list,res,t=>note.textContent=t)});b.style.margin="0";w.append(b,note,res);w.btn=b;return w};
-  const allB=audio(D.groups.flatMap(g=>g.cats),"সব রোগের "+CF.nm+" অডিও একসাথে ("+bn2(new Set(D.groups.flatMap(g=>g.cats.flatMap(c=>c.keys.map(k=>k.s+":"+k.a)))).size)+"টি আয়াত)");allB.style.marginBottom="10px";{const rc=repCtl();rc.style.marginBottom="8px";out.appendChild(rc)}out.appendChild(allB);
+  const allB=audio(D.groups.flatMap(g=>g.cats),"সব রোগের "+CF.nm+" অডিও একসাথে ("+bn2(new Set(D.groups.flatMap(g=>g.cats.flatMap(c=>c.keys.map(k=>k.s+":"+k.a)))).size)+"টি আয়াত)");{const rc=repCtl(),row=el("div","rs-top"),nAy=new Set(D.groups.flatMap(g=>g.cats.flatMap(c=>c.keys.map(k=>k.s+":"+k.a)))).size;
+  allB.btn.textContent="🔊 সব রোগের "+CF.nm+" অডিও ("+bn2(nAy)+"টি আয়াত)";allB.btn.classList.add("rs-mb");
+  row.append(...rc.children,allB.btn);allB.style.marginTop="0";allB.style.marginBottom="10px";out.append(row,allB)}
   let curSec="";
   for(const g of D.groups){
    if(g.section&&g.section!==curSec){curSec=g.section;const sg=D.groups.filter(x=>x.section===curSec),sc=sg.flatMap(x=>x.cats);
