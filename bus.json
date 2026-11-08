@@ -1,5 +1,17 @@
 {
- "tasks": [],
+ "tasks": [
+  {
+   "id": 37,
+   "text": "talabah2022@gmail.com\n22**44##\nএই ইমেইল এবং পাসওয়ার্ড দিয়ে ওয়ার্ক স্পেসে থাকা একটি ওয়ার্ক স্পেসি লগইন কর",
+   "status": "queued",
+   "agent": "",
+   "target": "claude",
+   "progress": 0,
+   "note": "",
+   "created": "2026-11-08 13:35",
+   "updated": "2026-11-08 13:35"
+  }
+ ],
  "agents": {
   "claude": {
    "state": "limit",
@@ -7,8 +19,13 @@
    "seen": "2026-11-08 12:45"
   }
  },
- "events": [],
- "seq": 36,
+ "events": [
+  {
+   "t": "2026-11-08 13:35",
+   "msg": "নতুন কাজ #37 → claude: talabah2022@gmail.com\n22**44##\nএই ইমেইল এবং পাসওয়ার্ড দিয়ে"
+  }
+ ],
+ "seq": 37,
  "sites_backup": [
   {
    "id": "s1794132254333",
