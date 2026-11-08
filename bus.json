@@ -1,5 +1,17 @@
 {
- "tasks": [],
+ "tasks": [
+  {
+   "id": 16,
+   "text": "বর্তমানে ওয়ার্ক স্পেস ১৭ টি আছে চারটিতে লগইন করা আছে বাকি গুলোতে এই ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন কর\n\nAlamgir1641999@gmail.com\nP:www.gmail1.com\n\nalamgirabdullah2024@gmail.com\nP:www.gmail3.com\n\nalamgirabdullahall@gmail.com\nP:www.gmail2.com\n\nalamgirabdullahofficial@gmail.com\nP:www.gmail4.com\n\ntalabah2022@gmail.com\np:22**44##\n\nruqyahmedicalcenter@gmail.com\nP:22**44##Rmc\n\nraqiabdullahmail@gmail.com \nP:22**44##Ra\n\nrahgroupmail@gmail.com\n22**44##Rgm\n-----------------------------\nalamgirabdullahmail@gmail.com\nP:22**44##Aa\n\nraqialamgirabdullah@gmail.com\n22**44##Raa",
+   "status": "queued",
+   "agent": "",
+   "target": "claude",
+   "progress": 0,
+   "note": "",
+   "created": "2026-11-08 10:48",
+   "updated": "2026-11-08 10:48"
+  }
+ ],
  "agents": {
   "claude": {
    "state": "limit",
@@ -15,7 +27,11 @@
   {
    "t": "2026-11-08 10:03",
    "msg": "কাজ #15 বাতিল করা হলো"
+  },
+  {
+   "t": "2026-11-08 10:48",
+   "msg": "নতুন কাজ #16 → claude: বর্তমানে ওয়ার্ক স্পেস ১৭ টি আছে চারটিতে লগইন করা আছে বাকি গ"
   }
  ],
- "seq": 15
+ "seq": 16
 }
