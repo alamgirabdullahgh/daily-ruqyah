@@ -119,6 +119,10 @@ function playBtn(s,a){const b=el("button","rs-wb","🔊 শুনুন");b.type
   c.push(...audUrls(s,a));let i=0;
   me.onerror=()=>{if(au!==me)return;if(++i<c.length){me.src=c[i];me.play().catch(()=>{})}else{b.textContent="অডিও পাওয়া যায়নি"}};
   me.src=c[0]};return b}
+/* একটি আয়াত, পুনরাবৃত্তি ১: মার্জ/ডাউনলোড ছাড়াই সরাসরি প্লেয়ারে (ফোনে ফাইল থাকলে সেই ফাইল, না থাকলে নেট থেকে) */
+async function playOne(s,a,out,note){out.textContent="";note.textContent="";const me=document.createElement("audio");me.controls=true;me.autoplay=true;me.style.cssText="display:block;width:100%;margin-top:8px";out.appendChild(me);
+ const c=[];if(offOn()){const lu=await localUrl(s,a);if(lu)c.push(lu);else{const x=await offGet(s,a);if(x)c.push(URL.createObjectURL(new Blob([x],{type:"audio/mpeg"})))}}
+ c.push(...audUrls(s,a));let i=0;me.onerror=()=>{if(++i<c.length){me.src=c[i];me.play().catch(()=>{})}else note.textContent="অডিও পাওয়া যায়নি"};me.src=c[0]}
 function selBox(s,a){const k=s+":"+a,l=els("label","display:inline-flex;align-items:center;gap:5px;margin:6px 0 0 6px;font-size:12px;color:var(--primary);cursor:pointer"),c=document.createElement("input");c.type="checkbox";c.checked=SELV.has(k);c.onchange=()=>{c.checked?SELV.add(k):SELV.delete(k);selChange()};l.append(c,document.createTextNode("বাছাই"));
  const rs=numBox("rs-num rs-num-s",REP.get(k)||repAll(),v=>{REP.set(k,v)});rs.title="এই আয়াত কতবার";REPBX.push({k,i:rs});l.append(rs,document.createTextNode(" বার"));return l}
 /* ───── মিশারি আলাফাসির অডিও অফলাইনে: একবার নামালে ফোনের ভেতরে (Cache) থাকে; মার্জ/শোনা আগে সেখান থেকে, না থাকলে নেট থেকে ───── */
@@ -750,7 +754,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   info.textContent="";if(!CF.host)info.appendChild(els("div","font-weight:700;color:var(--primary);margin-bottom:4px",CF.title));
   const resolve=sel=>{const terms=[];sel.forEach(x=>{const t=TOPICS.find(y=>y.name===x.topic);if(t)t.terms.forEach(y=>{if(x.all||(x.prefix?y[0].split(" — ")[0]===x.prefix:(x.titles||[]).includes(y[0])))terms.push(y)})});return terms};
   const keyList=cs=>{const list=[],seen=new Set();cs.forEach(c=>c.keys.forEach(k=>{const id=k.s+":"+k.a;if(!seen.has(id)){seen.add(id);list.push([k.s,k.a])}}));return{list}};
-  const audio=(cs,label)=>{const w=els("div","margin-top:6px"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),res=el("div"),b=mkBtn("🔊 "+label,()=>{window.__sq=CF.sq+" "+(cs.length===1?cs[0].name:label);const k=keyList(cs);mergeAudio(k.list,res,t=>note.textContent=t)});b.style.margin="0";w.append(b,note,res);w.btn=b;return w};
+  const audio=(cs,label)=>{const w=els("div","margin-top:6px"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),res=el("div"),b=mkBtn("🔊 "+label,()=>{window.__sq=CF.sq+" "+(cs.length===1?cs[0].name:label);const k=keyList(cs);if(k.list.length===1&&setAll()<=1&&repOf(k.list[0][0],k.list[0][1])<=1){playOne(k.list[0][0],k.list[0][1],res,note);return}mergeAudio(k.list,res,t=>note.textContent=t)});b.style.margin="0";w.append(b,note,res);w.btn=b;return w};
   const allB=audio(D.groups.flatMap(g=>g.cats),"সব রোগের "+CF.nm+" অডিও একসাথে ("+bn2(new Set(D.groups.flatMap(g=>g.cats.flatMap(c=>c.keys.map(k=>k.s+":"+k.a)))).size)+"টি আয়াত)");allB.style.marginBottom="10px";{const rc=repCtl();rc.style.marginBottom="8px";out.appendChild(rc)}out.appendChild(allB);
   let curSec="";
   for(const g of D.groups){
