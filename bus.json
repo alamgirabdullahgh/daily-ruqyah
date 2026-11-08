@@ -1,5 +1,17 @@
 {
- "tasks": [],
+ "tasks": [
+  {
+   "id": 14,
+   "text": "https://gemini.google.com/app https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts https://aistudio.google.com/generate-image?model=gemini-3-pro-image https://docs.google.com/videos/ এই চারটা দিয়ে প্রত্যেকটাতে তথ্যগুলো ওয়ার্ক স্পেস তৈরি করবে নিচে আমি যতগুলো ইমেইল দেব 99alamgir22@gmail.com p:22**44## alamgirabdullah24@gmail.com P:22**44##Aa Abrar2001fahad@gmail.com Password: abrarf2001 Alamgir1641999@gmail.com P:www.gmail1.com alamgirabdullah2024@gmail.com P:www.gmail3.com alamgirabdullahall@gmail.com P:www.gmail2.com alamgirabdullahofficial@gmail.com P:www.gmail4.com talabah2022@gmail.com p:22**44## ruqyahmedicalcenter@gmail.com P:22**44##Rmc raqiabdullahmail@gmail.com P:22**44##Ra rahgroupmail@gmail.com 22**44##Rgm",
+   "status": "queued",
+   "agent": "",
+   "target": "audio",
+   "progress": 0,
+   "note": "",
+   "created": "2026-11-08 09:38",
+   "updated": "2026-11-08 09:38"
+  }
+ ],
  "agents": {
   "claude": {
    "state": "limit",
@@ -19,7 +31,11 @@
   {
    "t": "2026-11-08 09:37",
    "msg": "কাজ #13 বাতিল করা হলো"
+  },
+  {
+   "t": "2026-11-08 09:38",
+   "msg": "নতুন কাজ #14 → audio: https://gemini.google.com/app https://aistudio.google.com/ge"
   }
  ],
- "seq": 13
+ "seq": 14
 }
