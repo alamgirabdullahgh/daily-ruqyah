@@ -11,16 +11,21 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
-// মিশারি আলাফাসির পুরো কুরআন (৬৪kbps) ফোনের ভেতরে নামায়: ফোরগ্রাউন্ড সার্ভিস, তাই স্ক্রিন বন্ধ থাকলে বা অন্য অ্যাপে গেলেও চলে
+// মিশারি আলাফাসির পুরো কুরআন (৩২kbps, ২২.০৫kHz, মোনো, গতি ×১.২০) ফোনের ভেতরে নামায়: GitHub রিলিজ audio-pack-32k-120 থেকে ১১৪টি সূরা-zip নামিয়ে খুলে <আয়াত নম্বর>.mp3 রাখে।
+// ফোরগ্রাউন্ড সার্ভিস, তাই স্ক্রিন বন্ধ থাকলে বা অন্য অ্যাপে গেলেও চলে। আগের ৬৪kbps ফাইল (alafasy64) প্রথমবার চালুর সময় মুছে ফেলা হয়।
 public class OfflineAudioService extends Service {
     static final int TOTAL = 6236;
+    static final String PACK = "https://github.com/alamgirabdullahgh/daily-ruqyah/releases/download/audio-pack-32k-120/";
     static final String CH = "dr_offline_audio";
     static final int NID = 4711;
     static volatile boolean running = false;
@@ -30,7 +35,17 @@ public class OfflineAudioService extends Service {
     private PowerManager.WakeLock wl;
     private final AtomicInteger doneNow = new AtomicInteger(0);
 
-    static File dir(Context c) { File d = new File(c.getFilesDir(), "alafasy64"); d.mkdirs(); return d; }
+    static File dir(Context c) { File d = new File(c.getFilesDir(), "alafasy32"); d.mkdirs(); return d; }
+
+    /** আগের ৬৪kbps ফোল্ডার মুছে রিসেট */
+    static void clearOld(Context c) {
+        try {
+            File old = new File(c.getFilesDir(), "alafasy64");
+            File[] f = old.listFiles();
+            if (f != null) for (File x : f) x.delete();
+            old.delete();
+        } catch (Exception e) { }
+    }
 
     /** @return {ফাইল সংখ্যা, মোট বাইট} */
     static long[] scan(Context c) {
@@ -71,62 +86,68 @@ public class OfflineAudioService extends Service {
         return b.build();
     }
 
-    private String[] urls(int n) {
-        int s = 1, a = n;
-        for (int c : AYN) { if (a <= c) break; a -= c; s++; }
-        String p = String.format("%03d%03d", s, a);
-        return new String[]{
-                "https://everyayah.com/data/Alafasy_64kbps/" + p + ".mp3",
-                "https://cdn.islamic.network/quran/audio/64/ar.alafasy/" + n + ".mp3",
-                "https://everyayah.com/data/Alafasy_128kbps/" + p + ".mp3",
-                "https://cdn.islamic.network/quran/audio/128/ar.alafasy/" + n + ".mp3"};
+    /** সূরা s-এর প্রথম আয়াতের আগের মোট আয়াত সংখ্যা */
+    private static int before(int s) { int n = 0; for (int i = 0; i < s - 1; i++) n += AYN[i]; return n; }
+
+    private static boolean surahDone(int s, File d) {
+        int b = before(s);
+        for (int a = 1; a <= AYN[s - 1]; a++) {
+            File f = new File(d, (b + a) + ".mp3");
+            if (!f.exists() || f.length() <= 1024) return false;
+        }
+        return true;
     }
 
-    private boolean get(String u, File out) {
+    /** একটি সূরার zip নামিয়ে সরাসরি খুলে <নম্বর>.mp3 রাখে; আগে থেকে থাকা ফাইল বাদ যায় */
+    private boolean fetchSurah(int s, File d, NotificationManager nm) {
         HttpURLConnection cn = null;
-        File part = new File(out.getPath() + ".part");
         try {
-            cn = (HttpURLConnection) new URL(u).openConnection();
+            cn = (HttpURLConnection) new URL(PACK + String.format("s%03d.zip", s)).openConnection();
             cn.setConnectTimeout(15000);
             cn.setReadTimeout(30000);
             cn.setInstanceFollowRedirects(true);
             if (cn.getResponseCode() != 200) { last = "HTTP " + cn.getResponseCode(); return false; }
-            long total = 0;
-            try (InputStream is = cn.getInputStream(); FileOutputStream os = new FileOutputStream(part)) {
+            try (ZipInputStream zi = new ZipInputStream(new BufferedInputStream(cn.getInputStream(), 65536))) {
+                ZipEntry e;
                 byte[] buf = new byte[32768];
-                int r;
-                while ((r = is.read(buf)) > 0) { os.write(buf, 0, r); total += r; }
+                while ((e = zi.getNextEntry()) != null) {
+                    String nm0 = e.getName();
+                    if (e.isDirectory() || !nm0.matches("\\d{1,4}\\.mp3")) continue; // নিরাপত্তা: শুধু <নম্বর>.mp3
+                    File out = new File(d, nm0);
+                    if (out.exists() && out.length() > 1024) continue;
+                    File part = new File(out.getPath() + ".part");
+                    long total = 0;
+                    try (FileOutputStream os = new FileOutputStream(part)) {
+                        int r;
+                        while ((r = zi.read(buf)) > 0) { os.write(buf, 0, r); total += r; }
+                    }
+                    if (total < 1024 || !part.renameTo(out)) { part.delete(); continue; }
+                    int dn = doneNow.incrementAndGet();
+                    if (dn % 20 == 0) nm.notify(NID, notif(dn));
+                }
             }
-            if (total < 1024) { part.delete(); last = "ছোট ফাইল"; return false; }
-            return part.renameTo(out);
-        } catch (Exception e) {
-            last = String.valueOf(e.getMessage());
-            part.delete();
+            return surahDone(s, d);
+        } catch (Exception ex) {
+            last = String.valueOf(ex.getMessage());
             return false;
         } finally { if (cn != null) cn.disconnect(); }
     }
 
     private void work() {
         try {
+            clearOld(this);
             File d = dir(this);
             NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             for (int pass = 0; pass < 30; pass++) {
                 final AtomicInteger next = new AtomicInteger(1);
                 doneNow.set((int) scan(this)[0]);
-                Thread[] ts = new Thread[4];
+                Thread[] ts = new Thread[3];
                 for (int t = 0; t < ts.length; t++) {
                     ts[t] = new Thread(() -> {
-                        int n;
-                        while ((n = next.getAndIncrement()) <= TOTAL) {
-                            File f = new File(d, n + ".mp3");
-                            if (f.exists() && f.length() > 1024) continue;
-                            for (String u : urls(n)) {
-                                if (get(u, f)) {
-                                    int dn = doneNow.incrementAndGet();
-                                    if (dn % 20 == 0) nm.notify(NID, notif(dn));
-                                    break;
-                                }
-                            }
+                        int s;
+                        while ((s = next.getAndIncrement()) <= AYN.length) {
+                            if (surahDone(s, d)) continue;
+                            fetchSurah(s, d, nm);
                         }
                     });
                     ts[t].start();
