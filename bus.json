@@ -1,17 +1,6 @@
 {
  "tasks": [
   {
-   "id": 17,
-   "text": "99alamgir22@gmail.com\nP:22**44## \n\nalamgirabdullah24@gmail.com\nP:22**44##Aa\n\nAbrar2001fahad@gmail.com\nPassword: ***\n\nAlamgir1641999@gmail.com\nP:www.gmail1.com\n\nalamgirabdullah2024@gmail.com\nP:www.gmail3.com\n\nalamgirabdullahall@gmail.com\nP:www.gmail2.com\n\nalamgirabdullahofficial@gmail.com\nP:www.gmail4.com\n\ntalabah2022@gmail.com\np:22**44##\n\nruqyahmedicalcenter@gmail.com\nP:22**44##Rmc\n\nraqiabdullahmail@gmail.com \nP:22**44##Ra\n\nrahgroupmail@gmail.com\n22**44##Rgm\n-----------------------------\nalamgirabdullahmail@gmail.com\nP:22**44##Aa\n\nraqialamgirabdullah@gmail.com\n22**44##Raa\n\nবর্তমানে সাইটে ১৭ টির মত ওয়ার্ক স্পেস আছে \nচারটিতে লগইন করা আছে \nইমেইল এবং পাসওয়ার্ড শুরু থেকে চারটা \nএই চারটা দিয়ে লগইন করা হয়েছে বাকিগুলো দিয়ে অন্যান্য ওয়ার্ক স্পেস গুলোতে ধারাবাহিকভাবে লগইন কর",
-   "status": "done",
-   "agent": "browser",
-   "target": "claude",
-   "progress": 100,
-   "note": "ব্রাউজার নিজে 4টি ওয়ার্কস্পেস বানিয়েছে",
-   "created": "2026-11-08 11:45",
-   "updated": "2026-11-08 11:45"
-  },
-  {
    "id": 19,
    "text": "জেমিনি তুমি কি শুনতে পাচ্ছ",
    "status": "queued",
@@ -30,28 +19,7 @@
    "seen": "2026-11-08 09:15"
   }
  },
- "events": [
-  {
-   "t": "2026-11-08 11:45",
-   "msg": "নতুন কাজ #17 → claude: 99alamgir22@gmail.com\nP:22**44## \n\nalamgirabdullah24@gmail.c"
-  },
-  {
-   "t": "2026-11-08 11:45",
-   "msg": "টাস্ক #17: ওয়ার্কস্পেস ব্রাউজারই বানাল (P, P, P, P)"
-  },
-  {
-   "t": "2026-11-08 11:46",
-   "msg": "নতুন কাজ #18 → claude: তুমি ভুল বুঝেছ \nআমি বলেছি ওয়ার্ক স্পেস তৈরি করাই আছে ব্রাউজ"
-  },
-  {
-   "t": "2026-11-08 11:49",
-   "msg": "নতুন কাজ #19 → claude: জেমিনি তুমি কি শুনতে পাচ্ছ"
-  },
-  {
-   "t": "2026-11-08 11:50",
-   "msg": "কাজ #18 বাতিল করা হলো"
-  }
- ],
+ "events": [],
  "seq": 19,
  "sites_backup": [
   {
