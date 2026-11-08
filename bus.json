@@ -14,13 +14,13 @@
   {
    "id": 39,
    "text": "আবার চেষ্টা করো",
-   "status": "running",
-   "agent": "browser",
+   "status": "queued",
+   "agent": "",
    "target": "claude",
-   "progress": 15,
-   "note": "🤖 Gemini কাজ করছে…",
+   "progress": 0,
+   "note": "Gemini ব্যর্থ (gemini-3.8-flash: SocketTimeoutException (timeout)) — সাধারণ পথে",
    "created": "2026-11-08 14:01",
-   "updated": "2026-11-08 14:04"
+   "updated": "2026-11-08 14:08"
   }
  ],
  "agents": {
@@ -42,6 +42,10 @@
   {
    "t": "2026-11-08 14:01",
    "msg": "নতুন কাজ #39 → claude: আবার চেষ্টা করো"
+  },
+  {
+   "t": "2026-11-08 14:08",
+   "msg": "টাস্ক #39: Gemini ব্যর্থ"
   }
  ],
  "seq": 39,
