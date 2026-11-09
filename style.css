@@ -414,9 +414,9 @@ body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
 .rs-gh{display:flex;align-items:center;gap:8px;margin-bottom:9px;font-size:11.5px;font-weight:700;letter-spacing:.06em;color:var(--accent)}
 .rs-gh::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
 .rs-gr{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.rs-gr.one{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.rs-gr.one{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);gap:6px}.rs-gr.one .rs-rep{display:contents}
 .rs-gr.one>:last-child:nth-child(odd){grid-column:auto}
-.rs-gr.one .rs-sel{min-height:40px;padding:0 16px 0 7px;font-size:11px;background-position:right 5px center;background-size:11px;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
+.rs-gr.one .rs-sel{min-height:40px;padding:0 16px 0 7px;font-size:12px;background-position:right 5px center;background-size:11px;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
 .rs-gr>:last-child:nth-child(odd){grid-column:1/-1}
 .rs-act{display:flex;align-items:center;justify-content:center;min-height:46px;margin:0!important;padding:8px 10px;border:1px solid transparent;border-radius:13px;background:var(--primary-light);color:var(--primary);font-size:13px;font-weight:700;line-height:1.35;text-align:center}
 .rs-act.pri{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;box-shadow:0 6px 14px -6px rgba(7,59,46,.6)}
@@ -443,7 +443,7 @@ body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
 .rs-rep{grid-column:1/-1;display:flex;flex-wrap:nowrap;gap:6px}
 .rs-rb{flex:1 1 150px;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border:1px solid var(--border);border-radius:13px;background:var(--card-bg);font-size:13px}
 .rs-rt{flex:1}
-.rs-rep .rs-rb{flex:1 1 0;min-width:0;display:grid;grid-template-columns:1fr auto;align-items:center;justify-items:center;gap:3px 4px;padding:6px 6px;font-size:12px}
+.rs-rep .rs-rb{flex:1 1 0;min-width:0;display:grid;grid-template-columns:auto auto;align-items:center;justify-content:center;justify-items:center;gap:3px 5px;padding:6px 6px;font-size:12px}
 .rs-rep .rs-rt{grid-column:1/-1;text-align:center;font-size:12px;white-space:nowrap}
 .rs-rep .rs-num{width:100%;min-width:0;max-width:56px}
 .rs-num{width:62px;min-height:34px;padding:0 4px;border:1px solid var(--border);border-radius:9px;background:transparent;color:inherit;text-align:center;font:inherit;font-size:14px;font-weight:700;-moz-appearance:textfield;appearance:textfield}
@@ -492,7 +492,7 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 
 /* রোগ নির্ণয়: "প্রতিটি আয়াত / পুরো সেট / সব রোগের অডিও" এক লাইনে, ছোট ঘর */
 .rs-top{display:flex;flex-wrap:nowrap;align-items:stretch;gap:6px;margin:0 0 8px}
-.rs-top .rs-rb{flex:0 0 auto;width:74px;min-height:0;padding:4px 4px;gap:2px 3px;font-size:11px;border-radius:12px}
-.rs-top .rs-rt{font-size:11px;line-height:1.25;white-space:normal}
-.rs-top .rs-num{max-width:38px;min-height:28px;font-size:13px;border-radius:8px}
-.rs-top .rs-mb{flex:1 1 0;min-width:0;margin:0!important;padding:6px 8px;font-size:12px;line-height:1.35;border-radius:12px;text-align:center}
+.rs-top .rs-rb{display:grid;grid-template-columns:auto auto;justify-content:center;justify-items:center;align-items:center;flex:0 0 auto;width:auto;min-height:0;padding:5px 8px;gap:3px 5px;font-size:12px;border-radius:12px}
+.rs-top .rs-rt{grid-column:1/-1;text-align:center;font-size:12px;line-height:1.25;white-space:nowrap}
+.rs-top .rs-num{width:38px;max-width:38px;min-height:28px;font-size:13px;border-radius:8px}
+.rs-top .rs-mb{flex:1 1 0;min-width:0;margin:0!important;padding:5px 6px;font-size:11.5px;font-weight:600;line-height:1.3;border-radius:12px;text-align:center}
