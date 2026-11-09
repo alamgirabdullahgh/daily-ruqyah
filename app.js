@@ -331,7 +331,7 @@ window.__drSave=(b)=>saveBlob(b,window.__lastFN||"quran-audio.mp3");
 // ---------- শেয়ার: প্রথমে ব্রাউজারের নিজস্ব ফাইল-শেয়ার, না চললে নেটিভ শেয়ার-শিট (DRDl.endShare) ----------
 async function shareBlob(blob,name){
  try{const f=new File([blob],name,{type:blob.type||"audio/mpeg"});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name.replace(/\.[^.]+$/,"")});return}}catch(e){if(e&&e.name==="AbortError")return}
- if(!window.DRDl||!DRDl.endShare){try{await saveBlob(blob,name)}catch(e){}alert("এই ব্রাউজারে সরাসরি শেয়ার চলে না, তাই ফাইলটি ডাউনলোড করা হয়েছে। ডাউনলোড থেকে ফাইলটি শেয়ার করুন।");return}
+ if(!window.DRDl||!DRDl.endShare){alert("এই ফোনে শেয়ার চালু করা যায়নি");return}
  try{const id="s"+Date.now(),S=3*512*1024;DRDl.begin(id,name,blob.type||"audio/mpeg");
   for(let o=0;o<blob.size;o+=S){const u8=new Uint8Array(await blob.slice(o,o+S).arrayBuffer());let b="";for(let i=0;i<u8.length;i+=8192)b+=String.fromCharCode.apply(null,u8.subarray(i,i+8192));DRDl.chunk(id,btoa(b))}
   DRDl.endShare(id,blob.type||"audio/mpeg")}catch(e){try{DRDl.fail(String(e))}catch(x){}}}
