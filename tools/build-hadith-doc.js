@@ -54,10 +54,22 @@ for (const raw of lines) {
   }
 }
 
+/* ব্যাখ্যা: আরবি যে শব্দ দিয়ে শুরু হলে সেটি আলাদা হাদীস নয়, আগের হাদীসের ব্যাখ্যা — আগের কার্ডেই "ব্যাখ্যা" অংশে জোড়া হয় */
+const EXPLAIN_START = ['فَقَوْلُهَا'];
+for (let i = items.length - 1; i > 0; i--) {
+  const it = items[i], prev = items[i - 1];
+  if (it.chapter === prev.chapter && EXPLAIN_START.some(w => (it.ar[0] || '').startsWith(w))) {
+    prev.ar.push('\n' + it.ar.join(' '));
+    prev.bn.push('', 'ব্যাখ্যা:', ...it.bn);
+    prev.src.push(...it.src);
+    items.splice(i, 1);
+  }
+}
+
 const recs = items.map((it, i) => [
   0,
   i + 1,
-  it.ar.join(' '),
+  it.ar.join(' ').replace(/ \n/g, '\n'),
   it.bn.join('\n') + (it.src.length ? '\n\n' + it.src.join('\n') : ''),
   '',
   it.chapter
