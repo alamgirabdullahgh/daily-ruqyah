@@ -25,13 +25,13 @@
   {
    "id": 44,
    "text": "হয়নি আবার কর",
-   "status": "running",
+   "status": "done",
    "agent": "browser",
    "target": "claude",
-   "progress": 15,
-   "note": "🤖 Gemini কাজ করছে…",
+   "progress": 100,
+   "note": "🤖 Gemini:\nnoorfashionknitwearmail@gmail.com ইমেইল দিয়ে ভিডিও এজেন্টের প্রথম ওয়ার্কস্পেসে লগইন করার চেষ্টা আবার চালিয়েছি।",
    "created": "2026-11-10 13:00",
-   "updated": "2026-11-10 13:01"
+   "updated": "2026-11-10 13:04"
   }
  ],
  "agents": {
@@ -69,6 +69,10 @@
   {
    "t": "2026-11-10 13:00",
    "msg": "নতুন কাজ #44 → claude: হয়নি আবার কর"
+  },
+  {
+   "t": "2026-11-10 13:04",
+   "msg": "টাস্ক #44: Gemini শেষ করল"
   }
  ],
  "seq": 44,
