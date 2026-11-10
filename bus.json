@@ -13,12 +13,12 @@
   },
   {
    "id": 47,
-   "text": "alamgirabdullahmail@gmail.com \n22**44##Aa\nদ্বিতীয় ভিডিও এজেন্ট এ এই ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন কর",
-   "status": "queued",
-   "agent": "",
+   "text": "alamgirabdullahmail@gmail.com \n***\nদ্বিতীয় ভিডিও এজেন্ট এ এই ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন কর",
+   "status": "running",
+   "agent": "browser",
    "target": "claude",
-   "progress": 0,
-   "note": "",
+   "progress": 15,
+   "note": "🤖 Gemini কাজ করছে…",
    "created": "2026-11-10 17:27",
    "updated": "2026-11-10 17:27"
   }
@@ -49,112 +49,112 @@
   {
    "id": "s1794132254333",
    "n": "99alamgir22@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132265333",
    "n": "alamgirabdullah24@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132273461",
    "n": "abrar2001fahad@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132277355",
    "n": "alamgir1641999@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132281171",
    "n": "alamgirabdullah2024@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132284785",
    "n": "alamgirabdullahall@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132289006",
    "n": "alamgirabdullahofficial@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132294840",
    "n": "talabah2022@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132298475",
    "n": "ruqyahmedicalcenter@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132302842",
    "n": "raqiabdullahmail@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132306487",
    "n": "rahgroupmail@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132310107",
    "n": "alamgirabdullahmail@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132313945",
    "n": "raqialamgirabdullah@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132317213",
    "n": "ruqyahhavenofficial@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132320639",
    "n": "ruqyah.haven.jessore@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132324506",
    "n": "noorfashionknitwearmail@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794272392197",
    "n": "alamgir.abdullah@yahoo.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794297490971",
    "n": "Google Videos 1",
-   "u": "https://docs.google.com/videos/"
+   "u": "https:\/\/docs.google.com\/videos\/"
   },
   {
    "id": "s1794297494137",
    "n": "Google Videos 2",
-   "u": "https://docs.google.com/videos/"
+   "u": "https:\/\/docs.google.com\/videos\/"
   },
   {
    "id": "s1794297495411",
    "n": "Google Videos 3",
-   "u": "https://docs.google.com/videos/"
+   "u": "https:\/\/docs.google.com\/videos\/"
   },
   {
    "id": "s1794297504179",
    "n": "Google Videos 4",
-   "u": "https://docs.google.com/videos/"
+   "u": "https:\/\/docs.google.com\/videos\/"
   },
   {
    "id": "s1794297506084",
    "n": "Google Videos 5",
-   "u": "https://docs.google.com/videos/"
+   "u": "https:\/\/docs.google.com\/videos\/"
   }
  ]
 }
