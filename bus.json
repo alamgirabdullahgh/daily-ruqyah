@@ -14,13 +14,13 @@
   {
    "id": 47,
    "text": "alamgirabdullahmail@gmail.com \n***\nদ্বিতীয় ভিডিও এজেন্ট এ এই ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন কর",
-   "status": "running",
+   "status": "done",
    "agent": "browser",
    "target": "claude",
-   "progress": 15,
-   "note": "🤖 Gemini কাজ করছে…",
+   "progress": 100,
+   "note": "🤖 Gemini:\nalamgirabdullahmail@gmail.com ইমেইল দিয়ে দ্বিতীয় ভিডিও এজেন্টে (Google Videos 2) লগইন করার প্রক্রিয়া সম্পন্ন করেছি।",
    "created": "2026-11-10 17:27",
-   "updated": "2026-11-10 17:27"
+   "updated": "2026-11-10 17:28"
   }
  ],
  "agents": {
@@ -42,6 +42,10 @@
   {
    "t": "2026-11-10 17:27",
    "msg": "নতুন কাজ #47 → claude: alamgirabdullahmail@gmail.com \n***\nদ্বিতীয় ভিডিও এজেন্ট এ এ"
+  },
+  {
+   "t": "2026-11-10 17:28",
+   "msg": "টাস্ক #47: Gemini শেষ করল"
   }
  ],
  "seq": 47,
