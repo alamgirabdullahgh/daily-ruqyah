@@ -123,6 +123,11 @@
    "id": "s1794167391963",
    "n": "Google AI Studio (TTS)",
    "u": "https:\/\/aistudio.google.com"
+  },
+  {
+   "id": "s1794272392197",
+   "n": "claude.ai",
+   "u": "https:\/\/claude.ai\/code"
   }
  ]
 }
