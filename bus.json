@@ -1,5 +1,17 @@
 {
- "tasks": [],
+ "tasks": [
+  {
+   "id": 46,
+   "text": "noorfashionknitwearmail@gmail.com \n*Nfn13m#\nপ্রথম ভিডিও এজেন্ট এ এই ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন কর",
+   "status": "queued",
+   "agent": "",
+   "target": "claude",
+   "progress": 0,
+   "note": "",
+   "created": "2026-11-10 17:23",
+   "updated": "2026-11-10 17:23"
+  }
+ ],
  "agents": {
   "claude": {
    "state": "limit",
@@ -7,8 +19,13 @@
    "seen": "2026-11-10 14:55"
   }
  },
- "events": [],
- "seq": 45,
+ "events": [
+  {
+   "t": "2026-11-10 17:23",
+   "msg": "নতুন কাজ #46 → claude: noorfashionknitwearmail@gmail.com \n***\nপ্রথম ভিডিও এজেন্ট এ "
+  }
+ ],
+ "seq": 46,
  "sites_backup": [
   {
    "id": "s1794132254333",
