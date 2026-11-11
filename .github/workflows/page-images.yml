@@ -1,0 +1,41 @@
+name: Page images (temporary)
+
+# শুধু page-images-work branch-এ push হলে চলে; main-এ কিছু বদলায় না
+on:
+  push:
+    branches: [page-images-work]
+    paths: ['.github/workflows/page-images.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y poppler-utils qpdf
+          pip install gdown
+      - name: Download and render pages
+        run: |
+          mkdir -p pdf pages/chalan pages/jadu
+          gdown "1iTDPT7UX2w7BuWKiepKF4ImyysadeSeD" -O pdf/chalan.pdf
+          gdown "1Vh0za7DT9jc78Q3TJe0jNYQBtjMva9pk" -O pdf/jadu.pdf
+          for b in chalan jadu; do
+            qpdf --password= --decrypt pdf/$b.pdf pdf/$b.dec.pdf || true
+            [ -s pdf/$b.dec.pdf ] && mv pdf/$b.dec.pdf pdf/$b.pdf
+            echo "$b pages: $(qpdf --show-npages pdf/$b.pdf)"
+            pdftoppm -r 130 -jpeg -jpegopt quality=65 pdf/$b.pdf pages/$b/p
+          done
+          du -sh pages/*
+      - name: Commit images
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add pages
+          git commit -m "Temporary: scan page images for proofreading"
+          git push
