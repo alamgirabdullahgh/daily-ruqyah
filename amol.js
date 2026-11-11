@@ -8,15 +8,16 @@
  function load(){
   if(DATA)return Promise.resolve(DATA);
   if(loading)return loading;
-  loading=fetch(new URL("data/amol-guide.json?v=2",location.href).href).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){DATA=d;return d}).catch(function(e){loading=null;throw e});
+  loading=fetch(new URL("data/amol-guide.json?v=3",location.href).href).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){DATA=d;return d}).catch(function(e){loading=null;throw e});
   return loading;
  }
  function refLabel(r){var n=SN[r[0]]||("সূরা "+bn(r[0]));return "সূরা "+n+" "+bn(r[0])+":"+bn(r[1])+(r[2]?"-"+bn(r[2]):"")}
  function card(it){
-  var h='<article class="am-it" data-t="'+esc((it.t+" "+(it.why||"")+" "+(it.how||[]).join(" ")).toLowerCase())+'">';
+  var h='<article class="am-it" data-t="'+esc(it.t.toLowerCase())+'">';
   h+='<h3>'+esc(it.t)+'</h3><div class="am-tags"><span class="am-g am-g-'+(GC[it.g]||"s")+'">'+esc(it.g)+'</span>';
   if(it.src)h+='<span class="am-src">'+esc(it.src)+'</span>';
   h+='</div>';
+  if(it.pages)h+=it.pages.map(function(p,i){return'<div class="am-tx">'+esc(p)+'</div>'}).join("");
   if(it.why)h+='<p class="am-why">'+esc(it.why)+'</p>';
   if(it.ar)h+='<div class="am-ar" dir="rtl" lang="ar">'+esc(it.ar)+'</div>';
   if(it.how&&it.how.length)h+='<ol class="am-how">'+it.how.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ol>';
@@ -38,23 +39,17 @@
    v.innerHTML=h||"আয়াত পাওয়া যায়নি।";
   }).catch(function(){v.textContent="আয়াত লোড করা যায়নি। ইন্টারনেট চালু করে আবার চেষ্টা করুন।";d.__done=0});
  }
- function excl(){
-  var h='<div class="am-ex-h">যা নেওয়া হয়নি, এবং কেন</div><p class="am-why">নিচের বিষয়গুলো দুটি বই থেকে ইচ্ছা করেই বাদ দেওয়া হয়েছে, কারণ এগুলো অন্যের ক্ষতি বা অপবাদ, রোগীর শারীরিক ঝুঁকি, বৈষম্য অথবা সহীহ ভিত্তিহীন দাবির দিকে যায়।</p>';
-  DATA.excluded.forEach(function(e){h+='<details class="am-ex"><summary>'+esc(e.b)+'</summary><ul>'+e.x.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ul></details>'});
-  return h;
- }
  function draw(){
   if(!box||!DATA)return;
-  var tabs='<div class="am-tabs" role="tablist">'+DATA.cats.map(function(c){return'<button type="button" class="am-tab'+(CAT===c.id?" on":"")+'" data-c="'+c.id+'"><i>'+c.icon+'</i>'+esc(c.title)+'</button>'}).join("")+'<button type="button" class="am-tab'+(CAT==="ex"?" on":"")+'" data-c="ex"><i>🚫</i>যা নেওয়া হয়নি</button></div>';
+  var tabs='<div class="am-tabs" role="tablist">'+DATA.cats.map(function(c){return'<button type="button" class="am-tab'+(CAT===c.id?" on":"")+'" data-c="'+c.id+'"><i>'+c.icon+'</i>'+esc(c.title)+'</button>'}).join("")+'</div>';
   var body="";
-  if(CAT==="ex")body=excl();
-  else{var c=DATA.cats.filter(function(x){return x.id===CAT})[0]||DATA.cats[0];body=c.items.map(card).join("")}
+  {var c=DATA.cats.filter(function(x){return x.id===CAT})[0]||DATA.cats[0];body=c.items.map(card).join("")}
   box.innerHTML='<h2 class="am-h">আমল ও চিকিৎসা-নির্দেশিকা</h2><p class="am-intro">'+esc(DATA.intro)+'</p><div class="am-warn">⚕ রুকইয়াহ ও আমল মেডিক্যাল চিকিৎসার বিকল্প নয়। বইয়ে বর্ণিত লক্ষণ বহু রোগেরও হয়; গুরুতর বা হঠাৎ উপসর্গে আগে ডাক্তার দেখান।</div><input class="am-q" id="amQ" type="search" placeholder="খুঁজুন (যেমন: হাঁড়ি, পুতুল, বন্দিশ, বিয়ে)" autocomplete="off" value="'+esc(Q)+'">'+tabs+'<div id="amBody">'+body+'</div>';
   filter();
  }
  function filter(){
-  var q=Q.trim().toLowerCase(),b=document.getElementById("amBody");if(!b||CAT==="ex")return;
-  var n=0;b.querySelectorAll(".am-it").forEach(function(a){var ok=!q||a.dataset.t.indexOf(q)>=0;a.style.display=ok?"":"none";if(ok)n++});
+  var q=Q.trim().toLowerCase(),b=document.getElementById("amBody");if(!b)return;
+  var n=0;b.querySelectorAll(".am-it").forEach(function(a){var ok=!q||(a.__t||(a.__t=a.textContent.toLowerCase())).indexOf(q)>=0;a.style.display=ok?"":"none";if(ok)n++});
   var e=b.querySelector(".am-empty");if(!n&&q){if(!e){e=document.createElement("div");e.className="am-empty";e.textContent="এই ট্যাবে কিছু পাওয়া যায়নি। অন্য ট্যাবে দেখুন।";b.appendChild(e)}}else if(e)e.remove();
  }
  function init(){
