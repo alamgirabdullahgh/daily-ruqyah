@@ -36,11 +36,11 @@
   {
    "id": 49,
    "text": "অডিও এজেন্ট এর ওয়ার্ক এ স্পেস এর মধ্যে থাকা নামগুলো ডিলিট করে দাও",
-   "status": "queued",
-   "agent": "",
+   "status": "running",
+   "agent": "browser",
    "target": "claude",
-   "progress": 0,
-   "note": "",
+   "progress": 15,
+   "note": "🤖 Gemini কাজ করছে…",
    "created": "2026-11-11 08:39",
    "updated": "2026-11-11 08:39"
   }
