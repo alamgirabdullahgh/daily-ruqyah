@@ -24,7 +24,7 @@
   },
   {
    "id": 48,
-   "text": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts\nএই লিংক দিয়ে ১৭ টি ওয়ার্ক স্পেস তৈরি করে দাও \n17 টা work space তৈরি করার পর \nশুরু থেকে প্রতিটাতে নিচে থাকা সিরিয়াল অনুযায়ী ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন করতে থাকবে \n99alamgir22@gmail.com\n***\n\nalamgirabdullah24@gmail.com\n***\n\nAbrar2001fahad@gmail.com\n***\n\nAlamgir1641999@gmail.com\n***\n\nalamgirabdullah2024@gmail.com\n***\n\nalamgirabdullahall@gmail.com\n***\n\nalamgirabdullahofficial@gmail.com\n***\n\ntalabah2022@gmail.com\n***\n\nruqyahmedicalcenter@gmail.com\n***\n\nraqiabdullahmail@gmail.com \n***\n\nrahgroupmail@gmail.com\n***\n\nalamgirabdullahmail@gmail.com\n***\n\nraqialamgirabdullah@gmail.com\n***\n\nAlamgir.abdullah@yahoo.com\n***",
+   "text": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts\nএই লিংক দিয়ে ১৭ টি ওয়ার্ক স্পেস তৈরি করে দাও \n17 টা work space তৈরি করার পর \nশুরু থেকে প্রতিটাতে নিচে থাকা সিরিয়াল অনুযায়ী ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন করতে থাকবে \n99alamgir22@gmail.com\n***\n\nalamgirabdullah24@gmail.com\n***\n\nAbrar2001fahad@gmail.com\n***\n\nAlamgir1641999@gmail.com\n***\n\nalamgirabdullah2024@gmail.com\n***\n\nalamgirabdullahall@gmail.com\n***\n\nalamgirabdullahofficial@gmail.com\n***\n\ntalabah2022@gmail.com\n***\n\nruqyahmedicalcenter@gmail.com\n***\n\nraqiabdullahmail@gmail.com \n***\n\nrahgroupmail@gmail.com\n***\n\nalamgirabdullahmail@gmail.com\n***\n\nraqialamgirabdullah@gmail.com\n***\n\nAlamgir.abdullah@yahoo.com\n***",
    "status": "done",
    "agent": "browser",
    "target": "claude",
@@ -47,11 +47,11 @@
   {
    "id": 50,
    "text": "তাহলে অডিও এজেন্ট ওয়ার্ক স্পেসে থাকা \nসবগুলো আইটেম ডিলিট করে দাও",
-   "status": "queued",
-   "agent": "",
+   "status": "running",
+   "agent": "browser",
    "target": "claude",
-   "progress": 0,
-   "note": "",
+   "progress": 15,
+   "note": "🤖 Gemini কাজ করছে…",
    "created": "2026-11-11 08:50",
    "updated": "2026-11-11 08:50"
   }
@@ -82,7 +82,7 @@
   },
   {
    "t": "2026-11-11 08:35",
-   "msg": "নতুন কাজ #48 → claude: https://aistudio.google.com/generate-speech?model=gemini-2.5"
+   "msg": "নতুন কাজ #48 → claude: https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5"
   },
   {
    "t": "2026-11-11 08:39",
@@ -106,177 +106,177 @@
   {
    "id": "s1794132254333",
    "n": "99alamgir22@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132265333",
    "n": "alamgirabdullah24@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132273461",
    "n": "abrar2001fahad@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132277355",
    "n": "alamgir1641999@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132281171",
    "n": "alamgirabdullah2024@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132284785",
    "n": "alamgirabdullahall@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132289006",
    "n": "alamgirabdullahofficial@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132294840",
    "n": "talabah2022@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132298475",
    "n": "ruqyahmedicalcenter@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132302842",
    "n": "raqiabdullahmail@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132306487",
    "n": "rahgroupmail@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132310107",
    "n": "alamgirabdullahmail@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132313945",
    "n": "raqialamgirabdullah@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132317213",
    "n": "ruqyahhavenofficial@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132320639",
    "n": "ruqyah.haven.jessore@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132324506",
    "n": "noorfashionknitwearmail@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794272392197",
    "n": "alamgir.abdullah@yahoo.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794297490971",
    "n": "Google Videos 1",
-   "u": "https://docs.google.com/videos/"
+   "u": "https:\/\/docs.google.com\/videos\/"
   },
   {
    "id": "s1794297494137",
    "n": "alamgirabdullahmail@gmail.com",
-   "u": "https://docs.google.com/videos/"
+   "u": "https:\/\/docs.google.com\/videos\/"
   },
   {
    "id": "s1794297495411",
    "n": "Google Videos 3",
-   "u": "https://docs.google.com/videos/"
+   "u": "https:\/\/docs.google.com\/videos\/"
   },
   {
    "id": "s1794297504179",
    "n": "Google Videos 4",
-   "u": "https://docs.google.com/videos/"
+   "u": "https:\/\/docs.google.com\/videos\/"
   },
   {
    "id": "s1794297506084",
    "n": "Google Videos 5",
-   "u": "https://docs.google.com/videos/"
+   "u": "https:\/\/docs.google.com\/videos\/"
   },
   {
    "id": "s1794386167971",
    "n": "99alamgir22@gmail.com",
-   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
   },
   {
    "id": "s1794386171444",
    "n": "aistudio.google.com",
-   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
   },
   {
    "id": "s1794386172699",
    "n": "aistudio.google.com",
-   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
   },
   {
    "id": "s1794386175113",
    "n": "aistudio.google.com",
-   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
   },
   {
    "id": "s1794386176529",
    "n": "aistudio.google.com",
-   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
   },
   {
    "id": "s1794386180902",
    "n": "aistudio.google.com",
-   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
   },
   {
    "id": "s1794386182277",
    "n": "aistudio.google.com",
-   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
   },
   {
    "id": "s1794386183857",
    "n": "aistudio.google.com",
-   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
   },
   {
    "id": "s1794386186056",
    "n": "aistudio.google.com",
-   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
   },
   {
    "id": "s1794386188394",
    "n": "aistudio.google.com",
-   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
   },
   {
    "id": "s1794386190023",
    "n": "aistudio.google.com",
-   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
   },
   {
    "id": "s1794386192053",
    "n": "aistudio.google.com",
-   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
   },
   {
    "id": "s1794386194568",
    "n": "aistudio.google.com",
-   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
   }
  ]
 }
