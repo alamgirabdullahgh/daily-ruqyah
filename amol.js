@@ -1,6 +1,6 @@
 /* আমল ও চিকিৎসা-নির্দেশিকা — data/amol-guide.json থেকে পাতা আঁকে। আয়াত দেখায় অ্যাপের নিজস্ব কুরআন-ডেটা (__drChunk) থেকে। */
 (function(){
- var SN={1:"ফাতিহা",2:"বাকারা",3:"আলে ইমরান",7:"আ'রাফ",10:"ইউনুস",11:"হূদ",16:"নাহল",18:"কাহফ",20:"ত্ব-হা",21:"আম্বিয়া",25:"ফুরকান",39:"যুমার",43:"যুখরুফ",67:"মুলক",68:"কালাম",71:"নূহ",112:"ইখলাস",113:"ফালাক",114:"নাস"};
+ var SN={1:"ফাতিহা",2:"বাকারা",3:"আলে ইমরান",6:"আন'আম",7:"আ'রাফ",8:"আনফাল",10:"ইউনুস",11:"হূদ",12:"ইউসুফ",13:"রা'দ",15:"হিজর",16:"নাহল",18:"কাহফ",20:"ত্ব-হা",21:"আম্বিয়া",24:"নূর",25:"ফুরকান",27:"নামল",28:"কাসাস",29:"আনকাবুত",30:"রূম",31:"লুকমান",33:"আহযাব",35:"ফাতির",36:"ইয়াসীন",37:"সাফফাত",39:"যুমার",41:"ফুসসিলাত",43:"যুখরুফ",44:"দুখান",50:"ক্বাফ",54:"কামার",59:"হাশর",67:"মুলক",68:"কালাম",71:"নূহ",72:"জিন",85:"বুরূজ",94:"ইনশিরাহ",95:"তীন",99:"যিলযাল",105:"ফীল",112:"ইখলাস",113:"ফালাক",114:"নাস"};
  var BD="০১২৩৪৫৬৭৮৯",DATA=null,CAT="daily",Q="",box=null,loading=null;
  var bn=function(n){return String(n).replace(/\d/g,function(d){return BD[d]})};
  var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
@@ -8,7 +8,7 @@
  function load(){
   if(DATA)return Promise.resolve(DATA);
   if(loading)return loading;
-  loading=fetch(new URL("data/amol-guide.json?v=1",location.href).href).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){DATA=d;return d}).catch(function(e){loading=null;throw e});
+  loading=fetch(new URL("data/amol-guide.json?v=2",location.href).href).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){DATA=d;return d}).catch(function(e){loading=null;throw e});
   return loading;
  }
  function refLabel(r){var n=SN[r[0]]||("সূরা "+bn(r[0]));return "সূরা "+n+" "+bn(r[0])+":"+bn(r[1])+(r[2]?"-"+bn(r[2]):"")}
@@ -24,7 +24,7 @@
   if(it.refs&&it.refs.length){
    h+='<div class="am-refs">'+it.refs.map(function(r,i){return'<details class="am-ref" data-r="'+r.join(",")+'"><summary>'+esc(refLabel(r))+'</summary><div class="am-v">লোড হচ্ছে…</div></details>'}).join("")+'</div>';
   }
-  if(it.bk)h+='<div class="am-bk">📚 বইয়ে ছিল: '+esc(it.bk)+'</div>';
+  if(it.bk)h+='<div class="am-bk">📚 বই: '+esc(it.bk)+'</div>';
   return h+'</article>';
  }
  function fillRef(d){
@@ -39,7 +39,7 @@
   }).catch(function(){v.textContent="আয়াত লোড করা যায়নি। ইন্টারনেট চালু করে আবার চেষ্টা করুন।";d.__done=0});
  }
  function excl(){
-  var h='<div class="am-ex-h">যা নেওয়া হয়নি, এবং কেন</div><p class="am-why">নিচের বিষয়গুলো বই থেকে ইচ্ছা করেই বাদ দেওয়া হয়েছে, কারণ এগুলো কুরআন-হাদিসের স্পষ্ট ভিত্তিহীন, ক্ষতিকর বা কারও অধিকার লঙ্ঘনের ঝুঁকিপূর্ণ, অথবা তাবিজের নকশা-জাতীয় (আপনার নির্দেশমতো নেওয়া হয়নি)।</p>';
+  var h='<div class="am-ex-h">যা নেওয়া হয়নি, এবং কেন</div><p class="am-why">নিচের বিষয়গুলো দুটি বই থেকে ইচ্ছা করেই বাদ দেওয়া হয়েছে, কারণ এগুলো অন্যের ক্ষতি বা অপবাদ, রোগীর শারীরিক ঝুঁকি, বৈষম্য অথবা সহীহ ভিত্তিহীন দাবির দিকে যায়।</p>';
   DATA.excluded.forEach(function(e){h+='<details class="am-ex"><summary>'+esc(e.b)+'</summary><ul>'+e.x.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ul></details>'});
   return h;
  }
@@ -49,7 +49,7 @@
   var body="";
   if(CAT==="ex")body=excl();
   else{var c=DATA.cats.filter(function(x){return x.id===CAT})[0]||DATA.cats[0];body=c.items.map(card).join("")}
-  box.innerHTML='<h2 class="am-h">আমল ও চিকিৎসা-নির্দেশিকা</h2><p class="am-intro">'+esc(DATA.intro)+'</p><div class="am-warn">⚕ রুকইয়াহ ও আমল মেডিক্যাল চিকিৎসার বিকল্প নয়। গুরুতর বা হঠাৎ উপসর্গে আগে ডাক্তার দেখান।</div><input class="am-q" id="amQ" type="search" placeholder="খুঁজুন (যেমন: ঘুম, নজর, ব্যথা)" autocomplete="off" value="'+esc(Q)+'">'+tabs+'<div id="amBody">'+body+'</div>';
+  box.innerHTML='<h2 class="am-h">আমল ও চিকিৎসা-নির্দেশিকা</h2><p class="am-intro">'+esc(DATA.intro)+'</p><div class="am-warn">⚕ রুকইয়াহ ও আমল মেডিক্যাল চিকিৎসার বিকল্প নয়। বইয়ে বর্ণিত লক্ষণ বহু রোগেরও হয়; গুরুতর বা হঠাৎ উপসর্গে আগে ডাক্তার দেখান।</div><input class="am-q" id="amQ" type="search" placeholder="খুঁজুন (যেমন: হাঁড়ি, পুতুল, বন্দিশ, বিয়ে)" autocomplete="off" value="'+esc(Q)+'">'+tabs+'<div id="amBody">'+body+'</div>';
   filter();
  }
  function filter(){
