@@ -16,21 +16,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install tools
-        run: |
-          sudo apt-get update -q
-          sudo apt-get install -y poppler-utils qpdf
-          pip install gdown
+        run: pip install gdown pymupdf
       - name: Download and render pages
         run: |
           mkdir -p pdf pages/chalan pages/jadu
           gdown "1iTDPT7UX2w7BuWKiepKF4ImyysadeSeD" -O pdf/chalan.pdf
           gdown "1Vh0za7DT9jc78Q3TJe0jNYQBtjMva9pk" -O pdf/jadu.pdf
-          for b in chalan jadu; do
-            qpdf --password= --decrypt pdf/$b.pdf pdf/$b.dec.pdf || true
-            [ -s pdf/$b.dec.pdf ] && mv pdf/$b.dec.pdf pdf/$b.pdf
-            echo "$b pages: $(qpdf --show-npages pdf/$b.pdf)"
-            pdftoppm -r 130 -jpeg -jpegopt quality=65 pdf/$b.pdf pages/$b/p
-          done
+          python3 - <<'PY'
+          import fitz
+          for b in ("chalan", "jadu"):
+              d = fitz.open(f"pdf/{b}.pdf")
+              if d.needs_pass:
+                  d.authenticate("")
+              print(b, "pages:", len(d))
+              for i, pg in enumerate(d, 1):
+                  pg.get_pixmap(dpi=130).save(f"pages/{b}/p-{i:03d}.jpg", jpg_quality=65)
+          PY
           du -sh pages/*
       - name: Commit images
         run: |
