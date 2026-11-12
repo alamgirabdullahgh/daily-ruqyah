@@ -18,10 +18,11 @@ button,input,select{font-family:inherit}
  .rs-bar{box-shadow:0 6px 22px rgba(0,0,0,.4)!important}
 }
 /* ---------- উপরের বার ---------- */
-.dr-top{position:sticky;top:0;z-index:30;padding:env(safe-area-inset-top) 0 0;background:linear-gradient(160deg,#052e24 0%,#0a5240 60%,#0d6650 100%);color:#fff;border-radius:0 0 30px 30px;box-shadow:0 1px 0 rgba(216,178,90,.55),0 10px 24px -10px rgba(5,46,36,.6)}
-body.is-home .dr-top{position:relative;padding-bottom:0;background:none;box-shadow:none;border-radius:0}
+.dr-top{position:sticky;top:0;z-index:30;padding:env(safe-area-inset-top) 0 0;background:none;box-shadow:none;border-radius:0;color:#fff}
+body.is-home .dr-top{position:relative}
 body.is-home #drWidget .drw{border-radius:24px 24px 0 0}
-body.is-home .dr-brand{box-sizing:border-box;width:calc(100% - 24px);max-width:660px;margin:0 auto;background:linear-gradient(160deg,#052e24 0%,#0a5240 60%,#0d6650 100%);border-radius:0 0 24px 24px;box-shadow:0 8px 18px -10px rgba(5,46,36,.6)}
+/* লোগো-নামের বার সব পাতায় হুবহু এক */
+.dr-brand{box-sizing:border-box;width:calc(100% - 24px);max-width:660px;margin:0 auto;background:linear-gradient(160deg,#052e24 0%,#0a5240 60%,#0d6650 100%);border-radius:0 0 24px 24px;box-shadow:0 8px 18px -10px rgba(5,46,36,.6)}
 #drWidget{padding:0 12px}
 .dr-menu{flex:none;width:44px;height:44px;border:0;border-radius:14px;background:rgba(255,255,255,.08);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s}
 .dr-menu:active{background:rgba(255,255,255,.2)}

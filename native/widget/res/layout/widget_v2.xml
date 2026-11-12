@@ -65,20 +65,42 @@
             android:textSize="11sp"
             android:textStyle="bold" />
 
-        <ProgressBar
-            android:id="@+id/zz_wbar"
-            style="?android:attr/progressBarStyleHorizontal"
+        <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="8dp"
+            android:layout_height="14dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:indeterminate="false"
-            android:max="1000"
-            android:maxHeight="8dp"
-            android:minHeight="8dp"
-            android:progress="400"
-            android:progressDrawable="@drawable/wbar" />
+            android:layout_weight="1">
+
+            <ProgressBar
+                android:id="@+id/zz_wbar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="14dp"
+                android:indeterminate="false"
+                android:max="1000"
+                android:maxHeight="14dp"
+                android:minHeight="14dp"
+                android:progress="400"
+                android:progressDrawable="@drawable/wbar" />
+
+            <!-- বারের ঠিক মাঝখানে বাকি সময়ের কাউন্টডাউন -->
+            <TextView
+                android:id="@+id/zz_cd"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:text="−১ঘ ২৩মি"
+                android:textColor="#FFFFFF"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:shadowColor="#66000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="2" />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/zz_we"

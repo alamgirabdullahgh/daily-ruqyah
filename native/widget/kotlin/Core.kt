@@ -110,6 +110,8 @@ object Prayer {
     // ঘণ্টা (দশমিক) → মিনিট, নিকটতম মিনিটে
     fun minutes(h: Double): Int = (h * 60.0 + 0.5).toInt()
 
+    fun fmtNum(n: Int, bn: Boolean = true): String = if (bn) Bn.digits(n.toString()) else n.toString()
+
     // ১২-ঘণ্টা বাংলা ঘড়ি, AM/PM ছাড়া — যেমন ৪:৪৬
     fun fmt(min: Int, bn: Boolean = true): String {
         val m = ((min % 1440) + 1440) % 1440
