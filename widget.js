@@ -200,10 +200,11 @@
     ".drw-c.on{background:#CFE6D9}" +
     ".drw-c i{display:block;font-style:normal;font-size:11px;color:#3B4A55}" +
     ".drw-c b{display:block;font-size:14px;font-weight:800;margin-top:1px}" +
-    ".drw-b{display:flex;align-items:center;gap:8px;margin-top:3px;font-size:11px;color:#3B4A55}" +
+    ".drw-b{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:11px;color:#3B4A55}" +
     ".drw-b span{white-space:nowrap}" +
-    ".drw-bar{flex:1;height:4px;border-radius:2px;background:#C9D3DA;overflow:hidden}" +
-    ".drw-bar u{display:block;height:100%;background:#1E8E62;border-radius:2px;text-decoration:none}" +
+    ".drw-p+.drw-r{margin-top:8px}" +
+    ".drw-bar{flex:1;height:8px;border-radius:4px;background:#C9D3DA;overflow:hidden}" +
+    ".drw-bar u{display:block;height:100%;background:linear-gradient(90deg,#16794c,#2bb583);border-radius:4px;text-decoration:none}" +
     "@media (prefers-color-scheme:dark){.drw{background:#16211c;color:#e8f0ea}.drw-pin{background:#1f2e27;border-color:#2a4034;color:#9fd8bd}.drw-sun,.drw-time span,.drw-loc,.drw-upd,.drw-d,.drw-c i,.drw-b{color:#b3c9bb}.drw-c.on{background:#1f4a39}.drw-bar{background:#2a4034}}";
 
   var SUNRISE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2v2.6M5 5.6l1.8 1.8M19 5.6l-1.8 1.8M2.4 11.5H5M19 11.5h2.6" stroke="#FFB300" stroke-width="1.7" stroke-linecap="round" fill="none"/><circle cx="12" cy="13" r="5.5" fill="#FFC21A"/><path d="M2 15.5q2.5-2.2 5 0t5 0t5 0t5 0V22H2z" fill="#1E88E5"/><path d="M2 15.5q2.5-2.2 5 0t5 0t5 0t5 0" stroke="#8FD0FF" stroke-width="1" fill="none"/><path d="M9 18.3h6M10.5 20.5h3" stroke="#FFD97A" stroke-width="1.3" stroke-linecap="round"/></svg>';
@@ -254,11 +255,12 @@
         cells += '<div class="drw-c' + (i === s.cur ? " on" : "") + '" data-i="' + i + '"><i>' + NAMES[i] + "</i><b>" + fmt(s.m[i]) + "</b></div>";
       el.innerHTML =
         '<div class="drw"><div class="drw-r"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span>' + '<button class="drw-pin" type="button" data-pin="1">📲 হোম স্ক্রিনে<br>বসান</button>' + '<span class="drw-sun">' + SUNSET + "সূর্যাস্ত " + fmt(s.sunset) + "</span></div>" +
+        '<div class="drw-b"><span>' + (nf ? nf.name + " শুরু " : "ওয়াক্ত শুরু ") + fmt(bs) + '</span><div class="drw-bar"><u style="width:' + (frac * 100).toFixed(1) + '%"></u></div><span>' + (nf ? "শেষ " : "ওয়াক্ত শেষ ") + fmt(be) + "</span></div>" +
+        '<div class="drw-p">' + cells + "</div>" +
         '<div class="drw-r"><div class="drw-time"><b>' + hh + ":" + mm + "</b><span>" + (now.getHours() < 12 ? "AM" : "PM") + "</span></div>" +
         '<div class="drw-en"><b>' + en + '</b><div class="drw-lr"><button class="drw-loc" type="button" data-loc="1">' + placeName(loc) + '</button><button class="drw-upd" type="button" data-upd="1">' + (updBusy ? "হচ্ছে…" : "আপডেট<br>লোকেশন") + "</button></div></div></div>" +
         '<div class="drw-r drw-d"><span>' + hijriText(now, inBd(loc.lat, loc.lng)) + "</span><span>" + banglaText(addDays(now, BANGLA_ADJ)) + "</span></div>" +
-        '<div class="drw-p">' + cells + "</div>" +
-        '<div class="drw-b"><span>' + (nf ? nf.name + " শুরু " : "ওয়াক্ত শুরু ") + fmt(bs) + '</span><div class="drw-bar"><u style="width:' + (frac * 100).toFixed(1) + '%"></u></div><span>' + (nf ? "শেষ " : "ওয়াক্ত শেষ ") + fmt(be) + "</span></div></div>";
+        "</div>";
     }
     var updBusy = false;
     // "আপডেট লোকেশন": চাপলে এখনই নতুন অবস্থান নেয় (নেট লাগে); পাওয়া গেলে কার্ড নিজে বদলে যায়

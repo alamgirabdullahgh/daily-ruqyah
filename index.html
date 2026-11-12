@@ -12,14 +12,14 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Daily Ruqyah">
-<link rel="stylesheet" href="style.css?v=33">
+<link rel="stylesheet" href="style.css?v=34">
 </head>
-<body>
-<header class="dr-bar">
+<body class="is-home">
+<header class="dr-hero" id="drHero">
+<div id="drWidget" style="padding:0 12px"></div>
  <div class="dr-brand"><img src="icons/icon-192.png" alt=""><span>Daily Ruqyah</span></div>
 </header>
 <div class="dr-backrow" id="drBackRow" hidden><button class="dr-backbtn" id="drBack" type="button" aria-label="আগের পাতায় ফিরুন"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
-<div id="drWidget" style="padding:0 12px"></div>
 <div class="dr-scrim" id="drScrim"></div>
 <nav class="dr-side" id="drSide" aria-label="মেনু" aria-hidden="true">
  <div class="dr-side-head">
@@ -35,7 +35,7 @@
  <a class="dr-nav" href="#alarm" data-nav="alarm"><i>⏰</i><span>রুকইয়াহ অডিও অ্যালার্ম</span></a>
 <div class="dr-vbar"><button class="dr-x" id="drClose" type="button" aria-label="বন্ধ করুন">✕</button><b id="drVer">Daily Ruqyah</b><button class="dr-share" id="drShare" type="button" aria-label="শেয়ার করুন" title="Share"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="18" cy="5" r="2.6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="19" r="2.6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.3 10.8l7.4-4.4M8.3 13.2l7.4 4.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
 </nav>
-<nav class="dr-bnav" aria-label="নেভিগেশন"><button class="dr-bn" id="drMenu" type="button" aria-label="মেনু খুলুন" aria-controls="drSide" aria-expanded="false"><i><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></i><span>মেনু</span></button><a class="dr-bn" href="#home" data-nav="home"><i>🏠</i><span>হোম</span></a><a class="dr-bn dr-sbtn" href="#search" data-nav="search" aria-label="সার্চ"><i><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.2 15.2L20 20" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></i><span>সার্চ</span></a></nav>
+<nav class="dr-bnav" aria-label="নেভিগেশন"><a class="dr-bn dr-sbtn" href="#search" data-nav="search" aria-label="সার্চ"><i><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.2 15.2L20 20" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></i><span>সার্চ</span></a><a class="dr-bn" href="#home" data-nav="home"><i>🏠</i><span>হোম</span></a><button class="dr-bn" id="drMenu" type="button" aria-label="মেনু খুলুন" aria-controls="drSide" aria-expanded="false"><i><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></i><span>মেনু</span></button></nav>
 <div class="dr-ufl" id="drUfl" hidden><button class="dr-ubtn" id="drUbtn" type="button"><span class="ph" id="drUph">Update</span><span class="pt" id="drUpt"></span></button></div>
 <main class="dr-main">
 <div class="drq-cards" id="drLanding" hidden></div>
@@ -55,9 +55,9 @@
 <div class="rs-box" id="drAlarm" hidden></div>
 <div class="rs-box" id="drAmol" hidden></div>
 </main>
-<script src="widget.js?v=12"></script>
+<script src="widget.js?v=13"></script>
 <script src="symptom.js?v=3"></script>
-<script src="app.js?v=41"></script>
+<script src="app.js?v=42"></script>
 <script src="home.js?v=3"></script>
 <script src="alarm.js?v=4"></script>
 <script src="amol.js?v=5"></script>
