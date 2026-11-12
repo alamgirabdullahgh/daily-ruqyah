@@ -185,7 +185,7 @@
     ".drw-r{display:flex;align-items:center;justify-content:space-between;gap:8px}" +
     ".drw-sun{display:flex;align-items:center;gap:5px;font-size:11px;color:#3B4A55;white-space:nowrap}" +
     ".drw-sun svg{width:20px;height:20px;flex:none}" +
-    ".drw-pin{flex:0 1 auto;min-width:0;border:1px solid #c9d3da;background:#fff;color:#0a5240;border-radius:999px;padding:3px 8px;font:600 10px/1.15 inherit;font-family:inherit;text-align:center;cursor:pointer}" +
+    ".drw-pin{flex:0 1 auto;min-width:0;border:1px solid #c9d3da;background:#fff;color:#0a5240;border-radius:999px;padding:3px 8px;font-family:inherit;font-weight:600;font-size:10px;line-height:1.15;text-align:center;cursor:pointer}" +
     ".drw-time{display:flex;align-items:flex-end;gap:4px;margin-top:1px}" +
     ".drw-time b{font-size:40px;line-height:1;font-weight:800;letter-spacing:-.5px;font-variant-numeric:lining-nums}" +
     ".drw-time span{font-size:12px;color:#3B4A55;padding-bottom:6px}" +
@@ -253,7 +253,7 @@
       for (var i = 0; i < 5; i++)
         cells += '<div class="drw-c' + (i === s.cur ? " on" : "") + '" data-i="' + i + '"><i>' + NAMES[i] + "</i><b>" + fmt(s.m[i]) + "</b></div>";
       el.innerHTML =
-        '<div class="drw"><div class="drw-r"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span>' + (NW && NW.pin ? '<button class="drw-pin" type="button" data-pin="1">📲 হোম স্ক্রিনে<br>বসান</button>' : '') + '<span class="drw-sun">' + SUNSET + "সূর্যাস্ত " + fmt(s.sunset) + "</span></div>" +
+        '<div class="drw"><div class="drw-r"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span>' + '<button class="drw-pin" type="button" data-pin="1">📲 হোম স্ক্রিনে<br>বসান</button>' + '<span class="drw-sun">' + SUNSET + "সূর্যাস্ত " + fmt(s.sunset) + "</span></div>" +
         '<div class="drw-r"><div class="drw-time"><b>' + hh + ":" + mm + "</b><span>" + (now.getHours() < 12 ? "AM" : "PM") + "</span></div>" +
         '<div class="drw-en"><b>' + en + '</b><div class="drw-lr"><button class="drw-loc" type="button" data-loc="1">' + placeName(loc) + '</button><button class="drw-upd" type="button" data-upd="1">' + (updBusy ? "হচ্ছে…" : "আপডেট<br>লোকেশন") + "</button></div></div></div>" +
         '<div class="drw-r drw-d"><span>' + hijriText(now, inBd(loc.lat, loc.lng)) + "</span><span>" + banglaText(addDays(now, BANGLA_ADJ)) + "</span></div>" +
@@ -280,6 +280,7 @@
       var t = ev.target;
       if (t.closest && t.closest("[data-upd]")) { updateLoc(); return; }
       if (t.closest && t.closest("[data-pin]")) {
+        if (!NW || !NW.pin) { alert("টাইম উইজেট হোম স্ক্রিনে বসানো শুধু ইনস্টল করা অ্যাপে চলে।"); return; }
         NW.pin().then(function (r) {
           if (r && r.ok === false) alert("এই ফোনের লঞ্চার সরাসরি বসাতে দেয় না। হোম স্ক্রিনে ফাঁকা জায়গায় চেপে ধরে ‘উইজেট’ থেকে “টাইম উইজেট” বেছে নিন।");
         }).catch(function () {});

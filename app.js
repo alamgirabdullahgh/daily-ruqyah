@@ -949,7 +949,7 @@ function drShell(){
  const open=on=>{side.classList.toggle("on",on);scrim.classList.toggle("on",on);document.body.classList.toggle("dr-lock",on);side.setAttribute("aria-hidden",on?"false":"true");menu.setAttribute("aria-expanded",on?"true":"false")};
  menu.onclick=()=>open(true);$("drClose").onclick=scrim.onclick=()=>open(false);
  document.addEventListener("keydown",e=>{if(e.key==="Escape")open(false)});
- const navs=[...document.querySelectorAll(".dr-nav,.dr-bn,.dr-sbtn")];
+ const navs=[...document.querySelectorAll(".dr-nav,.dr-bn,.dr-sbtn")].filter(x=>x.id!=="drMenu");
  let prev="";
  let lastH="home";
  const route=()=>{open(false);const h=(location.hash||"#home").replace(/^#/,""),p=h.split("/");{const rb=$("rsBox");if(rb)rb.classList.remove("dr-tonly")}
