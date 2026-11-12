@@ -784,7 +784,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
 // ---------- রোগ নির্ণয়ের তালিকা (quran-diagnosis.json) ----------
  const showDiag=async(cfg)=>{window.__bq="";const CF=Object.assign({file:"quran-diagnosis.json?v="+DV+"d19",title:"🩺 রোগ নির্ণয় (ডায়াগনোসিস)",sq:"রোগ নির্ণয়",nm:"নির্ণয়",badge:["আয়াতে সরাসরি আছে","শব্দভিত্তিক"],intro:null},cfg&&(cfg.file||cfg.host)?cfg:{});GEN++;CURT=null;rs.classList.remove("on");pad.classList.remove("on");const out=CF.host||$("rsOut"),info=CF.infoEl||$("rsInfo");out.innerHTML="";info.textContent="লোড হচ্ছে…";q.value="";setDir();window.__sq=CF.sq;
   let D;try{D=await rsFetch(BASE+CF.file)}catch(e){info.textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
-  info.textContent="";if(!CF.host)info.appendChild(els("div","font-weight:700;color:var(--primary);margin-bottom:4px",CF.title));
+  info.textContent="";if(CF.only!=null){D=Object.assign({},D,{groups:D.groups.filter(g=>g.section===CF.only)});if(CF.back){const bb=mkBtn("← তালিকায় ফিরুন",CF.back);bb.style.margin="0 0 8px";info.appendChild(bb)}}if(!CF.host)info.appendChild(els("div","font-weight:700;color:var(--primary);margin-bottom:4px",CF.only!=null?CF.only:CF.title));
   const resolve=sel=>{const terms=[];sel.forEach(x=>{const t=TOPICS.find(y=>y.name===x.topic);if(t)t.terms.forEach(y=>{if(x.all||(x.prefix?y[0].split(" — ")[0]===x.prefix:(x.titles||[]).includes(y[0])))terms.push(y)})});return terms};
   const keyList=cs=>{const list=[],seen=new Set();cs.forEach(c=>c.keys.forEach(k=>{const id=k.s+":"+k.a;if(!seen.has(id)){seen.add(id);list.push([k.s,k.a])}}));return{list}};
   const audio=(cs,label)=>{const w=els("div","margin-top:6px"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),res=el("div"),b=mkBtn("🔊 "+label,()=>{window.__sq=CF.sq+" "+(cs.length===1?cs[0].name:label);const k=keyList(cs);if(k.list.length===1&&setAll()<=1&&repOf(k.list[0][0],k.list[0][1])<=1){playOne(k.list[0][0],k.list[0][1],res,note);return}mergeAudio(k.list,res,t=>note.textContent=t)});b.style.margin="0";w.append(b,note,res);w.btn=b;return w};
@@ -857,6 +857,21 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
    showDiag({host:out,infoEl:info,pick})};}
  SHOWT=showTopics;$("rsTp").onclick=()=>showTopics();
  window.__drOpenTopic=n=>{const t=TOPICS.find(x=>x.name===n);if(t){q.value=t.name;setDir();rs.classList.remove("on");$("rsBox").classList.add("dr-tonly");goTopic(t)}};window.__drOpenDisease=()=>showDiag(DISEASE);window.__drOpenMental=()=>showDiag(MENTAL);
+ /* নামের তালিকা: প্রতিটি রোগ/অঙ্গের নাম আলাদা; নামে চাপলে শুধু সেটার আয়াত */
+ const showNames=(title,items,sub)=>{GEN++;CURT=null;window.__bq="";rs.classList.remove("on");pad.classList.remove("on");const out=$("rsOut"),info=$("rsInfo");out.innerHTML="";info.textContent="";info.appendChild(els("div","font-weight:700;color:var(--primary);margin-bottom:4px",title));if(sub)info.appendChild(els("div","font-size:13px;color:var(--text-muted);margin-bottom:8px",sub));
+  const w=els("div","display:flex;flex-direction:column;gap:8px;margin-top:8px");
+  items.forEach(it=>{const b=document.createElement("button");b.type="button";b.style.cssText="display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;padding:12px 14px;border:1px solid var(--border-light);border-radius:12px;background:var(--card-bg);color:inherit;font:inherit;font-weight:700;cursor:pointer";b.appendChild(els("span",null,it.name));const e=els("span","font-size:12px;font-weight:400;color:var(--text-muted);white-space:nowrap",(it.note?it.note+"  ":"")+"›");b.appendChild(e);b.onclick=it.fn;w.appendChild(b)});
+  out.appendChild(w);window.scrollTo({top:rs.getBoundingClientRect().top+scrollY-60,behavior:"smooth"})};
+ const nameList=async(CFG,title,sub)=>{GEN++;$("rsInfo").textContent="লোড হচ্ছে…";$("rsOut").innerHTML="";let D;try{D=await rsFetch(BASE+CFG.file)}catch(e){$("rsInfo").textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
+  const secs=[];D.groups.forEach(g=>{let x=secs.find(y=>y.name===g.section);if(!x)secs.push(x={name:g.section,ids:new Set()});g.cats.forEach(c=>c.keys.forEach(k=>x.ids.add(k.s+":"+k.a)))});
+  const back=()=>nameList(CFG,title,sub);
+  showNames(title,secs.map(x=>({name:x.name,note:bn2(x.ids.size)+"টি আয়াত",fn:()=>{showDiag(Object.assign({},CFG,{only:x.name,back}));}})),sub)};
+ const organList=(names,title,sub)=>showNames(title,names.map(n=>({name:n,fn:()=>window.__drOpenTopic(n)})),sub);
+ window.__drOpenList=k=>{
+  if(k==="disease")nameList(DISEASE,"💊 শারীরিক — রোগভিত্তিক","রোগের নামে চাপুন, সেই রোগ সম্পর্কিত আয়াত দেখা যাবে");
+  else if(k==="mental")nameList(MENTAL,"🧠 মানসিক — রোগভিত্তিক","সমস্যার নামে চাপুন, সেই সম্পর্কিত আয়াত দেখা যাবে");
+  else if(k==="organ")organList(ORG.map(o=>o[0]),"🫀 শারীরিক — অঙ্গভিত্তিক","অঙ্গের নামে চাপুন, সেই অঙ্গ সম্পর্কিত আয়াত দেখা যাবে");
+  else if(k==="mentalorgan")organList(["অন্তর (হৃদয়)","বুক ও বক্ষ"],"🧠 মানসিক — অঙ্গভিত্তিক","অঙ্গের নামে চাপুন, সেই অঙ্গ সম্পর্কিত আয়াত দেখা যাবে")};
  document.querySelectorAll(".rs-ex").forEach(b=>b.onclick=()=>{q.value=b.dataset.q;go()});
  go();loadRoots().catch(()=>{})}
 loadRoots().catch(()=>{});
