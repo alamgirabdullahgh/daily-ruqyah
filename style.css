@@ -372,8 +372,8 @@ button,input,select{font-family:inherit}
 /* নিচের নেভিগেশন বার (স্ক্রলে সরে না) */
 .dr-sbtn{text-decoration:none}
 .dr-bnav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;background:var(--card-bg);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 14px rgba(0,0,0,.08)}
-.dr-bn,.dr-bk{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px 7px;color:var(--text-muted);text-decoration:none;font-size:11.5px;font-weight:700;-webkit-tap-highlight-color:transparent}
-.dr-bn i,.dr-bk i{font-style:normal;font-size:21px;line-height:1}
+.dr-bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px 7px;color:var(--text-muted);text-decoration:none;font-size:11.5px;font-weight:700;-webkit-tap-highlight-color:transparent}
+.dr-bn i{font-style:normal;font-size:21px;line-height:1}
 .dr-bn.on{color:var(--primary)}
 .dr-bn.on i{transform:scale(1.12)}
 body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
@@ -522,5 +522,8 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 .zs[hidden]{display:none}
 /* বদনজরের ট্রিটমেন্ট: শুধু আয়াত দেখানো, সার্চ বক্স/কীবোর্ড/বিষয়-বোতাম লুকানো */
 #rsBox.dr-tonly .rs-bar,#rsBox.dr-tonly #rsTp,#rsBox.dr-tonly .rs-pad,#rsBox.dr-tonly .rs-rs{display:none!important}
-.dr-bk{background:none;border:0;font-family:inherit;cursor:pointer}
-.dr-bk:active{color:var(--primary)}
+
+.dr-backrow{padding:8px 12px 0;display:flex;justify-content:flex-start}
+.dr-backrow[hidden]{display:none}
+.dr-backbtn{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--border);background:var(--card-bg);color:var(--primary);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08);-webkit-tap-highlight-color:transparent}
+.dr-backbtn:active{background:color-mix(in srgb,var(--primary) 14%,var(--card-bg))}
