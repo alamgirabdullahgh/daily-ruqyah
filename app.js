@@ -853,6 +853,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
     lb.append(els("span",null,"রিয়্যাকশন হয়েছে"),cb);return lb};
    showDiag({host:out,infoEl:info,pick})};}
  SHOWT=showTopics;$("rsTp").onclick=()=>showTopics();
+ window.__drOpenTopic=n=>{const t=TOPICS.find(x=>x.name===n);if(t){q.value=t.name;setDir();rs.classList.remove("on");goTopic(t)}};window.__drOpenDisease=()=>showDiag(DISEASE);
  document.querySelectorAll(".rs-ex").forEach(b=>b.onclick=()=>{q.value=b.dataset.q;go()});
  go();loadRoots().catch(()=>{})}
 loadRoots().catch(()=>{});
@@ -951,15 +952,16 @@ function drShell(){
  let lastH="home";
  const route=()=>{open(false);const h=(location.hash||"#home").replace(/^#/,""),p=h.split("/");
   document.querySelectorAll("audio").forEach(a=>{try{a.pause()}catch(e){}});
-  const al=$("drAlarm");if(al)al.hidden=true;const hm=$("drHome");if(hm)hm.hidden=true;const am=$("drAmol");if(am)am.hidden=true;const sy=$("drSym");if(sy)sy.hidden=true;
+  const al=$("drAlarm");if(al)al.hidden=true;const hm=$("drHome");if(hm)hm.hidden=true;const ln=$("drLanding");if(ln)ln.hidden=true;const am=$("drAmol");if(am)am.hidden=true;const sy=$("drSym");if(sy)sy.hidden=true;
   if(p[0]==="timewidget"){window.DRALARM&&DRALARM.openWidget();location.hash="#"+lastH;return}
   let key="search";
-  if(p[0]==="home"&&hm){key="home";box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.scrollTo(0,0)}
+  if(p[0]==="home"&&ln){key="home";box.hidden=true;rd.hidden=true;ln.hidden=false;window.__drLanding&&window.__drLanding();window.scrollTo(0,0)}
+  else if((p[0]==="resp"||p[0]==="home")&&hm){key=p[0];box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.scrollTo(0,0)}
   else if(p[0]==="diag"&&sy){key="diag";box.hidden=true;rd.hidden=true;sy.hidden=false;if(window.__drSymInit&&!window.__drSymDone){window.__drSymDone=1;window.__drSymInit()}window.scrollTo(0,0)}
   else if(p[0]==="amol"&&am){key="amol";box.hidden=true;rd.hidden=true;am.hidden=false;window.__drAmol&&window.__drAmol(p[1]);window.scrollTo(0,0)}
   else if(p[0]==="alarm"&&al){key="alarm";box.hidden=true;rd.hidden=true;al.hidden=false;window.DRALARM&&DRALARM.show();window.scrollTo(0,0)}
   else if(p[0]==="read"&&RMODES.some(m=>m[0]===p[1])){key="read/"+p[1];const s=+p[2]||0;box.hidden=true;rd.hidden=false;renderReader(p[1],s>=1&&s<=114?s:0);window.scrollTo(0,0)}
-  else{rd.hidden=true;box.hidden=false;RG++;if(p[0]==="topics"){key="topics";SHOWT&&SHOWT(true);window.scrollTo(0,0)}else if(prev.startsWith("read/")||prev===""||prev==="home"||prev==="alarm"||prev==="amol")window.scrollTo(0,0)}
+  else{rd.hidden=true;box.hidden=false;RG++;if(p[0]==="topics"){key="topics";SHOWT&&SHOWT(true);window.scrollTo(0,0)}else if(prev.startsWith("read/")||prev===""||prev==="home"||prev==="resp"||prev==="alarm"||prev==="amol")window.scrollTo(0,0)}
   prev=key;lastH=h;{const sh=key==="home"?"":"none";["drWidget","drWBar"].forEach(i=>{const x=$(i);if(x)x.style.display=sh})}navs.forEach(a=>a.classList.toggle("on",a.dataset.nav===key))};
  navs.forEach(a=>a.addEventListener("click",e=>{e.preventDefault();const h=a.getAttribute("href");if(location.hash===h)route();else location.hash=h;open(false)}));
  addEventListener("hashchange",route);
