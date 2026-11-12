@@ -999,7 +999,7 @@ function drUpdater(){
  shr.onclick=async()=>{
   if(native){try{await P.share();return}catch(e){}}
   try{if(navigator.share){await navigator.share({title:NAME,url:WEB});return}}catch(e){return}
-  try{await navigator.clipboard.writeText(WEB);shr.textContent="Copied";setTimeout(()=>shr.textContent="Share",1800)}catch(e){}};
+  try{await navigator.clipboard.writeText(WEB);{const ic=shr.innerHTML;shr.textContent="✓";setTimeout(()=>shr.innerHTML=ic,1800)}}catch(e){}};
  if(!native)return; // ওয়েবে ব্রাউজার নিজেই নতুন করে; আপডেট বোতাম শুধু ইনস্টল করা অ্যাপে
  let cur=null,nw=null,busy=false,pend=false,can=true,t0=0;
  // আপডেট বোতাম: আকার একই থাকে। চাপলে "Update" ঝাপসা প্লেসহোল্ডার হয়ে যায়, বোতামের ভেতরেই পার্সেন্টেজ/Installing… দেখায় ও বোতামটাই প্রগ্রেস বার

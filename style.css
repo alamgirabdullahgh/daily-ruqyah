@@ -28,9 +28,9 @@ button,input,select{font-family:inherit}
 /* ---------- সাইডবার ---------- */
 .dr-scrim{position:fixed;inset:0;z-index:40;background:rgba(3,20,15,.55);opacity:0;pointer-events:none;transition:opacity .25s;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
 .dr-scrim.on{opacity:1;pointer-events:auto}
-.dr-side{position:fixed;top:0;left:0;right:0;z-index:50;box-sizing:border-box;min-height:50vh;min-height:50dvh;max-height:calc(100vh - 8px);max-height:calc(100dvh - 8px);overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--card-bg);transform:translateY(-104%);visibility:hidden;transition:transform .28s cubic-bezier(.2,.8,.2,1),visibility 0s .28s;box-shadow:var(--shadow-pop);padding-bottom:0;border-radius:0 0 22px 22px}
+.dr-side{position:fixed;left:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:50;box-sizing:border-box;width:min(84vw,330px);min-height:50vh;min-height:50dvh;max-height:calc(100vh - 66px - env(safe-area-inset-bottom) - env(safe-area-inset-top) - 8px);max-height:calc(100dvh - 66px - env(safe-area-inset-bottom) - env(safe-area-inset-top) - 8px);overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--card-bg);transform:translateX(-104%);visibility:hidden;transition:transform .28s cubic-bezier(.2,.8,.2,1),visibility 0s .28s;box-shadow:var(--shadow-pop);padding-bottom:0;border-radius:0 22px 22px 0}
 .dr-side.on{transform:none;visibility:visible;transition:transform .28s cubic-bezier(.2,.8,.2,1)}
-.dr-side-head{display:flex;align-items:center;gap:12px;padding:calc(18px + env(safe-area-inset-top)) 16px 18px;background:linear-gradient(135deg,#052e24,#0a5240 65%,#0d6650);color:#fff;border-radius:0;box-shadow:0 1px 0 rgba(216,178,90,.6)}
+.dr-side-head{display:flex;align-items:center;gap:12px;padding:calc(18px + env(safe-area-inset-top)) 16px 18px;background:linear-gradient(135deg,#052e24,#0a5240 65%,#0d6650);color:#fff;border-radius:0 22px 0 0;box-shadow:0 1px 0 rgba(216,178,90,.6)}
 .dr-side-head img{width:46px;height:46px;border-radius:13px;box-shadow:0 0 0 2px rgba(216,178,90,.75)}
 .dr-side-head div{flex:1;min-width:0}
 .dr-side-head b{display:block;font-family:var(--font-display);font-size:20px;letter-spacing:.06em;color:#f6e9c4}
@@ -307,9 +307,9 @@ button,input,select{font-family:inherit}
 .hd-back{border-color:var(--primary)}
 .dr-side{display:flex;flex-direction:column}
 .dr-side>*{flex:none}
-.dr-vbar{position:sticky;bottom:0;margin-top:auto;display:flex;align-items:center;gap:10px;padding:14px 18px calc(14px + env(safe-area-inset-bottom));background:var(--card-bg);border-top:1px solid var(--border-light)}
-.dr-vbar b{flex:1;min-width:0;font-size:15px;font-weight:800;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dr-share{flex:none;border:1.5px solid var(--accent);background:transparent;color:var(--accent);border-radius:999px;padding:7px 18px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.dr-vbar{position:sticky;bottom:0;margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--card-bg);border-top:1px solid var(--border-light);border-radius:0 0 22px 0}
+.dr-vbar b{flex:1;min-width:0;margin-left:6px;font-size:15px;font-weight:800;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dr-share{flex:none;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border:1.5px solid var(--accent);background:transparent;color:var(--accent);border-radius:50%;padding:0;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
 .dr-ufl{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
 .dr-ufl[hidden]{display:none}
 .dr-ubtn{pointer-events:auto;position:relative;width:160px;height:48px;border:0;border-radius:26px;background:var(--accent);color:#06201c;font:inherit;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px -6px rgba(5,46,36,.55);overflow:hidden}
@@ -540,6 +540,5 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 .drq-sub{list-style:none;margin:8px 0 2px;padding:0 0 0 14px;border-left:2px solid var(--border);display:flex;flex-direction:column;gap:8px}
 .drq-sub[hidden]{display:none}
 
-/* সাইডবার-হেডার: ক্রস বাঁয়ে, লোগো-নাম একটু ডানে */
-.dr-side-head .dr-x{order:-1}
-.dr-side-head img{margin-left:4px}
+
+.dr-vbar .dr-x{background:var(--primary-light);color:var(--primary)}
