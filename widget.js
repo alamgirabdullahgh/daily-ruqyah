@@ -185,6 +185,7 @@
     ".drw-r{display:flex;align-items:center;justify-content:space-between;gap:8px}" +
     ".drw-sun{display:flex;align-items:center;gap:5px;font-size:11px;color:#3B4A55;white-space:nowrap}" +
     ".drw-sun svg{width:20px;height:20px;flex:none}" +
+    ".drw-pin{flex:0 1 auto;min-width:0;border:1px solid #c9d3da;background:#fff;color:#0a5240;border-radius:999px;padding:3px 8px;font:600 10px/1.15 inherit;font-family:inherit;text-align:center;cursor:pointer}" +
     ".drw-time{display:flex;align-items:flex-end;gap:4px;margin-top:1px}" +
     ".drw-time b{font-size:40px;line-height:1;font-weight:800;letter-spacing:-.5px;font-variant-numeric:lining-nums}" +
     ".drw-time span{font-size:12px;color:#3B4A55;padding-bottom:6px}" +
@@ -203,7 +204,7 @@
     ".drw-b span{white-space:nowrap}" +
     ".drw-bar{flex:1;height:4px;border-radius:2px;background:#C9D3DA;overflow:hidden}" +
     ".drw-bar u{display:block;height:100%;background:#1E8E62;border-radius:2px;text-decoration:none}" +
-    "@media (prefers-color-scheme:dark){.drw{background:#16211c;color:#e8f0ea}.drw-sun,.drw-time span,.drw-loc,.drw-upd,.drw-d,.drw-c i,.drw-b{color:#b3c9bb}.drw-c.on{background:#1f4a39}.drw-bar{background:#2a4034}}";
+    "@media (prefers-color-scheme:dark){.drw{background:#16211c;color:#e8f0ea}.drw-pin{background:#1f2e27;border-color:#2a4034;color:#9fd8bd}.drw-sun,.drw-time span,.drw-loc,.drw-upd,.drw-d,.drw-c i,.drw-b{color:#b3c9bb}.drw-c.on{background:#1f4a39}.drw-bar{background:#2a4034}}";
 
   var SUNRISE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2v2.6M5 5.6l1.8 1.8M19 5.6l-1.8 1.8M2.4 11.5H5M19 11.5h2.6" stroke="#FFB300" stroke-width="1.7" stroke-linecap="round" fill="none"/><circle cx="12" cy="13" r="5.5" fill="#FFC21A"/><path d="M2 15.5q2.5-2.2 5 0t5 0t5 0t5 0V22H2z" fill="#1E88E5"/><path d="M2 15.5q2.5-2.2 5 0t5 0t5 0t5 0" stroke="#8FD0FF" stroke-width="1" fill="none"/><path d="M9 18.3h6M10.5 20.5h3" stroke="#FFD97A" stroke-width="1.3" stroke-linecap="round"/></svg>';
   var SUNSET = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2v2.6M5 5.6l1.8 1.8M19 5.6l-1.8 1.8M2.4 11.5H5M19 11.5h2.6" stroke="#FF7043" stroke-width="1.7" stroke-linecap="round" fill="none"/><circle cx="12" cy="13" r="5.5" fill="#FF6D3A"/><path d="M2 15.5q2.5-2.2 5 0t5 0t5 0t5 0V22H2z" fill="#1E88E5"/><path d="M2 15.5q2.5-2.2 5 0t5 0t5 0t5 0" stroke="#8FD0FF" stroke-width="1" fill="none"/><path d="M9 18.3h6M10.5 20.5h3" stroke="#FFB59A" stroke-width="1.3" stroke-linecap="round"/></svg>';
@@ -252,7 +253,7 @@
       for (var i = 0; i < 5; i++)
         cells += '<div class="drw-c' + (i === s.cur ? " on" : "") + '" data-i="' + i + '"><i>' + NAMES[i] + "</i><b>" + fmt(s.m[i]) + "</b></div>";
       el.innerHTML =
-        '<div class="drw"><div class="drw-r"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span><span class="drw-sun">' + SUNSET + "সূর্যাস্ত " + fmt(s.sunset) + "</span></div>" +
+        '<div class="drw"><div class="drw-r"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span>' + (NW && NW.pin ? '<button class="drw-pin" type="button" data-pin="1">📲 হোম স্ক্রিনে<br>বসান</button>' : '') + '<span class="drw-sun">' + SUNSET + "সূর্যাস্ত " + fmt(s.sunset) + "</span></div>" +
         '<div class="drw-r"><div class="drw-time"><b>' + hh + ":" + mm + "</b><span>" + (now.getHours() < 12 ? "AM" : "PM") + "</span></div>" +
         '<div class="drw-en"><b>' + en + '</b><div class="drw-lr"><button class="drw-loc" type="button" data-loc="1">' + placeName(loc) + '</button><button class="drw-upd" type="button" data-upd="1">' + (updBusy ? "হচ্ছে…" : "আপডেট<br>লোকেশন") + "</button></div></div></div>" +
         '<div class="drw-r drw-d"><span>' + hijriText(now, inBd(loc.lat, loc.lng)) + "</span><span>" + banglaText(addDays(now, BANGLA_ADJ)) + "</span></div>" +
@@ -278,6 +279,12 @@
     el.addEventListener("click", function (ev) {
       var t = ev.target;
       if (t.closest && t.closest("[data-upd]")) { updateLoc(); return; }
+      if (t.closest && t.closest("[data-pin]")) {
+        NW.pin().then(function (r) {
+          if (r && r.ok === false) alert("এই ফোনের লঞ্চার সরাসরি বসাতে দেয় না। হোম স্ক্রিনে ফাঁকা জায়গায় চেপে ধরে ‘উইজেট’ থেকে “টাইম উইজেট” বেছে নিন।");
+        }).catch(function () {});
+        return;
+      }
       var c = t.closest ? t.closest("[data-i]") : null;
       if (!c) {
         // কার্ডের যেকোনো জায়গায় চাপলে (ওয়াক্তের ঘর বাদে) নেটিভ অ্যাপে টাইম উইজেটের সেটিংস খোলে

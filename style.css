@@ -527,3 +527,7 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 .dr-backrow[hidden]{display:none}
 .dr-backbtn{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--border);background:var(--card-bg);color:var(--primary);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08);-webkit-tap-highlight-color:transparent}
 .dr-backbtn:active{background:color-mix(in srgb,var(--primary) 14%,var(--card-bg))}
+
+.dr-bn{background:none;border:0;font-family:inherit;cursor:pointer}
+.dr-bn i{display:flex;align-items:center;justify-content:center;height:21px}
+.dr-bn svg{display:block}
