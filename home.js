@@ -5,7 +5,7 @@
   ["বদনজর",[["সিমটম ডায়াগনোসিস","#diag/nazar"],["রেসপন্স ডায়াগনোসিস","#resp/nazar"],["ট্রিটমেন্ট",{topic:"বদনজর"}]]],
   ["জিন",[["সিমটম ডায়াগনোসিস","#diag/jin"],["রেসপন্স ডায়াগনোসিস","#resp/jin"],["ট্রিটমেন্ট","#amol/b1a"]]],
   ["জাদু",[["সিমটম ডায়াগনোসিস","#diag/jadu"],["রেসপন্স ডায়াগনোসিস","#resp/jadu"],["ট্রিটমেন্ট","#amol/b2a"]]],
-  ["দৈনন্দিন রুকইয়াহ",[["শারীরিক — অঙ্গভিত্তিক",{topic:"অঙ্গ-প্রত্যঙ্গ (সব একসাথে)"}],["শারীরিক — রোগভিত্তিক",{disease:1}],["মানসিক — অঙ্গভিত্তিক (অন্তর)",{topic:"অন্তর (হৃদয়)"}],["মানসিক — রোগভিত্তিক",{mental:1}]]]
+  ["দৈনন্দিন রুকইয়াহ",[["শারীরিক",{sub:[["অঙ্গভিত্তিক",{topic:"অঙ্গ-প্রত্যঙ্গ (সব একসাথে)"}],["রোগভিত্তিক",{disease:1}]]}],["মানসিক",{sub:[["অঙ্গভিত্তিক (অন্তর)",{topic:"অন্তর (হৃদয়)"}],["রোগভিত্তিক",{mental:1}]]}]]]
  ];
  var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
  var built=false;
@@ -16,16 +16,20 @@
   var h='<div class="drq-grid">';
   G.forEach(function(g){
    h+='<section class="drq-card"><h3>'+esc(g[0])+'</h3><ul class="drq-opts">';
-   g[1].forEach(function(o){
+   var item=function(o){
     var t=o[1];
-    if(typeof t==="string")h+='<li><a href="'+t+'">'+esc(o[0])+'</a></li>';
-    else if(t.soon)h+='<li><span class="drq-soon">'+esc(o[0])+'<small>শীঘ্রই আসছে</small></span></li>';
-    else h+='<li><a href="#search" data-'+(t.topic?'topic="'+esc(t.topic)+'"':t.mental?'mental="1"':'disease="1"')+'>'+esc(o[0])+'</a></li>';
-   });
+    if(typeof t==="string")return '<li><a href="'+t+'">'+esc(o[0])+'</a></li>';
+    if(t.soon)return '<li><span class="drq-soon">'+esc(o[0])+'<small>শীঘ্রই আসছে</small></span></li>';
+    if(t.sub){var r='<li class="drq-grp"><button type="button" class="drq-tg" aria-expanded="false">'+esc(o[0])+'</button><ul class="drq-sub" hidden>';t.sub.forEach(function(x){r+=item(x)});return r+'</ul></li>'}
+    return '<li><a href="#search" data-'+(t.topic?'topic="'+esc(t.topic)+'"':t.mental?'mental="1"':'disease="1"')+'>'+esc(o[0])+'</a></li>';
+   };
+   g[1].forEach(function(o){h+=item(o)});
    h+='</ul></section>';
   });
   H.innerHTML=h+'</div>';
   H.addEventListener("click",function(e){
+   var tg=e.target.closest&&e.target.closest(".drq-tg");
+   if(tg){var u=tg.nextElementSibling,on=u.hidden;u.hidden=!on;tg.setAttribute("aria-expanded",on?"true":"false");tg.classList.toggle("on",on);return}
    var a=e.target.closest&&e.target.closest("a[data-topic],a[data-disease],a[data-mental]");if(!a)return;
    e.preventDefault();
    var topic=a.getAttribute("data-topic");

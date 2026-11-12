@@ -28,9 +28,9 @@ button,input,select{font-family:inherit}
 /* ---------- সাইডবার ---------- */
 .dr-scrim{position:fixed;inset:0;z-index:40;background:rgba(3,20,15,.55);opacity:0;pointer-events:none;transition:opacity .25s;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
 .dr-scrim.on{opacity:1;pointer-events:auto}
-.dr-side{position:fixed;top:0;bottom:0;left:0;z-index:50;width:min(84vw,330px);overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--card-bg);transform:translateX(-104%);visibility:hidden;transition:transform .28s cubic-bezier(.2,.8,.2,1),visibility 0s .28s;box-shadow:var(--shadow-pop);padding-bottom:18px;border-radius:0 22px 22px 0}
+.dr-side{position:fixed;top:0;left:0;right:0;z-index:50;box-sizing:border-box;min-height:50vh;min-height:50dvh;max-height:calc(100vh - 8px);max-height:calc(100dvh - 8px);overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--card-bg);transform:translateY(-104%);visibility:hidden;transition:transform .28s cubic-bezier(.2,.8,.2,1),visibility 0s .28s;box-shadow:var(--shadow-pop);padding-bottom:0;border-radius:0 0 22px 22px}
 .dr-side.on{transform:none;visibility:visible;transition:transform .28s cubic-bezier(.2,.8,.2,1)}
-.dr-side-head{display:flex;align-items:center;gap:12px;padding:calc(18px + env(safe-area-inset-top)) 16px 18px;background:linear-gradient(135deg,#052e24,#0a5240 65%,#0d6650);color:#fff;border-radius:0 22px 0 0;box-shadow:0 1px 0 rgba(216,178,90,.6)}
+.dr-side-head{display:flex;align-items:center;gap:12px;padding:calc(18px + env(safe-area-inset-top)) 16px 18px;background:linear-gradient(135deg,#052e24,#0a5240 65%,#0d6650);color:#fff;border-radius:0;box-shadow:0 1px 0 rgba(216,178,90,.6)}
 .dr-side-head img{width:46px;height:46px;border-radius:13px;box-shadow:0 0 0 2px rgba(216,178,90,.75)}
 .dr-side-head div{flex:1;min-width:0}
 .dr-side-head b{display:block;font-family:var(--font-display);font-size:20px;letter-spacing:.06em;color:#f6e9c4}
@@ -531,3 +531,15 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 .dr-bn{background:none;border:0;font-family:inherit;cursor:pointer}
 .dr-bn i{display:flex;align-items:center;justify-content:center;height:21px}
 .dr-bn svg{display:block}
+
+/* হোম কার্ডের ভেতরের ভাঁজ (শারীরিক/মানসিক → দুই অপশন) */
+.drq-tg{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;border:0;cursor:pointer;font:inherit;color:var(--primary);background:var(--primary-light);border-radius:9px;padding:10px 14px;font-size:14px;font-weight:600;text-align:left;transition:background .15s,color .15s}
+.drq-tg::after{content:"\25BE";font-weight:700;opacity:.6;transition:transform .2s}
+.drq-tg.on{background:var(--primary);color:#fff}
+.drq-tg.on::after{transform:rotate(180deg)}
+.drq-sub{list-style:none;margin:8px 0 2px;padding:0 0 0 14px;border-left:2px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.drq-sub[hidden]{display:none}
+
+/* সাইডবার-হেডার: ক্রস বাঁয়ে, লোগো-নাম একটু ডানে */
+.dr-side-head .dr-x{order:-1}
+.dr-side-head img{margin-left:4px}
