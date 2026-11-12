@@ -41,10 +41,13 @@
  }
  function draw(){
   if(!box||!DATA)return;
-  var tabs='<div class="am-tabs" role="tablist">'+DATA.cats.map(function(c){return'<button type="button" class="am-tab'+(CAT===c.id?" on":"")+'" data-c="'+c.id+'"><i>'+c.icon+'</i>'+esc(c.title)+'</button>'}).join("")+'</div>';
-  var body="";
-  {var c=DATA.cats.filter(function(x){return x.id===CAT})[0]||DATA.cats[0];body=c.items.map(card).join("")}
-  box.innerHTML='<h2 class="am-h">আমল ও চিকিৎসা-নির্দেশিকা</h2><p class="am-intro">'+esc(DATA.intro)+'</p><div class="am-warn">⚕ রুকইয়াহ ও আমল মেডিক্যাল চিকিৎসার বিকল্প নয়। বইয়ে বর্ণিত লক্ষণ বহু রোগেরও হয়; গুরুতর বা হঠাৎ উপসর্গে আগে ডাক্তার দেখান।</div><input class="am-q" id="amQ" type="search" placeholder="খুঁজুন (যেমন: হাঁড়ি, পুতুল, বন্দিশ, বিয়ে)" autocomplete="off" value="'+esc(Q)+'">'+tabs+'<div id="amBody">'+body+'</div>';
+  var G=/^b2/.test(CAT)?"b2":"b1",
+   HD=G==="b2"?"জাদু — ট্রিটমেন্ট":"জিন (চালান) — ট্রিটমেন্ট",
+   IN=G==="b2"?"এই ভাগে শুধু “যাদুগ্রস্ত উম্মতের গাইড” বইয়ের লেখা আছে — জাদুর প্রকার অনুযায়ী লক্ষণ ও চিকিৎসা, অধ্যায় ধরে।":"এই ভাগে শুধু “চালান কাটার গোপন বিদ্যা” বইয়ের লেখা আছে — চালানের প্রকার অনুযায়ী লক্ষণ ও চিকিৎসা, অধ্যায় ধরে।",
+   cs=DATA.cats.filter(function(c){return c.id.indexOf(G)===0});
+  var tabs='<div class="am-tabs" role="tablist">'+cs.map(function(c){return'<button type="button" class="am-tab'+(CAT===c.id?" on":"")+'" data-c="'+c.id+'"><i>'+c.icon+'</i>'+esc(c.title)+'</button>'}).join("")+'</div>';
+  var c=cs.filter(function(x){return x.id===CAT})[0]||cs[0],body=c.items.map(card).join("");
+  box.innerHTML='<h2 class="am-h">'+HD+'</h2><p class="am-intro">'+IN+'</p><div class="am-warn">⚕ রুকইয়াহ ও আমল মেডিক্যাল চিকিৎসার বিকল্প নয়। বইয়ে বর্ণিত লক্ষণ বহু রোগেরও হয়; গুরুতর বা হঠাৎ উপসর্গে আগে ডাক্তার দেখান।</div><input class="am-q" id="amQ" type="search" placeholder="খুঁজুন (যেমন: হাঁড়ি, পুতুল, বন্দিশ, বিয়ে)" autocomplete="off" value="'+esc(Q)+'">'+tabs+'<div id="amBody">'+body+'</div>';
   filter();
  }
  function filter(){

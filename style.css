@@ -513,3 +513,10 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 .drq-opts a:hover,.drq-opts a:active{background:var(--primary);color:#fff}
 .drq-soon{opacity:.6;cursor:default}
 .drq-soon small{font-size:11px;font-weight:600;color:var(--text-muted)}
+
+/* রেসপন্স ডায়াগনোসিস: হোমের কার্ড থেকে এলে শুধু ওই ভাগ (বদনজর/জাদু/জিন) */
+#drHome[data-f="বদনজর"] [data-cat]:not([data-cat="বদনজর"]),
+#drHome[data-f="জাদু"] [data-cat]:not([data-cat="জাদু"]),
+#drHome[data-f="জিন"] [data-cat]:not([data-cat="জিন"]),
+#drHome[data-f] [data-all]{display:none}
+.zs[hidden]{display:none}

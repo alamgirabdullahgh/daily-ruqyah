@@ -790,9 +790,10 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   const audio=(cs,label)=>{const w=els("div","margin-top:6px"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),res=el("div"),b=mkBtn("🔊 "+label,()=>{window.__sq=CF.sq+" "+(cs.length===1?cs[0].name:label);const k=keyList(cs);if(k.list.length===1&&setAll()<=1&&repOf(k.list[0][0],k.list[0][1])<=1){playOne(k.list[0][0],k.list[0][1],res,note);return}mergeAudio(k.list,res,t=>note.textContent=t)});b.style.margin="0";w.append(b,note,res);w.btn=b;return w};
   const allB=audio(D.groups.flatMap(g=>g.cats),"সব রোগের "+CF.nm+" অডিও একসাথে ("+bn2(new Set(D.groups.flatMap(g=>g.cats.flatMap(c=>c.keys.map(k=>k.s+":"+k.a)))).size)+"টি আয়াত)");{const rc=repCtl(),row=el("div","rs-top"),nAy=new Set(D.groups.flatMap(g=>g.cats.flatMap(c=>c.keys.map(k=>k.s+":"+k.a)))).size;
   allB.btn.textContent="🔊 সব অডিও ("+bn2(nAy)+"টি)";allB.btn.classList.add("rs-mb");
-  row.append(...rc.children,allB.btn);allB.style.marginTop="0";allB.style.marginBottom="10px";out.append(row,allB)}
+  row.dataset.all="1";allB.dataset.all="1";row.append(...rc.children,allB.btn);allB.style.marginTop="0";allB.style.marginBottom="10px";out.append(row,allB)}
   let curSec="";
-  for(const g of D.groups){
+  const CATS=["বদনজর","জাদু","জিন"];
+  for(const g of D.groups){const st0=out.children.length;
    if(g.section&&g.section!==curSec){curSec=g.section;const sg=D.groups.filter(x=>x.section===curSec),sc=sg.flatMap(x=>x.cats);
     out.appendChild(els("div","margin:22px 0 4px;padding:9px 12px;border-radius:10px;font-weight:800;font-size:16px;background:var(--primary);color:#fff",(g.sechd||("শুধু "+curSec+"-এর "+CF.nm))+" — "+bn2(sc.length)+"টি"));
     out.appendChild(audio(sc,(g.sechd||("শুধু "+curSec+"-এর "+CF.nm))+" অডিও"))}
@@ -814,15 +815,16 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
       const part=!(k.from<=1&&k.to>=t.length);let x=(B||[])[k.a-1]||"";if(k.bn)x=k.bn;else if(part){/* আয়াতের শুধু দেখানো অংশের অর্থ: bn না থাকলে শব্দার্থ — পুরো আয়াতের অনুবাদ নয় */const m=ms.join(" ").replace(/["“”]/g,"").trim();x=m?"শব্দার্থ: "+m:""}bn.textContent=x}).catch(()=>{ar.textContent="লোড করা যায়নি"})}
     const bt=els("div","display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"),gt=o=>{if(CF.host){location.hash="#search";setTimeout(()=>goTopic(o),90)}else goTopic(o)};
     let tb=null;if(c.treat)bt.appendChild(tb=mkBtn("📚 চিকিৎসা",()=>{const terms=resolve(c.treat);if(!terms.length)return alert("এই রোগের জন্য আয়াতের তালিকা পাওয়া যায়নি");gt({name:c.name,terms,intro:"“"+c.name+"” — সংশ্লিষ্ট সব আয়াত",ordered:false});window.scrollTo({top:0,behavior:"smooth"})}));
-    const au=audio([c],"অডিও");if(KV&&c.keys.length===1){KV.va.className="rs-va rs-va1";KV.va.replaceChildren(...[tb,KV.cpb,au.btn,KV.wb].filter(Boolean));box.append(au)}else box.append(bt,au);out.appendChild(box)}}
+    const au=audio([c],"অডিও");if(KV&&c.keys.length===1){KV.va.className="rs-va rs-va1";KV.va.replaceChildren(...[tb,KV.cpb,au.btn,KV.wb].filter(Boolean));box.append(au)}else box.append(bt,au);out.appendChild(box)}if(CATS.includes(g.section))for(let i=st0;i<out.children.length;i++)out.children[i].dataset.cat=g.section}
   if(!CF.host)window.scrollTo({top:rs.getBoundingClientRect().top+scrollY-60,behavior:"smooth"})};
  const DISEASE={file:"quran-disease.json?v="+DV+"x3",title:"💊 শারীরিক রোগ ও আরোগ্যের আয়াত",sq:"শারীরিক রোগ",nm:"আয়াত",badge:["সরাসরি আছে","অঙ্গ অনুযায়ী কাছের আয়াত"],intro:"প্রথমে ঠিক করা হয়েছে রোগটি শরীরের কোন কোন অঙ্গ বা বিষয়ের সাথে সম্পর্কিত; তারপর প্রতিটির জন্য সবচেয়ে কাছের একটি আয়াত (শুধু প্রাসঙ্গিক অংশ)। প্রতিটির নিচে “মিল” লেখা আছে — আয়াতে সরাসরি রোগ/অঙ্গের শব্দ আছে, নাকি শুধু অর্থ বা শব্দের মিল। কুরআনে রোগের নাম (যেমন অর্শ/বাওয়াসির) নেই, তাই অঙ্গ ও লক্ষণের শব্দ ধরে কাছের আয়াত নেওয়া হয়েছে; কোনোটি আয়াতে সরাসরি রোগের কথা নয়। প্রতিটি অঙ্গের নিচে ‘চিকিৎসা: এই রোগের সব আয়াত’ বোতামে ওই অঙ্গের সব আয়াত ও মার্জ অডিও। খসড়া তালিকা: ব্যবহারের আগে আলেম বা অভিজ্ঞদের পর্যালোচনা প্রয়োজন।"};
 
  /* ───── হোম: রোগীর তথ্য + পুরো রোগ নির্ণয় একসাথে; প্রতিটি আয়াতের পাশে টিক; নিচে WhatsApp-এ পাঠানো ───── */
+ window.__drHomeF=f=>{const H=$("drHome"),M={nazar:"বদনজর",jadu:"জাদু",jin:"জিন"},c=M[f];if(!H)return;if(c)H.dataset.f=c;else delete H.dataset.f;const t=$("drHomeT");if(t)t.textContent=c?"🩺 রেসপন্স ডায়াগনোসিস — "+c:"🩺 রোগ নির্ণয় (ডায়াগনোসিস)"};
  {let built=false;const SEL=new Map();
   window.__drHome=()=>{if(built)return;built=true;const H=$("drHome");if(!H)return;
    H.innerHTML="";const lg=k=>lsGet(k,"");
-   H.appendChild(els("div","font-weight:800;font-size:18px;color:var(--primary);margin:4px 2px 10px","🩺 রোগ নির্ণয় (ডায়াগনোসিস)"));
+   {const t0=els("div","font-weight:800;font-size:18px;color:var(--primary);margin:4px 2px 10px","🩺 রোগ নির্ণয় (ডায়াগনোসিস)");t0.id="drHomeT";H.appendChild(t0)}
    const card=els("div","display:flex;gap:8px;padding:10px;border:1px solid var(--border-light);border-radius:16px;background:var(--card-bg);margin:0 0 12px");
    
    const nm=document.createElement("input"),ph=document.createElement("input");
@@ -956,8 +958,8 @@ function drShell(){
   if(p[0]==="timewidget"){window.DRALARM&&DRALARM.openWidget();location.hash="#"+lastH;return}
   let key="search";
   if(p[0]==="home"&&ln){key="home";box.hidden=true;rd.hidden=true;ln.hidden=false;window.__drLanding&&window.__drLanding();window.scrollTo(0,0)}
-  else if((p[0]==="resp"||p[0]==="home")&&hm){key=p[0];box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.scrollTo(0,0)}
-  else if(p[0]==="diag"&&sy){key="diag";box.hidden=true;rd.hidden=true;sy.hidden=false;if(window.__drSymInit&&!window.__drSymDone){window.__drSymDone=1;window.__drSymInit()}window.scrollTo(0,0)}
+  else if((p[0]==="resp"||p[0]==="home")&&hm){key=p[0];box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.__drHomeF&&window.__drHomeF(p[0]==="resp"?p[1]:"");window.scrollTo(0,0)}
+  else if(p[0]==="diag"&&sy){key="diag";box.hidden=true;rd.hidden=true;sy.hidden=false;if(window.__drSymInit&&!window.__drSymDone){window.__drSymDone=1;window.__drSymInit()}window.__drSymF&&window.__drSymF(p[1]||"");window.scrollTo(0,0)}
   else if(p[0]==="amol"&&am){key="amol";box.hidden=true;rd.hidden=true;am.hidden=false;window.__drAmol&&window.__drAmol(p[1]);window.scrollTo(0,0)}
   else if(p[0]==="alarm"&&al){key="alarm";box.hidden=true;rd.hidden=true;al.hidden=false;window.DRALARM&&DRALARM.show();window.scrollTo(0,0)}
   else if(p[0]==="read"&&RMODES.some(m=>m[0]===p[1])){key="read/"+p[1];const s=+p[2]||0;box.hidden=true;rd.hidden=false;renderReader(p[1],s>=1&&s<=114?s:0);window.scrollTo(0,0)}
