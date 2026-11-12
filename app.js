@@ -820,7 +820,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
  const DISEASE={file:"quran-disease.json?v="+DV+"x3",title:"💊 শারীরিক রোগ ও আরোগ্যের আয়াত",sq:"শারীরিক রোগ",nm:"আয়াত",badge:["সরাসরি আছে","অঙ্গ অনুযায়ী কাছের আয়াত"],intro:"প্রথমে ঠিক করা হয়েছে রোগটি শরীরের কোন কোন অঙ্গ বা বিষয়ের সাথে সম্পর্কিত; তারপর প্রতিটির জন্য সবচেয়ে কাছের একটি আয়াত (শুধু প্রাসঙ্গিক অংশ)। প্রতিটির নিচে “মিল” লেখা আছে — আয়াতে সরাসরি রোগ/অঙ্গের শব্দ আছে, নাকি শুধু অর্থ বা শব্দের মিল। কুরআনে রোগের নাম (যেমন অর্শ/বাওয়াসির) নেই, তাই অঙ্গ ও লক্ষণের শব্দ ধরে কাছের আয়াত নেওয়া হয়েছে; কোনোটি আয়াতে সরাসরি রোগের কথা নয়। প্রতিটি অঙ্গের নিচে ‘চিকিৎসা: এই রোগের সব আয়াত’ বোতামে ওই অঙ্গের সব আয়াত ও মার্জ অডিও। খসড়া তালিকা: ব্যবহারের আগে আলেম বা অভিজ্ঞদের পর্যালোচনা প্রয়োজন।"};
 
  /* ───── হোম: রোগীর তথ্য + পুরো রোগ নির্ণয় একসাথে; প্রতিটি আয়াতের পাশে টিক; নিচে WhatsApp-এ পাঠানো ───── */
- window.__drHomeF=f=>{const H=$("drHome"),M={nazar:"বদনজর",jadu:"জাদু",jin:"জিন"},c=M[f];if(!H)return;if(c)H.dataset.f=c;else delete H.dataset.f;const t=$("drHomeT");if(t)t.textContent=c?"🩺 রেসপন্স ডায়াগনোসিস — "+c:"🩺 রোগ নির্ণয় (ডায়াগনোসিস)"};
+ window.__drHomeF=f=>{const H=$("drHome"),M={nazar:"বদনজর",jadu:"জাদু",jin:"জিন"},c=M[f];if(!H)return;if(c)H.dataset.f=c;else delete H.dataset.f;const t=$("drHomeT");if(t)t.textContent=c?"🩺 রেসপন্স ডায়াগনোসিস":"🩺 রোগ নির্ণয় (ডায়াগনোসিস)"};
  {let built=false;const SEL=new Map();
   window.__drHome=()=>{if(built)return;built=true;const H=$("drHome");if(!H)return;
    H.innerHTML="";const lg=k=>lsGet(k,"");
@@ -855,7 +855,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
     lb.append(els("span",null,"রিয়্যাকশন হয়েছে"),cb);return lb};
    showDiag({host:out,infoEl:info,pick})};}
  SHOWT=showTopics;$("rsTp").onclick=()=>showTopics();
- window.__drOpenTopic=n=>{const t=TOPICS.find(x=>x.name===n);if(t){q.value=t.name;setDir();rs.classList.remove("on");goTopic(t)}};window.__drOpenDisease=()=>showDiag(DISEASE);
+ window.__drOpenTopic=n=>{const t=TOPICS.find(x=>x.name===n);if(t){q.value=t.name;setDir();rs.classList.remove("on");$("rsBox").classList.add("dr-tonly");goTopic(t)}};window.__drOpenDisease=()=>showDiag(DISEASE);
  document.querySelectorAll(".rs-ex").forEach(b=>b.onclick=()=>{q.value=b.dataset.q;go()});
  go();loadRoots().catch(()=>{})}
 loadRoots().catch(()=>{});
@@ -952,7 +952,7 @@ function drShell(){
  const navs=[...document.querySelectorAll(".dr-nav,.dr-bn,.dr-sbtn")];
  let prev="";
  let lastH="home";
- const route=()=>{open(false);const h=(location.hash||"#home").replace(/^#/,""),p=h.split("/");
+ const route=()=>{open(false);const h=(location.hash||"#home").replace(/^#/,""),p=h.split("/");{const rb=$("rsBox");if(rb)rb.classList.remove("dr-tonly")}
   document.querySelectorAll("audio").forEach(a=>{try{a.pause()}catch(e){}});
   const al=$("drAlarm");if(al)al.hidden=true;const hm=$("drHome");if(hm)hm.hidden=true;const ln=$("drLanding");if(ln)ln.hidden=true;const am=$("drAmol");if(am)am.hidden=true;const sy=$("drSym");if(sy)sy.hidden=true;
   if(p[0]==="timewidget"){window.DRALARM&&DRALARM.openWidget();location.hash="#"+lastH;return}

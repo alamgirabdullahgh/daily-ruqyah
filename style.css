@@ -520,3 +520,5 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 #drHome[data-f="জিন"] [data-cat]:not([data-cat="জিন"]),
 #drHome[data-f] [data-all]{display:none}
 .zs[hidden]{display:none}
+/* বদনজরের ট্রিটমেন্ট: শুধু আয়াত দেখানো, সার্চ বক্স/কীবোর্ড/বিষয়-বোতাম লুকানো */
+#rsBox.dr-tonly .rs-bar,#rsBox.dr-tonly #rsTp,#rsBox.dr-tonly .rs-pad,#rsBox.dr-tonly .rs-rs{display:none!important}

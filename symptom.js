@@ -6,7 +6,7 @@ C=["#558b2f","#e65100","#b71c1c"],FL={G:"🟢 সোর্স-ভিত্তি
 q=s=>s.replace(/~(.)/g,(m,c)=>W[parseInt(c,36)]);
 $("zd").innerHTML="";
 $("zt").innerHTML=T.map((t,i)=>`<section class="zs" data-g="${i}"><h3>${t[0]}</h3><table><tr>${cols.map(c=>`<th>${c}</th>`).join("")}</tr><tr>${t[1].map((l,c)=>`<td>${l.map((n,o)=>`<span class="zo" data-i="${i}.${c}.${o}">${n}</span>`).join("")}</td>`).join("")}</tr></table><div class="zg" id="zg${i}"></div></section>`).join("");
-const SLUG={nazar:0,jadu:1,jin:2};window.__drSymF=f=>{const g=f in SLUG?SLUG[f]:-1,h=document.querySelector("#za>h2");document.querySelectorAll(".zs").forEach(x=>{x.hidden=g>=0&&+x.dataset.g!==g});if(h)h.textContent=g>=0?"সিমটম ডায়াগনোসিস — "+T[g][0]:"Symptom Diagnosis (গবেষণা সংস্করণ)"};
+const SLUG={nazar:0,jadu:1,jin:2};window.__drSymF=f=>{const g=f in SLUG?SLUG[f]:-1,h=document.querySelector("#za>h2");document.querySelectorAll(".zs").forEach(x=>{x.hidden=g>=0&&+x.dataset.g!==g});if(h)h.textContent=g>=0?"সিমটম ডায়াগনোসিস":"Symptom Diagnosis (গবেষণা সংস্করণ)"};
 function X(k){let a=R[k];if(!a)return"";a=a.map(q);return`<div class="zx"><b>${a[0]}</b><ul>${a.slice(1).map(t=>t[0]=="#"?`</ul><b>${t.slice(1)}</b><ul>`:`<li>${t.replace(/^([^:]{1,25}):/,"<u>$1:</u>")}</li>`).join("")}</ul></div>`}
 function B(i,c,o){const d=q(D[i][c][o]),f=d[0],k=ch[i+"."+c],u=k&&k[0]==o?k[1]:-1,a=`data-i="${i}.${c}.${o}"`;
 let h=`<div style="font-size:11px;font-weight:700;margin-bottom:3px">${cols[c]} → ${T[i][1][c][o]} <span class="zk">(একটি সারিতে ক্লিক করে বেছে নিন)</span></div>`;
