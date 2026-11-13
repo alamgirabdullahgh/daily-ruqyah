@@ -189,7 +189,7 @@ function encWorkerMain(){self.onmessage=function(e){var d=e.data;try{var en=new 
 function encMain(L,p,sr){const en=new L.Mp3Encoder(1,sr,64),o=[];let t=0,m;for(let i=0;i<p.length;i+=1152){m=en.encodeBuffer(p.subarray(i,i+1152));if(m.length){o.push(new Uint8Array(m));t+=m.length}}m=en.flush();if(m.length){o.push(new Uint8Array(m));t+=m.length}const r=new Uint8Array(t);let q=0;for(const x of o){r.set(x,q);q+=x.length}return r}
 async function mkEncPool(){if(typeof Worker==="undefined")return null;const src=await(await fetch(BASE+"lame.min.js?v=1")).text();
  const url=URL.createObjectURL(new Blob([src+";("+encWorkerMain.toString()+")();"],{type:"application/javascript"}));
- const n=Math.max(2,Math.min(6,(navigator.hardwareConcurrency||4)-1)),ws=[],idle=[],q=[],waiters=[];let inflight=0;
+ const n=Math.max(2,Math.min(8,(navigator.hardwareConcurrency||4)-1)),ws=[],idle=[],q=[],waiters=[];let inflight=0;
  const wake=()=>{waiters.splice(0).forEach(r=>r())};
  const pump=()=>{while(idle.length&&q.length){const w=idle.pop(),j=q.shift();w.cur=j;const c=j.pcm.slice();w.postMessage({sr:j.sr,pcm:c},[c.buffer])}};
  for(let i=0;i<n;i++){const w=new Worker(url);w.cur=null;
@@ -198,7 +198,7 @@ async function mkEncPool(){if(typeof Worker==="undefined")return null;const src=
    if(!ws.length)while(q.length){inflight--;q.shift().res(null)}wake();pump()};
   ws.push(w);idle.push(w)}
  return{run:(pcm,sr)=>new Promise(res=>{if(!ws.length)return res(null);inflight++;q.push({pcm,sr,res});pump()}),
-  room:async()=>{while(inflight>=n*2&&ws.length)await new Promise(r=>waiters.push(r))},
+  room:async()=>{while(inflight>=n*3&&ws.length)await new Promise(r=>waiters.push(r))},
   close:()=>{ws.forEach(w=>{try{w.terminate()}catch(x){}});try{URL.revokeObjectURL(url)}catch(x){}}}}
 function wavOf(parts,sr){let n=0;parts.forEach(p=>n+=p.length);const buf=new ArrayBuffer(44+n*2),v=new DataView(buf),w=(o,t)=>[...t].forEach((c,i)=>v.setUint8(o+i,c.charCodeAt(0)));
  w(0,"RIFF");v.setUint32(4,36+n*2,true);w(8,"WAVEfmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,"data");v.setUint32(40,n*2,true);
@@ -308,12 +308,12 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=(s,
  const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));AS.loc=AS.net=0;let pool=null;try{pool=await mkEncPool()}catch(e){console.error(e);pool=null}const jobs=[];
  let wl=null;try{wl=await navigator.wakeLock.request("screen")}catch(e){}
  const push=pcm=>{for(let i=0;i<pcm.length;i+=B){const m=enc.encodeBuffer(pcm.subarray(i,i+B));if(m.length)mp3.push(new Uint8Array(m))}};
- const W=4,pf=[],get=i=>pf[i]||(pf[i]=fetchAud(list[i][0],list[i][1]).catch(()=>null));let ok=0,bad=0,cutN=0;
+ const W=14,pf=[],get=i=>pf[i]||(pf[i]=fetchAud(list[i][0],list[i][1]).then(ab=>ab?ctx.decodeAudioData(ab).then(d=>({d}),()=>({err:1})):null).catch(()=>null));/* সামনের ১৪টি আয়াত একসাথে আনা ও ডিকোড হয় (আগে ৪টি, ডিকোড ক্রমে); এনকোডার ওয়ার্কারগুলো তাই বসে থাকে না */let ok=0,bad=0,cutN=0;
  for(let i=0;i<list.length;i++){for(let j=i;j<Math.min(i+W,list.length);j++)get(j);
   note("অডিও প্রস্তুত ও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+(bad?" (বাদ: "+bn2(bad)+")":"")+"…");
-  const ab=await get(i);pf[i]=null;
-  if(!ab){bad++;if(!ok&&bad>=5)break;continue}
-  try{const d=await ctx.decodeAudioData(ab),ch=d.getChannelData(0),pcm=smoothAyah(tsm(ch,sr,spdOf()),sr),rp=RP(list[i][0],list[i][1]);
+  const dr=await get(i);pf[i]=null;
+  if(!dr){bad++;if(!ok&&bad>=5)break;continue}
+  try{if(dr.err)throw 0;const d=dr.d,ch=d.getChannelData(0),pcm=smoothAyah(tsm(ch,sr,spdOf()),sr),rp=RP(list[i][0],list[i][1]);
     if(pool){const fl=new Int16Array(pcm.length+gap.length);fl.set(pcm);fl.set(gap,pcm.length);await pool.room();jobs.push({p:pool.run(fl,sr),pcm:fl,rp})}else for(let q=0;q<rp;q++){push(pcm);push(gap)}
     ok++}catch(e){bad++;if(!ok&&bad>=5)break}
   if(i%10===0)await new Promise(r=>setTimeout(r))}
@@ -736,9 +736,23 @@ const HPDF=new Map();
 function homePdf(kind,cat,say){const k=kind+"|"+cat;let e=HPDF.get(k);
  if(!e){e={say:()=>{}};e.p=(async()=>{const list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty");return ayatPdfBuild(list,homeTitle(kind,cat),t=>e.say(t))})().catch(err=>{HPDF.delete(k);throw err});HPDF.set(k,e)}
  if(say)e.say=say;return e.p}
+/* জোড়া অডিওও আগে থেকে বানানো থাকে: ফোনে অফলাইন অডিও নামানো থাকলে (সব আয়াত) ব্যাকগ্রাউন্ডে প্রতিটি ক্যাটাগরির ফাইল জোড়া হয়ে বসে; বোতাম চাপলে সাথে সাথে বাজে ও ডাউনলোড/শেয়ার করা যায় */
+const HAUD=new Map();
+function homeAudio(kind,cat,say){const k=kind+"|"+cat;let e=HAUD.get(k);
+ if(!e){e={say:()=>{},out:el("div")};e.p=(async()=>{const list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty");const{rep,set}=homeRep(kind);e.n=list.length;e.rep=rep;e.set=set;
+   await mergeAudio(list,e.out,t=>e.say(t),{rep,set,noplay:true,name:homeTitle(kind,cat)});e.done=true;return e})().catch(err=>{HAUD.delete(k);throw err});HAUD.set(k,e)}
+ if(say)e.say=say;return e}
 let HPRE=false;
 window.__drHomePrebuild=async()=>{if(HPRE)return;HPRE=true;
- for(const cat of["বদনজর","জাদু","জিন","সব"])for(const kind of["resp","treat"]){try{await homePdf(kind,cat)}catch(e){console.error(e)}await new Promise(r=>setTimeout(r,1500))}};
+ /* অফলাইন অডিও সম্পূর্ণ কি না: অ্যান্ড্রয়েডে নেটিভ সার্ভিসের স্ট্যাটাস, না হলে Cache-এর সংখ্যা। সম্পূর্ণ না হলে অডিও আগে-থেকে বানানো হয় না (নেটে ডেটা খরচ এড়াতে); PDF তবু বানানো হয়। */
+ let offReady=false;
+ for(let t=0;t<40&&!offReady;t++){
+  try{const np=NAO();if(np){const r=await np.status();offReady=r.done>=r.total}else offReady=offOn()&&(await offCount())>=OFFN}catch(e){}
+  if(!offReady)await new Promise(r=>setTimeout(r,15000))}
+ for(const cat of["বদনজর","জাদু","জিন","সব"])for(const kind of["resp","treat"]){
+  try{await homePdf(kind,cat)}catch(e){console.error(e)}
+  if(offReady){try{await homeAudio(kind,cat).p}catch(e){console.error(e)}}
+  await new Promise(r=>setTimeout(r,1500))}};
 window.__drHomePdf=async(kind,cat,host)=>{
  if(!host)return;
  if(host.dataset.done==="1"){host.hidden=!host.hidden;return}
@@ -762,15 +776,22 @@ window.__drHomeAudio=async(kind,cat,host)=>{
  if(host.dataset.busy==="1")return;
  host.hidden=false;host.textContent="";host.dataset.busy="1";
  const live=el("div"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:6px"),res=el("div");host.append(live,note,res);
- note.textContent="আয়াতের তালিকা তৈরি হচ্ছে…";
+ note.textContent="⏳ প্রস্তুত হচ্ছে…";
  try{
-  const list=await homeKeys(kind,cat);
-  if(!list.length){note.textContent="এই ক্যাটাগরির জন্য আয়াতের তালিকা পাওয়া যায়নি";return}
-  const{rep,set}=homeRep(kind),seq=[];
-  for(let q=0;q<set;q++)for(const k of list)for(let r=0;r<rep;r++)seq.push(k);
+  const e=homeAudio(kind,cat,t=>note.textContent="⬇ "+t);
+  if(e.done){ /* আগে থেকেই তৈরি: সাথে সাথে বাজে */
+   note.textContent="✅ "+bn2(e.n)+"টি আয়াত × "+bn2(e.rep)+" বার"+(e.set>1?" × "+bn2(e.set)+" সেট":"")+" — তৈরি আছে";
+   while(e.out.firstChild)res.appendChild(e.out.firstChild);host.dataset.done="1";
+   const a=res.querySelector("audio");if(a)a.play().catch(()=>{});
+   return}
+  /* এখনো তৈরি হয়নি: তৈরি হওয়ার অপেক্ষায় না থেকে সাথে সাথে বাজাই (আয়াত একটার পর একটা), ফাইল তৈরি হলে নিচে আসে */
+  const list=await homeKeys(kind,cat),seq=[];
+  for(let q=0;q<e.set||q<homeRep(kind).set;q++)for(const k of list)for(let r=0;r<homeRep(kind).rep;r++)seq.push(k);
   playList(seq,live);host.dataset.done="1";
-  note.textContent="⬇ ডাউনলোডের ফাইল পেছনে তৈরি হচ্ছে… ("+bn2(list.length)+"টি আয়াত × "+bn2(rep)+" বার"+(set>1?" × "+bn2(set)+" সেট":"")+")";
-  await mergeAudio(list,res,t=>note.textContent="⬇ "+t,{rep,set,noplay:true,name:homeTitle(kind,cat)});
+  note.textContent="⬇ ডাউনলোডের ফাইল পেছনে তৈরি হচ্ছে…";
+  await e.p;
+  note.textContent="✅ ফাইল তৈরি — নিচের প্লেয়ার থেকে শোনা, শেয়ার ও ডাউনলোড করা যাবে";
+  while(e.out.firstChild)res.appendChild(e.out.firstChild);
  }catch(e){console.error(e);note.textContent="অডিও তৈরি করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"}
  finally{host.dataset.busy="0"}
 };
