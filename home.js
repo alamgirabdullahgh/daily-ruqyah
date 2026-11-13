@@ -7,7 +7,6 @@
   ["জাদু",[["সিমটম ডায়াগনোসিস","#diag/jadu"],["রেসপন্স ডায়াগনোসিস","#resp/jadu"],["ট্রিটমেন্ট","#amol/b2a"]]],
   ["জিন",[["সিমটম ডায়াগনোসিস","#diag/jin"],["রেসপন্স ডায়াগনোসিস","#resp/jin"],["ট্রিটমেন্ট","#amol/b1a"]]]
  ];
- var SUPPORT=["সাধ্যমত হাদিয়া দিন, শরিয়া সম্মত চিকিৎসা নিন।","আল্লাহর উপর ভরসা রাখুন, শিফা তাঁরই হাতে।","ধৈর্য ধরে নিয়মিত আমল চালিয়ে যান, ইনশাআল্লাহ উপকার পাবেন।","কুরআন ও সহিহ হাদিসের দোয়া দিয়েই রুকইয়াহ করুন।","সকাল-সন্ধ্যার যিকির ও প্রতিদিন কুরআন তিলাওয়াত বাদ দেবেন না।","শারীরিক অসুস্থতায় ডাক্তারের পরামর্শও নিন, রুকইয়াহ ও চিকিৎসা একসাথে চলে।","আপনার দোয়ায় আমাদের রাখবেন।"];
  var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
  var built=false;
  window.__drLanding=function(){
@@ -40,7 +39,7 @@
   H.innerHTML=h+'</div>';
   window.__drSysCard&&window.__drSysCard(H);
   var tk=document.getElementById("drSupTk");
-  var startTk=function(){if(window.__drTicker)window.__drTicker(tk,function(){return SUPPORT});else setTimeout(startTk,300)};
+  var startTk=function(){if(window.__drTicker)window.__drTicker(tk,function(){return (window.__drSunnahRules&&window.__drSunnahRules.support)||[]});else setTimeout(startTk,300)};
   startTk();
   H.addEventListener("click",function(e){
    

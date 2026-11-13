@@ -77,17 +77,14 @@
   // ───────── সুন্নাহ-স্মরণ (সময় ও ইংরেজি তারিখের মাঝের স্লাইডার) ─────────
   // সাপ্তাহিক: সোম-বৃহস্পতির রোজা, শুক্রবারে সূরা কাহফ (১ দিন আগে থেকে)।
   // মাসিক/বার্ষিক (হিজরি তারিখ ধরে, ৩ দিন আগে থেকে): আইয়ামে বীজ, হিজামার দিন, আশুরা, আরাফা, শাওয়ালের ছয় রোজা।
-  var EN_MONTHS_BN = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
-  var WD_BN = { 1: "সোমবার", 4: "বৃহস্পতিবার", 5: "শুক্রবার" };
-  var SUNNAH_GROUPS = [
-    { t: "আইয়ামে বীজের রোজা", a: 13, b: 15, skip: [9, 12], r: true },
-    { t: "হিজামার দিন", a: 17, b: 17 },
-    { t: "হিজামার দিন", a: 19, b: 19 },
-    { t: "হিজামার দিন", a: 21, b: 21 },
-    { t: "আশুরার রোজা", a: 9, b: 10, only: [1], r: true },
-    { t: "আরাফার রোজা", a: 9, b: 9, only: [12] },
-    { t: "শাওয়ালের ছয় রোজা", a: 2, b: 29, only: [10], r: true }
-  ];
+  // নিয়ম ও লেখা এক ফাইলে: data/sunnah.json (ফোনের হোম-স্ক্রিন উইজেটও একই ফাইল পড়ে)
+  var SUN = null;
+  try {
+    fetch("data/sunnah.json?v=1").then(function (r) { return r.json(); }).then(function (j) {
+      SUN = j; window.__drSunnahRules = j;
+      try { window.dispatchEvent(new Event("dr-sunnah")); } catch (e) { }
+    }).catch(function () { });
+  } catch (e) { }
   function hijriMD(d, inBd) {
     try {
       var x = addDays(d, HIJRI_ADJ !== null ? HIJRI_ADJ : (inBd ? -1 : 0));
@@ -98,21 +95,20 @@
     } catch (e) { return null; }
   }
   function sunnahItems(now, inBdFlag) {
-    var out = [];
-    for (var k = 0; k <= 3; k++) {
+    if (!SUN) return [];
+    var out = [], W = SUN.words, lead = SUN.lead, wl = SUN.weeklyLead;
+    for (var k = 0; k <= lead; k++) {
       var dt = addDays(now, k), dow = dt.getDay(), hd = hijriMD(dt, inBdFlag);
-      if (k <= 1) {
-        if (dow === 1 || dow === 4) out.push([k, (k === 0 ? "আজ " : "কাল ") + WD_BN[dow] + ", সুন্নাহ রোজা"]);
-        else if (dow === 5) out.push([k, (k === 0 ? "আজ" : "কাল") + " জুমুআ, সূরা কাহফ পড়ুন"]);
-      }
+      var when = k === 0 ? W.today : W.tomorrow;
+      if (k <= wl) SUN.weekly.forEach(function (w) { if (w.dow === dow) out.push([k, w.text.replace("{d}", when)]); });
       if (!hd) continue;
-      SUNNAH_GROUPS.forEach(function (g) {
+      SUN.groups.forEach(function (g) {
         if (hd.d < g.a || hd.d > g.b) return;
         if (g.only && g.only.indexOf(hd.m) < 0) return;
         if (g.skip && g.skip.indexOf(hd.m) >= 0) return;
-        var suf = g.r ? " শুরু" : "";
-        if (k === 0) out.push([0, "আজ " + g.t]);
-        else if (hd.d === g.a) out.push([k, k === 1 ? "কাল " + g.t + suf : bn(dt.getDate()) + " " + EN_MONTHS_BN[dt.getMonth()] + " " + g.t + suf]);
+        var suf = g.range ? " " + W.start : "";
+        if (k === 0) out.push([0, W.today + " " + g.t]);
+        else if (hd.d === g.a) out.push([k, k === 1 ? W.tomorrow + " " + g.t + suf : bn(dt.getDate()) + " " + SUN.enMonths[dt.getMonth()] + " " + g.t + suf]);
       });
     }
     out.sort(function (x, y) { return x[0] - y[0]; });
@@ -306,6 +302,7 @@
       return { x: x.toFixed(2), y: y.toFixed(2), pc: pc, top: Math.min(y + 8, 28).toFixed(1) + "px", txt: durBn(Math.ceil(Math.max(0, s.sunset - s.nowMin))) + " বাকি" };
     }
     var lastSig = "";
+    window.addEventListener("dr-sunnah", function () { if (el.isConnected) { lastSig = ""; render(); } });
     function sigOf(s, now) { return [s.cur, shownIndex(s), sunGeom(s) ? 1 : 0, now.getDate(), updBusy ? 1 : 0].join("|"); }
     // প্রতি সেকেন্ডে: কাঠামো না বদলালে ভেতরের লেখা/মাপ জায়গাতেই বদলায় (পুরো উইজেট নতুন করে আঁকে না, তাই ঝিলিক নেই)
     function tick() {
@@ -383,7 +380,7 @@
       function step() {
         if (!host.isConnected) { host.__tk = 0; return; }
         var items = getItems() || [];
-        if (!items.length) { host.style.visibility = "hidden"; lastStatic = ""; return again(1500); }
+        if (!items.length) { host.style.visibility = "hidden"; lastStatic = ""; return again(400); }
         var W = host.clientWidth;
         if (!W) { first = true; return again(250); }
         host.style.visibility = "";

@@ -266,7 +266,7 @@ class ClockWidget : AppWidgetProvider() {
             val cd = durText(Math.ceil((be - s.nowMin).coerceAtLeast(0.0)).toInt(), c.bnDigits) + " বাকি"
             rv.setTextViewText(R.id.zz_cd, cd)
             // সময় ও ইংরেজি তারিখের মাঝে সুন্নাহ-স্লাইডার: একাধিক হলে একে একে বদলায়, একটা হলে স্থির
-            val sn = Sunnah.items(java.time.LocalDate.now(), c.hijriShift())
+            val sn = Sunnah.items(ctx, java.time.LocalDate.now(), c.hijriShift())
             rv.removeAllViews(R.id.zz_sl)
             if (sn.isEmpty()) rv.setViewVisibility(R.id.zz_sl, View.GONE) else {
                 rv.setViewVisibility(R.id.zz_sl, View.VISIBLE)
