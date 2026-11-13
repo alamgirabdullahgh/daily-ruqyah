@@ -260,7 +260,7 @@ class ClockWidget : AppWidgetProvider() {
             val frac = ((s.nowMin - bs) / span).coerceIn(0.0, 1.0)
             rv.setTextViewText(R.id.zz_ws, (if (nf != null) nf.name + " শুরু " else "ওয়াক্ত শুরু ") + Prayer.fmt(bs, c.bnDigits))
             rv.setTextViewText(R.id.zz_we, (if (nf != null) "শেষ " else "ওয়াক্ত শেষ ") + Prayer.fmt(be, c.bnDigits))
-            size(R.id.zz_ws, 11f); size(R.id.zz_we, 11f)
+            // zz_ws/zz_we: বারের দুই পাশ সমান চওড়া (weight), লেখা বড় হলে XML-এর autoSize-এ ছোট হয়; তাই প্রগ্রেস বার সবসময় মাঝে থাকে
             rv.setProgressBar(R.id.zz_wbar, 1000, (frac * 1000).toInt(), false)
             // বারের ভেতরে বাকি সময়, যেমন "১ ঘন্টা ২৩ মিনিট"; ঘণ্টা না থাকলে শুধু মিনিট
             val cd = durText(Math.ceil((be - s.nowMin).coerceAtLeast(0.0)).toInt(), c.bnDigits) + " বাকি"

@@ -71,8 +71,14 @@
 
         <TextView
             android:id="@+id/zz_ws"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:autoSizeMaxTextSize="11sp"
+            android:autoSizeMinTextSize="7sp"
+            android:autoSizeStepGranularity="0.5sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="center_vertical|start"
             android:includeFontPadding="false"
             android:maxLines="1"
             android:text="৪:৪৬"
@@ -85,7 +91,7 @@
             android:layout_height="14dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_weight="1">
+            android:layout_weight="1.2">
 
             <ProgressBar
                 android:id="@+id/zz_wbar"
@@ -123,8 +129,14 @@
 
         <TextView
             android:id="@+id/zz_we"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:autoSizeMaxTextSize="11sp"
+            android:autoSizeMinTextSize="7sp"
+            android:autoSizeStepGranularity="0.5sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="center_vertical|end"
             android:includeFontPadding="false"
             android:maxLines="1"
             android:text="৬:০৫"
