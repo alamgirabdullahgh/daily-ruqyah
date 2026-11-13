@@ -56,7 +56,7 @@
  }
  function drawAll(){
   var grp=function(G,name){var cs=DATA.cats.filter(function(c){return c.id.indexOf(G)===0});return'<section class="am-gsec"><h2 class="am-h am-gh">'+name+'</h2>'+cs.map(function(c){return'<section class="am-sec"><div class="am-ch"><i>'+c.icon+'</i> '+esc(c.title)+'</div>'+c.items.map(card).join("")+'</section>'}).join("")+'</section>'};
-  box.innerHTML='<h2 class="am-h">ট্রিটমেন্ট — সব একসাথে</h2><p class="am-intro">বদনজর, জাদু ও জিন — তিন বিষয়ের ট্রিটমেন্ট এক পাতায়। জাদু ও জিনের সব প্রকার নিচে ধারাবাহিকভাবে আছে; বদনজরের আয়াত বিষয়ভিত্তিক পাতায় খোলে।</p><div class="am-warn">⚕ রুকইয়াহ ও আমল মেডিক্যাল চিকিৎসার বিকল্প নয়। বইয়ে বর্ণিত লক্ষণ বহু রোগেরও হয়; গুরুতর বা হঠাৎ উপসর্গে আগে ডাক্তার দেখান।</div><section class="am-gsec"><h2 class="am-h am-gh">বদনজর</h2><a class="am-nazar" href="#search" data-nz="1">বদনজর — ট্রিটমেন্ট (আয়াত)</a></section><input class="am-q" id="amQ" type="search" placeholder="জাদু ও জিনে খুঁজুন (যেমন: হাঁড়ি, পুতুল, বন্দিশ, বিয়ে)" autocomplete="off" value="'+esc(Q)+'"><div id="amBody">'+grp("b2","জাদু")+grp("b1","জিন")+'</div>';
+  box.innerHTML='<h2 class="am-h">ট্রিটমেন্ট — সব একসাথে</h2><section class="am-gsec"><h2 class="am-h am-gh">বদনজর</h2><a class="am-nazar" href="#search" data-nz="1">বদনজর — ট্রিটমেন্ট (আয়াত)</a></section><input class="am-q" id="amQ" type="search" placeholder="জাদু ও জিনে খুঁজুন (যেমন: হাঁড়ি, পুতুল, বন্দিশ, বিয়ে)" autocomplete="off" value="'+esc(Q)+'"><div id="amBody">'+grp("b2","জাদু")+grp("b1","জিন")+'</div>';
   filter();
  }
  function draw(){
@@ -68,7 +68,7 @@
    cs=DATA.cats.filter(function(c){return c.id.indexOf(G)===0});
   var tabs='<div class="am-tabs" role="tablist">'+cs.map(function(c){return'<button type="button" class="am-tab'+(CAT===c.id?" on":"")+'" data-c="'+c.id+'"><i>'+c.icon+'</i>'+esc(c.title)+'</button>'}).join("")+'</div>';
   var c=cs.filter(function(x){return x.id===CAT})[0]||cs[0],body=c.items.map(card).join("");
-  box.innerHTML='<h2 class="am-h">'+HD+'</h2><p class="am-intro">'+IN+'</p><div class="am-warn">⚕ রুকইয়াহ ও আমল মেডিক্যাল চিকিৎসার বিকল্প নয়। বইয়ে বর্ণিত লক্ষণ বহু রোগেরও হয়; গুরুতর বা হঠাৎ উপসর্গে আগে ডাক্তার দেখান।</div><input class="am-q" id="amQ" type="search" placeholder="খুঁজুন (যেমন: হাঁড়ি, পুতুল, বন্দিশ, বিয়ে)" autocomplete="off" value="'+esc(Q)+'">'+tabs+'<div id="amBody">'+body+'</div>';
+  box.innerHTML='<h2 class="am-h">'+HD+'</h2><input class="am-q" id="amQ" type="search" placeholder="খুঁজুন (যেমন: হাঁড়ি, পুতুল, বন্দিশ, বিয়ে)" autocomplete="off" value="'+esc(Q)+'">'+tabs+'<div id="amBody">'+body+'</div>';
   filter();
  }
  function filter(){
