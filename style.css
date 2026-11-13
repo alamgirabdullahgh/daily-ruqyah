@@ -704,3 +704,4 @@ html:has(body:not(.is-home)){scroll-padding-top:calc(env(safe-area-inset-top) + 
 .drq-sys .dsy-tm b{color:var(--primary)}
 .drq-sys .dsy-ap{border:1px solid var(--border-light);border-radius:8px;background:var(--primary-light);color:var(--primary);font:inherit;font-size:12.5px;font-weight:700;padding:5px 7px;margin-left:3px;cursor:pointer}
 .drq-sys .dsy-ef input.dsy-n,.drq-sys .dsy-ef>input{width:60px;text-align:center}
+.am-st{margin:14px 0 4px}.am-st h4{margin:0 0 6px;font-size:1.02em;color:#0b4a3a}.am-st p{margin:4px 0}.am-st ol{margin:4px 0 0;padding-left:1.5em}.am-st li{margin:5px 0}

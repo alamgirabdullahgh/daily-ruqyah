@@ -8,7 +8,7 @@
  function load(){
   if(DATA)return Promise.resolve(DATA);
   if(loading)return loading;
-  loading=fetch(new URL("data/amol-guide.json?v=6",location.href).href).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){DATA=d;return d}).catch(function(e){loading=null;throw e});
+  loading=fetch(new URL("data/amol-guide.json?v=7",location.href).href).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){DATA=d;return d}).catch(function(e){loading=null;throw e});
   return loading;
  }
  function refLabel(r){var n=SN[r[0]]||("সূরা "+bn(r[0]));return "সূরা "+n+" "+bn(r[0])+":"+bn(r[1])+(r[2]?"-"+bn(r[2]):"")}
@@ -32,7 +32,8 @@
   h+='<h3>'+esc(it.t)+'</h3><div class="am-tags"><span class="am-g am-g-'+(GC[it.g]||"s")+'">'+esc(it.g)+'</span>';
   if(it.src)h+='<span class="am-src">'+esc(it.src)+'</span>';
   h+='</div>';
-  if(it.pages)h+=it.pages.map(function(p,i){return'<div class="am-tx">'+fmtTx(p)+'</div>'}).join("");
+  if(it.steps)h+=it.steps.map(function(s){return'<div class="am-st"><h4>'+esc(s.h)+'</h4>'+(s.p||[]).map(function(x){return'<p>'+esc(x)+'</p>'}).join("")+(s.ol?'<ol'+(s.start>1?' start="'+s.start+'"':'')+'>'+s.ol.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ol>':'')+'</div>'}).join("");
+  else if(it.pages)h+=it.pages.map(function(p,i){return'<div class="am-tx">'+fmtTx(p)+'</div>'}).join("");
   if(it.why)h+='<p class="am-why">'+esc(it.why)+'</p>';
   if(it.ar)h+='<div class="am-ar" dir="rtl" lang="ar">'+esc(it.ar)+'</div>';
   if(it.how&&it.how.length)h+='<ol class="am-how">'+it.how.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ol>';
