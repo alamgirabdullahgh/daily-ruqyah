@@ -1046,6 +1046,6 @@ drUpdater();
 })();
 
 /* এক লাইনের জোড়া বোতাম (.rs-pair): লেখা বড় হলে ফন্ট ছোট হয়ে এক লাইনেই থাকে, কাটে না */
-window.__drFit=function(root){try{(root||document).querySelectorAll(".rs-pair>button").forEach(b=>{b.style.fontSize="";if(!b.clientWidth)return;let f=parseFloat(getComputedStyle(b).fontSize)||12.5;while(b.scrollWidth>b.clientWidth+.5&&f>8.5){f-=.5;b.style.fontSize=f+"px"}})}catch(e){}};
+window.__drFit=function(root){try{(root||document).querySelectorAll(".rs-pair>button,.dsy-fit").forEach(b=>{b.style.fontSize="";if(!b.clientWidth)return;let f=parseFloat(getComputedStyle(b).fontSize)||12.5;while(b.scrollWidth>b.clientWidth+.5&&f>8.5){f-=.5;b.style.fontSize=f+"px"}})}catch(e){}};
 window.addEventListener("resize",()=>window.__drFit());
 new MutationObserver(()=>{clearTimeout(window.__drFitT);window.__drFitT=setTimeout(()=>window.__drFit(),60)}).observe(document.documentElement,{childList:true,subtree:true});

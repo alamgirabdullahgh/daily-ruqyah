@@ -13,7 +13,7 @@
   if(built)return;
   var H=document.getElementById("drLanding");if(!H)return;
   built=true;
-  var h='<div class="drq-support" aria-live="off"><div class="drq-tk" id="drSupTk"><span></span></div></div><div class="drq-grid">';
+  var h='<div class="drq-support" aria-live="off"><div class="drq-st dsy-fit" id="drSupSt"></div><div class="drq-tk" id="drSupTk"><span></span></div></div><div class="drq-grid">';
   var TS=1,TE=3; /* G[TS..TE] = বদনজর · জাদু · জিন: এক কার্ডে ট্যাব; চতুর্থ ট্যাব "সব": একই তিন অপশন, তবে তিন বিষয়ের ফল একসাথে এক পাতায় */
   var item=function(o){
    var t=o[1];
@@ -39,7 +39,7 @@
   H.innerHTML=h+'</div>';
   window.__drSysCard&&window.__drSysCard(H);
   var tk=document.getElementById("drSupTk");
-  var startTk=function(){if(window.__drTicker)window.__drTicker(tk,function(){return (window.__drSunnahRules&&window.__drSunnahRules.support)||[]});else setTimeout(startTk,300)};
+  var startTk=function(){if(window.__drTicker)window.__drTicker(tk,function(){var a=(window.__drSunnahRules&&window.__drSunnahRules.support)||[];var st=document.getElementById("drSupSt");var s0=a.filter(function(x){return /হাদিয়া/.test(x)})[0]||a[0]||"";if(st&&st.textContent!==s0)st.textContent=s0;return a.filter(function(x){return x!==s0})});else setTimeout(startTk,300)};
   startTk();
   H.addEventListener("click",function(e){
    

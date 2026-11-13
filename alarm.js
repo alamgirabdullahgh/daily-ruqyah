@@ -383,18 +383,20 @@
       var grid = H.querySelector(".drq-grid") || H;
       if (grid.querySelector(".drq-sys")) return;
       var sec = el("section", "drq-card drq-sys");
-      [["baq", "অটোমেটিক এলার্ম সূরা বাকারা"], ["jadu", "অটোমেটিক এলার্ম জাদু রিনিউ বন্ধের অডিও"]].forEach(function (x) {
+      sec.appendChild(el("b", "dsy-h dsy-fit", "অটোমেটিক এলার্ম"));
+      var two = el("div", "dsy-two"); sec.appendChild(two);
+      [["baq", "সূরা বাকারা"], ["jadu", "জাদু রিনিউ বন্ধ"]].forEach(function (x) {
         var row = el("div", "dsy-row"); row.setAttribute("data-g", x[0]);
         var tx = el("div", "dsy-t"); tx.setAttribute("role", "button"); tx.tabIndex = 0;
-        tx.appendChild(el("b", null, x[1]));
-        tx.appendChild(el("small", "dsy-s", ""));
+        tx.appendChild(el("b", "dsy-fit", x[1]));
+        tx.appendChild(el("small", "dsy-s dsy-fit", ""));
         tx.onclick = async function () {
           if (!row.classList.contains("play")) return;
           try { await P.stop({ nonag: false }); } catch (e) { }
           setTimeout(sysRefresh, 400);
         };
         row.appendChild(tx);
-        var sw = el("label", "dsy-sw"); var cb = el("input"); cb.type = "checkbox"; cb.checked = true; cb.setAttribute("aria-label", x[1]);
+        var sw = el("label", "dsy-sw"); var cb = el("input"); cb.type = "checkbox"; cb.checked = true; cb.setAttribute("aria-label", "অটোমেটিক এলার্ম " + x[1]);
         cb.onchange = async function () {
           var want = cb.checked;
           try { await sysToggle(x[0], want); } catch (e) { cb.checked = !want; setPrefOff(x[0], want); }
@@ -402,7 +404,7 @@
         };
         sw.appendChild(cb); sw.appendChild(el("i"));
         row.appendChild(sw);
-        sec.appendChild(row);
+        two.appendChild(row);
       });
       grid.appendChild(sec);
       sysCard = sec;

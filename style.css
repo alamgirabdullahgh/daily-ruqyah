@@ -655,3 +655,12 @@ html:has(body:not(.is-home)){scroll-padding-top:calc(env(safe-area-inset-top) + 
 .rs-pair>button{flex:1 1 0;min-width:0;margin:0;padding:6px 6px;white-space:nowrap;overflow:hidden;text-align:center}
 .drq-tk span{font-family:inherit;color:#1E7F58}
 @media (prefers-color-scheme:dark){.drq-tk span{color:#7FD3AE}}
+.dsy-fit{white-space:nowrap;overflow:hidden}
+.drq-st{display:block;height:36px;line-height:36px;text-align:center;margin:0 0 6px;padding:0 8px;border-radius:12px;background:var(--accent-light);border:1px solid var(--border-light);box-shadow:var(--shadow-card);font-size:15.5px;font-weight:700;color:#1E7F58}
+.drq-st:empty{display:none}
+@media (prefers-color-scheme:dark){.drq-st{color:#7FD3AE}}
+.drq-sys .dsy-h{display:block;padding:9px 0 0;font-size:14.5px;font-weight:700;color:var(--primary);line-height:1.35}
+.drq-sys .dsy-two{display:flex;gap:18px;align-items:flex-start}
+.drq-sys .dsy-two .dsy-row{flex:1 1 0;min-width:0;gap:8px;padding:6px 0 8px;border-top:0}
+.drq-sys .dsy-two .dsy-t b{font-size:13.5px}
+.drq-sys .dsy-two .dsy-s{font-size:11px}
