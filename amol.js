@@ -8,7 +8,7 @@
  function load(){
   if(DATA)return Promise.resolve(DATA);
   if(loading)return loading;
-  loading=fetch(new URL("data/amol-guide.json?v=5",location.href).href).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){DATA=d;return d}).catch(function(e){loading=null;throw e});
+  loading=fetch(new URL("data/amol-guide.json?v=6",location.href).href).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){DATA=d;return d}).catch(function(e){loading=null;throw e});
   return loading;
  }
  function refLabel(r){var n=SN[r[0]]||("সূরা "+bn(r[0]));return "সূরা "+n+" "+bn(r[0])+":"+bn(r[1])+(r[2]?"-"+bn(r[2]):"")}
