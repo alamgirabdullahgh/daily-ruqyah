@@ -14,29 +14,35 @@
   var H=document.getElementById("drLanding");if(!H)return;
   built=true;
   var h='<div class="drq-grid">';
-  var TS=1,TE=3; /* G[TS..TE] = বদনজর · জাদু · জিন: এক কার্ডে তিন ট্যাব */
+  var TS=1,TE=3; /* G[TS..TE] = বদনজর · জাদু · জিন: এক কার্ডে ট্যাব; চতুর্থ ট্যাব "সব" তিনটাই একসাথে দেখায় */
+  var item=function(o){
+   var t=o[1];
+   if(typeof t==="string")return '<li><a href="'+t+'">'+esc(o[0])+'</a></li>';
+   if(t.soon)return '<li><span class="drq-soon">'+esc(o[0])+'<small>শীঘ্রই আসছে</small></span></li>';
+   if(t.sub){var r='<li class="drq-grp"><button type="button" class="drq-tg" aria-expanded="false">'+esc(o[0])+'</button><ul class="drq-sub" hidden>';t.sub.forEach(function(x){r+=item(x)});return r+'</ul></li>'}
+   if(t.list)return '<li><a href="#search" data-list="'+t.list+'">'+esc(o[0])+'</a></li>';
+   return '<li><a href="#search" data-'+(t.topic?'topic="'+esc(t.topic)+'"':t.mental?'mental="1"':'disease="1"')+'>'+esc(o[0])+'</a></li>';
+  };
+  var ulOf=function(g,attr){var r='<ul class="drq-opts"'+(attr||'')+'>';g[1].forEach(function(o){r+=item(o)});return r+'</ul>'};
   G.forEach(function(g,gi){
    var tab=gi>=TS&&gi<=TE;
-   if(gi===TS)h+='<section class="drq-card drq-tabcard"><h3 class="drq-tabs" role="tablist">'+G.slice(TS,TE+1).map(function(x,i){return '<button type="button" role="tab" class="drq-tab'+(i?'':' on')+'" data-t="'+i+'" aria-selected="'+(i?'false':'true')+'">'+esc(x[0])+'</button>'}).join('')+'</h3>';
-   else if(!tab)h+='<section class="drq-card"><h3>'+esc(g[0])+'</h3>';
-   h+='<ul class="drq-opts"'+(tab?' data-pane="'+(gi-TS)+'"'+(gi>TS?' hidden':''):'')+'>';
-   var item=function(o){
-    var t=o[1];
-    if(typeof t==="string")return '<li><a href="'+t+'">'+esc(o[0])+'</a></li>';
-    if(t.soon)return '<li><span class="drq-soon">'+esc(o[0])+'<small>শীঘ্রই আসছে</small></span></li>';
-    if(t.sub){var r='<li class="drq-grp"><button type="button" class="drq-tg" aria-expanded="false">'+esc(o[0])+'</button><ul class="drq-sub" hidden>';t.sub.forEach(function(x){r+=item(x)});return r+'</ul></li>'}
-    if(t.list)return '<li><a href="#search" data-list="'+t.list+'">'+esc(o[0])+'</a></li>';
-    return '<li><a href="#search" data-'+(t.topic?'topic="'+esc(t.topic)+'"':t.mental?'mental="1"':'disease="1"')+'>'+esc(o[0])+'</a></li>';
-   };
-   g[1].forEach(function(o){h+=item(o)});
-   h+='</ul>';
-   if(gi===TE||!tab)h+='</section>';
+   if(tab){
+    if(gi!==TS)return;
+    var names=G.slice(TS,TE+1).map(function(x){return x[0]}).concat(["সব"]);
+    h+='<section class="drq-card drq-tabcard"><h3 class="drq-tabs" role="tablist">'+names.map(function(n,i){return '<button type="button" role="tab" class="drq-tab'+(i?'':' on')+'" data-t="'+i+'" aria-selected="'+(i?'false':'true')+'">'+esc(n)+'</button>'}).join('')+'</h3>';
+    for(var k=TS;k<=TE;k++)h+=ulOf(G[k],' data-pane="'+(k-TS)+'"'+(k>TS?' hidden':''));
+    h+='<div class="drq-all" data-pane="'+(TE-TS+1)+'" hidden>';
+    for(var m=TS;m<=TE;m++)h+='<div class="drq-allsec"><h4>'+esc(G[m][0])+'</h4>'+ulOf(G[m])+'</div>';
+    h+='</div></section>';
+    return;
+   }
+   h+='<section class="drq-card"><h3>'+esc(g[0])+'</h3>'+ulOf(g)+'</section>';
   });
   H.innerHTML=h+'</div>';
   H.addEventListener("click",function(e){
    
    var tb=e.target.closest&&e.target.closest(".drq-tab");
-   if(tb){var k=tb.getAttribute("data-t");H.querySelectorAll(".drq-tab").forEach(function(x){var on=x===tb;x.classList.toggle("on",on);x.setAttribute("aria-selected",on?"true":"false")});H.querySelectorAll("ul[data-pane]").forEach(function(u){u.hidden=u.getAttribute("data-pane")!==k});return}
+   if(tb){var k=tb.getAttribute("data-t");H.querySelectorAll(".drq-tab").forEach(function(x){var on=x===tb;x.classList.toggle("on",on);x.setAttribute("aria-selected",on?"true":"false")});H.querySelectorAll("[data-pane]").forEach(function(u){u.hidden=u.getAttribute("data-pane")!==k});return}
    var tg=e.target.closest&&e.target.closest(".drq-tg");
    if(tg){var u=tg.nextElementSibling,on=u.hidden;u.hidden=!on;tg.setAttribute("aria-expanded",on?"true":"false");tg.classList.toggle("on",on);return}
    var a=e.target.closest&&e.target.closest("a[data-list],a[data-topic],a[data-disease],a[data-mental]");if(!a)return;

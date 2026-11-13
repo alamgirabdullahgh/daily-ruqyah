@@ -554,9 +554,15 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 .drq-pin{display:block;width:100%;margin:14px 0 6px;padding:13px 14px;border:1.5px solid var(--accent);border-radius:16px;background:var(--accent-light);color:var(--primary);font:inherit;font-weight:700;font-size:15px;cursor:pointer}
 .drq-pin:active{opacity:.8}
 
-/* বদনজর · জাদু · জিন — এক কার্ডে তিন ট্যাব: লাইন সমান তিন ভাগ, বাছাইটার শুধু লেখার রঙ বদলায় */
-.drq-tabs{display:grid!important;grid-template-columns:repeat(3,1fr);gap:0!important;margin-bottom:14px}
+/* বদনজর · জাদু · জিন · সব — এক কার্ডে চার ট্যাব: লাইন সমান চার ভাগ; বাছাইটার বামে ফোঁটা ও গাঢ় রঙ */
+.drq-tabs{display:grid!important;grid-template-columns:repeat(4,1fr);gap:0!important;margin-bottom:14px}
 .drq-tabs::before{display:none!important}
-.drq-tab{display:block;width:100%;border:0;background:none;padding:6px 2px;font:inherit;font-size:19px;font-weight:700;text-align:center;color:var(--text-muted);opacity:.75;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .15s,opacity .15s}
+.drq-tab{display:inline-flex;align-items:center;justify-content:center;gap:5px;width:100%;border:0;background:none;padding:6px 0;font:inherit;font-size:17px;font-weight:700;white-space:nowrap;color:var(--text-muted);opacity:.75;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .15s,opacity .15s}
+.drq-tab::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:transparent}
 .drq-tab.on{color:var(--primary);opacity:1}
+.drq-tab.on::before{background:var(--accent)}
+.drq-all[hidden]{display:none}
+.drq-allsec+.drq-allsec{margin-top:18px}
+.drq-allsec h4{margin:0 0 10px;color:var(--primary);font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px}
+.drq-allsec h4::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block}
 .drq-opts[hidden]{display:none}
