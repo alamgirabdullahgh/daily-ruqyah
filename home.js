@@ -37,6 +37,7 @@
    h+='<section class="drq-card"><h3>'+esc(g[0])+'</h3>'+ulOf(g)+'</section>';
   });
   H.innerHTML=h+'</div>';
+  window.__drSysCard&&window.__drSysCard(H);
   H.addEventListener("click",function(e){
    
    var tb=e.target.closest&&e.target.closest(".drq-tab");

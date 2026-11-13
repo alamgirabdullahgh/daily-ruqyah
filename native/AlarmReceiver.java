@@ -21,7 +21,8 @@ public class AlarmReceiver extends BroadcastReceiver {
             android.os.PowerManager.WakeLock w = c.getSystemService(android.os.PowerManager.class).newWakeLock(android.os.PowerManager.PARTIAL_WAKE_LOCK, "dailyruqyah:alarmrx");
             w.acquire(30000);
         } catch (Throwable e) { }
-        AlarmStore.log(c, "অ্যালার্ম এসেছে (id " + id + ")");
+        AlarmStore.log(c, "অ্যালার্ম এসেছে (id " + id + (i.getBooleanExtra("nag", false) ? ", আবার-বাজা" : "") + ")");
+        if (id >= 0) AlarmStore.cancelNag(c, id); // নতুন করে বাজছে: আগের "আবার বাজবে" আর লাগে না
         try {
             String direct = i.getStringExtra("alarmJson"); // পরীক্ষা-অ্যালার্ম
             JSONObject o = direct != null ? new JSONObject(direct) : AlarmStore.find(c, id);

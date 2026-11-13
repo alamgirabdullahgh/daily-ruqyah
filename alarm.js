@@ -58,7 +58,7 @@
     { k: "file", t: "📁 ফোনের নিজের অডিও ফাইল (অফলাইনে বাজে)", r: null, file: true }
   ];
 
-  var list = [], meta = { exact: true, notif: true, playing: false, battery: true };
+  var list = [], meta = { exact: true, notif: true, playing: false, battery: true }, info = { playingId: -1, next: {}, nagAt: {} };
   var built = false, adding = false;
 
   function aud() { return window.__drAud; }
@@ -89,6 +89,7 @@
     var r = await P.list();
     list = r.alarms || [];
     meta = { exact: r.exact !== false, notif: r.notif !== false, playing: !!r.playing, battery: r.battery !== false };
+    info = { playingId: typeof r.playingId === "number" ? r.playingId : -1, next: r.next || {}, nagAt: r.nagAt || {} };
   }
   async function persist() {
     var r = await P.save({ alarms: list });
@@ -149,7 +150,7 @@
     if (adding) host.appendChild(form());
 
     host.appendChild(diag());
-    list.slice().sort(function (a, b) { return a.time < b.time ? -1 : 1; }).forEach(function (a) { host.appendChild(card(a)); });
+    list.filter(function (a) { return !a.sys; }).sort(function (a, b) { return a.time < b.time ? -1 : 1; }).forEach(function (a) { host.appendChild(card(a)); });
 
   }
 
@@ -278,6 +279,136 @@
     c.appendChild(r);
     return c;
   }
+
+
+  /* ───────── অটোমেটিক অ্যালার্ম (হোমের দুই লাইনের কার্ড) ─────────
+     ডিফল্টে সবসময় চালু; টগলে বন্ধ/চালু। সময়ের হিসাব ও বাজানো নেটিভ অংশে (অ্যাপ বন্ধ থাকলেও চলে)।
+     ১) সূরা বাকারা: প্রতিদিন সূর্যোদয়ের ৩০ মিনিট আগে, আর সূর্যাস্তের ৪০ মিনিট আগে (আসরের পরে) — শেষ না হওয়া পর্যন্ত থামে না।
+     ২) জাদু রিনিউ বন্ধের অডিও: প্রতিদিন রাত ১০টায়; বন্ধ করলে ৩০ মিনিট পরে আবার বাজে; টগল বন্ধ করলে আর কখনো নয়।
+     অডিওর আয়াত-তালিকা বদলাতে শুধু নিচের JADU_RANGES বদলালেই হয় (এখন: আগে থেকে থাকা "রুকইয়াহ সংকলন")। */
+  var SYS_V = 1;
+  var JADU_RANGES = PRESETS[0].r;
+  var SYS = [
+    { id: 9101, g: "baq", title: "সূরা বাকারা (সূর্যোদয়ের আগে)", rel: "sunrise", off: -30, persist: true, ranges: [[2, 1, 286]] },
+    { id: 9102, g: "baq", title: "সূরা বাকারা (সূর্যাস্তের আগে)", rel: "sunset", off: -40, notBefore: "asr", persist: true, ranges: [[2, 1, 286]] },
+    { id: 9201, g: "jadu", title: "জাদু রিনিউ বন্ধের অডিও", time: "22:00", nag: 30, ranges: JADU_RANGES }
+  ];
+  function prefOff(g) { try { return localStorage.getItem("drsys_off_" + g) === "1"; } catch (e) { return false; } }
+  function setPrefOff(g, off) { try { localStorage.setItem("drsys_off_" + g, off ? "1" : "0"); } catch (e) { } }
+  function sysBuild(d, on) {
+    var a = { id: d.id, sys: d.g, v: SYS_V, on: on, title: d.title, repeat: 1, days: [], time: d.time || "00:00", urls: build({ r: d.ranges }) };
+    if (d.rel) { a.rel = d.rel; a.off = d.off; }
+    if (d.notBefore) a.notBefore = d.notBefore;
+    if (d.persist) a.persist = true;
+    if (d.nag) a.nag = d.nag;
+    return a;
+  }
+  var sysBusy = false, sysDone = false;
+  async function sysEnsure() {
+    if (!(NATIVE && P) || sysBusy) return;
+    sysBusy = true;
+    try {
+      await reload();
+      var changed = false;
+      SYS.forEach(function (d) {
+        var i = -1;
+        for (var k = 0; k < list.length; k++) if (list[k].id === d.id) { i = k; break; }
+        if (i < 0) { list.push(sysBuild(d, !prefOff(d.g))); changed = true; }
+        else if (list[i].v !== SYS_V) { list[i] = sysBuild(d, list[i].on !== false); changed = true; }   // সংজ্ঞা বদলালে নতুনটা বসে, চালু/বন্ধ অবস্থা থাকে
+      });
+      if (changed) await persist();
+      sysDone = true;
+    } catch (e) { } finally { sysBusy = false; }
+  }
+  function ids(g) { return SYS.filter(function (d) { return d.g === g; }).map(function (d) { return d.id; }); }
+  async function sysToggle(g, on) {
+    setPrefOff(g, !on);
+    if (!(NATIVE && P)) return;
+    await sysEnsure();
+    await reload();
+    var mine = ids(g);
+    list.forEach(function (a) { if (mine.indexOf(a.id) >= 0) a.on = on; });
+    await persist();
+    if (!on && mine.indexOf(info.playingId) >= 0) { try { await P.stop({ nonag: true }); } catch (e) { } }
+  }
+  function nextText(ms) {
+    var d = new Date(ms), n = new Date(), t0 = new Date(n.getFullYear(), n.getMonth(), n.getDate()).getTime();
+    var day = ms < t0 + 864e5 ? "আজ " : ms < t0 + 2 * 864e5 ? "কাল " : bn(d.getDate()) + "/" + bn(d.getMonth() + 1) + " ";
+    return day + when(("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2));
+  }
+  var sysCard = null, sysTimer = 0;
+  function sysPaint() {
+    if (!sysCard) return;
+    ["baq", "jadu"].forEach(function (g) {
+      var row = sysCard.querySelector('[data-g="' + g + '"]'); if (!row) return;
+      var cb = row.querySelector("input"), sub = row.querySelector(".dsy-s");
+      var mine = ids(g), now = Date.now();
+      var on = !prefOff(g);
+      if (NATIVE && P) {
+        var found = list.filter(function (a) { return mine.indexOf(a.id) >= 0; });
+        if (found.length) on = found.some(function (a) { return a.on !== false; });
+      }
+      cb.checked = on;
+      row.classList.toggle("off", !on);
+      var playing = NATIVE && P && mine.indexOf(info.playingId) >= 0;
+      row.classList.toggle("play", !!playing);
+      if (!(NATIVE && P)) { sub.textContent = "অ্যালার্ম শুধু ইনস্টল করা অ্যাপে বাজে"; return; }
+      if (playing) { sub.textContent = "▶ বাজছে — বন্ধ করতে এখানে চাপুন"; return; }
+      if (!on) { sub.textContent = "বন্ধ আছে"; return; }
+      var nag = 0, nx = 0;
+      mine.forEach(function (id) {
+        var g2 = +info.nagAt[id] || 0; if (g2 > now && (!nag || g2 < nag)) nag = g2;
+        var n2 = +info.next[id] || 0; if (n2 > now && (!nx || n2 < nx)) nx = n2;
+      });
+      sub.textContent = nag ? "আবার বাজবে: " + nextText(nag) : nx ? "পরের বার: " + nextText(nx) : "—";
+    });
+  }
+  async function sysRefresh() {
+    if (NATIVE && P) { if (!sysDone) await sysEnsure(); try { await reload(); } catch (e) { } }
+    sysPaint();
+  }
+  /* হোম পাতার নিচের কার্ড: নিচের কার্ডের পরে, নেভিগেশন বারের উপরে */
+  window.__drSysCard = function (H) {
+    try {
+      var grid = H.querySelector(".drq-grid") || H;
+      if (grid.querySelector(".drq-sys")) return;
+      var sec = el("section", "drq-card drq-sys");
+      [["baq", "অটোমেটিক এলার্ম সূরা বাকারা"], ["jadu", "অটোমেটিক এলার্ম জাদু রিনিউ বন্ধের অডিও"]].forEach(function (x) {
+        var row = el("div", "dsy-row"); row.setAttribute("data-g", x[0]);
+        var tx = el("div", "dsy-t"); tx.setAttribute("role", "button"); tx.tabIndex = 0;
+        tx.appendChild(el("b", null, x[1]));
+        tx.appendChild(el("small", "dsy-s", ""));
+        tx.onclick = async function () {
+          if (!row.classList.contains("play")) return;
+          try { await P.stop({ nonag: false }); } catch (e) { }
+          setTimeout(sysRefresh, 400);
+        };
+        row.appendChild(tx);
+        var sw = el("label", "dsy-sw"); var cb = el("input"); cb.type = "checkbox"; cb.checked = true; cb.setAttribute("aria-label", x[1]);
+        cb.onchange = async function () {
+          var want = cb.checked;
+          try { await sysToggle(x[0], want); } catch (e) { cb.checked = !want; setPrefOff(x[0], want); }
+          sysRefresh();
+        };
+        sw.appendChild(cb); sw.appendChild(el("i"));
+        row.appendChild(sw);
+        sec.appendChild(row);
+      });
+      grid.appendChild(sec);
+      sysCard = sec;
+      sysPaint();
+      sysRefresh();
+      if (!sysTimer) sysTimer = setInterval(function () {
+        var h = document.getElementById("drLanding");
+        if (document.hidden || !h || h.hidden || !sysCard || !sysCard.isConnected) return;
+        sysRefresh();
+      }, 2500);
+    } catch (e) { }
+  };
+  window.DRSYS = { ensure: sysEnsure, refresh: sysRefresh };
+  { var H0 = document.getElementById("drLanding"); if (H0 && H0.querySelector(".drq-grid")) window.__drSysCard(H0); }
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) sysRefresh(); });
+  window.addEventListener("hashchange", function () { setTimeout(sysRefresh, 150); });
 
   window.DRALARM = {
     openWidget: openWidget,

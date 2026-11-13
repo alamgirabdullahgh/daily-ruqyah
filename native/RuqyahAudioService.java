@@ -26,6 +26,7 @@ import java.util.List;
 public class RuqyahAudioService extends Service {
     static final String STOP = "com.dailyruqyah.app.STOP_AUDIO";
     static volatile boolean playing = false;
+    static volatile int playingId = -1;
 
     private final Handler h = new Handler(Looper.getMainLooper());
     private MediaPlayer mp;
@@ -33,15 +34,27 @@ public class RuqyahAudioService extends Service {
     private List<List<String>> items = new ArrayList<>();
     private int repeat = 1, round = 0, idx = 0, cand = 0, fails = 0, attempts = 0;
     private boolean stopped = false;
+    private JSONObject cur = null;      // চলতি অ্যালার্ম
+    private int curId = -1;
+    private boolean persist = false;    // true হলে শেষ না হওয়া পর্যন্ত থামে না (সূরা বাকারা)
 
     @Override public IBinder onBind(Intent i) { return null; }
 
     @Override
     public int onStartCommand(Intent in, int flags, int startId) {
-        if (in != null && STOP.equals(in.getAction())) { finish(); return START_NOT_STICKY; }
+        if (in != null && STOP.equals(in.getAction())) { finish(!in.getBooleanExtra("nonag", false)); return START_NOT_STICKY; }
         String title = "রুকইয়াহ অডিও";
+        int startRound = 0, startIdx = 0;
         try {
-            JSONObject o = new JSONObject(in.getStringExtra("alarm"));
+            String js = in != null ? in.getStringExtra("alarm") : null;
+            if (js == null) { // সিস্টেম সার্ভিসটা মেরে আবার চালু করলে: শেষ জানা জায়গা থেকে চালায়
+                String rs = AlarmStore.sp(this).getString("resume", "");
+                if (!rs.isEmpty()) { JSONObject r = new JSONObject(rs); js = r.optString("alarm"); startRound = r.optInt("round"); startIdx = r.optInt("idx"); AlarmStore.log(this, "সার্ভিস আবার চালু: আগের জায়গা থেকে (" + startIdx + ")"); }
+            }
+            JSONObject o = new JSONObject(js);
+            cur = o;
+            curId = o.optInt("id", -1);
+            persist = o.optBoolean("persist", false);
             title = o.optString("title", title);
             repeat = Math.max(1, Math.min(20, o.optInt("repeat", 1)));
             JSONArray u = o.optJSONArray("urls");
@@ -54,23 +67,31 @@ public class RuqyahAudioService extends Service {
                 if (!l.isEmpty()) items.add(l);
             }
         } catch (Exception e) { }
-        startFg(title);
-        if (items.isEmpty()) { finish(); return START_NOT_STICKY; }
+        try { startFg(title); } catch (Throwable e) { AlarmStore.log(this, "ফোরগ্রাউন্ড শুরু হয়নি: " + e.getClass().getSimpleName()); }
+        if (items.isEmpty()) { finish(false); return START_NOT_STICKY; }
         playing = true;
+        playingId = curId;
         stopped = false;
-        round = 0; idx = 0; cand = 0; fails = 0; attempts = 0;
-        AlarmStore.log(this, "সার্ভিস শুরু: " + items.size() + "টি অডিও, " + repeat + " বার");
+        round = startRound; idx = Math.min(startIdx, items.size() - 1); cand = 0; fails = 0; attempts = 0;
+        AlarmStore.log(this, "সার্ভিস শুরু: " + items.size() + "টি অডিও, " + repeat + " বার" + (persist ? ", শেষ পর্যন্ত চলবে" : ""));
         try {
             PowerManager pm = getSystemService(PowerManager.class);
+            if (wl != null && wl.isHeld()) wl.release();
             wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "dailyruqyah:audio");
-            wl.acquire(3 * 60 * 60 * 1000L);
+            wl.acquire((persist ? 8L : 3L) * 60 * 60 * 1000L);
         } catch (Exception e) { }
         try {
             AudioManager am = getSystemService(AudioManager.class);
             am.requestAudioFocus(null, AudioManager.STREAM_ALARM, AudioManager.AUDIOFOCUS_GAIN);
         } catch (Exception e) { }
         playCurrent();
-        return START_NOT_STICKY;
+        return persist ? START_STICKY : START_NOT_STICKY;
+    }
+
+    // বাকারার মতো লম্বা অডিও: প্রতিটি আয়াত শেষে জায়গা মনে রাখে (সার্ভিস মরে গেলে সেখান থেকে চলে)
+    private void saveResume() {
+        if (!persist || cur == null) return;
+        try { AlarmStore.sp(this).edit().putString("resume", new JSONObject().put("alarm", cur.toString()).put("idx", idx).put("round", round).toString()).apply(); } catch (Exception e) { }
     }
 
     private void startFg(String title) {
@@ -98,17 +119,17 @@ public class RuqyahAudioService extends Service {
         if (stopped) return;
         if (idx >= items.size()) {
             round++; idx = 0;
-            if (round >= repeat) { finish(); return; }
+            if (round >= repeat) { finish(false); return; }
         }
         List<String> c = items.get(idx);
         if (cand >= c.size()) { // এই আয়াতের সব লিংক ব্যর্থ: পরেরটায়
             idx++; cand = 0; fails++;
-            if (fails >= 6) { // পরপর অনেকগুলো ব্যর্থ (নেট নেই?) — ২০ সেকেন্ড পরে আবার, সর্বোচ্চ ৫ বার
-                if (attempts < 5) {
+            if (fails >= 6) { // পরপর অনেকগুলো ব্যর্থ (নেট নেই?) — ২০ সেকেন্ড পরে আবার, সর্বোচ্চ ৫ বার (শেষ পর্যন্ত-চলা অডিওতে সীমা নেই)
+                if (attempts < 5 || persist) {
                     attempts++; fails = 0; idx = 0; cand = 0;
                     AlarmStore.log(this, "অডিও চালানো যায়নি, ২০ সেকেন্ড পরে আবার চেষ্টা (" + attempts + "/৫)");
                     h.postDelayed(this::playCurrent, 20000);
-                } else { AlarmStore.log(this, "বারবার চেষ্টা করেও অডিও চালানো যায়নি"); finish(); }
+                } else { AlarmStore.log(this, "বারবার চেষ্টা করেও অডিও চালানো যায়নি"); finish(false); }
                 return;
             }
             h.post(this::playCurrent);
@@ -123,7 +144,7 @@ public class RuqyahAudioService extends Service {
             if (src.startsWith("/") && !new java.io.File(src).exists()) throw new java.io.FileNotFoundException(src);
             mp.setDataSource(src);
             mp.setOnPreparedListener(m -> { if (!stopped) { fails = 0; m.start(); AlarmStore.log(this, "অডিও বাজছে"); } });
-            mp.setOnCompletionListener(m -> { idx++; cand = 0; h.post(this::playCurrent); });
+            mp.setOnCompletionListener(m -> { idx++; cand = 0; saveResume(); h.post(this::playCurrent); });
             mp.setOnErrorListener((m, w, x) -> { AlarmStore.log(this, "প্লেয়ার ত্রুটি " + w + "/" + x); cand++; h.post(this::playCurrent); return true; });
             mp.prepareAsync();
         } catch (Exception e) {
@@ -133,14 +154,23 @@ public class RuqyahAudioService extends Service {
         }
     }
 
-    private void finish() {
+    // manual = ব্যবহারকারী নিজে বন্ধ করেছেন; অ্যালার্মে "nag" (মিনিট) থাকলে সেই সময় পরে আবার বাজবে। শেষ পর্যন্ত বাজলে/ব্যর্থ হলে আবার-বাজা নেই
+    private void finish(boolean manual) {
         stopped = true;
         playing = false;
+        int id = curId; JSONObject o = cur;
+        playingId = -1;
         h.removeCallbacksAndMessages(null);
         release();
         try { if (wl != null && wl.isHeld()) wl.release(); } catch (Exception e) { }
         try { getSystemService(AudioManager.class).abandonAudioFocus(null); } catch (Exception e) { }
-        stopForeground(true);
+        try { AlarmStore.sp(this).edit().remove("resume").apply(); } catch (Exception e) { }
+        if (manual && o != null && id >= 0) {
+            int nag = o.optInt("nag", 0);
+            JSONObject fresh = AlarmStore.find(this, id);
+            if (nag > 0 && fresh != null && fresh.optBoolean("on", true)) AlarmStore.scheduleNag(this, id, nag);
+        }
+        try { stopForeground(true); } catch (Throwable e) { }
         stopSelf();
     }
 
@@ -148,6 +178,7 @@ public class RuqyahAudioService extends Service {
     public void onDestroy() {
         stopped = true;
         playing = false;
+        playingId = -1;
         release();
         try { if (wl != null && wl.isHeld()) wl.release(); } catch (Exception e) { }
         super.onDestroy();

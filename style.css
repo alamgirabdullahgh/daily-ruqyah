@@ -593,3 +593,26 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 .dr-main>.rs-box{background:var(--card-bg)!important;border:1px solid var(--border-light)!important;border-radius:22px!important;box-shadow:var(--shadow-card)!important;padding:12px 10px 20px!important}
 .dr-main>.rs-box>.dr-backrow{margin:0 0 8px 2px}
 #drSym #za{border:0;border-radius:0;padding:0;background:transparent}
+
+/* হোম ছাড়া অন্য কোনো পাতায় উইজেট ও "Daily Ruqyah" হেডিং দেখা যায় না */
+body:not(.is-home) #drHero{display:none!important}
+body:not(.is-home) .dr-main{padding-top:calc(env(safe-area-inset-top) + 14px)}
+body:not(.is-home) .dr-rtop{top:env(safe-area-inset-top)}
+html:has(body:not(.is-home)){scroll-padding-top:calc(env(safe-area-inset-top) + 12px)}
+
+/* হোমের নিচের দুই লাইনের অটোমেটিক এলার্ম কার্ড */
+.drq-card.drq-sys{padding:4px 16px}
+.drq-sys .dsy-row{display:flex;align-items:center;gap:12px;padding:11px 0}
+.drq-sys .dsy-row+.dsy-row{border-top:1px solid var(--border-light)}
+.drq-sys .dsy-t{flex:1;min-width:0}
+.drq-sys .dsy-t b{display:block;font-size:14.5px;font-weight:700;color:var(--primary);line-height:1.35}
+.drq-sys .dsy-s{display:block;margin-top:2px;font-size:12px;color:var(--text-muted)}
+.drq-sys .dsy-row.play .dsy-t{cursor:pointer}
+.drq-sys .dsy-row.play .dsy-s{color:var(--success);font-weight:700}
+.drq-sys .dsy-row.off .dsy-t b{opacity:.55}
+.dsy-sw{position:relative;display:inline-block;width:36px;height:20px;flex:none}
+.dsy-sw input{position:absolute;opacity:0;width:0;height:0}
+.dsy-sw i{position:absolute;inset:0;background:var(--border);border-radius:20px;transition:.2s}
+.dsy-sw i::before{content:"";position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.dsy-sw input:checked+i{background:var(--primary)}
+.dsy-sw input:checked+i::before{transform:translateX(16px)}

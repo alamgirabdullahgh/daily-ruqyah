@@ -38,6 +38,21 @@ public class AudioAlarmPlugin extends Plugin {
         boolean n = Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(getContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
         r.put("notif", n);
         r.put("playing", RuqyahAudioService.playing);
+        r.put("playingId", RuqyahAudioService.playing ? RuqyahAudioService.playingId : -1);
+        // প্রতিটি অ্যালার্মের পরের বাজার সময় ও (বন্ধ করার পর) আবার-বাজার সময়
+        JSObject nx = new JSObject(), ng = new JSObject();
+        long now = System.currentTimeMillis();
+        JSONArray la = AlarmStore.load(getContext());
+        for (int i = 0; i < la.length(); i++) {
+            JSONObject o = la.optJSONObject(i);
+            if (o == null) continue;
+            String k = String.valueOf(o.optInt("id"));
+            nx.put(k, o.optBoolean("on", true) ? AlarmStore.nextTime(getContext(), o, now) : -1L);
+            long g = AlarmStore.sp(getContext()).getLong("nag_" + k, 0L);
+            if (g > now) ng.put(k, g);
+        }
+        r.put("next", nx);
+        r.put("nagAt", ng);
         boolean b = true;
         try { b = Build.VERSION.SDK_INT < 23 || getContext().getSystemService(android.os.PowerManager.class).isIgnoringBatteryOptimizations(getContext().getPackageName()); } catch (Exception e) { }
         r.put("battery", b);
@@ -114,7 +129,7 @@ public class AudioAlarmPlugin extends Plugin {
     @PluginMethod
     public void stop(PluginCall call) {
         try {
-            getContext().startService(new Intent(getContext(), RuqyahAudioService.class).setAction(RuqyahAudioService.STOP));
+            getContext().startService(new Intent(getContext(), RuqyahAudioService.class).setAction(RuqyahAudioService.STOP).putExtra("nonag", call.getBoolean("nonag", false)));
         } catch (Exception e) { }
         call.resolve();
     }

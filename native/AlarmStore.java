@@ -63,8 +63,36 @@ public class AlarmStore {
     }
 
     // পরের বাজার সময় (মিলিসেকেন্ড); কোনো দিনই না মিললে -1
-    static long nextTime(JSONObject o, long now) {
+    // সূর্যোদয়/সূর্যাস্ত-ভিত্তিক সময় (rel = "sunrise" | "sunset", off = মিনিটের সমন্বয়, notBefore = "asr"): দিনের তারিখে ফোনের অবস্থান থেকে হিসাব (উইজেটের হিসাবের হুবহু)
+    static long relMillis(Context c, JSONObject o, int dayOffset) {
         try {
+            Cfg cfg = new Cfg(c);
+            java.time.ZoneId z = java.time.ZoneId.systemDefault();
+            java.time.LocalDate date = java.time.LocalDate.now(z).plusDays(dayOffset);
+            double tz = z.getRules().getOffset(date.atStartOfDay(z).toInstant()).getTotalSeconds() / 3600.0;
+            Prayer.T t = Prayer.INSTANCE.times(date, cfg.lat(), cfg.lng(), tz, 18.0, 18.0, cfg.getHanafi());
+            double hrs = "sunrise".equals(o.optString("rel", "")) ? t.getSunrise() : t.getMaghrib();
+            int mins = Prayer.INSTANCE.minutes(hrs) + o.optInt("off", 0);
+            if ("asr".equals(o.optString("notBefore", ""))) mins = Math.max(mins, Prayer.INSTANCE.minutes(t.getAsr()));
+            return date.atStartOfDay(z).plusMinutes(mins).toInstant().toEpochMilli();
+        } catch (Throwable e) { return -1; }
+    }
+
+    static long nextTime(Context ctx, JSONObject o, long now) {
+        try {
+            String rel = o.optString("rel", "");
+            if (!rel.isEmpty()) {
+                JSONArray dd = o.optJSONArray("days");
+                for (int d = 0; d <= 8; d++) {
+                    long tt = relMillis(ctx, o, d);
+                    if (tt < 0 || tt <= now + 1000) continue;
+                    int dow = java.time.Instant.ofEpochMilli(tt).atZone(java.time.ZoneId.systemDefault()).getDayOfWeek().getValue() % 7; // 0 = রবিবার
+                    boolean ok = dd == null || dd.length() == 0;
+                    if (!ok) for (int k = 0; k < dd.length(); k++) if (dd.optInt(k, -1) == dow) ok = true;
+                    if (ok) return tt;
+                }
+                return -1;
+            }
             String[] hm = o.optString("time", "05:00").split(":");
             int h = Integer.parseInt(hm[0]), m = Integer.parseInt(hm[1]);
             JSONArray days = o.optJSONArray("days");
@@ -86,6 +114,33 @@ public class AlarmStore {
         return -1;
     }
 
+    // বন্ধ করার পর "আবার বাজবে" (nag): আলাদা একবারের অ্যালার্ম, নিয়মিত সময়ের সাথে মেশে না
+    private static PendingIntent piNag(Context c, int id, int flags) {
+        Intent i = new Intent(c, AlarmReceiver.class).setAction(ACTION).putExtra("id", id).putExtra("nag", true);
+        return PendingIntent.getBroadcast(c, 100000 + id, i, flags | PendingIntent.FLAG_IMMUTABLE);
+    }
+
+    static void scheduleNag(Context c, int id, int minutes) {
+        try {
+            AlarmManager am = c.getSystemService(AlarmManager.class);
+            long t = System.currentTimeMillis() + minutes * 60000L;
+            PendingIntent p = piNag(c, id, PendingIntent.FLAG_UPDATE_CURRENT);
+            if (canExact(c)) {
+                PendingIntent show = PendingIntent.getActivity(c, 5, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+                am.setAlarmClock(new AlarmManager.AlarmClockInfo(t, show), p);
+            } else am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, t, p);
+            sp(c).edit().putLong("nag_" + id, t).apply();
+            log(c, "বন্ধ করা হয়েছে — " + minutes + " মিনিট পরে আবার বাজবে (id " + id + ")");
+        } catch (Exception e) { }
+    }
+
+    static void cancelNag(Context c, int id) {
+        try {
+            c.getSystemService(AlarmManager.class).cancel(piNag(c, id, PendingIntent.FLAG_UPDATE_CURRENT));
+            sp(c).edit().remove("nag_" + id).apply();
+        } catch (Exception e) { }
+    }
+
     // আগের সব বসানো অ্যালার্ম বাতিল করে চালু থাকাগুলোর পরের সময় বসায়
     static void scheduleAll(Context c) {
         AlarmManager am = c.getSystemService(AlarmManager.class);
@@ -100,8 +155,9 @@ public class AlarmStore {
         boolean exact = canExact(c);
         for (int i = 0; i < a.length(); i++) {
             JSONObject o = a.optJSONObject(i);
-            if (o == null || !o.optBoolean("on", true)) continue;
-            long t = nextTime(o, now);
+            if (o == null) continue;
+            if (!o.optBoolean("on", true)) { cancelNag(c, o.optInt("id")); continue; }
+            long t = nextTime(c, o, now);
             if (t < 0) continue;
             int id = o.optInt("id");
             PendingIntent p = pi(c, id, PendingIntent.FLAG_UPDATE_CURRENT);
