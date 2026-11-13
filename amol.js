@@ -1,7 +1,7 @@
 /* আমল ও চিকিৎসা-নির্দেশিকা — data/amol-guide.json থেকে পাতা আঁকে। আয়াত দেখায় অ্যাপের নিজস্ব কুরআন-ডেটা (__drChunk) থেকে। */
 (function(){
  var SN={1:"ফাতিহা",2:"বাকারা",3:"আলে ইমরান",6:"আন'আম",7:"আ'রাফ",8:"আনফাল",10:"ইউনুস",11:"হূদ",12:"ইউসুফ",13:"রা'দ",15:"হিজর",16:"নাহল",18:"কাহফ",20:"ত্ব-হা",21:"আম্বিয়া",24:"নূর",25:"ফুরকান",27:"নামল",28:"কাসাস",29:"আনকাবুত",30:"রূম",31:"লুকমান",33:"আহযাব",35:"ফাতির",36:"ইয়াসীন",37:"সাফফাত",39:"যুমার",41:"ফুসসিলাত",43:"যুখরুফ",44:"দুখান",50:"ক্বাফ",54:"কামার",59:"হাশর",67:"মুলক",68:"কালাম",71:"নূহ",72:"জিন",85:"বুরূজ",94:"ইনশিরাহ",95:"তীন",99:"যিলযাল",105:"ফীল",112:"ইখলাস",113:"ফালাক",114:"নাস"};
- var BD="০১২৩৪৫৬৭৮৯",DATA=null,ST={},CAT="daily",COND="",ITEM=-1,Q="",box=null,loading=null;
+ var BD="০১২৩৪৫৬৭৮৯",DATA=null,ST={},CAT="daily",COND="",GRP="",ITEM=-1,Q="",box=null,loading=null;
  var bn=function(n){return String(n).replace(/\d/g,function(d){return BD[d]})};
  var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
  var GC={"সহীহ হাদিস":"h","কুরআন":"q"};
@@ -65,7 +65,8 @@
   if(!box||!DATA)return;
   var cd=COND?DATA.conds.filter(function(x){return x.id===COND})[0]:null;
   if(!cd){
-   box.innerHTML='<h2 class="am-h">ট্রিটমেন্ট</h2><div class="am-cl">'+DATA.conds.map(function(c){return'<button type="button" class="am-cond" data-k="'+c.id+'"><i>'+c.icon+'</i><span>'+esc(c.title)+'</span><b>›</b></button>'}).join("")+'</div>';
+   var vis=DATA.conds.filter(function(c){return !GRP||c.items.some(function(r){return(r[0].indexOf("b2")===0?"jadu":"jin")===GRP})});
+   box.innerHTML='<h2 class="am-h">'+(GRP==="jadu"?"জাদু — ট্রিটমেন্ট":GRP==="jin"?"জিন — ট্রিটমেন্ট":"ট্রিটমেন্ট")+'</h2><div class="am-cl">'+vis.map(function(c){return'<button type="button" class="am-cond" data-k="'+c.id+'"><i>'+c.icon+'</i><span>'+esc(c.title)+'</span><b>›</b></button>'}).join("")+'</div>';
    return;
   }
   var sc=ST[cd.id];
@@ -115,7 +116,7 @@
  }
  window.__drAmol=function(sub){
   init();if(!box)return;
-  COND=(sub&&/^c-/.test(sub))?sub:"";ITEM=-1;
+  COND=(sub&&/^c-/.test(sub))?sub:"";GRP=/^b2/.test(sub||"")?"jadu":/^b1/.test(sub||"")?"jin":(COND?GRP:"");ITEM=-1;
   if(DATA){draw();return}
   box.innerHTML='<div class="am-load">লোড হচ্ছে…</div>';
   load().then(draw).catch(function(){box.innerHTML='<div class="am-load">তথ্য লোড করা যায়নি। ইন্টারনেট চালু করে আবার খুলুন।</div>'});
