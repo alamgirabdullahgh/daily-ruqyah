@@ -9,7 +9,7 @@
   if(DATA)return Promise.resolve(DATA);
   if(loading)return loading;
   var u=function(p){return new URL(p,location.href).href};
-  loading=Promise.all([fetch(u("data/amol-guide.json?v=8")).then(function(r){if(!r.ok)throw 0;return r.json()}),fetch(u("data/amol-struct.json?v=1")).then(function(r){return r.ok?r.json():{conds:{}}}).catch(function(){return{conds:{}}})]).then(function(x){DATA=x[0];ST=(x[1]&&x[1].conds)||{};return DATA}).catch(function(e){loading=null;throw e});
+  loading=Promise.all([fetch(u("data/amol-guide.json?v=8")).then(function(r){if(!r.ok)throw 0;return r.json()}),fetch(u("data/amol-struct.json?v=2")).then(function(r){return r.ok?r.json():{conds:{}}}).catch(function(){return{conds:{}}})]).then(function(x){DATA=x[0];ST=(x[1]&&x[1].conds)||{};return DATA}).catch(function(e){loading=null;throw e});
   return loading;
  }
  function refLabel(r){var n=SN[r[0]]||("সূরা "+bn(r[0]));return "সূরা "+n+" "+bn(r[0])+":"+bn(r[1])+(r[2]?"-"+bn(r[2]):"")}
@@ -29,7 +29,7 @@
   return out.map(function(x,i){return'<p'+(i&&x.g?' class="gp"':'')+'>'+esc(x.s)+'</p>'}).join("");
  }
 
- function stepsHtml(a){return a.map(function(s){return'<div class="am-st"><h4>'+esc(s.h)+'</h4>'+(s.p||[]).map(function(x){return'<p>'+esc(x)+'</p>'}).join("")+(s.ul?'<ul>'+s.ul.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ul>':'')+(s.ol?'<ol'+(s.start>1?' start="'+s.start+'"':'')+'>'+s.ol.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ol>':'')+'</div>'}).join("")}
+ function stepsHtml(a){return a.map(function(s){return'<div class="am-st">'+(s.h?'<h4>'+esc(s.h)+'</h4>':'')+(s.p||[]).map(function(x){return'<p>'+esc(x)+'</p>'}).join("")+(s.ul?'<ul>'+s.ul.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ul>':'')+(s.ol?'<ol'+(s.start>1?' start="'+s.start+'"':'')+'>'+s.ol.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ol>':'')+'</div>'}).join("")}
  function refsHtml(rs){return'<div class="am-refs">'+rs.map(function(r){return'<details class="am-ref" data-r="'+r.join(",")+'"><summary>'+esc(refLabel(r))+'</summary><div class="am-v">লোড হচ্ছে…</div></details>'}).join("")+'</div>'}
  function card(it){
   var h='<article class="am-it" data-t="'+esc(it.t.toLowerCase())+'">';
@@ -71,7 +71,7 @@
   var sc=ST[cd.id];
   if(sc&&sc.treat){
    var ox=cd.items.map(function(r){return card(itemOf(r))}).join("");
-   box.innerHTML='<button type="button" class="am-back" data-to="a">← সব রোগ/সমস্যা</button><h2 class="am-h"><i>'+cd.icon+'</i> '+esc(cd.title)+'</h2><div class="am-lk">'+(sc.sym?'<a href="#diag/'+(cd.items[0][0].indexOf("b2")===0?"jadu":"jin")+'">লক্ষণ</a>':'')+(sc.resp?'<a href="#resp/'+(cd.items[0][0].indexOf("b2")===0?"jadu":"jin")+'">রেসপন্স</a>':'')+'</div><h3 class="am-sh">ট্রিটমেন্ট</h3>'+stepsHtml(sc.treat)+(sc.refs&&sc.refs.length?refsHtml(sc.refs):'')+'<details class="am-orig"><summary>বইয়ের মূল লেখা (অপরিবর্তিত)</summary>'+ox+'</details>';
+   box.innerHTML='<button type="button" class="am-back" data-to="a">← সব রোগ/সমস্যা</button><h2 class="am-h"><i>'+cd.icon+'</i> '+esc(cd.title)+'</h2><div class="am-lk">'+(sc.sym?'<a href="#diag/'+(cd.items[0][0].indexOf("b2")===0?"jadu":"jin")+'">লক্ষণ</a>':'')+(sc.resp?'<a href="#resp/'+(cd.items[0][0].indexOf("b2")===0?"jadu":"jin")+'">রেসপন্স</a>':'')+'</div><h3 class="am-sh">ট্রিটমেন্ট</h3>'+stepsHtml(sc.treat)+(sc.refs&&sc.refs.length?refsHtml(sc.refs):'')+(sc.mud?'<details class="am-orig"><summary>মুদাব্বিরের (চিকিৎসকের) জন্য নির্দেশ — রোগীর প্রয়োজন নেই</summary>'+stepsHtml(sc.mud)+'</details>':'')+'<details class="am-orig"><summary>বইয়ের মূল লেখা (অপরিবর্তিত)</summary>'+ox+'</details>';
    return;
   }
   if(cd.items.length===1&&ITEM<0)ITEM=0;
