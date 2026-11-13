@@ -13,7 +13,7 @@
   if(built)return;
   var H=document.getElementById("drLanding");if(!H)return;
   built=true;
-  var h='<div class="drq-support" aria-live="off"><div class="drq-st dsy-fit" id="drSupSt"></div><div class="drq-tk" id="drSupTk"><span></span></div></div><div class="drq-grid">';
+  var h='<div class="drq-support" aria-live="off"><div class="drq-st dsy-fit" id="drSupSt" hidden><span class="drq-st-t"></span><a class="drq-wa" href="https://wa.me/8801938327130" target="_blank" rel="noopener" aria-label="হোয়াটসঅ্যাপে যোগাযোগ: ০১৯৩৮৩২৭১৩০" title="হোয়াটসঅ্যাপ: ০১৯৩৮৩২৭১৩০"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="#25D366" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2z"/><path fill="#fff" d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35z"/></svg></a></div><div class="drq-tk" id="drSupTk"><span></span></div></div><div class="drq-grid">';
   var TS=1,TE=3; /* G[TS..TE] = বদনজর · জাদু · জিন: এক কার্ডে ট্যাব; চতুর্থ ট্যাব "সব": একই তিন অপশন, তবে তিন বিষয়ের ফল একসাথে এক পাতায় */
   var item=function(o){
    var t=o[1];
@@ -39,7 +39,7 @@
   H.innerHTML=h+'</div>';
   window.__drSysCard&&window.__drSysCard(H);
   var tk=document.getElementById("drSupTk");
-  var startTk=function(){if(window.__drTicker)window.__drTicker(tk,function(){var a=(window.__drSunnahRules&&window.__drSunnahRules.support)||[];var st=document.getElementById("drSupSt");var s0=a.filter(function(x){return /হাদিয়া/.test(x)})[0]||a[0]||"";if(st&&st.textContent!==s0)st.textContent=s0;return a.filter(function(x){return x!==s0})});else setTimeout(startTk,300)};
+  var startTk=function(){if(window.__drTicker)window.__drTicker(tk,function(){var a=(window.__drSunnahRules&&window.__drSunnahRules.support)||[];var st=document.getElementById("drSupSt");var s0=a.filter(function(x){return /হাদিয়া/.test(x)})[0]||a[0]||"";if(st){var tt=st.querySelector(".drq-st-t");if(tt&&tt.textContent!==s0)tt.textContent=s0;st.hidden=!s0}return a.filter(function(x){return x!==s0})});else setTimeout(startTk,300)};
   startTk();
   H.addEventListener("click",function(e){
    

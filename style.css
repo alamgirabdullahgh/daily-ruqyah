@@ -664,3 +664,7 @@ html:has(body:not(.is-home)){scroll-padding-top:calc(env(safe-area-inset-top) + 
 .drq-sys .dsy-two .dsy-row{flex:1 1 0;min-width:0;gap:8px;padding:6px 0 8px;border-top:0}
 .drq-sys .dsy-two .dsy-t b{font-size:13.5px}
 .drq-sys .dsy-two .dsy-s{font-size:11px}
+.drq-st{display:flex;align-items:center}
+.drq-st[hidden]{display:none}
+.drq-st-t{flex:none;margin-left:auto}
+.drq-wa{flex:none;display:inline-flex;margin:0 auto 0 8px;line-height:0}
