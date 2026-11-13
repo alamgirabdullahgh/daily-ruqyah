@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- লেখা ছোট করা হয় না: ১২sp বোল্ড, জায়গায় না ধরলে দুই লাইনে ভাঙে -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/sl_t"
     android:layout_width="match_parent"
-    android:layout_height="14dp"
-    android:autoSizeMaxTextSize="9sp"
-    android:autoSizeMinTextSize="6sp"
-    android:autoSizeStepGranularity="0.5sp"
-    android:autoSizeTextType="uniform"
+    android:layout_height="match_parent"
     android:ellipsize="end"
     android:gravity="center"
     android:includeFontPadding="false"
-    android:maxLines="1"
+    android:lineSpacingExtra="0dp"
+    android:maxLines="2"
     android:textColor="@color/w_sunnah"
-    android:textSize="9sp"
+    android:textSize="12sp"
     android:textStyle="bold" />
