@@ -323,7 +323,7 @@
         setA(q(".drw-pr"), "d", "M3,24A57,19 0 0 1 " + g.x + "," + g.y);
         ["s1", "s2", "s3"].forEach(function (k) { var c = q(".drw-" + k); setA(c, "cx", g.x); setA(c, "cy", g.y); });
         var L = q(".drw-sl-sun");
-        if (L) { setT(L, g.txt); var tf = "translateX(-" + g.pc + "%)"; if (L.style.left !== g.pc + "%") L.style.left = g.pc + "%"; if (L.style.transform !== tf) L.style.transform = tf; if (L.style.top !== g.top) L.style.top = g.top; }
+        if (L) { setT(L, g.txt); }   // লেখা অক্ষরেখার মাঝখানে স্থির; শুধু বাকি সময় বদলায়
       }
       var hh = now.getHours() % 12 || 12, mm = ("0" + now.getMinutes()).slice(-2);
       setT(q(".drw-time b"), hh + ":" + mm);
@@ -346,7 +346,7 @@
         if (g) {
           o += '<path class="drw-pr" d="M3,24A57,19 0 0 1 ' + g.x + ',' + g.y + '" fill="none" stroke="#FFA000" stroke-width="1.3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>' +
             '<circle class="drw-s1" cx="' + g.x + '" cy="' + g.y + '" r="5.2" fill="#FFC21A" fill-opacity=".35"/><circle class="drw-s2" cx="' + g.x + '" cy="' + g.y + '" r="2.6" fill="#FFB300"/><circle class="drw-s3" cx="' + g.x + '" cy="' + g.y + '" r="1.4" fill="#FFE082"/>';
-          lab = '<div class="drw-sl-sun" style="left:' + g.pc + '%;transform:translateX(-' + g.pc + '%);top:' + g.top + '">' + g.txt + '</div>';
+          lab = '<div class="drw-sl-sun" style="left:50%;transform:translateX(-50%);top:13px">' + g.txt + '</div>';
         }
         return o + '</svg>' + lab;
       })();

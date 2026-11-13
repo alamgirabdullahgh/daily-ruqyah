@@ -401,15 +401,13 @@ class ClockWidget : AppWidgetProvider() {
                 }
                 cv.drawCircle(sx, sy, 3.4f * d, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFFFFB300.toInt() })
                 cv.drawCircle(sx, sy, 2.1f * d, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFFFFE082.toInt() })
-                // সূর্যের নিচে বাকি সময়; দুই প্রান্তে কেটে না যায় তাই ভেতরে টেনে আনা
+                // বাকি সময়
                 val tp = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     textSize = 8.5f * d; isFakeBoldText = true; textAlign = Paint.Align.CENTER
                     color = if (dark) 0xFFFFC857.toInt() else 0xFFB36B00.toInt()
                 }
-                val half = tp.measureText(label) / 2f
-                val tx = sx.coerceIn(half + 2f * d, (w - half - 2f * d).coerceAtLeast(half + 2f * d))
-                val ty = (sy + 12f * d).coerceAtMost(h - 2f * d)
-                cv.drawText(label, tx, ty, tp)
+                // লেখা সূর্যের সাথে চলে না: অক্ষরেখার ঠিক মাঝখানে, রেখার নিচে স্থির
+                cv.drawText(label, cx, 22f * d, tp)
             }
             return bmp
         }
