@@ -553,3 +553,11 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 
 .drq-pin{display:block;width:100%;margin:14px 0 6px;padding:13px 14px;border:1.5px solid var(--accent);border-radius:16px;background:var(--accent-light);color:var(--primary);font:inherit;font-weight:700;font-size:15px;cursor:pointer}
 .drq-pin:active{opacity:.8}
+
+/* বদনজর · জাদু · জিন — এক কার্ডে তিন ট্যাব (এক লাইনে) */
+.drq-tabs{gap:6px 18px!important}
+.drq-tabs::before{display:none!important}
+.drq-tab{flex:none;display:inline-flex;align-items:center;gap:7px;border:0;background:none;padding:0 0 5px;font:inherit;font-size:19px;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:3px solid transparent;-webkit-tap-highlight-color:transparent;transition:color .15s,border-color .15s}
+.drq-tab.on{color:var(--primary);font-weight:700;border-bottom-color:var(--accent)}
+.drq-tab.on::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block}
+.drq-opts[hidden]{display:none}
