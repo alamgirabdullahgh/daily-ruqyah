@@ -273,13 +273,13 @@ class ClockWidget : AppWidgetProvider() {
                 for (t in (if (sn.size == 1) sn + sn else sn)) {
                     val item = RemoteViews(ctx.packageName, R.layout.widget_sl_item)
                     item.setTextViewText(R.id.sl_t, t)
-                    // লেখা এক লাইনে বড় রাখা; শুধু জায়গা না ধরলে সামান্য কমে (১০sp এর নিচে নয়)
+                    // লেখা ছোট করা হয় না; বাক্সের প্রস্থ লেখার সমান, পুরোটা ধীরে ডান থেকে বামে যায়
                     val dm = ctx.resources.displayMetrics
-                    val availPx = (widthDp - 245f * k) * dm.density * 0.97f
                     val pt = Paint(Paint.ANTI_ALIAS_FLAG).apply { isFakeBoldText = true; textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12f * k, dm) }
-                    val need = pt.measureText(t)
-                    val sp = if (need <= availPx || need <= 0f) 12f * k else (12f * k * availPx / need).coerceAtLeast(9.5f * k)
-                    item.setTextViewTextSize(R.id.sl_t, TypedValue.COMPLEX_UNIT_SP, sp)
+                    item.setTextViewTextSize(R.id.sl_t, TypedValue.COMPLEX_UNIT_SP, 12f * k)
+                    if (android.os.Build.VERSION.SDK_INT >= 31) {
+                        item.setViewLayoutWidth(R.id.sl_t, Math.ceil(pt.measureText(t).toDouble()).toFloat() + 8f * dm.density, TypedValue.COMPLEX_UNIT_PX)
+                    }
                     rv.addView(R.id.zz_sl, item)
                 }
             }

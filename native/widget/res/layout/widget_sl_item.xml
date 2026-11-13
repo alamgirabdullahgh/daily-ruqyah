@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- এক লাইন, বড় লেখা; জায়গায় না ধরলে কোড থেকে সামান্য ছোট করা হয় (১০sp এর নিচে নয়) -->
+<!-- লেখা ছোট/ভাঙা/কাটা হয় না: ১২sp বোল্ড, এক লাইন; বাক্সের প্রস্থ কোড থেকে লেখার সমান করা হয় (এখানের ৩০০dp শুধু ভরসা) -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/sl_t"
-    android:layout_width="match_parent"
+    android:layout_width="300dp"
     android:layout_height="match_parent"
-    android:ellipsize="end"
-    android:gravity="center"
+    android:ellipsize="none"
+    android:gravity="center_vertical|start"
     android:includeFontPadding="false"
     android:maxLines="1"
+    android:scrollHorizontally="false"
+    android:singleLine="true"
     android:textColor="@color/w_sunnah"
     android:textSize="12sp"
     android:textStyle="bold" />

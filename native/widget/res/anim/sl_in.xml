@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- নতুন লেখা ডান দিক থেকে ঢোকে (বাংলার পড়ার দিক) -->
+<!-- লেখার বাক্স ডান কিনারার বাইরে থেকে ধীরে ধীরে বাম কিনারার বাইরে পর্যন্ত যায় (অ্যাপের পট্টির মতো); শেষে ওখানেই থাকে -->
 <translate xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="550"
-    android:fromXDelta="100%"
-    android:interpolator="@android:anim/decelerate_interpolator"
-    android:toXDelta="0%" />
+    android:duration="9000"
+    android:fillAfter="true"
+    android:fromXDelta="100%p"
+    android:interpolator="@android:anim/linear_interpolator"
+    android:toXDelta="-100%" />
