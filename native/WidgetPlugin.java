@@ -196,10 +196,12 @@ public class WidgetPlugin extends Plugin {
     public void card(final PluginCall call) {
         final boolean vis = Boolean.TRUE.equals(call.getBoolean("visible", true));
         final double x = call.getDouble("x", 0.0), y = call.getDouble("y", 0.0), w = call.getDouble("w", 0.0);
+        if (getActivity() == null) { call.reject("activity-not-ready"); return; }
         getActivity().runOnUiThread(() -> {
             try {
                 float d = getContext().getResources().getDisplayMetrics().density;
                 ViewGroup parent = (ViewGroup) getBridge().getWebView().getParent();
+                if (cardView != null && cardView.getParent() != parent) { parent.removeView(cardView); cardView = null; }
                 int wdp = (int) Math.max(200, Math.round(w));
                 if (cardView == null || cardW != wdp) {
                     if (cardView != null) parent.removeView(cardView);

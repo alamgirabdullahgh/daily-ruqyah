@@ -466,18 +466,31 @@
       var r = el.getBoundingClientRect(), cs = getComputedStyle(el);
       var pl = parseFloat(cs.paddingLeft) || 0, pr = parseFloat(cs.paddingRight) || 0;
       var full = r.width - pl - pr, w = Math.min(full, 660), x = r.left + pl + (full - w) / 2, y = r.top + 12;
-      var top = null;
-      try { top = document.elementFromPoint(Math.max(0, Math.min(innerWidth - 1, r.left + r.width / 2)), Math.max(0, Math.min(innerHeight - 1, r.top + 6))); } catch (e) { }
-      var shown = r.width > 0 && r.bottom > 0 && r.top < innerHeight && !document.hidden && !!top && (top === el || el.contains(top));
+      var shown = r.width > 0 && r.bottom > 0 && r.top < innerHeight && !document.hidden && !document.body.classList.contains("dr-lock");
+      if (shown) {
+        // উপরে অন্য কিছু (সাইডবার/স্ক্রিম/ওভারলে) ঢেকে থাকলে লুকাই; হেডারের নিজের অংশ (ফাঁক, ব্র্যান্ড) ঢাকা ধরা হয় না
+        var hdr = el.closest ? (el.closest("header") || el) : el, covered = 0, pts = [0.2, 0.5, 0.8];
+        for (var k = 0; k < pts.length; k++) {
+          var px = Math.max(0, Math.min(innerWidth - 1, r.left + r.width * pts[k])), py = Math.max(0, Math.min(innerHeight - 1, r.top + 20));
+          var t2 = null;
+          try { t2 = document.elementFromPoint(px, py); } catch (e) { }
+          if (t2 && !(t2 === hdr || hdr.contains(t2))) covered++;
+        }
+        if (covered === pts.length) shown = false;
+      }
       var key = [shown, Math.round(x), Math.round(y), Math.round(w)].join();
-      if (key === last && !force) return;
+      if (key === last && !force && h) return;
       last = key;
       NW.card({ visible: shown, x: x, y: y, w: w }).then(function (o) {
         failed = 0;
         if (o && o.h && Math.abs(o.h + 12 - h) > 1) { h = o.h + 12; el.style.minHeight = h + "px"; el.style.height = h + "px"; }
-      }, function () { if (++failed > 3) { clearInterval(iv); NW.card({ visible: false, x: 0, y: 0, w: 300 }).catch(function () { }); el.removeAttribute("data-drw"); el.style.cssText = "padding:0 12px"; mount(el); } });
+      }, function () { last = ""; if (++failed > 24) { clearInterval(iv); NW.card({ visible: false, x: 0, y: 0, w: 300 }).catch(function () { }); el.removeAttribute("data-drw"); el.style.cssText = "padding:0 12px"; mount(el); } });
     }
     var iv = setInterval(function () { send(false); }, 250);
+    setInterval(function () { send(true); }, 2000);
+    window.addEventListener("pageshow", function () { send(true); });
+    window.addEventListener("focus", function () { send(true); });
+    [400, 1200, 3000].forEach(function (ms) { setTimeout(function () { send(true); }, ms); });
     window.addEventListener("scroll", function () { send(false); }, true);
     window.addEventListener("resize", function () { send(true); });
     window.addEventListener("hashchange", function () { setTimeout(function () { send(true); }, 50); });
