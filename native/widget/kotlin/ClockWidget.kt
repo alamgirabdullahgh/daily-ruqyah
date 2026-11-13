@@ -7,7 +7,14 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.DashPathEffect
 import android.graphics.Paint
+import android.graphics.RadialGradient
+import android.graphics.RectF
+import android.graphics.Shader
+import android.view.View
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -30,6 +37,7 @@ class ClockWidget : AppWidgetProvider() {
             ACTION_PICK -> pick(ctx, intent.getIntExtra("idx", -1))
             // "আপডেট লোকেশন": এখনই নতুন অবস্থান চায় (নেট লাগে); পেলে উইজেট নিজে নতুন হয়
             ACTION_LOCUPD -> locUpdate(ctx)
+            ACTION_PIN -> pinWidget(ctx)
             // রিবুট বা অ্যাপ আপডেটের পর অবস্থানের অনুরোধ আবার চালু করতে হয়
             Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 LocationUpdater.register(ctx); refresh(ctx)
@@ -37,6 +45,19 @@ class ClockWidget : AppWidgetProvider() {
             ACTION_TICK, Intent.ACTION_TIME_CHANGED, Intent.ACTION_TIMEZONE_CHANGED, Intent.ACTION_DATE_CHANGED -> {
                 refresh(ctx)
             }
+        }
+    }
+
+    // হোম স্ক্রিনে উইজেট যুক্ত করার অনুরোধ (ফোন নিজেই "যুক্ত করবেন?" জিজ্ঞেস করে); লঞ্চার না মানলে হাতে বসানোর নির্দেশ
+    private fun pinWidget(ctx: Context) {
+        val app = ctx.applicationContext
+        val ok = try {
+            val m = AppWidgetManager.getInstance(app)
+            pushPreview(app, true)
+            m.isRequestPinAppWidgetSupported && m.requestPinAppWidget(ComponentName(app, ClockWidget::class.java), null, null)
+        } catch (e: Exception) { false }
+        if (!ok) Handler(Looper.getMainLooper()).post {
+            try { Toast.makeText(app, "হোম স্ক্রিনের ফাঁকা জায়গায় চেপে ধরে ‘উইজেট’ থেকে “টাইম উইজেট” বেছে নিন", Toast.LENGTH_LONG).show() } catch (e: Exception) { }
         }
     }
 
@@ -90,6 +111,7 @@ class ClockWidget : AppWidgetProvider() {
         const val ACTION_TICK = "com.rahcare.timewidget.TICK"
         const val ACTION_PICK = "com.rahcare.timewidget.PICK"
         const val ACTION_LOCUPD = "com.dailyruqyah.app.LOCUPD"
+        const val ACTION_PIN = "com.dailyruqyah.app.PIN"
         private const val TICK_MS = 5 * 60 * 1000L // প্রগ্রেস বার নতুন করে আঁকার ব্যবধান
         private const val DUHA_AFTER_SUNRISE = 24 // ইশরাক শুরু (নিষিদ্ধ সময় শেষ): সূর্যোদয়ের ২৪ মিনিট পর (ইসলামিক ফাউন্ডেশনের স্থায়ী সময়সূচির নোট)
         private const val ISHRAQ_END_AFTER_SUNRISE = 60 // ইশরাকের সময় শেষ ধরা হয়েছে: সূর্যোদয়ের প্রায় ১ ঘণ্টা পর; এরপর সালাতুদ্দোহা (চাশত)
@@ -183,7 +205,7 @@ class ClockWidget : AppWidgetProvider() {
             return if (need <= avail || need <= 0f) baseSp else (baseSp * avail / need).coerceAtLeast(baseSp * 0.55f)
         }
 
-        private fun build(ctx: Context, s: Snap, widthDp: Int, layout: Int = R.layout.widget_v2): RemoteViews {
+        private fun build(ctx: Context, s: Snap, widthDp: Int, layout: Int = R.layout.widget_v2, pin: Boolean = false): RemoteViews {
             val c = Cfg(ctx)
             val rv = RemoteViews(ctx.packageName, layout)
             val k = c.scale / 100f
@@ -200,6 +222,14 @@ class ClockWidget : AppWidgetProvider() {
             rv.setTextViewText(R.id.zz_sunrise, "সূর্যোদয় " + Prayer.fmt(s.sunrise, c.bnDigits))
             rv.setTextViewText(R.id.zz_sunset, "সূর্যাস্ত " + Prayer.fmt(s.sunset, c.bnDigits))
             size(R.id.zz_sunrise, 11f); size(R.id.zz_sunset, 11f)
+            // সূর্যোদয় থেকে সূর্যাস্ত পর্যন্ত উপরে গোল রেখা; এখনকার সময় অনুযায়ী সূর্য তার ওপর দিয়ে এগোয় (রাতে শুধু রেখা)
+            val srf: Double? = if (s.sunset > s.sunrise && s.nowMin >= s.sunrise && s.nowMin <= s.sunset) (s.nowMin - s.sunrise) / (s.sunset - s.sunrise).toDouble() else null
+            val dark = (ctx.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+            rv.setImageViewBitmap(R.id.zz_arc, sunArc(srf, dark))
+            // অ্যাপের কার্ডে মাঝখানে "হোম স্ক্রিনে যুক্ত করুন" বোতাম (হোম স্ক্রিনের উইজেটে থাকে না)
+            rv.setViewVisibility(R.id.zz_pin, if (pin) View.VISIBLE else View.GONE)
+            if (pin) rv.setOnClickPendingIntent(R.id.zz_pin, PendingIntent.getBroadcast(
+                ctx, 31, Intent(ctx, ClockWidget::class.java).setAction(ACTION_PIN), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT))
             for (i in 0..4) {
                 rv.setTextViewText(NAME[i], NAMES[i])
                 rv.setTextViewText(TIME[i], Prayer.fmt(s.min[i], c.bnDigits))
@@ -294,6 +324,46 @@ class ClockWidget : AppWidgetProvider() {
         }
 
         // অ্যাপের ভেতরে হুবহু একই উইজেট দেখানোর জন্য (হোম স্ক্রিনের উইজেটের একই RemoteViews)
+        @JvmStatic
+        fun viewForCard(ctx: Context, widthDp: Int): RemoteViews {
+            LocationUpdater.sync(ctx)
+            return build(ctx, compute(ctx), widthDp, R.layout.widget_v2, true)
+        }
+
+        private fun sunArc(frac: Double?, dark: Boolean): Bitmap {
+            val w = 360; val h = 120
+            val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+            val cv = Canvas(bmp)
+            val baseY = 84f; val topY = 8f; val cx = w / 2f; val rx = cx - 6f; val ry = baseY - topY
+            val oval = RectF(cx - rx, baseY - ry, cx + rx, baseY + ry)
+            val track = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                style = Paint.Style.STROKE; strokeWidth = 3f; strokeCap = Paint.Cap.ROUND
+                color = if (dark) 0x77B3C9BB else 0x773B4A55
+                pathEffect = DashPathEffect(floatArrayOf(7f, 6f), 0f)
+            }
+            cv.drawArc(oval, 180f, 180f, false, track)
+            if (frac != null) {
+                val done = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    style = Paint.Style.STROKE; strokeWidth = 3.5f; strokeCap = Paint.Cap.ROUND; color = 0xFFFFA000.toInt()
+                }
+                cv.drawArc(oval, 180f, (180.0 * frac).toFloat(), false, done)
+                val a = Math.PI * (1.0 + frac)
+                val sx = (cx + rx * Math.cos(a)).toFloat(); val sy = (baseY + ry * Math.sin(a)).toFloat()
+                val glow = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    shader = RadialGradient(sx, sy, 17f, intArrayOf(0x99FFC21A.toInt(), 0x00FFC21A), null, Shader.TileMode.CLAMP)
+                }
+                cv.drawCircle(sx, sy, 17f, glow)
+                val ray = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE; strokeWidth = 2f; strokeCap = Paint.Cap.ROUND; color = 0xFFFFB300.toInt() }
+                for (i in 0 until 8) {
+                    val t = Math.PI / 4 * i
+                    cv.drawLine((sx + 9.5 * Math.cos(t)).toFloat(), (sy + 9.5 * Math.sin(t)).toFloat(), (sx + 13 * Math.cos(t)).toFloat(), (sy + 13 * Math.sin(t)).toFloat(), ray)
+                }
+                cv.drawCircle(sx, sy, 7f, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFFFFB300.toInt() })
+                cv.drawCircle(sx, sy, 4.2f, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFFFFE082.toInt() })
+            }
+            return bmp
+        }
+
         @JvmStatic
         fun viewFor(ctx: Context, widthDp: Int): RemoteViews {
             LocationUpdater.sync(ctx)

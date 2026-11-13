@@ -126,7 +126,7 @@ public class WidgetPlugin extends Plugin {
 
     private void redraw() {
         try {
-            RemoteViews rv = ClockWidget.Companion.viewFor(getContext(), cardW);
+            RemoteViews rv = ClockWidget.Companion.viewForCard(getContext(), cardW);
             rv.reapply(getContext(), cardView);
         } catch (Exception e) { }
     }
@@ -143,7 +143,7 @@ public class WidgetPlugin extends Plugin {
                 if (cardView == null || cardW != wdp) {
                     if (cardView != null) parent.removeView(cardView);
                     cardW = wdp;
-                    RemoteViews rv = ClockWidget.Companion.viewFor(getContext(), wdp);
+                    RemoteViews rv = ClockWidget.Companion.viewForCard(getContext(), wdp);
                     cardView = rv.apply(getContext(), parent);
                     // কার্ডে চাপলে (ওয়াক্তের ঘর বাদে) উইজেট-সেটিংস খোলে
                     cardView.setOnClickListener(v -> {
