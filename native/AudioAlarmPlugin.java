@@ -70,6 +70,13 @@ public class AudioAlarmPlugin extends Plugin {
             JSArray a = call.getArray("alarms");
             AlarmStore.save(getContext(), new JSONArray(a.toString()));
             AlarmStore.scheduleAll(getContext());
+            try { // চলতি অডিওর অ্যালার্ম এইমাত্র বন্ধ হলে সাথে সাথে থামাই
+                if (RuqyahAudioService.playing) {
+                    JSONObject f = AlarmStore.find(getContext(), RuqyahAudioService.playingId);
+                    if (f != null && !f.optBoolean("on", true))
+                        getContext().startService(new Intent(getContext(), RuqyahAudioService.class).setAction(RuqyahAudioService.STOP).putExtra("nonag", true));
+                }
+            } catch (Throwable e) { }
             call.resolve(state());
         } catch (Exception e) { call.reject(String.valueOf(e.getMessage())); }
     }

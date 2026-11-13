@@ -344,7 +344,13 @@
     var mine = ids(g);
     list.forEach(function (a) { if (mine.indexOf(a.id) >= 0) a.on = on; });
     await persist();
-    if (!on && mine.indexOf(info.playingId) >= 0) { try { await P.stop({ nonag: true }); } catch (e) { } }
+    if (!on) {
+      try { await reload(); } catch (e) { }
+      if (mine.indexOf(info.playingId) >= 0) {
+        try { await P.stop({ nonag: true }); } catch (e) { }
+        setTimeout(async function () { try { await reload(); if (mine.indexOf(info.playingId) >= 0) await P.stop({ nonag: true }); } catch (e) { } sysPaint(); }, 800);
+      }
+    }
   }
   function nextText(ms) {
     var d = new Date(ms), n = new Date(), t0 = new Date(n.getFullYear(), n.getMonth(), n.getDate()).getTime();

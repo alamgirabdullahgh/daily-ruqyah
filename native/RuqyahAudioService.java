@@ -115,8 +115,18 @@ public class RuqyahAudioService extends Service {
         if (mp != null) { try { mp.reset(); mp.release(); } catch (Exception e) { } mp = null; }
     }
 
+    // টগল/অ্যালার্ম বন্ধ করা হলে (সংরক্ষিত তালিকায় on=false) চলতি অডিও নিজেই থামে; পরীক্ষা-অ্যালার্ম (তালিকায় নেই) প্রভাবিত হয় না
+    private boolean switchedOff() {
+        try {
+            if (cur == null || curId < 0) return false;
+            JSONObject f = AlarmStore.find(this, curId);
+            return f != null && !f.optBoolean("on", true);
+        } catch (Throwable e) { return false; }
+    }
+
     private void playCurrent() {
         if (stopped) return;
+        if (switchedOff()) { AlarmStore.log(this, "অ্যালার্ম বন্ধ করা হয়েছে — অডিও থামানো হলো (id " + curId + ")"); finish(false); return; }
         if (idx >= items.size()) {
             round++; idx = 0;
             if (round >= repeat) { finish(false); return; }
