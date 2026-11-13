@@ -1,4 +1,4 @@
-const V="dr-shell-v150";
+const V="dr-shell-v151";
 // ডেইলি রুকিয়া — অফলাইনে অ্যাপ খোলার জন্য। আয়াতের বড় ডেটা অ্যাপ নিজেই (Cache API "rs-…") জমা রাখে, তাই এখানে শুধু অ্যাপের কাঠামো।
 
 const SHELL=["./","index.html","style.css?v=38","app.js?v=43","home.js?v=4","alarm.js?v=5","amol.js?v=5","data/amol-guide.json?v=5","symptom.js?v=3","widget.js?v=19","boot.js?v=5","manifest.webmanifest","icons/icon-192.png","icons/icon-512.png","fonts/amiri-arabic-400-normal.woff2","fonts/amiri-arabic-700-normal.woff2","fonts/scheherazade-new-arabic-400-normal.woff2","fonts/scheherazade-new-arabic-700-normal.woff2","data/lame.min.js?v=1","data/hadith-norm.js?v=2","data/hadith.js?v=15"];

@@ -71,7 +71,7 @@
   // "১ ঘন্টা ২৩ মিনিট"; ঘন্টা না থাকলে শুধু মিনিট, মিনিট ০ হলে শুধু ঘন্টা
   function durBn(left) {
     var lh = Math.floor(left / 60), lm = left % 60;
-    return lh > 0 ? bn(lh) + " ঘন্টা" + (lm > 0 ? " " + bn(lm) + " মিনিট" : "") : bn(lm) + " মিনিট";
+    return lh > 0 ? bn(lh) + " ঘন্টা" + (lm > 0 ? " " + bn(lm) + " মি:" : "") : bn(lm) + " মি:";
   }
 
   // ───────── সুন্নাহ-স্মরণ (সময় ও ইংরেজি তারিখের মাঝের স্লাইডার) ─────────
@@ -234,21 +234,21 @@
 
   // ───────── রূপ ─────────
   var CSS =
-    ".drw{box-sizing:border-box;max-width:660px;margin:12px auto 0;padding:7px 14px 8px;border-radius:24px;background:#F2F5F8;color:#14212B;font-family:inherit;user-select:none;-webkit-user-select:none}" +
+    ".drw{box-sizing:border-box;max-width:660px;margin:12px auto 0;padding:5px 14px 5px;border-radius:24px;background:#F2F5F8;color:#14212B;font-family:inherit;user-select:none;-webkit-user-select:none}" +
     ".drw *{box-sizing:border-box}" +
     ".drw-r{display:flex;align-items:center;justify-content:space-between;gap:8px}.drw-top{align-items:flex-end;gap:4px}.drw-mid{position:relative;flex:1;height:48px;min-width:0;color:#3B4A55}.drw-arc{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}" +
     ".drw-sun{display:flex;align-items:center;gap:5px;font-size:11px;color:#3B4A55;white-space:nowrap}" +
     ".drw-sun img{width:24px;height:24px;flex:none;display:block}" +
-    ".drw-pin{position:absolute;left:50%;bottom:0;transform:translateX(-50%);white-space:nowrap;border:.8px solid rgba(255,255,255,.28);background:linear-gradient(90deg,#16794c,#2bb583);color:#fff;border-radius:10px;padding:2px 8px;font-family:inherit;font-weight:700;font-size:7.5px;line-height:1.15;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(22,121,76,.35)}" +
+    ".drw-pin{position:absolute;left:50%;bottom:0;transform:translateX(-50%);white-space:nowrap;border:.8px solid rgba(255,255,255,.28);background:linear-gradient(90deg,#16794c,#2bb583);color:#fff;border-radius:10px;padding:2px 8px;font-family:inherit;font-weight:700;font-size:7px;line-height:1.15;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(22,121,76,.35)}" +
     ".drw-sl-sun{position:absolute;white-space:nowrap;font-size:9px;font-weight:700;color:#B36B00;line-height:1;pointer-events:none}" +
-    ".drw-sn{flex:1;min-width:0;text-align:center;font-size:10px;line-height:1.3;font-weight:700;color:#1E7F58;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .35s,transform .35s}.drw-sn.o{opacity:0;transform:translateX(14px)}" +
+    ".drw-sn{flex:1;min-width:0;text-align:center;font-size:9px;line-height:1.3;font-weight:700;color:#1E7F58;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;will-change:opacity,transform;transform:translateZ(0);transition:opacity .35s,transform .35s}.drw-sn.o{opacity:0;transform:translateX(14px)}" +
     ".drw-time{display:flex;align-items:flex-end;gap:4px;margin-top:1px}" +
     ".drw-time b{font-size:40px;line-height:1;font-weight:800;letter-spacing:-.5px;font-variant-numeric:lining-nums}" +
     ".drw-time span{font-size:12px;color:#3B4A55;padding-bottom:6px}" +
     ".drw-en{text-align:right;line-height:1.25}" +
     ".drw-en b{display:block;font-size:15px;font-weight:800}" +
     ".drw-lr{display:flex;align-items:center;justify-content:flex-end;gap:6px}" +
-    ".drw-upd{font-size:10px;line-height:1.1;text-align:center;color:#3B4A55;background:none;border:0;padding:0;margin-left:2px;cursor:pointer;font-family:inherit}" +
+    ".drw-upd{font-size:8px;line-height:1.1;text-align:center;color:#3B4A55;background:none;border:0;padding:0;margin-left:2px;cursor:pointer;font-family:inherit}" +
     ".drw-loc{font-size:12px;color:#3B4A55;cursor:pointer;background:none;border:0;padding:0;font-family:inherit}" +
     ".drw-d{margin-top:2px;font-size:12px;color:#3B4A55;white-space:nowrap}" +
     ".drw-p{display:flex;margin:5px -4px 0}" +
@@ -342,7 +342,7 @@
       var e = el.querySelector("[data-sn]");
       if (!e) return;
       if (!snItems.length) { e.style.display = "none"; return; }
-      e.style.display = ""; e.textContent = snItems[snI % snItems.length];
+      e.style.display = ""; e.textContent = snItems[snI % snItems.length]; void e.offsetWidth;
     }
     setInterval(function () {
       if (snItems.length < 2) return;

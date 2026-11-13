@@ -353,9 +353,9 @@ class ClockWidget : AppWidgetProvider() {
             val lh = left / 60
             val lm = left % 60
             return when {
-                lh > 0 && lm > 0 -> Prayer.fmtNum(lh, bn) + " ঘন্টা " + Prayer.fmtNum(lm, bn) + " মিনিট"
+                lh > 0 && lm > 0 -> Prayer.fmtNum(lh, bn) + " ঘন্টা " + Prayer.fmtNum(lm, bn) + " মি:"
                 lh > 0 -> Prayer.fmtNum(lh, bn) + " ঘন্টা"
-                else -> Prayer.fmtNum(lm, bn) + " মিনিট"
+                else -> Prayer.fmtNum(lm, bn) + " মি:"
             }
         }
 
