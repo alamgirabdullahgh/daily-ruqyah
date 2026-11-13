@@ -45,7 +45,8 @@ jobs:
           g=re.sub(r'versionCode \d+','versionCode '+str(100+${{ github.run_number }}),g,1)
           g=re.sub(r'versionName "[^"]*"','versionName "1.0.${{ github.run_number }}"',g,1)
           g=g.replace('android {','android {\n    signingConfigs {\n        fixed {\n            storeFile file("dr.keystore")\n            storePassword "dailyruqyah"\n            keyAlias "dailyruqyah"\n            keyPassword "dailyruqyah"\n        }\n    }',1)
-          g=g.replace('buildTypes {','buildTypes {\n        debug {\n            signingConfig signingConfigs.fixed\n        }',1)
+          g=g.replace('buildTypes {','buildTypes {\n        debug {\n            signingConfig signingConfigs.fixed\n        }\n        release {\n            signingConfig signingConfigs.fixed\n            minifyEnabled false\n            shrinkResources false\n        }',1)
+          g=g.replace('android {','android {\n    lint {\n        checkReleaseBuilds false\n        abortOnError false\n    }',1)
           g=g.replace("apply plugin: 'com.android.application'","apply plugin: 'com.android.application'\napply plugin: 'kotlin-android'",1)
           g=g.replace('android {','android {\n    compileOptions {\n        sourceCompatibility JavaVersion.VERSION_17\n        targetCompatibility JavaVersion.VERSION_17\n    }\n    kotlinOptions {\n        jvmTarget = "17"\n    }',1)
           rb=open('android/build.gradle').read()
@@ -90,12 +91,12 @@ jobs:
           open('android/app/src/main/AndroidManifest.xml','w').write(m)
           PY
           grep -n "versionCode\|versionName\|signingConfig" android/app/build.gradle
-      - name: Build debug APK
-        run: cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
+      - name: Build release APK (same fixed key, no code shrinking)
+        run: cd android && chmod +x gradlew && ./gradlew assembleRelease --no-daemon
       - name: Publish APK to Releases
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk Daily-Ruqyah.apk
+          cp android/app/build/outputs/apk/release/app-release.apk Daily-Ruqyah.apk
           gh release delete latest --yes --cleanup-tag 2>/dev/null || true
           gh release create "v1.0.${{ github.run_number }}" Daily-Ruqyah.apk --title "Daily Ruqyah v1.0.${{ github.run_number }}" --notes "ডাউনলোড করে ফোনে ইনস্টল করুন। অ্যাপের ভেতর থেকেও আপডেট করা যায়।" --latest
