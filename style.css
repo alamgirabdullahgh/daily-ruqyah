@@ -1,10 +1,13 @@
+@font-face{font-family:"DR Sans";font-style:normal;font-weight:400 600;font-display:swap;src:url(fonts/hind-siliguri-bengali-400.woff2) format("woff2");unicode-range:U+0980-09FF,U+0964-0965,U+200C-200D,U+25CC}
+@font-face{font-family:"DR Sans";font-style:normal;font-weight:700 900;font-display:swap;src:url(fonts/hind-siliguri-bengali-700.woff2) format("woff2");unicode-range:U+0980-09FF,U+0964-0965,U+200C-200D,U+25CC}
+@font-face{font-family:"DR Serif";font-style:normal;font-weight:400 900;font-display:swap;src:url(fonts/noto-serif-bengali-bengali-700.woff2) format("woff2");unicode-range:U+0980-09FF,U+0964-0965,U+200C-200D,U+25CC}
 /* Daily Ruqyah — premium থিম: গভীর পান্না-সবুজ + সোনালি, হাতির-দাঁতের মতো উষ্ণ জমিন */
 @font-face{font-family:"Amiri";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/amiri-arabic-400-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE80-FEFC}
 @font-face{font-family:"Amiri";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/amiri-arabic-700-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE80-FEFC}
 :root{--mf-paper:#fbf6e9;--mf-ink:#2d3a6b;--mf-accent:#c2762b;--mf-line:#c9c3a8;--mf-head:#ece9f6;--mf-font:"Scheherazade New","Amiri","Noto Naskh Arabic","Droid Arabic Naskh",serif}
 @font-face{font-family:"Scheherazade New";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/scheherazade-new-arabic-400-normal.woff2) format("woff2")}
 @font-face{font-family:"Scheherazade New";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/scheherazade-new-arabic-700-normal.woff2) format("woff2")}
-:root{--primary:#0a5240;--primary-dark:#073b2e;--primary-light:#e4efe9;--accent:#b8923a;--accent-light:#f6efdc;--danger:#c0392b;--danger-light:#fbe4e0;--info:#0b6aa0;--info-light:#e0f0f8;--success:#16794c;--warning:#b36b00;--warning-light:#fff6e0;--bg:#f3efe4;--card-bg:#fffdf9;--border:#d9d1b8;--border-light:#e8e2d0;--text-main:#16241e;--text-sub:#3c5247;--text-muted:#68786f;--radius-sm:8px;--radius-md:12px;--radius-lg:18px;--shadow-card:0 1px 0 rgba(255,255,255,.8) inset,0 12px 32px -14px rgba(7,59,46,.28),0 2px 6px rgba(7,59,46,.06);--shadow-pop:0 10px 30px rgba(7,59,46,.25);--bar-h:56px;--ar-size:26px;--font-main:system-ui,-apple-system,"Segoe UI","Hind Siliguri","Noto Sans Bengali",Roboto,sans-serif;--font-display:Georgia,"Iowan Old Style","Palatino Linotype","Times New Roman",serif}
+:root{--primary:#0a5240;--primary-dark:#073b2e;--primary-light:#e4efe9;--accent:#b8923a;--accent-light:#f6efdc;--danger:#c0392b;--danger-light:#fbe4e0;--info:#0b6aa0;--info-light:#e0f0f8;--success:#16794c;--warning:#b36b00;--warning-light:#fff6e0;--bg:#f3efe4;--card-bg:#fffdf9;--border:#d9d1b8;--border-light:#e8e2d0;--text-main:#16241e;--text-sub:#3c5247;--text-muted:#68786f;--radius-sm:8px;--radius-md:12px;--radius-lg:18px;--shadow-card:0 1px 0 rgba(255,255,255,.8) inset,0 12px 32px -14px rgba(7,59,46,.28),0 2px 6px rgba(7,59,46,.06);--shadow-pop:0 10px 30px rgba(7,59,46,.25);--bar-h:56px;--ar-size:26px;--font-main:"DR Sans",system-ui,-apple-system,"Segoe UI","Hind Siliguri","Noto Sans Bengali",Roboto,sans-serif;--font-head:"DR Serif",Georgia,"Iowan Old Style","Palatino Linotype","Times New Roman",serif;--font-display:Georgia,"Iowan Old Style","Palatino Linotype","Times New Roman",serif}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--bar-h) + 12px)}
 html{background:var(--bg)}
@@ -573,3 +576,20 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 .drq-tab-all{font-size:14px;gap:4px}
 .drq-tab-all svg{flex:none;opacity:.8}
 .drq-tab-all span{line-height:1.2;text-align:left}
+
+/* প্রিমিয়াম লেখা: হেডিং/ট্যাব/কার্ড-শিরোনামে সেরিফ (Noto Serif Bengali + Georgia), বাকি লেখায় Hind Siliguri */
+.rs-box h2,.rs-box h3,#za h2,#za h3,.drq-card h3,.drq-tab,.dr-side-sec,.drq-pin,.dr-hello{font-family:var(--font-head)}
+#za h2{letter-spacing:.005em;line-height:1.35}
+.drq-card h3,.drq-tab{letter-spacing:.01em}
+.drq-opts a,.drq-tg{letter-spacing:.005em}
+/* "৩টি একসাথে": অন্য ট্যাব-হেডিংয়ের (১৭px) চেয়ে একটু বড় */
+.drq-tabs{grid-template-columns:1fr .85fr .75fr 2.15fr}
+.drq-tab-all{font-size:18.5px;gap:4px}
+.drq-tab-all span{line-height:1.15}
+@media (max-width:340px){.drq-tab{font-size:15px}.drq-tab-all{font-size:16px}}
+/* উইজেটের মাপ আগের ফন্টেই মাপা, তাই ওটা আগের ফন্টে থাকল (লেখা ঠাসাঠাসি না হওয়ার জন্য) */
+#drWidget{font-family:system-ui,-apple-system,"Segoe UI","Noto Sans Bengali",Roboto,sans-serif}
+/* প্রতিটি পাতাই এখন একটা সাদা কার্ড; ফেরার তীর (←) সেই কার্ডের ভেতরে উপরের বাম কোনায় বসে (আগে স্বচ্ছ বাক্স ছিল বলে তীর পটভূমিতে পড়ত) */
+.dr-main>.rs-box{background:var(--card-bg)!important;border:1px solid var(--border-light)!important;border-radius:22px!important;box-shadow:var(--shadow-card)!important;padding:12px 10px 20px!important}
+.dr-main>.rs-box>.dr-backrow{margin:0 0 8px 2px}
+#drSym #za{border:0;border-radius:0;padding:0;background:transparent}

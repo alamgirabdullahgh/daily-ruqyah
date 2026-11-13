@@ -965,10 +965,10 @@ let RG=0;
 function renderReader(mode,s){const g=++RG,rd=$("drReader");GEN++;rd.innerHTML="";rd.appendChild(readerTop(mode,s));const body=el("div","dr-rbody");rd.appendChild(body);if(!s)surahList(body,mode);else surahView(body,mode,s,g)}
 // ফেরার তীর (←): যে পাতা খোলা, সেই পাতার কার্ডের ভেতরে উপরের বাম কোনায় বসে (পাতা বদলালে নতুন কার্ডে সরে যায়; কার্ডের ভেতরের লেখা নতুন করে আঁকলেও আবার বসে যায়)
 {let ob=null,cur=null;
- const place=key=>{const bk=document.getElementById("drBackRow");if(!bk)return;
+ const place=(key,tries)=>{const bk=document.getElementById("drBackRow");if(!bk)return;const lh=location.hash||"#home";
   if(ob){ob.disconnect();ob=null}
   const tgt=key==="home"?null:document.querySelector(".dr-main > .rs-box:not([hidden])");
-  if(!tgt){const hd=document.querySelector("header");if(hd&&bk.parentNode!==hd.parentNode)hd.insertAdjacentElement("afterend",bk);cur=null;return}
+  if(!tgt){const hd=document.querySelector("header");if(hd&&bk.parentNode!==hd.parentNode)hd.insertAdjacentElement("afterend",bk);cur=null;if(key!=="home"&&(tries||0)<4)setTimeout(()=>{if((location.hash||"#home")===lh)place(key,(tries||0)+1)},[0,120,350,800][tries||0]+60);return}
   cur=tgt;const put=()=>{if(bk.parentNode!==tgt||tgt.firstElementChild!==bk){if(ob)ob.disconnect();tgt.insertBefore(bk,tgt.firstChild);if(ob)ob.observe(tgt,{childList:true})}};
   ob=new MutationObserver(put);put();ob.observe(tgt,{childList:true})};
  window.__drPlaceBack=place}

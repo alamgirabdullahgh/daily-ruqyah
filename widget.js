@@ -298,6 +298,40 @@
       if (ok && pickCur === s.cur) return pick;
       return naflByDefault(s) ? NAFL : s.cur;
     }
+    // সূর্যের অবস্থান ও লেখা: render ও tick দুটোই একই হিসাব ব্যবহার করে
+    function sunGeom(s) {
+      if (!(s.sunset > s.sunrise && s.nowMin >= s.sunrise && s.nowMin <= s.sunset)) return null;
+      var f = (s.nowMin - s.sunrise) / (s.sunset - s.sunrise), a = Math.PI * (1 + f);
+      var x = 60 + 57 * Math.cos(a), y = 24 + 19 * Math.sin(a), pc = (f * 100).toFixed(1);
+      return { x: x.toFixed(2), y: y.toFixed(2), pc: pc, top: Math.min(y + 8, 28).toFixed(1) + "px", txt: durBn(Math.ceil(Math.max(0, s.sunset - s.nowMin))) + " বাকি" };
+    }
+    var lastSig = "";
+    function sigOf(s, now) { return [s.cur, shownIndex(s), sunGeom(s) ? 1 : 0, now.getDate(), updBusy ? 1 : 0].join("|"); }
+    // প্রতি সেকেন্ডে: কাঠামো না বদলালে ভেতরের লেখা/মাপ জায়গাতেই বদলায় (পুরো উইজেট নতুন করে আঁকে না, তাই ঝিলিক নেই)
+    function tick() {
+      if (document.hidden) return;
+      var now = new Date(), s = compute(now, loc);
+      if (sigOf(s, now) !== lastSig) { render(); return; }
+      var q = function (sel) { return el.querySelector(sel); };
+      var setT = function (n, t) { if (n && n.textContent !== t) n.textContent = t; };
+      var setA = function (n, k, v) { if (n && n.getAttribute(k) !== v) n.setAttribute(k, v); };
+      var shown = shownIndex(s), nf = shown === NAFL ? nafl(s, s.cur) : null, idx = Math.max(0, Math.min(4, shown));
+      var bs = nf ? nf.start : s.ws[idx], be = nf ? nf.end : s.we[idx];
+      var frac = Math.max(0, Math.min(1, (s.nowMin - bs) / Math.max(1, be - bs)));
+      var u = q(".drw-bar u"), w = (frac * 100).toFixed(1) + "%";
+      if (u && u.style.width !== w) u.style.width = w;
+      setT(q(".drw-bar em"), durBn(Math.ceil(Math.max(0, be - s.nowMin))) + " বাকি");
+      var g = sunGeom(s);
+      if (g) {
+        setA(q(".drw-pr"), "d", "M3,24A57,19 0 0 1 " + g.x + "," + g.y);
+        ["s1", "s2", "s3"].forEach(function (k) { var c = q(".drw-" + k); setA(c, "cx", g.x); setA(c, "cy", g.y); });
+        var L = q(".drw-sl-sun");
+        if (L) { setT(L, g.txt); var tf = "translateX(-" + g.pc + "%)"; if (L.style.left !== g.pc + "%") L.style.left = g.pc + "%"; if (L.style.transform !== tf) L.style.transform = tf; if (L.style.top !== g.top) L.style.top = g.top; }
+      }
+      var hh = now.getHours() % 12 || 12, mm = ("0" + now.getMinutes()).slice(-2);
+      setT(q(".drw-time b"), hh + ":" + mm);
+      setT(q(".drw-time span"), now.getHours() < 12 ? "AM" : "PM");
+    }
     function render() {
       var now = new Date(), s = compute(now, loc);
       var hh = now.getHours() % 12 || 12, mm = ("0" + now.getMinutes()).slice(-2);
@@ -309,15 +343,13 @@
       var left = Math.ceil(Math.max(0, be - s.nowMin));
       var cd = durBn(left) + " বাকি";
       var arc = (function () {
-        var CX = 60, CY = 24, RX = 57, RY = 19, f = (s.sunset > s.sunrise && s.nowMin >= s.sunrise && s.nowMin <= s.sunset) ? (s.nowMin - s.sunrise) / (s.sunset - s.sunrise) : null;
+        var g = sunGeom(s);
         var o = '<svg class="drw-arc" viewBox="0 0 120 38" preserveAspectRatio="none" aria-hidden="true"><path d="M3,24A57,19 0 0 1 117,24" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.1" stroke-dasharray="2.4 2.2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>';
         var lab = "";
-        if (f !== null) {
-          var a = Math.PI * (1 + f), x = CX + RX * Math.cos(a), y = CY + RY * Math.sin(a);
-          o += '<path d="M3,24A57,19 0 0 1 ' + x.toFixed(2) + ',' + y.toFixed(2) + '" fill="none" stroke="#FFA000" stroke-width="1.3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>' +
-            '<circle cx="' + x.toFixed(2) + '" cy="' + y.toFixed(2) + '" r="5.2" fill="#FFC21A" fill-opacity=".35"/><circle cx="' + x.toFixed(2) + '" cy="' + y.toFixed(2) + '" r="2.6" fill="#FFB300"/><circle cx="' + x.toFixed(2) + '" cy="' + y.toFixed(2) + '" r="1.4" fill="#FFE082"/>';
-          var pc = (f * 100).toFixed(1);
-          lab = '<div class="drw-sl-sun" style="left:' + pc + '%;transform:translateX(-' + pc + '%);top:' + Math.min(y + 8, 28).toFixed(1) + 'px">' + durBn(Math.ceil(Math.max(0, s.sunset - s.nowMin))) + ' বাকি</div>';
+        if (g) {
+          o += '<path class="drw-pr" d="M3,24A57,19 0 0 1 ' + g.x + ',' + g.y + '" fill="none" stroke="#FFA000" stroke-width="1.3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>' +
+            '<circle class="drw-s1" cx="' + g.x + '" cy="' + g.y + '" r="5.2" fill="#FFC21A" fill-opacity=".35"/><circle class="drw-s2" cx="' + g.x + '" cy="' + g.y + '" r="2.6" fill="#FFB300"/><circle class="drw-s3" cx="' + g.x + '" cy="' + g.y + '" r="1.4" fill="#FFE082"/>';
+          lab = '<div class="drw-sl-sun" style="left:' + g.pc + '%;transform:translateX(-' + g.pc + '%);top:' + g.top + '">' + g.txt + '</div>';
         }
         return o + '</svg>' + lab;
       })();
@@ -335,6 +367,7 @@
         "</div>";
       snItems = sunnahItems(now, inBd(loc.lat, loc.lng));
       paintSn();
+      lastSig = sigOf(s, now);
     }
     // সুন্নাহ-স্লাইডার: একাধিক হলে প্রতি ৩.৬ সেকেন্ডে ফেড হয়ে বদলায়, একটা হলে স্থির
     var snItems = [], snI = 0;
@@ -450,7 +483,8 @@
     render();
     pullCfg().then(function (ch) { if (ch) render(); locate(); });
     if (!NW) locate();
-    setInterval(function () { pullCfg().then(function () { render(); }); }, 30000);
+    setInterval(function () { pullCfg().then(function (ch) { if (ch) render(); }); }, 30000);
+    setInterval(tick, 1000);
     setInterval(locate, 10 * 60 * 1000);
     document.addEventListener("visibilitychange", function () { if (!document.hidden) { pullCfg().then(function () { render(); }); locate(); } });
   }
