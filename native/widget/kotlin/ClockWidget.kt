@@ -221,11 +221,11 @@ class ClockWidget : AppWidgetProvider() {
             rv.setTextViewText(R.id.zz_we, (if (nf != null) "শেষ " else "ওয়াক্ত শেষ ") + Prayer.fmt(be, c.bnDigits))
             size(R.id.zz_ws, 11f); size(R.id.zz_we, 11f)
             rv.setProgressBar(R.id.zz_wbar, 1000, (frac * 1000).toInt(), false)
-            // বারের ভেতরে বাকি সময়: ১ ঘণ্টার বেশি হলে "−১ঘ ২৩মি", নইলে "−২৩মি"
+            // বারের ভেতরে বাকি সময়, যেমন ১:২৩
             val left = Math.ceil((be - s.nowMin).coerceAtLeast(0.0)).toInt()
             val lh = left / 60
             val lm = left % 60
-            val cd = if (lh > 0) "−" + Prayer.fmtNum(lh, c.bnDigits) + "ঘ " + Prayer.fmtNum(lm, c.bnDigits) + "মি" else "−" + Prayer.fmtNum(lm, c.bnDigits) + "মি"
+            val cd = Prayer.fmtNum(lh, c.bnDigits) + ":" + Prayer.fmtNum(lm, c.bnDigits).let { if (lm < 10) Prayer.fmtNum(0, c.bnDigits) + it else it }
             rv.setTextViewText(R.id.zz_cd, cd)
             size(R.id.zz_cd, 9f)
             val open = PendingIntent.getActivity(

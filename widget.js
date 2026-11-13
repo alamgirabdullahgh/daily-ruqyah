@@ -251,7 +251,7 @@
       var bs = nf ? nf.start : s.ws[idx], be = nf ? nf.end : s.we[idx];
       var frac = Math.max(0, Math.min(1, (s.nowMin - bs) / Math.max(1, be - bs)));
       var left = Math.ceil(Math.max(0, be - s.nowMin)), lh = Math.floor(left / 60), lm = left % 60;
-      var cd = "\u2212" + (lh > 0 ? bn(lh) + "ঘ " : "") + bn(lm) + "মি";
+      var cd = bn(lh + ":" + ("0" + lm).slice(-2));
       var cells = "";
       for (var i = 0; i < 5; i++)
         cells += '<div class="drw-c' + (i === s.cur ? " on" : "") + '" data-i="' + i + '"><i>' + NAMES[i] + "</i><b>" + fmt(s.m[i]) + "</b></div>";
