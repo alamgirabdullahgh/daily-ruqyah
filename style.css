@@ -547,3 +547,6 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 
 
 .dr-vbar .dr-x{background:var(--primary-light);color:var(--primary)}
+
+.drq-pin{display:block;width:100%;margin:14px 0 6px;padding:13px 14px;border:1.5px solid var(--accent);border-radius:16px;background:var(--accent-light);color:var(--primary);font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.drq-pin:active{opacity:.8}

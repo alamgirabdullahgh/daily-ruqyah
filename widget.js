@@ -256,7 +256,7 @@
       for (var i = 0; i < 5; i++)
         cells += '<div class="drw-c' + (i === s.cur ? " on" : "") + '" data-i="' + i + '"><i>' + NAMES[i] + "</i><b>" + fmt(s.m[i]) + "</b></div>";
       el.innerHTML =
-        '<div class="drw"><div class="drw-r"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span>' + '<button class="drw-pin" type="button" data-pin="1">📲 হোম স্ক্রিনে<br>বসান</button>' + '<span class="drw-sun">' + SUNSET + "সূর্যাস্ত " + fmt(s.sunset) + "</span></div>" +
+        '<div class="drw"><div class="drw-r"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span>' + '<button class="drw-pin" type="button" data-pin="1">📲 হোম স্ক্রিনে<br>বসান</button>' + '<span class="drw-sun">সূর্যাস্ত ' + fmt(s.sunset) + SUNSET + "</span></div>" +
         '<div class="drw-b"><span>' + (nf ? nf.name + " শুরু " : "ওয়াক্ত শুরু ") + fmt(bs) + '</span><div class="drw-bar"><u style="width:' + (frac * 100).toFixed(1) + '%"></u><em>' + cd + '</em></div><span>' + (nf ? "শেষ " : "ওয়াক্ত শেষ ") + fmt(be) + "</span></div>" +
         '<div class="drw-p">' + cells + "</div>" +
         '<div class="drw-r"><div class="drw-time"><b>' + hh + ":" + mm + "</b><span>" + (now.getHours() < 12 ? "AM" : "PM") + "</span></div>" +

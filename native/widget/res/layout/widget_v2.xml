@@ -35,7 +35,7 @@
             android:id="@+id/zz_sunset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_sunset"
+            android:drawableEnd="@drawable/ic_sunset"
             android:drawablePadding="5dp"
             android:gravity="center_vertical|end"
             android:includeFontPadding="false"

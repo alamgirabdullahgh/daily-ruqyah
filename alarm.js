@@ -15,6 +15,20 @@
     return false;
   }
 
+  /* হোম স্ক্রিনে উইজেট যুক্ত করা: মেনু ও হোম পাতার বোতাম থেকে */
+  window.__drPinWidget = function () {
+    if (!W || !W.pin) { alert("টাইম উইজেট হোম স্ক্রিনে যুক্ত করা শুধু ইনস্টল করা অ্যাপে চলে।"); return; }
+    W.pin().then(function (r) {
+      if (r && r.ok === false) alert("এই ফোনের লঞ্চার সরাসরি যুক্ত করতে দেয় না। হোম স্ক্রিনের ফাঁকা জায়গায় চেপে ধরে ‘উইজেট’ থেকে “টাইম উইজেট” বেছে নিন।");
+    }).catch(function () {});
+  };
+  var pn = document.getElementById("drPinNav");
+  if (pn) pn.onclick = function (e) {
+    e.preventDefault();
+    var x = document.getElementById("drClose"); if (x) x.click();
+    window.__drPinWidget();
+  };
+
   /* হোম পাতায় কার্ডের নিচের বোতাম */
   var wb = document.getElementById("drWBar"), ws = document.getElementById("drWSet");
   if (wb && ws) {
