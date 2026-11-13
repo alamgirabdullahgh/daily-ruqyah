@@ -1,14 +1,15 @@
 /* আমল ও চিকিৎসা-নির্দেশিকা — data/amol-guide.json থেকে পাতা আঁকে। আয়াত দেখায় অ্যাপের নিজস্ব কুরআন-ডেটা (__drChunk) থেকে। */
 (function(){
  var SN={1:"ফাতিহা",2:"বাকারা",3:"আলে ইমরান",6:"আন'আম",7:"আ'রাফ",8:"আনফাল",10:"ইউনুস",11:"হূদ",12:"ইউসুফ",13:"রা'দ",15:"হিজর",16:"নাহল",18:"কাহফ",20:"ত্ব-হা",21:"আম্বিয়া",24:"নূর",25:"ফুরকান",27:"নামল",28:"কাসাস",29:"আনকাবুত",30:"রূম",31:"লুকমান",33:"আহযাব",35:"ফাতির",36:"ইয়াসীন",37:"সাফফাত",39:"যুমার",41:"ফুসসিলাত",43:"যুখরুফ",44:"দুখান",50:"ক্বাফ",54:"কামার",59:"হাশর",67:"মুলক",68:"কালাম",71:"নূহ",72:"জিন",85:"বুরূজ",94:"ইনশিরাহ",95:"তীন",99:"যিলযাল",105:"ফীল",112:"ইখলাস",113:"ফালাক",114:"নাস"};
- var BD="০১২৩৪৫৬৭৮৯",DATA=null,CAT="daily",COND="",ITEM=-1,Q="",box=null,loading=null;
+ var BD="০১২৩৪৫৬৭৮৯",DATA=null,ST={},CAT="daily",COND="",ITEM=-1,Q="",box=null,loading=null;
  var bn=function(n){return String(n).replace(/\d/g,function(d){return BD[d]})};
  var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
  var GC={"সহীহ হাদিস":"h","কুরআন":"q"};
  function load(){
   if(DATA)return Promise.resolve(DATA);
   if(loading)return loading;
-  loading=fetch(new URL("data/amol-guide.json?v=8",location.href).href).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){DATA=d;return d}).catch(function(e){loading=null;throw e});
+  var u=function(p){return new URL(p,location.href).href};
+  loading=Promise.all([fetch(u("data/amol-guide.json?v=8")).then(function(r){if(!r.ok)throw 0;return r.json()}),fetch(u("data/amol-struct.json?v=1")).then(function(r){return r.ok?r.json():{conds:{}}}).catch(function(){return{conds:{}}})]).then(function(x){DATA=x[0];ST=(x[1]&&x[1].conds)||{};return DATA}).catch(function(e){loading=null;throw e});
   return loading;
  }
  function refLabel(r){var n=SN[r[0]]||("সূরা "+bn(r[0]));return "সূরা "+n+" "+bn(r[0])+":"+bn(r[1])+(r[2]?"-"+bn(r[2]):"")}
@@ -27,12 +28,15 @@
   if(cur!==null)out.push({s:cur,g:gap});
   return out.map(function(x,i){return'<p'+(i&&x.g?' class="gp"':'')+'>'+esc(x.s)+'</p>'}).join("");
  }
+
+ function stepsHtml(a){return a.map(function(s){return'<div class="am-st"><h4>'+esc(s.h)+'</h4>'+(s.p||[]).map(function(x){return'<p>'+esc(x)+'</p>'}).join("")+(s.ul?'<ul>'+s.ul.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ul>':'')+(s.ol?'<ol'+(s.start>1?' start="'+s.start+'"':'')+'>'+s.ol.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ol>':'')+'</div>'}).join("")}
+ function refsHtml(rs){return'<div class="am-refs">'+rs.map(function(r){return'<details class="am-ref" data-r="'+r.join(",")+'"><summary>'+esc(refLabel(r))+'</summary><div class="am-v">লোড হচ্ছে…</div></details>'}).join("")+'</div>'}
  function card(it){
   var h='<article class="am-it" data-t="'+esc(it.t.toLowerCase())+'">';
   h+='<h3>'+esc(it.t)+'</h3><div class="am-tags"><span class="am-g am-g-'+(GC[it.g]||"s")+'">'+esc(it.g)+'</span>';
   if(it.src)h+='<span class="am-src">'+esc(it.src)+'</span>';
   h+='</div>';
-  if(it.steps)h+=it.steps.map(function(s){return'<div class="am-st"><h4>'+esc(s.h)+'</h4>'+(s.p||[]).map(function(x){return'<p>'+esc(x)+'</p>'}).join("")+(s.ol?'<ol'+(s.start>1?' start="'+s.start+'"':'')+'>'+s.ol.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ol>':'')+'</div>'}).join("");
+  if(it.steps)h+=stepsHtml(it.steps);
   else if(it.pages)h+=it.pages.map(function(p,i){return'<div class="am-tx">'+fmtTx(p)+'</div>'}).join("");
   if(it.why)h+='<p class="am-why">'+esc(it.why)+'</p>';
   if(it.ar)h+='<div class="am-ar" dir="rtl" lang="ar">'+esc(it.ar)+'</div>';
@@ -64,6 +68,12 @@
    box.innerHTML='<h2 class="am-h">ট্রিটমেন্ট</h2><div class="am-cl">'+DATA.conds.map(function(c){return'<button type="button" class="am-cond" data-k="'+c.id+'"><i>'+c.icon+'</i><span>'+esc(c.title)+'</span><b>›</b></button>'}).join("")+'</div>';
    return;
   }
+  var sc=ST[cd.id];
+  if(sc&&sc.treat){
+   var ox=cd.items.map(function(r){return card(itemOf(r))}).join("");
+   box.innerHTML='<button type="button" class="am-back" data-to="a">← সব রোগ/সমস্যা</button><h2 class="am-h"><i>'+cd.icon+'</i> '+esc(cd.title)+'</h2><div class="am-lk">'+(sc.sym?'<a href="#diag/'+(cd.items[0][0].indexOf("b2")===0?"jadu":"jin")+'">লক্ষণ</a>':'')+(sc.resp?'<a href="#resp/'+(cd.items[0][0].indexOf("b2")===0?"jadu":"jin")+'">রেসপন্স</a>':'')+'</div><h3 class="am-sh">ট্রিটমেন্ট</h3>'+stepsHtml(sc.treat)+(sc.refs&&sc.refs.length?refsHtml(sc.refs):'')+'<details class="am-orig"><summary>বইয়ের মূল লেখা (অপরিবর্তিত)</summary>'+ox+'</details>';
+   return;
+  }
   if(cd.items.length===1&&ITEM<0)ITEM=0;
   if(ITEM>=0&&cd.items[ITEM]){
    var r=cd.items[ITEM],h=card(itemOf(r)).replace(/<div class="am-tags">.*?<\/div>/,'<div class="am-bk0">'+esc(bookOf(r[0]))+'</div>');
@@ -78,6 +88,25 @@
   b.querySelectorAll(".am-sec").forEach(function(s){s.style.display=s.querySelector(".am-it:not([style*=\"none\"])")?"":"none"});b.querySelectorAll(".am-gsec").forEach(function(s){s.style.display=s.querySelector(".am-sec:not([style*=\"none\"])")?"":"none"});
   var e=b.querySelector(".am-empty");if(!n&&q){if(!e){e=document.createElement("div");e.className="am-empty";e.textContent="এই ট্যাবে কিছু পাওয়া যায়নি। অন্য ট্যাবে দেখুন।";b.appendChild(e)}}else if(e)e.remove();
  }
+
+ /* ডায়াগনোসিস পাতায় রোগ অনুযায়ী লক্ষণ/রেসপন্স: kind = "sym" | "resp"; g = "jadu" | "jin" | "" */
+ window.__drAmolSec=function(kind,host,g){
+  if(!host)return;
+  load().then(function(){
+   var cs=DATA.conds.filter(function(c){var sc=ST[c.id];if(!sc||!sc[kind])return false;if(!g)return true;var ids=c.items.map(function(r){return r[0].indexOf("b2")===0?"jadu":"jin"});return ids.indexOf(g)>=0});
+   if(!cs.length){host.innerHTML="";return}
+   host.innerHTML='<h3 class="am-sh">রোগ/সমস্যা অনুযায়ী '+(kind==="sym"?"লক্ষণ":"রেসপন্স")+'</h3>'+cs.map(function(c){return'<details class="am-sd"><summary><i>'+c.icon+'</i> '+esc(c.title)+'</summary>'+stepsHtml(ST[c.id][kind])+'<a class="am-go" href="#amol/'+c.id+'">এই রোগের ট্রিটমেন্ট →</a></details>'}).join("");
+  }).catch(function(){});
+ };
+ function secMount(){
+  var m=/^#(diag|resp)(?:\/([a-z]+))?/.exec(location.hash||"");if(!m)return;
+  var kind=m[1]==="diag"?"sym":"resp",g=m[2]==="jadu"||m[2]==="jin"?m[2]:"",page=document.getElementById(kind==="sym"?"drSym":"drHome");if(!page)return;
+  var id="amSec_"+kind,h=document.getElementById(id);
+  if(!h){h=document.createElement("div");h.id=id;h.className="am-sec2";var t=page.querySelector("#drHomeT,h2");if(t&&t.parentNode===page)t.insertAdjacentElement("afterend",h);else page.insertBefore(h,page.firstChild)}
+  if(g==="")h.hidden=m[2]==="nazar";else h.hidden=false;
+  window.__drAmolSec(kind,h,g);
+ }
+ window.addEventListener("hashchange",function(){setTimeout(secMount,250)});setTimeout(secMount,600);
  function init(){
   box=document.getElementById("drAmol");if(!box||box.__w)return;box.__w=1;
   box.addEventListener("click",function(e){var nz=e.target.closest&&e.target.closest(".am-nazar");if(nz){e.preventDefault();location.hash="#search";setTimeout(function(){window.__drOpenTopic&&window.__drOpenTopic("বদনজর")},90);return}var cb=e.target.closest&&e.target.closest(".am-cond");if(cb){if(cb.dataset.k){COND=cb.dataset.k;ITEM=-1}else ITEM=+cb.dataset.i;draw();window.scrollTo(0,0);return}var bk=e.target.closest&&e.target.closest(".am-back");if(bk){if(bk.dataset.to==="a")COND="";ITEM=-1;draw();window.scrollTo(0,0)}});
