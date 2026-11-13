@@ -378,14 +378,14 @@
       host.__tk = 1;
       var span = host.querySelector("span");
       if (!span) { span = document.createElement("span"); host.appendChild(span); }
-      var idx = 0, anim = null, lastStatic = "";
+      var idx = 0, anim = null, lastStatic = "", first = true;
       function again(ms) { setTimeout(step, ms); }
       function step() {
         if (!host.isConnected) { host.__tk = 0; return; }
         var items = getItems() || [];
         if (!items.length) { host.style.visibility = "hidden"; lastStatic = ""; return again(1500); }
         var W = host.clientWidth;
-        if (!W) return again(700);
+        if (!W) { first = true; return again(250); }
         host.style.visibility = "";
         var txt = items[idx % items.length];
         span.textContent = txt;
@@ -401,16 +401,17 @@
           dur = 1500 + Math.min(4200, 600 * txt.length / 6 + 1800);
           var a = 650 / dur, b = 1 - 650 / dur;
           k = [
-            { transform: "translateX(" + (W + 4) + "px)", easing: "cubic-bezier(.2,.7,.2,1)" },
-            { transform: "translateX(" + mid + "px)", offset: a },
+            { transform: "translateX(" + (first ? mid : W + 4) + "px)", easing: "cubic-bezier(.2,.7,.2,1)" },
+            { transform: "translateX(" + mid + "px)", offset: first ? 0.0001 : a },
             { transform: "translateX(" + mid + "px)", offset: b, easing: "cubic-bezier(.6,0,.9,.4)" },
             { transform: "translateX(" + (-w - 4) + "px)" }
           ];
         } else {
           dur = Math.max(4000, (W + w + 8) / 0.055);
-          k = [{ transform: "translateX(" + (W + 4) + "px)" }, { transform: "translateX(" + (-w - 4) + "px)" }];
+          k = [{ transform: "translateX(" + (first ? 0 : W + 4) + "px)" }, { transform: "translateX(" + (-w - 4) + "px)" }];
         }
         if (!span.animate) { span.style.transform = "translateX(" + (fits ? mid : 0) + "px)"; return again(3600); }
+        first = false;
         anim = span.animate(k, { duration: dur, easing: "linear", fill: "forwards" });
         anim.onfinish = step;
         anim.oncancel = function () { };
