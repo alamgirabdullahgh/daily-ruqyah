@@ -434,14 +434,11 @@
         tx.appendChild(el("b", "dsy-fit", x[1]));
         tx.appendChild(el("small", "dsy-s dsy-fit", ""));
         tx.onclick = async function () {
-          if (!row.classList.contains("play")) return;
+          if (!row.classList.contains("play")) { sysEditor(sec, x[0], edHost); return; }
           try { await P.stop({ nonag: false }); } catch (e) { }
           setTimeout(sysRefresh, 400);
         };
         row.appendChild(tx);
-        var ed = el("button", "dsy-ed", "✎"); ed.type = "button"; ed.title = "সময় বদলান"; ed.setAttribute("aria-label", "সময় বদলান: " + x[1]);
-        ed.onclick = function () { sysEditor(sec, x[0], edHost); };
-        row.appendChild(ed);
         var sw = el("label", "dsy-sw"); var cb = el("input"); cb.type = "checkbox"; cb.checked = true; cb.setAttribute("aria-label", "অটোমেটিক এলার্ম " + x[1]);
         cb.onchange = async function () {
           var want = cb.checked;

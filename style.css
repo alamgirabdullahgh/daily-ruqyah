@@ -607,7 +607,7 @@ html:has(body:not(.is-home)){scroll-padding-top:calc(env(safe-area-inset-top) + 
 .drq-sys .dsy-t{flex:1;min-width:0}
 .drq-sys .dsy-t b{display:block;font-size:14.5px;font-weight:700;color:var(--primary);line-height:1.35}
 .drq-sys .dsy-s{display:block;margin-top:2px;font-size:12px;color:var(--text-muted)}
-.drq-sys .dsy-row.play .dsy-t{cursor:pointer}
+.drq-sys .dsy-t{cursor:pointer}
 .drq-sys .dsy-row.play .dsy-s{color:var(--success);font-weight:700}
 .drq-sys .dsy-row.off .dsy-t b{opacity:.55}
 .dsy-sw{position:relative;display:inline-block;width:36px;height:20px;flex:none}
@@ -682,10 +682,13 @@ html:has(body:not(.is-home)){scroll-padding-top:calc(env(safe-area-inset-top) + 
 .drq-sys .dsy-eb .dsy-ok{background:var(--primary);color:#fff;border-color:var(--primary)}
 .drq-sys .dsy-em{display:block;margin-top:4px;font-size:12px;color:var(--success)}
 
-/* হোম: রেসপন্স ডায়াগনোসিস / ট্রিটমেন্ট লাইনের ডানে "অডিও" বোতাম; প্লেয়ার লাইনের নিচে */
+/* হোম: "অডিও" বোতাম লাইনের ভেতরের খালি জায়গায় (নাম ও তীরের মাঝে) — লাইনের মাপ আগের মতোই; কার্ড কখনো পর্দার বাইরে যায় না */
+@media (max-width:639px){.drq-grid{grid-template-columns:minmax(0,1fr)}}
+@media (min-width:640px){.drq-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.drq-grid>*,.drq-card{min-width:0;max-width:100%}
 .drq-opts li.drq-ai{display:block}
-.drq-air{display:flex;align-items:stretch;gap:6px}
-.drq-air>a{flex:1 1 0;min-width:0}
-.drq-au{flex:none;border:0;border-radius:9px;padding:0 12px;background:var(--primary);color:#fff;font:inherit;font-size:13px;font-weight:700;white-space:nowrap;cursor:pointer}
+.drq-air{position:relative}
+.drq-air>a{width:100%;box-sizing:border-box}
+.drq-au{position:absolute;right:40px;top:50%;transform:translateY(-50%);border:0;border-radius:8px;padding:5px 10px;background:var(--primary);color:#fff;font:inherit;font-size:12.5px;font-weight:700;white-space:nowrap;cursor:pointer;line-height:1.2}
 .drq-aup{margin:4px 0 2px}
 .drq-aup[hidden]{display:none}
