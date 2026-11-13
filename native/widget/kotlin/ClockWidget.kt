@@ -270,15 +270,15 @@ class ClockWidget : AppWidgetProvider() {
             rv.removeAllViews(R.id.zz_sl)
             if (sn.isEmpty()) rv.setViewVisibility(R.id.zz_sl, View.GONE) else {
                 rv.setViewVisibility(R.id.zz_sl, View.VISIBLE)
-                for (t in sn) {
+                for (t in (if (sn.size == 1) sn + sn else sn)) {
                     val item = RemoteViews(ctx.packageName, R.layout.widget_sl_item)
                     item.setTextViewText(R.id.sl_t, t)
                     // লেখা এক লাইনে বড় রাখা; শুধু জায়গা না ধরলে সামান্য কমে (১০sp এর নিচে নয়)
                     val dm = ctx.resources.displayMetrics
-                    val availPx = (widthDp - 28 - 12 - 96f * k - 84f * k) * dm.density * 0.97f
+                    val availPx = (widthDp - 245f * k) * dm.density * 0.97f
                     val pt = Paint(Paint.ANTI_ALIAS_FLAG).apply { isFakeBoldText = true; textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12f * k, dm) }
                     val need = pt.measureText(t)
-                    val sp = if (need <= availPx || need <= 0f) 12f * k else (12f * k * availPx / need).coerceAtLeast(10f * k)
+                    val sp = if (need <= availPx || need <= 0f) 12f * k else (12f * k * availPx / need).coerceAtLeast(9.5f * k)
                     item.setTextViewTextSize(R.id.sl_t, TypedValue.COMPLEX_UNIT_SP, sp)
                     rv.addView(R.id.zz_sl, item)
                 }
