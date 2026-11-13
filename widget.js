@@ -234,31 +234,31 @@
 
   // ───────── রূপ ─────────
   var CSS =
-    ".drw{box-sizing:border-box;max-width:660px;margin:12px auto 0;padding:5px 14px 5px;border-radius:24px;background:#F2F5F8;color:#14212B;font-family:inherit;user-select:none;-webkit-user-select:none}" +
+    ".drw{box-sizing:border-box;max-width:660px;margin:12px auto 0;padding:3px 14px 3px;border-radius:24px;background:#F2F5F8;color:#14212B;font-family:inherit;user-select:none;-webkit-user-select:none}" +
     ".drw *{box-sizing:border-box}" +
-    ".drw-r{display:flex;align-items:center;justify-content:space-between;gap:8px}.drw-top{align-items:flex-end;gap:4px}.drw-mid{position:relative;flex:1;height:48px;min-width:0;color:#3B4A55}.drw-arc{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}" +
+    ".drw-r{display:flex;align-items:center;justify-content:space-between;gap:8px}.drw-top{align-items:flex-end;gap:4px}.drw-mid{position:relative;flex:1;height:38px;min-width:0;color:#3B4A55}.drw-arc{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}" +
     ".drw-sun{display:flex;align-items:center;gap:5px;font-size:11px;color:#3B4A55;white-space:nowrap}" +
-    ".drw-sun img{width:24px;height:24px;flex:none;display:block}" +
+    ".drw-sun img{width:18px;height:18px;flex:none;display:block}" +
     ".drw-pin{position:absolute;left:50%;bottom:0;transform:translateX(-50%);white-space:nowrap;border:.8px solid rgba(255,255,255,.28);background:linear-gradient(90deg,#16794c,#2bb583);color:#fff;border-radius:10px;padding:2px 8px;font-family:inherit;font-weight:700;font-size:7px;line-height:1.15;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(22,121,76,.35)}" +
     ".drw-sl-sun{position:absolute;white-space:nowrap;font-size:9px;font-weight:700;color:#B36B00;line-height:1;pointer-events:none}" +
     ".drw-sn{flex:1;min-width:0;text-align:center;font-size:9px;line-height:1.3;font-weight:700;color:#1E7F58;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;will-change:opacity,transform;transform:translateZ(0);transition:opacity .35s,transform .35s}.drw-sn.o{opacity:0;transform:translateX(14px)}" +
     ".drw-time{display:flex;align-items:flex-end;gap:4px;margin-top:1px}" +
-    ".drw-time b{font-size:40px;line-height:1;font-weight:800;letter-spacing:-.5px;font-variant-numeric:lining-nums}" +
-    ".drw-time span{font-size:12px;color:#3B4A55;padding-bottom:6px}" +
+    ".drw-time b{font-size:34px;line-height:1;font-weight:800;letter-spacing:-.5px;font-variant-numeric:lining-nums}" +
+    ".drw-time span{font-size:12px;color:#3B4A55;padding-bottom:5px}" +
     ".drw-en{text-align:right;line-height:1.25}" +
     ".drw-en b{display:block;font-size:15px;font-weight:800}" +
     ".drw-lr{display:flex;align-items:center;justify-content:flex-end;gap:6px}" +
     ".drw-upd{font-size:8px;line-height:1.1;text-align:center;color:#3B4A55;background:none;border:0;padding:0;margin-left:2px;cursor:pointer;font-family:inherit}" +
     ".drw-loc{font-size:12px;color:#3B4A55;cursor:pointer;background:none;border:0;padding:0;font-family:inherit}" +
     ".drw-d{margin-top:2px;font-size:12px;color:#3B4A55;white-space:nowrap}" +
-    ".drw-p{display:flex;margin:5px -4px 0}" +
-    ".drw-c{flex:1;text-align:center;padding:5px 0 4px;border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}" +
+    ".drw-p{display:flex;margin:3px -4px 0}" +
+    ".drw-c{flex:1;text-align:center;padding:2px 0 1px;border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}" +
     ".drw-c.on{background:#CFE6D9}" +
     ".drw-c i{display:block;font-style:normal;font-size:11px;color:#3B4A55}" +
     ".drw-c b{display:block;font-size:14px;font-weight:800;margin-top:1px}" +
-    ".drw-b{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:11px;color:#3B4A55}" +
+    ".drw-b{display:flex;align-items:center;gap:8px;margin-top:3px;font-size:11px;color:#3B4A55}" +
     ".drw-b span{white-space:nowrap}" +
-    ".drw-p+.drw-r{margin-top:8px}" +
+    ".drw-p+.drw-r{margin-top:3px}" +
     ".drw-bar{position:relative;flex:1;height:14px;border-radius:7px;background:#8FA39A;overflow:hidden}.drw-bar em{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:9px;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4);white-space:nowrap;line-height:1}" +
     ".drw-bar u{display:block;height:100%;background:linear-gradient(90deg,#16794c,#2bb583);border-radius:7px;text-decoration:none}" +
     "@media (prefers-color-scheme:dark){.drw{background:#16211c;color:#e8f0ea}.drw-sl-sun{color:#FFC857}.drw-sn{color:#7FD3AE}.drw-mid{color:#b3c9bb}.drw-sun,.drw-time span,.drw-loc,.drw-upd,.drw-d,.drw-c i,.drw-b{color:#b3c9bb}.drw-c.on{background:#1f4a39}.drw-bar{background:#2a4034}}";
@@ -309,15 +309,15 @@
       var left = Math.ceil(Math.max(0, be - s.nowMin));
       var cd = durBn(left) + " বাকি";
       var arc = (function () {
-        var CX = 60, CY = 32, RX = 57, RY = 26, f = (s.sunset > s.sunrise && s.nowMin >= s.sunrise && s.nowMin <= s.sunset) ? (s.nowMin - s.sunrise) / (s.sunset - s.sunrise) : null;
-        var o = '<svg class="drw-arc" viewBox="0 0 120 48" preserveAspectRatio="none" aria-hidden="true"><path d="M3,32A57,26 0 0 1 117,32" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.1" stroke-dasharray="2.4 2.2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>';
+        var CX = 60, CY = 24, RX = 57, RY = 19, f = (s.sunset > s.sunrise && s.nowMin >= s.sunrise && s.nowMin <= s.sunset) ? (s.nowMin - s.sunrise) / (s.sunset - s.sunrise) : null;
+        var o = '<svg class="drw-arc" viewBox="0 0 120 38" preserveAspectRatio="none" aria-hidden="true"><path d="M3,24A57,19 0 0 1 117,24" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.1" stroke-dasharray="2.4 2.2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>';
         var lab = "";
         if (f !== null) {
           var a = Math.PI * (1 + f), x = CX + RX * Math.cos(a), y = CY + RY * Math.sin(a);
-          o += '<path d="M3,32A57,26 0 0 1 ' + x.toFixed(2) + ',' + y.toFixed(2) + '" fill="none" stroke="#FFA000" stroke-width="1.3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>' +
+          o += '<path d="M3,24A57,19 0 0 1 ' + x.toFixed(2) + ',' + y.toFixed(2) + '" fill="none" stroke="#FFA000" stroke-width="1.3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>' +
             '<circle cx="' + x.toFixed(2) + '" cy="' + y.toFixed(2) + '" r="5.2" fill="#FFC21A" fill-opacity=".35"/><circle cx="' + x.toFixed(2) + '" cy="' + y.toFixed(2) + '" r="2.6" fill="#FFB300"/><circle cx="' + x.toFixed(2) + '" cy="' + y.toFixed(2) + '" r="1.4" fill="#FFE082"/>';
           var pc = (f * 100).toFixed(1);
-          lab = '<div class="drw-sl-sun" style="left:' + pc + '%;transform:translateX(-' + pc + '%);top:' + Math.min(y + 8, 37).toFixed(1) + 'px">' + durBn(Math.ceil(Math.max(0, s.sunset - s.nowMin))) + ' বাকি</div>';
+          lab = '<div class="drw-sl-sun" style="left:' + pc + '%;transform:translateX(-' + pc + '%);top:' + Math.min(y + 8, 28).toFixed(1) + 'px">' + durBn(Math.ceil(Math.max(0, s.sunset - s.nowMin))) + ' বাকি</div>';
         }
         return o + '</svg>' + lab;
       })();

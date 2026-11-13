@@ -362,10 +362,10 @@ class ClockWidget : AppWidgetProvider() {
         // সূর্যপথের ছবি: wPx × hPx (ImageView-এর মাপের কাছাকাছি, তাই সমানুপাতে ছোট-বড় হয়, লেখা চ্যাপ্টা হয় না)।
         // সূর্য চললে তার ঠিক নিচে সূর্যাস্তের বাকি সময় লেখা থাকে; রাতে শুধু রেখা।
         private fun sunArc(frac: Double?, dark: Boolean, wPx: Int, d: Float, label: String): Bitmap {
-            val w = wPx.coerceAtLeast((100 * d).toInt()); val h = (48 * d).toInt()
+            val w = wPx.coerceAtLeast((100 * d).toInt()); val h = (38 * d).toInt()
             val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
             val cv = Canvas(bmp)
-            val baseY = 32f * d; val topY = 6f * d; val cx = w / 2f; val rx = cx - 5f * d; val ry = baseY - topY
+            val baseY = 24f * d; val topY = 5f * d; val cx = w / 2f; val rx = cx - 5f * d; val ry = baseY - topY
             val oval = RectF(cx - rx, baseY - ry, cx + rx, baseY + ry)
             val track = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 style = Paint.Style.STROKE; strokeWidth = 1.3f * d; strokeCap = Paint.Cap.ROUND
@@ -398,7 +398,7 @@ class ClockWidget : AppWidgetProvider() {
                 }
                 val half = tp.measureText(label) / 2f
                 val tx = sx.coerceIn(half + 2f * d, (w - half - 2f * d).coerceAtLeast(half + 2f * d))
-                val ty = (sy + 15f * d).coerceAtMost(h - 2f * d)
+                val ty = (sy + 12f * d).coerceAtMost(h - 2f * d)
                 cv.drawText(label, tx, ty, tp)
             }
             return bmp
