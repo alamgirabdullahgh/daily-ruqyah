@@ -210,7 +210,7 @@ class ClockWidget : AppWidgetProvider() {
             return if (need <= avail || need <= 0f) baseSp else (baseSp * avail / need).coerceAtLeast(baseSp * 0.55f)
         }
 
-        private fun build(ctx: Context, s: Snap, widthDp: Int, layout: Int = R.layout.widget_v2, pin: Boolean = false): RemoteViews {
+        private fun build(ctx: Context, s: Snap, widthDp: Int, layout: Int = R.layout.widget_v2, pin: Boolean = false, withSl: Boolean = true): RemoteViews {
             val c = Cfg(ctx)
             val rv = RemoteViews(ctx.packageName, layout)
             val k = c.scale / 100f
@@ -266,21 +266,24 @@ class ClockWidget : AppWidgetProvider() {
             val cd = durText(Math.ceil((be - s.nowMin).coerceAtLeast(0.0)).toInt(), c.bnDigits) + " বাকি"
             rv.setTextViewText(R.id.zz_cd, cd)
             // সময় ও ইংরেজি তারিখের মাঝে সুন্নাহ-স্লাইডার: একাধিক হলে একে একে বদলায়, একটা হলে স্থির
-            val sn = Sunnah.items(ctx, java.time.LocalDate.now(), c.hijriShift())
-            rv.removeAllViews(R.id.zz_sl)
-            if (sn.isEmpty()) rv.setViewVisibility(R.id.zz_sl, View.GONE) else {
-                rv.setViewVisibility(R.id.zz_sl, View.VISIBLE)
-                for (t in (if (sn.size == 1) sn + sn else sn)) {
-                    val item = RemoteViews(ctx.packageName, R.layout.widget_sl_item)
-                    item.setTextViewText(R.id.sl_t, t)
-                    // লেখা ছোট করা হয় না; বাক্সের প্রস্থ লেখার সমান, পুরোটা ধীরে ডান থেকে বামে যায়
-                    val dm = ctx.resources.displayMetrics
-                    val pt = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = android.graphics.Typeface.DEFAULT_BOLD; textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12f * k, dm) }
-                    item.setTextViewTextSize(R.id.sl_t, TypedValue.COMPLEX_UNIT_SP, 12f * k)
-                    if (android.os.Build.VERSION.SDK_INT >= 31) {
-                        item.setViewLayoutWidth(R.id.sl_t, Math.ceil(pt.measureText(t).toDouble() * 1.2).toFloat() + 24f * dm.density, TypedValue.COMPLEX_UNIT_PX)
+            // সুন্নাহ-স্লাইডার শুধু তখনই নতুন করে বসে যখন লেখা/মাপ বদলায় (withSl); নইলে চলমান স্লাইডে হাত পড়ে না
+            if (withSl) {
+                val sn = Sunnah.items(ctx, java.time.LocalDate.now(), c.hijriShift())
+                rv.removeAllViews(R.id.zz_sl)
+                if (sn.isEmpty()) rv.setViewVisibility(R.id.zz_sl, View.GONE) else {
+                    rv.setViewVisibility(R.id.zz_sl, View.VISIBLE)
+                    for (t in (if (sn.size == 1) sn + sn else sn)) {
+                        val item = RemoteViews(ctx.packageName, R.layout.widget_sl_item)
+                        item.setTextViewText(R.id.sl_t, t)
+                        // লেখা ছোট করা হয় না; বাক্সের প্রস্থ লেখার সমান, পুরোটা ধীরে ডান থেকে বামে যায়
+                        val dm = ctx.resources.displayMetrics
+                        val pt = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = android.graphics.Typeface.DEFAULT_BOLD; textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12f * k, dm) }
+                        item.setTextViewTextSize(R.id.sl_t, TypedValue.COMPLEX_UNIT_SP, 12f * k)
+                        if (android.os.Build.VERSION.SDK_INT >= 31) {
+                            item.setViewLayoutWidth(R.id.sl_t, Math.ceil(pt.measureText(t).toDouble() * 1.2).toFloat() + 24f * dm.density, TypedValue.COMPLEX_UNIT_PX)
+                        }
+                        rv.addView(R.id.zz_sl, item)
                     }
-                    rv.addView(R.id.zz_sl, item)
                 }
             }
             val open = PendingIntent.getActivity(
@@ -432,6 +435,14 @@ class ClockWidget : AppWidgetProvider() {
         }
         @Volatile private var lastPreviewAt = 0L
 
+        // প্রতি উইজেট-আইডির শেষ বসানো সুন্নাহ-স্লাইডারের "ছাপ" (লেখা + মাপ); প্রসেস নতুন হলে খালি, তখন একবার পুরো বসে
+        private val slSigs = HashMap<Int, String>()
+        private fun slSig(ctx: Context, w: Int): String {
+            val c = Cfg(ctx)
+            val sn = Sunnah.items(ctx, java.time.LocalDate.now(), c.hijriShift())
+            return sn.joinToString("\u0001") + "|" + c.scale + "|" + w
+        }
+
         fun refresh(ctx: Context) {
             removeOldLockCard(ctx)
             pushPreview(ctx)
@@ -443,7 +454,19 @@ class ClockWidget : AppWidgetProvider() {
                 val s = compute(ctx)
                 for (id in ids) {
                     val w = mgr.getAppWidgetOptions(id).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0).let { if (it > 0) it else 250 }
-                    mgr.updateAppWidget(id, build(ctx, s, w))
+                    // স্লাইডারের লেখা আগের বারের মতোই হলে শুধু বাকি অংশ হালনাগাদ (partial): প্রতিবার স্লাইডার মুছে নতুন বসালে
+                    // স্ক্রিন অন হওয়ার সময় চলমান স্লাইডের "ভূত" কপি (লেখা ওপর-ওপর) দেখা যায়
+                    val sig = slSig(ctx, w)
+                    var done = false
+                    synchronized(slSigs) {
+                        if (slSigs[id] == sig) {
+                            try { mgr.partiallyUpdateAppWidget(id, build(ctx, s, w, withSl = false)); done = true } catch (e: Exception) { }
+                        }
+                    }
+                    if (!done) {
+                        mgr.updateAppWidget(id, build(ctx, s, w))
+                        synchronized(slSigs) { slSigs[id] = sig }
+                    }
                 }
                 (ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager)
                     .setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, minOf(s.nextAt, System.currentTimeMillis() + TICK_MS), tickIntent(ctx))
