@@ -20,7 +20,7 @@ object Sunnah {
 
     private val GROUPS = listOf(
         // রমজান (৯) ও জিলহজ (১২; আইয়ামে তাশরীকে রোজা নিষেধ) বাদ
-        G("বীজের রোজা", 13..15, null, setOf(9, 12), true),
+        G("আইয়ামে বীজের রোজা", 13..15, null, setOf(9, 12), true),
         G("হিজামার দিন", 17..17, null, emptySet(), false),
         G("হিজামার দিন", 19..19, null, emptySet(), false),
         G("হিজামার দিন", 21..21, null, emptySet(), false),
