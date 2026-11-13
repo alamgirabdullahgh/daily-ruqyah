@@ -275,10 +275,10 @@ class ClockWidget : AppWidgetProvider() {
                     item.setTextViewText(R.id.sl_t, t)
                     // লেখা ছোট করা হয় না; বাক্সের প্রস্থ লেখার সমান, পুরোটা ধীরে ডান থেকে বামে যায়
                     val dm = ctx.resources.displayMetrics
-                    val pt = Paint(Paint.ANTI_ALIAS_FLAG).apply { isFakeBoldText = true; textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12f * k, dm) }
+                    val pt = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = android.graphics.Typeface.DEFAULT_BOLD; textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12f * k, dm) }
                     item.setTextViewTextSize(R.id.sl_t, TypedValue.COMPLEX_UNIT_SP, 12f * k)
                     if (android.os.Build.VERSION.SDK_INT >= 31) {
-                        item.setViewLayoutWidth(R.id.sl_t, Math.ceil(pt.measureText(t).toDouble()).toFloat() + 8f * dm.density, TypedValue.COMPLEX_UNIT_PX)
+                        item.setViewLayoutWidth(R.id.sl_t, Math.ceil(pt.measureText(t).toDouble() * 1.2).toFloat() + 24f * dm.density, TypedValue.COMPLEX_UNIT_PX)
                     }
                     rv.addView(R.id.zz_sl, item)
                 }
