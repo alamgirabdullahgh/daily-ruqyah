@@ -313,6 +313,13 @@
       var m = el.querySelector(".drw-mid"), w = (m && m.clientWidth) || 300, h = (m && m.clientHeight) || 38;
       return "translate(" + g.x + "," + g.y + ") scale(" + (120 / w).toFixed(4) + "," + (38 / h).toFixed(4) + ")";
     }
+    // আজকের আসল চাঁদের কলা (০ = অমাবস্যা, ০.৫ = পূর্ণিমা); উত্তর গোলার্ধ: বাড়ার সময় ডান দিক আলোকিত, কমার সময় বাম
+    function moonSvg(now) {
+      var days = now.getTime() / 86400000 + 2440587.5 - 2451550.1, p = ((days / 29.530588853) % 1 + 1) % 1;
+      var R = 4.6, pp = p < 0.5 ? p : 1 - p, k = Math.cos(2 * Math.PI * pp), rx = (R * Math.abs(k)).toFixed(2);
+      var lit = '<path d="M0,' + (-R) + 'A' + R + ',' + R + ' 0 0 1 0,' + R + 'A' + rx + ',' + R + ' 0 0 ' + (k > 0 ? 0 : 1) + ' 0,' + (-R) + 'Z" fill="#F3E7A1" transform="scale(' + (p > 0.5 ? -1 : 1) + ',1)"/>';
+      return '<circle r="7.5" fill="#9FA8DA" fill-opacity=".25"/><circle r="' + R + '" fill="#5C6BC0" fill-opacity=".45"/>' + lit + '<circle r="' + R + '" fill="none" stroke="#B9A94E" stroke-width=".5" stroke-opacity=".7"/>';
+    }
     var lastSig = "";
     window.addEventListener("dr-sunnah", function () { if (el.isConnected) { lastSig = ""; render(); } });
     function sigOf(s, now) { return [s.cur, shownIndex(s), (function (g) { return g ? (g.moon ? 2 : 1) : 0; })(sunGeom(s)), now.getDate(), updBusy ? 1 : 0].join("|"); }
@@ -362,7 +369,7 @@
         var lab = "";
         if (g && g.moon) {
           o += '<path class="drw-pr" d="M117,24A57,19 0 0 0 ' + g.x + ',' + g.y + '" fill="none" stroke="#7E8CD8" stroke-width="1.3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>' +
-            '<g class="drw-m" transform="' + moonTf(g) + '"><circle r="7" fill="#9FA8DA" fill-opacity=".28"/><path d="M0,-4.6A4.6,4.6 0 1 0 3.4,3.1A3.6,3.6 0 1 1 0,-4.6Z" fill="#E8D98A" stroke="#B9A94E" stroke-width=".5"/></g>';
+            '<g class="drw-m" transform="' + moonTf(g) + '">' + moonSvg(now) + '</g>';
           lab = '<div class="drw-sl-sun" style="left:50%;transform:translateX(-50%);top:13px">' + g.txt + '</div>';
         } else if (g) {
           o += '<path class="drw-pr" d="M3,24A57,19 0 0 1 ' + g.x + ',' + g.y + '" fill="none" stroke="#FFA000" stroke-width="1.3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>' +
