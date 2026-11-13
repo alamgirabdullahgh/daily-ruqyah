@@ -237,7 +237,7 @@
     ".drw-sun img{width:18px;height:18px;flex:none;display:block}" +
     ".drw-pin{flex:none;margin:0 6px;white-space:nowrap;border:.8px solid rgba(255,255,255,.28);background:linear-gradient(90deg,#16794c,#2bb583);color:#fff;border-radius:10px;padding:1px 8px;font-family:inherit;font-weight:700;font-size:9px;line-height:1.15;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(22,121,76,.35)}" +
     ".drw-sl-sun{position:absolute;white-space:nowrap;font-size:9px;font-weight:700;color:#B36B00;line-height:1;pointer-events:none}" +
-    ".drw-sn{flex:1;min-width:0;max-width:112px;margin:0 auto;position:relative;height:34px;overflow:hidden;font-size:12px;line-height:16px;font-weight:700;color:#1E7F58;direction:ltr}.drw-sn span{position:absolute;left:0;top:0;height:34px;display:flex;align-items:center;justify-content:center;text-align:center;white-space:normal;will-change:transform}" +
+    ".drw-sn{flex:1;min-width:0;position:relative;height:20px;overflow:hidden;font-size:12.5px;line-height:20px;font-weight:700;color:#1E7F58;direction:ltr}.drw-sn span{position:absolute;left:0;top:0;white-space:nowrap;will-change:transform}" +
     ".drw-time{display:flex;align-items:flex-end;gap:4px;margin-top:1px}" +
     ".drw-time b{font-size:34px;line-height:1;font-weight:800;letter-spacing:-.5px;font-variant-numeric:lining-nums}" +
     ".drw-time span{font-size:12px;color:#3B4A55;padding-bottom:5px}" +
@@ -359,7 +359,7 @@
         '<div class="drw-b"><span>' + (nf ? nf.name + " শুরু " : "ওয়াক্ত শুরু ") + fmt(bs) + '</span><div class="drw-bar"><u style="width:' + (frac * 100).toFixed(1) + '%"></u><em>' + cd + '</em></div><span>' + (nf ? "শেষ " : "ওয়াক্ত শেষ ") + fmt(be) + "</span></div>" +
         '<div class="drw-p">' + cells + "</div>" +
         '<div class="drw-r"><div class="drw-time"><b>' + hh + ":" + mm + "</b><span>" + (now.getHours() < 12 ? "AM" : "PM") + "</span></div>" +
-        '<div class="drw-sn" data-sn="1" data-wrap="1"></div>' +
+        '<div class="drw-sn" data-sn="1"></div>' +
         '<div class="drw-en"><b>' + en + '</b><div class="drw-lr"><button class="drw-loc" type="button" data-loc="1">' + placeName(loc) + '</button><button class="drw-upd" type="button" data-upd="1">' + (updBusy ? "হচ্ছে…" : "আপডেট<br>লোকেশন") + "</button></div></div></div>" +
         '<div class="drw-r drw-d"><span>' + hijriText(now, inBd(loc.lat, loc.lng)) + '</span><button class="drw-pin" type="button" data-pin="1">হোম স্ক্রিনে বসান</button><span>' + banglaText(addDays(now, BANGLA_ADJ)) + "</span></div>" +
         "</div>";

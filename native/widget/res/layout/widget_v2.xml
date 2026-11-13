@@ -312,7 +312,7 @@
                 android:format24Hour="h:mm"
                 android:includeFontPadding="false"
                 android:textColor="@color/w_text"
-                android:textSize="34sp"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextClock
@@ -331,7 +331,7 @@
         <ViewFlipper
             android:id="@+id/zz_sl"
             android:layout_width="0dp"
-            android:layout_height="34dp"
+            android:layout_height="20dp"
             android:layout_marginStart="6dp"
             android:layout_marginEnd="6dp"
             android:layout_weight="1"

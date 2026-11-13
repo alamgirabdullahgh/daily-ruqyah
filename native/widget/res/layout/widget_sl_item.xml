@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- লেখা ছোট করা হয় না: ১২sp বোল্ড, জায়গায় না ধরলে দুই লাইনে ভাঙে -->
+<!-- এক লাইন, বড় লেখা; জায়গায় না ধরলে কোড থেকে সামান্য ছোট করা হয় (১০sp এর নিচে নয়) -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/sl_t"
     android:layout_width="match_parent"
@@ -7,8 +7,7 @@
     android:ellipsize="end"
     android:gravity="center"
     android:includeFontPadding="false"
-    android:lineSpacingExtra="0dp"
-    android:maxLines="2"
+    android:maxLines="1"
     android:textColor="@color/w_sunnah"
     android:textSize="12sp"
     android:textStyle="bold" />
