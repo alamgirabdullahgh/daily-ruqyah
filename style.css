@@ -642,3 +642,12 @@ html:has(body:not(.is-home)){scroll-padding-top:calc(env(safe-area-inset-top) + 
 .drq-tabs{margin-bottom:10px}
 .drq-card.drq-sys{padding:2px 16px}
 .drq-sys .dsy-row{padding:8px 0}
+
+/* হোম: শারীরিক/মানসিক এক লাইনে দুই ভাগে */
+.drq-opts.drq-two{flex-direction:row;gap:8px}
+.drq-opts.drq-two li{flex:1;min-width:0}
+.drq-opts.drq-two a{padding:10px 12px}
+/* হোম: ব্যানারের নিচে হাদিয়া/সাপোর্টের স্লাইডার (ডান থেকে বামে) */
+.drq-support{margin:0 0 8px}
+.drq-tk{position:relative;height:36px;overflow:hidden;direction:ltr;border-radius:12px;background:var(--accent-light);border:1px solid var(--border-light);box-shadow:var(--shadow-card)}
+.drq-tk span{position:absolute;left:0;top:0;line-height:36px;white-space:nowrap;font-size:15.5px;font-weight:700;color:var(--primary);font-family:var(--font-head);will-change:transform}

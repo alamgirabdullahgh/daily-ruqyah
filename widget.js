@@ -241,7 +241,7 @@
     ".drw-sun img{width:18px;height:18px;flex:none;display:block}" +
     ".drw-pin{flex:none;margin:0 6px;white-space:nowrap;border:.8px solid rgba(255,255,255,.28);background:linear-gradient(90deg,#16794c,#2bb583);color:#fff;border-radius:10px;padding:1px 8px;font-family:inherit;font-weight:700;font-size:9px;line-height:1.15;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(22,121,76,.35)}" +
     ".drw-sl-sun{position:absolute;white-space:nowrap;font-size:9px;font-weight:700;color:#B36B00;line-height:1;pointer-events:none}" +
-    ".drw-sn{flex:1;min-width:0;text-align:center;font-size:9px;line-height:1.3;font-weight:700;color:#1E7F58;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;will-change:opacity,transform;transform:translateZ(0);transition:opacity .35s,transform .35s}.drw-sn.o{opacity:0;transform:translateX(14px)}" +
+    ".drw-sn{flex:1;min-width:0;position:relative;height:17px;overflow:hidden;font-size:11.5px;line-height:17px;font-weight:700;color:#1E7F58;direction:ltr}.drw-sn span{position:absolute;left:0;top:0;white-space:nowrap;will-change:transform}" +
     ".drw-time{display:flex;align-items:flex-end;gap:4px;margin-top:1px}" +
     ".drw-time b{font-size:34px;line-height:1;font-weight:800;letter-spacing:-.5px;font-variant-numeric:lining-nums}" +
     ".drw-time span{font-size:12px;color:#3B4A55;padding-bottom:5px}" +
@@ -356,6 +356,7 @@
       var cells = "";
       for (var i = 0; i < 5; i++)
         cells += '<div class="drw-c' + (i === s.cur ? " on" : "") + '" data-i="' + i + '"><i>' + NAMES[i] + "</i><b>" + fmt(s.m[i]) + "</b></div>";
+      var keepSn = el.querySelector("[data-sn]");
       el.innerHTML =
         '<div class="drw"><div class="drw-r drw-top"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span>' + '<div class="drw-mid">' + arc + '</div>' + '<span class="drw-sun">সূর্যাস্ত ' + fmt(s.sunset) + SUNSET + "</span></div>" +
         '<div class="drw-b"><span>' + (nf ? nf.name + " শুরু " : "ওয়াক্ত শুরু ") + fmt(bs) + '</span><div class="drw-bar"><u style="width:' + (frac * 100).toFixed(1) + '%"></u><em>' + cd + '</em></div><span>' + (nf ? "শেষ " : "ওয়াক্ত শেষ ") + fmt(be) + "</span></div>" +
@@ -365,25 +366,65 @@
         '<div class="drw-en"><b>' + en + '</b><div class="drw-lr"><button class="drw-loc" type="button" data-loc="1">' + placeName(loc) + '</button><button class="drw-upd" type="button" data-upd="1">' + (updBusy ? "হচ্ছে…" : "আপডেট<br>লোকেশন") + "</button></div></div></div>" +
         '<div class="drw-r drw-d"><span>' + hijriText(now, inBd(loc.lat, loc.lng)) + '</span><button class="drw-pin" type="button" data-pin="1">হোম স্ক্রিনে বসান</button><span>' + banglaText(addDays(now, BANGLA_ADJ)) + "</span></div>" +
         "</div>";
+      if (keepSn) { var ns = el.querySelector("[data-sn]"); if (ns && ns.parentNode) ns.parentNode.replaceChild(keepSn, ns); }
       snItems = sunnahItems(now, inBd(loc.lat, loc.lng));
       paintSn();
       lastSig = sigOf(s, now);
     }
-    // সুন্নাহ-স্লাইডার: একাধিক হলে প্রতি ৩.৬ সেকেন্ডে ফেড হয়ে বদলায়, একটা হলে স্থির
+    // স্মুথ টিকার: লেখা ডান দিক থেকে ঢুকে বাম দিকে বেরিয়ে যায় (বাংলার পড়ার দিক)। লেখা ছোট করা হয় না:
+    // জায়গায় ধরলে মাঝখানে থেমে তারপর বাম দিকে বেরোয়, না ধরলে ধীরে ধীরে পুরোটা পার হয়ে যায়।
+    window.__drTicker = function (host, getItems) {
+      if (!host || host.__tk) return;
+      host.__tk = 1;
+      var span = host.querySelector("span");
+      if (!span) { span = document.createElement("span"); host.appendChild(span); }
+      var idx = 0, anim = null, lastStatic = "";
+      function again(ms) { setTimeout(step, ms); }
+      function step() {
+        if (!host.isConnected) { host.__tk = 0; return; }
+        var items = getItems() || [];
+        if (!items.length) { host.style.visibility = "hidden"; lastStatic = ""; return again(1500); }
+        var W = host.clientWidth;
+        if (!W) return again(700);
+        host.style.visibility = "";
+        var txt = items[idx % items.length];
+        span.textContent = txt;
+        var w = span.offsetWidth, fits = w <= W - 6, mid = Math.max(0, (W - w) / 2);
+        if (items.length === 1 && fits) {
+          if (anim) { anim.cancel(); anim = null; }
+          span.style.transform = "translateX(" + mid + "px)";
+          return again(1500);
+        }
+        idx++;
+        var k, dur;
+        if (fits) {
+          dur = 1500 + Math.min(4200, 600 * txt.length / 6 + 1800);
+          var a = 650 / dur, b = 1 - 650 / dur;
+          k = [
+            { transform: "translateX(" + (W + 4) + "px)", easing: "cubic-bezier(.2,.7,.2,1)" },
+            { transform: "translateX(" + mid + "px)", offset: a },
+            { transform: "translateX(" + mid + "px)", offset: b, easing: "cubic-bezier(.6,0,.9,.4)" },
+            { transform: "translateX(" + (-w - 4) + "px)" }
+          ];
+        } else {
+          dur = Math.max(4000, (W + w + 8) / 0.055);
+          k = [{ transform: "translateX(" + (W + 4) + "px)" }, { transform: "translateX(" + (-w - 4) + "px)" }];
+        }
+        if (!span.animate) { span.style.transform = "translateX(" + (fits ? mid : 0) + "px)"; return again(3600); }
+        anim = span.animate(k, { duration: dur, easing: "linear", fill: "forwards" });
+        anim.onfinish = step;
+        anim.oncancel = function () { };
+      }
+      step();
+    };
     var snItems = [], snI = 0;
     function paintSn() {
       var e = el.querySelector("[data-sn]");
       if (!e) return;
       if (!snItems.length) { e.style.display = "none"; return; }
-      e.style.display = ""; e.textContent = snItems[snI % snItems.length]; void e.offsetWidth;
+      e.style.display = "";
+      if (!e.__tk) window.__drTicker(e, function () { return snItems; });
     }
-    setInterval(function () {
-      if (snItems.length < 2) return;
-      var e = el.querySelector("[data-sn]");
-      if (!e) return;
-      e.classList.add("o");
-      setTimeout(function () { snI = (snI + 1) % snItems.length; paintSn(); var x = el.querySelector("[data-sn]"); if (x) x.classList.remove("o"); }, 360);
-    }, 3600);
     var updBusy = false;
     // "আপডেট লোকেশন": অনুমতি না থাকলে চায়, ফোনের লোকেশন বন্ধ থাকলে চালু করার সেটিংস খোলে, নইলে এখনই নতুন অবস্থান নেয় (নেট লাগে)
     function updateLoc() {

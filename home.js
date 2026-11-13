@@ -7,13 +7,14 @@
   ["জাদু",[["সিমটম ডায়াগনোসিস","#diag/jadu"],["রেসপন্স ডায়াগনোসিস","#resp/jadu"],["ট্রিটমেন্ট","#amol/b2a"]]],
   ["জিন",[["সিমটম ডায়াগনোসিস","#diag/jin"],["রেসপন্স ডায়াগনোসিস","#resp/jin"],["ট্রিটমেন্ট","#amol/b1a"]]]
  ];
+ var SUPPORT=["সাধ্যমত হাদিয়া দিন, শরিয়া সম্মত চিকিৎসা নিন।","আল্লাহর উপর ভরসা রাখুন, শিফা তাঁরই হাতে।","ধৈর্য ধরে নিয়মিত আমল চালিয়ে যান, ইনশাআল্লাহ উপকার পাবেন।","কুরআন ও সহিহ হাদিসের দোয়া দিয়েই রুকইয়াহ করুন।","সকাল-সন্ধ্যার যিকির ও প্রতিদিন কুরআন তিলাওয়াত বাদ দেবেন না।","শারীরিক অসুস্থতায় ডাক্তারের পরামর্শও নিন, রুকইয়াহ ও চিকিৎসা একসাথে চলে।","আপনার দোয়ায় আমাদের রাখবেন।"];
  var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
  var built=false;
  window.__drLanding=function(){
   if(built)return;
   var H=document.getElementById("drLanding");if(!H)return;
   built=true;
-  var h='<div class="drq-grid">';
+  var h='<div class="drq-support" aria-live="off"><div class="drq-tk" id="drSupTk"><span></span></div></div><div class="drq-grid">';
   var TS=1,TE=3; /* G[TS..TE] = বদনজর · জাদু · জিন: এক কার্ডে ট্যাব; চতুর্থ ট্যাব "সব": একই তিন অপশন, তবে তিন বিষয়ের ফল একসাথে এক পাতায় */
   var item=function(o){
    var t=o[1];
@@ -23,7 +24,7 @@
    if(t.list)return '<li><a href="#search" data-list="'+t.list+'">'+esc(o[0])+'</a></li>';
    return '<li><a href="#search" data-'+(t.topic?'topic="'+esc(t.topic)+'"':t.mental?'mental="1"':'disease="1"')+'>'+esc(o[0])+'</a></li>';
   };
-  var ulOf=function(g,attr){var r='<ul class="drq-opts"'+(attr||'')+'>';g[1].forEach(function(o){r+=item(o)});return r+'</ul>'};
+  var ulOf=function(g,attr,cls){var r='<ul class="drq-opts'+(cls?' '+cls:'')+'"'+(attr||'')+'>';g[1].forEach(function(o){r+=item(o)});return r+'</ul>'};
   G.forEach(function(g,gi){
    var tab=gi>=TS&&gi<=TE;
    if(tab){
@@ -34,10 +35,13 @@
     h+=ulOf(["সব",[["সিমটম ডায়াগনোসিস","#diag"],["রেসপন্স ডায়াগনোসিস","#resp"],["ট্রিটমেন্ট","#amol/all"]]],' data-pane="'+(TE-TS+1)+'" hidden')+'</section>';
     return;
    }
-   h+='<section class="drq-card"><h3>'+esc(g[0])+'</h3>'+ulOf(g)+'</section>';
+   h+='<section class="drq-card"><h3>'+esc(g[0])+'</h3>'+ulOf(g,'',gi===0?'drq-two':'')+'</section>';
   });
   H.innerHTML=h+'</div>';
   window.__drSysCard&&window.__drSysCard(H);
+  var tk=document.getElementById("drSupTk");
+  var startTk=function(){if(window.__drTicker)window.__drTicker(tk,function(){return SUPPORT});else setTimeout(startTk,300)};
+  startTk();
   H.addEventListener("click",function(e){
    
    var tb=e.target.closest&&e.target.closest(".drq-tab");
