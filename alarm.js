@@ -390,7 +390,27 @@
     host.setAttribute("data-g", g); host.setAttribute("data-open", "1"); host.hidden = false;
     var defs = SYS.filter(function (d) { return d.g === g; }), fields = [];
     function row(label, node) { var r = el("label", "dsy-ef"); r.appendChild(el("span", "", label)); r.appendChild(node); host.appendChild(r); }
-    function tin(v) { var i = el("input"); i.type = "time"; i.value = v ? ("0" + v).slice(-5) : ""; return i; }
+    /* সময় হাতে টাইপ: ঘণ্টা (১–১২) : মিনিট + AM/PM চাপ-বোতাম। ঘড়ি-বাছাই নেই। val() "HH:MM" (২৪ ঘণ্টা) দেয়; দুটো ঘর খালি = ডিফল্ট ("") */
+    function bd(x) { return String(x || "").replace(/[০-৯]/g, function (d) { return "০১২৩৪৫৬৭৮৯".indexOf(d); }).replace(/\D/g, ""); }
+    function tin(v) {
+      var w = el("span", "dsy-tm"), h = el("input"), m = el("input"), ap = el("button", "dsy-ap"), pm = false;
+      [h, m].forEach(function (i) { i.type = "text"; i.inputMode = "numeric"; i.maxLength = 2; i.autocomplete = "off"; i.onfocus = function () { try { i.select(); } catch (e) { } }; });
+      h.placeholder = "ঘ."; m.placeholder = "মি."; ap.type = "button";
+      function paint() { ap.textContent = pm ? "PM" : "AM"; }
+      ap.onclick = function () { pm = !pm; paint(); };
+      if (v) { var p = String(v).split(":"), H = +p[0] || 0; pm = H >= 12; h.value = String(H % 12 === 0 ? 12 : H % 12); m.value = ("0" + (+p[1] || 0)).slice(-2); }
+      paint();
+      w.appendChild(h); w.appendChild(el("b", "", ":")); w.appendChild(m); w.appendChild(ap);
+      w.val = function () {
+        var hs = bd(h.value), ms = bd(m.value);
+        if (!hs && !ms) return "";
+        var H = parseInt(hs || "0", 10), M = parseInt(ms || "0", 10);
+        if (!(H >= 1 && H <= 12) || !(M >= 0 && M <= 59)) return null;
+        H = H % 12; if (pm) H += 12;
+        return ("0" + H).slice(-2) + ":" + ("0" + M).slice(-2);
+      };
+      return w;
+    }
     host.appendChild(el("b", "dsy-eh", g === "baq" ? "সূরা বাকারার সময়" : "জাদু রিনিউ বন্ধের সময়"));
     defs.forEach(function (d) {
       var c = cfgOf(d), i = tin(c.time || (g === "jadu" ? d.time : ""));
@@ -398,7 +418,7 @@
       row(lab, i); fields.push({ d: d, t: i });
     });
     var nagIn = null;
-    if (g === "jadu") { nagIn = el("input"); nagIn.type = "number"; nagIn.min = "1"; nagIn.max = "720"; nagIn.value = String(cfgOf(defs[0]).nag || defs[0].nag); row("বন্ধ করলে আবার বাজবে (মিনিট পরে)", nagIn); }
+    if (g === "jadu") { nagIn = el("input"); nagIn.type = "text"; nagIn.inputMode = "numeric"; nagIn.maxLength = 3; nagIn.value = String(cfgOf(defs[0]).nag || defs[0].nag); row("বন্ধ করলে আবার বাজবে (মিনিট পরে)", nagIn); }
     var bar = el("div", "dsy-eb"), ok = el("button", "dsy-ok", "সংরক্ষণ"), df = el("button", "dsy-df", "ডিফল্ট"), cl = el("button", "dsy-cl", "বন্ধ");
     [ok, df, cl].forEach(function (b) { b.type = "button"; bar.appendChild(b); });
     host.appendChild(bar);
@@ -408,9 +428,12 @@
       msg.textContent = "✔ সংরক্ষিত";
     }
     ok.onclick = function () {
-      fields.forEach(function (f) {
-        var nv = nagIn ? Math.max(1, Math.min(720, parseInt(nagIn.value, 10) || f.d.nag)) : 0;
-        var t = f.t.value;
+      var vals = fields.map(function (f) { return f.t.val(); });
+      if (vals.some(function (v) { return v === null; })) { msg.style.color = "#b3261e"; msg.textContent = "সময় ঠিক নয়: ঘণ্টা ১–১২, মিনিট ০–৫৯ লিখুন"; return; }
+      msg.style.color = "";
+      fields.forEach(function (f, k) {
+        var nv = nagIn ? Math.max(1, Math.min(720, parseInt(bd(nagIn.value), 10) || f.d.nag)) : 0;
+        var t = vals[k];
         if (g === "jadu" && t === f.d.time) t = "";
         cfgSet(f.d.id, { time: t, nag: nv && nv !== f.d.nag ? nv : 0 });
       });

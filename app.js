@@ -301,10 +301,10 @@ function smoothAyah(ch,sr){const n=ch.length;let pk=0;for(let i=0;i<n;i++){const
  let e=0;for(let i=a;i<b;i++)e+=ch[i]*ch[i];const rms=Math.sqrt(e/m)||0.1;let g=Math.max(0.6,Math.min(1.8,0.1/rms));g=Math.min(g,0.97/pk);
  const fi=Math.min(Math.round(sr*0.02),m>>1),fo=Math.min(Math.round(sr*0.04),m>>1),o=new Int16Array(m);
  for(let k=0;k<m;k++){let v=ch[a+k]*g;if(k<fi)v*=k/fi;else if(m-k<fo)v*=(m-k)/fo;v=Math.max(-1,Math.min(1,v));o[k]=v<0?v*32768:v*32767}return o}
-async function mergeAudio(list,out,note,opt){if(!list.length)return;
+async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=(s,a)=>opt&&opt.rep?opt.rep:repOf(s,a),ST=()=>opt&&opt.set?opt.set:setAll();
  // কোনো সীমা নেই: প্রতিটি আয়াত নামিয়েই সাথে সাথে MP3-তে এনকোড হয়, মেমোরিতে শুধু ছোট MP3 টুকরো জমে — তাই হাজারো আয়াতেও একটাই ফাইল
  out.textContent="";let L=null;try{L=await loadLame()}catch(e){console.error(e)}
- if(!L){note("MP3 বানানোর লাইব্রেরি পাওয়া যায়নি (ইন্টারনেট দেখুন), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");playList(setAll()>1?Array.from({length:setAll()},()=>list).flat():list,out);return}
+ if(!L){note("MP3 বানানোর লাইব্রেরি পাওয়া যায়নি (ইন্টারনেট দেখুন), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");playList(ST()>1?Array.from({length:ST()},()=>list).flat():list,out);return}
  const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));AS.loc=AS.net=0;let pool=null;try{pool=await mkEncPool()}catch(e){console.error(e);pool=null}const jobs=[];
  let wl=null;try{wl=await navigator.wakeLock.request("screen")}catch(e){}
  const push=pcm=>{for(let i=0;i<pcm.length;i+=B){const m=enc.encodeBuffer(pcm.subarray(i,i+B));if(m.length)mp3.push(new Uint8Array(m))}};
@@ -313,19 +313,19 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;
   note("অডিও প্রস্তুত ও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+(bad?" (বাদ: "+bn2(bad)+")":"")+"…");
   const ab=await get(i);pf[i]=null;
   if(!ab){bad++;if(!ok&&bad>=5)break;continue}
-  try{const d=await ctx.decodeAudioData(ab),ch=d.getChannelData(0),pcm=smoothAyah(tsm(ch,sr,spdOf()),sr),rp=repOf(list[i][0],list[i][1]);
+  try{const d=await ctx.decodeAudioData(ab),ch=d.getChannelData(0),pcm=smoothAyah(tsm(ch,sr,spdOf()),sr),rp=RP(list[i][0],list[i][1]);
     if(pool){const fl=new Int16Array(pcm.length+gap.length);fl.set(pcm);fl.set(gap,pcm.length);await pool.room();jobs.push({p:pool.run(fl,sr),pcm:fl,rp})}else for(let q=0;q<rp;q++){push(pcm);push(gap)}
     ok++}catch(e){bad++;if(!ok&&bad>=5)break}
   if(i%10===0)await new Promise(r=>setTimeout(r))}
  try{ctx.close()}catch(x){}try{wl&&wl.release()}catch(x){}
  if(pool){note("MP3 ফাইল শেষ করা হচ্ছে…");for(const j of jobs){let c=await j.p;if(!c)c=encMain(L,j.pcm,sr);for(let q=0;q<j.rp;q++)mp3.push(c)}pool.close()}
- if(!ok){console.error("merge failed");note("একটা ফাইলে জোড়া লাগানো যায়নি (অডিও সার্ভার ফাইল দিতে দেয়নি), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");out.textContent="";playList(setAll()>1?Array.from({length:setAll()},()=>list).flat():list,out);return}
- if(!pool){const f=enc.flush();if(f.length)mp3.push(new Uint8Array(f))}const SR=setAll(),parts=[];for(let q=0;q<SR;q++)for(const c of mp3)parts.push(c);const blob=new Blob(parts,{type:"audio/mpeg"}),ext="mp3";
+ if(!ok){console.error("merge failed");note("একটা ফাইলে জোড়া লাগানো যায়নি (অডিও সার্ভার ফাইল দিতে দেয়নি), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");out.textContent="";playList(ST()>1?Array.from({length:ST()},()=>list).flat():list,out);return}
+ if(!pool){const f=enc.flush();if(f.length)mp3.push(new Uint8Array(f))}const SR=ST(),parts=[];for(let q=0;q<SR;q++)for(const c of mp3)parts.push(c);const blob=new Blob(parts,{type:"audio/mpeg"}),ext="mp3";
  const url=URL.createObjectURL(blob),au=document.createElement("audio");au.controls=true;au.src=url;au.style.cssText="display:block;width:100%;margin-top:8px";
- const FN=(String(window.__sq||"").trim().replace(/\s*[,،，、]\s*/g,"-").replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g,"_").replace(/^[-_.]+|[-_.]+$/g,"").slice(0,60)||"quran-audio")+"."+ext;window.__lastFN=FN;const dl=els("a","display:none;pointer-events:none;flex-direction:column;align-items:center;gap:1px;flex:none;margin:0;padding:6px 12px;border-radius:12px;font-size:13px;background:var(--primary);color:#fff;text-decoration:none;font-weight:600;line-height:1.3","");dl.href=url;{const t1=document.createElement("span"),t2=document.createElement("span");t1.textContent="⬇ Download";t2.textContent=(Math.round(blob.size/1048576*10)/10)+" MB";t2.style.cssText="font-size:12px;font-weight:400;opacity:.9";dl.append(t1,t2)}dl.download=FN;dl.setAttribute("aria-hidden","true");dl.tabIndex=-1;dl.onclick=e=>{e.preventDefault();e.stopPropagation()};{const row=els("div","display:flex;align-items:center;gap:8px;margin-top:8px"),sh=document.createElement("button");au.style.cssText="flex:1 1 0;min-width:0;width:100%;margin:0";sh.type="button";sh.title="শেয়ার";sh.setAttribute("aria-label","শেয়ার");sh.style.cssText="flex:none;width:42px;height:42px;border-radius:50%;border:0;background:var(--primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0";
+ const FN=(String((opt&&opt.name)||window.__sq||"").trim().replace(/\s*[,،，、]\s*/g,"-").replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g,"_").replace(/^[-_.]+|[-_.]+$/g,"").slice(0,60)||"quran-audio")+"."+ext;window.__lastFN=FN;const dl=els("a","display:none;pointer-events:none;flex-direction:column;align-items:center;gap:1px;flex:none;margin:0;padding:6px 12px;border-radius:12px;font-size:13px;background:var(--primary);color:#fff;text-decoration:none;font-weight:600;line-height:1.3","");dl.href=url;{const t1=document.createElement("span"),t2=document.createElement("span");t1.textContent="⬇ Download";t2.textContent=(Math.round(blob.size/1048576*10)/10)+" MB";t2.style.cssText="font-size:12px;font-weight:400;opacity:.9";dl.append(t1,t2)}dl.download=FN;dl.setAttribute("aria-hidden","true");dl.tabIndex=-1;dl.onclick=e=>{e.preventDefault();e.stopPropagation()};{const row=els("div","display:flex;align-items:center;gap:8px;margin-top:8px"),sh=document.createElement("button");au.style.cssText="flex:1 1 0;min-width:0;width:100%;margin:0";sh.type="button";sh.title="শেয়ার";sh.setAttribute("aria-label","শেয়ার");sh.style.cssText="flex:none;width:42px;height:42px;border-radius:50%;border:0;background:var(--primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0";
   sh.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 16.1c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>';
   sh.onclick=()=>shareBlob(blob,FN);row.append(au,sh);out.append(row,dl)};
- note("✅ "+bn2(ok)+"টি আয়াতের অডিও একটি ফাইলে তৈরি হয়েছে"+(SR>1?" · পুরো সেট "+bn2(SR)+" বার":"")+(cutN?" (অংশ কাটা: "+bn2(cutN)+"টি আয়াত)":"")+(bad?" · "+bn2(bad)+"টির অডিও পাওয়া যায়নি, বাদ গেছে":"")+(AS.net?" · "+bn2(AS.net)+"টি আয়াত নেট থেকে এসেছে (ফোনে ফাইল ছিল না)":""));au.play().catch(()=>{})}
+ note("✅ "+bn2(ok)+"টি আয়াতের অডিও একটি ফাইলে তৈরি হয়েছে"+(SR>1?" · পুরো সেট "+bn2(SR)+" বার":"")+(cutN?" (অংশ কাটা: "+bn2(cutN)+"টি আয়াত)":"")+(bad?" · "+bn2(bad)+"টির অডিও পাওয়া যায়নি, বাদ গেছে":"")+(AS.net?" · "+bn2(AS.net)+"টি আয়াত নেট থেকে এসেছে (ফোনে ফাইল ছিল না)":""));if(!(opt&&opt.noplay))au.play().catch(()=>{})}
 // ---------- অ্যাপের ভেতরে ফাইল সেভ (ওয়েবভিউ blob ডাউনলোড করে না, তাই নেটিভ DRDl দিয়ে Downloads ফোল্ডারে) ----------
 async function saveBlob(blob,name){
  if(!window.DRDl){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();return}
@@ -422,7 +422,7 @@ function jpegPdf(imgs,W,H){
  for(let i=1;i<T;i++)x+=String(offs[i]).padStart(10,"0")+" 00000 n \n";
  add(x+"trailer\n<< /Size "+T+" /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF\n");
  return new Blob(parts,{type:"application/pdf"})}
-async function ayatPdf(list,title,say){
+async function ayatPdfBuild(list,title,say){
  const W=1240,H=1754,M=96,CW=W-2*M,FOOT=70,BOT=H-M-FOOT;
  const AR='"Amiri","Noto Naskh Arabic","Droid Arabic Naskh","Traditional Arabic",serif',BNF='"Noto Sans Bengali","Hind Siliguri","Siyam Rupali","Nirmala UI",sans-serif';
  const f=(w,px,fam)=>w+" "+px+"px "+fam;
@@ -468,7 +468,8 @@ async function ayatPdf(list,title,say){
   await new Promise(r=>setTimeout(r))}
  say("⏳ PDF ফাইল জোড়া হচ্ছে…");
  const pdf=jpegPdf(imgs,W,H),nm=("আয়াত-"+String(title).replace(/[\\\/:*?"<>|\n\r]+/g," ").trim().slice(0,40)).trim()+".pdf";
- await saveBlob(pdf,nm);return N}
+ return{pdf,nm,imgs,N}}
+async function ayatPdf(list,title,say){const r=await ayatPdfBuild(list,title,say);await saveBlob(r.pdf,r.nm);return r.N}
 function audioBar(info,all,cb,title){if(!all.length)return;const box=els("div","margin-top:8px"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),out=el("div"),row=els("div","display:flex;flex-wrap:wrap;gap:6px;align-items:center");
  const sel=el("select","rs-sel");RECS.forEach(r=>{const o=document.createElement("option");o.value=r[0];o.textContent=r[1];sel.appendChild(o)});sel.value=recId();sel.onchange=()=>{try{localStorage.setItem("rsRec",sel.value)}catch(e){}};
  const b1=el("button","rs-wb","🔊 সব আয়াত মার্জ অডিও ("+bn2(all.length)+")"),b2=el("button","rs-wb","🔊 বাছাই করা আয়াত মার্জ (০)");b1.type=b2.type="button";b1.className="rs-wb rs-act pri";b2.className="rs-wb rs-act";
@@ -722,28 +723,54 @@ async function respKeys(cat){
  const D=await rsFetch(BASE+"quran-diagnosis.json?v="+DV+"d20"),C=["বদনজর","জাদু","জিন"],seen=new Set(),out=[];
  D.groups.filter(g=>cat==="সব"?C.includes(g.section):g.section===cat).forEach(g=>g.cats.forEach(c=>c.keys.forEach(k=>{const id=k.s+":"+k.a;if(!seen.has(id)){seen.add(id);out.push([k.s,k.a])}})));
  return out}
-async function amolKeys(G){
- const r=await fetch(new URL("data/amol-guide.json?v=5",location.href).href);if(!r.ok)throw 0;const D=await r.json(),seen=new Set(),out=[];
- D.cats.filter(c=>c.id.indexOf(G)===0).forEach(c=>c.items.forEach(it=>(it.refs||[]).forEach(x=>{for(let a=x[1];a<=(x[2]||x[1]);a++){const id=x[0]+":"+a;if(!seen.has(id)){seen.add(id);out.push([x[0],a])}}})));
- return out}
 async function treatKeys(cat){
- const nz0=async()=>topicKeys(TOPICS.find(x=>x.name==="বদনজর")),seen=new Set(),out=[];
- const parts=cat==="বদনজর"?[await nz0()]:cat==="জাদু"?[await amolKeys("b2")]:cat==="জিন"?[await amolKeys("b1")]:[await nz0(),await amolKeys("b2"),await amolKeys("b1")];
+ const T=n=>topicKeys(TOPICS.find(x=>x.name===n)),seen=new Set(),out=[];
+ const parts=cat==="সব"?[await T("বদনজর"),await T("জাদু"),await T("জিন")]:[await T(cat)];
  parts.forEach(l=>l.forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);out.push(k)}}));return out}
-window.__drHomeAudio=async(kind,cat,host)=>{
- if(!host||host.dataset.busy==="1")return;
+const homeKeys=(kind,cat)=>kind==="resp"?respKeys(cat):treatKeys(cat);
+const homeTitle=(kind,cat)=>(kind==="resp"?"রেসপন্স ডায়াগনোসিস":"ট্রিটমেন্ট")+" "+(cat==="সব"?"বদনজর জাদু জিন":cat);
+/* পুনরাবৃত্তি: রেসপন্স ডায়াগনোসিস — প্রতিটি আয়াত ১১ বার, পুরো সেট ৩ বার; ট্রিটমেন্ট — প্রতিটি আয়াত ৩ বার, সেট ১ বার */
+const homeRep=kind=>kind==="resp"?{rep:11,set:3}:{rep:3,set:1};
+/* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */
+const HPDF=new Map();
+function homePdf(kind,cat,say){const k=kind+"|"+cat;let e=HPDF.get(k);
+ if(!e){e={say:()=>{}};e.p=(async()=>{const list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty");return ayatPdfBuild(list,homeTitle(kind,cat),t=>e.say(t))})().catch(err=>{HPDF.delete(k);throw err});HPDF.set(k,e)}
+ if(say)e.say=say;return e.p}
+let HPRE=false;
+window.__drHomePrebuild=async()=>{if(HPRE)return;HPRE=true;
+ for(const cat of["বদনজর","জাদু","জিন","সব"])for(const kind of["resp","treat"]){try{await homePdf(kind,cat)}catch(e){console.error(e)}await new Promise(r=>setTimeout(r,1500))}};
+window.__drHomePdf=async(kind,cat,host)=>{
+ if(!host)return;
  if(host.dataset.done==="1"){host.hidden=!host.hidden;return}
+ if(host.dataset.busy==="1")return;
  host.hidden=false;host.textContent="";host.dataset.busy="1";
- const note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),res=el("div");host.append(note,res);
+ const note=els("div","font-size:12.5px;color:var(--text-muted);margin:2px 0");host.append(note);note.textContent="⏳ PDF প্রস্তুত হচ্ছে…";
+ try{
+  const r=await homePdf(kind,cat,t=>note.textContent=t);
+  note.textContent="✅ "+bn2(r.N)+" পৃষ্ঠার PDF";
+  const row=els("div","display:flex;gap:6px;margin:4px 0"),dl=mkBtn("⬇ PDF ডাউনলোড",()=>saveBlob(r.pdf,r.nm));dl.style.margin="0";row.append(dl);
+  const pg=els("div","max-height:62vh;overflow:auto;border:1px solid var(--border-light);border-radius:10px;background:#fff");
+  r.imgs.forEach(u8=>{const im=document.createElement("img");im.loading="lazy";im.style.cssText="display:block;width:100%;height:auto";im.src=URL.createObjectURL(new Blob([u8],{type:"image/jpeg"}));pg.appendChild(im)});
+  host.append(row,pg);host.dataset.done="1";
+ }catch(e){console.error(e);note.textContent="PDF বানানো যায়নি — ইন্টারনেট দেখে আবার চাপুন"}
+ finally{host.dataset.busy="0"}
+};
+/* অডিও: চাপলেই সাথে সাথে বাজে (আয়াত একটার পর একটা, নির্ধারিত পুনরাবৃত্তিসহ); পাশাপাশি পেছনে একটি ফাইল জোড়া হয় — তৈরি হলে নিচে প্লেয়ার, শেয়ার ও ডাউনলোড আসে */
+window.__drHomeAudio=async(kind,cat,host)=>{
+ if(!host)return;
+ if(host.dataset.done==="1"){host.hidden=!host.hidden;return}
+ if(host.dataset.busy==="1")return;
+ host.hidden=false;host.textContent="";host.dataset.busy="1";
+ const live=el("div"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:6px"),res=el("div");host.append(live,note,res);
  note.textContent="আয়াতের তালিকা তৈরি হচ্ছে…";
  try{
-  const list=kind==="resp"?await respKeys(cat):await treatKeys(cat);
+  const list=await homeKeys(kind,cat);
   if(!list.length){note.textContent="এই ক্যাটাগরির জন্য আয়াতের তালিকা পাওয়া যায়নি";return}
-  window.__sq=(kind==="resp"?"রেসপন্স ডায়াগনোসিস":"ট্রিটমেন্ট")+" "+(cat==="সব"?"বদনজর জাদু জিন":cat);
-  note.textContent=bn2(list.length)+"টি আয়াত — অডিও প্রস্তুত হচ্ছে…";
-  if(list.length===1&&setAll()<=1&&repOf(list[0][0],list[0][1])<=1)await playOne(list[0][0],list[0][1],res,note);
-  else await mergeAudio(list,res,t=>note.textContent=t);
-  host.dataset.done="1";
+  const{rep,set}=homeRep(kind),seq=[];
+  for(let q=0;q<set;q++)for(const k of list)for(let r=0;r<rep;r++)seq.push(k);
+  playList(seq,live);host.dataset.done="1";
+  note.textContent="⬇ ডাউনলোডের ফাইল পেছনে তৈরি হচ্ছে… ("+bn2(list.length)+"টি আয়াত × "+bn2(rep)+" বার"+(set>1?" × "+bn2(set)+" সেট":"")+")";
+  await mergeAudio(list,res,t=>note.textContent="⬇ "+t,{rep,set,noplay:true,name:homeTitle(kind,cat)});
  }catch(e){console.error(e);note.textContent="অডিও তৈরি করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"}
  finally{host.dataset.busy="0"}
 };
