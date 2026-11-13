@@ -53,14 +53,15 @@
                 android:gravity="center"
                 android:includeFontPadding="false"
                 android:letterSpacing="0.02"
-                android:maxLines="1"
-                android:paddingStart="9dp"
-                android:paddingTop="3dp"
-                android:paddingEnd="9dp"
-                android:paddingBottom="3dp"
-                android:text="হোম স্ক্রিনে যুক্ত করুন"
+                android:lineSpacingExtra="0dp"
+                android:maxLines="2"
+                android:paddingStart="8dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="2dp"
+                android:text="হোম\nস্ক্রিনে বসান"
                 android:textColor="#FFFFFF"
-                android:textSize="8.5sp"
+                android:textSize="7sp"
                 android:textStyle="bold"
                 android:visibility="gone" />
         </FrameLayout>
@@ -356,8 +357,8 @@
             android:layout_weight="1"
             android:autoStart="true"
             android:flipInterval="3600"
-            android:inAnimation="@android:anim/fade_in"
-            android:outAnimation="@android:anim/fade_out"
+            android:inAnimation="@android:anim/slide_in_left"
+            android:outAnimation="@android:anim/slide_out_right"
             android:visibility="gone" />
 
         <LinearLayout

@@ -44,7 +44,7 @@ object HijriDate {
         val h = HijrahDate.from(date)
         val m = h.get(java.time.temporal.ChronoField.MONTH_OF_YEAR) - 1
         return Bn.num(h.get(java.time.temporal.ChronoField.DAY_OF_MONTH)) + " " + Bn.HIJRI_MONTHS[m] + " " +
-            Bn.num(h.get(java.time.temporal.ChronoField.YEAR)) + " হিজরি"
+            Bn.num(h.get(java.time.temporal.ChronoField.YEAR)) + " হি:"
     }
 }
 

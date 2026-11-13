@@ -87,6 +87,67 @@ public class WidgetPlugin extends Plugin {
         }
     }
 
+    private void toast(final String m) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            try { android.widget.Toast.makeText(getContext().getApplicationContext(), m, android.widget.Toast.LENGTH_LONG).show(); } catch (Exception e) { }
+        });
+    }
+
+    // "আপডেট লোকেশন" চাপলে: অনুমতি না থাকলে চায় (বারবার না বললে অ্যাপের অনুমতি-পাতা খোলে), ফোনের লোকেশন বন্ধ থাকলে
+    // চালু করার সেটিংস খোলে, নইলে এখনই নতুন অবস্থান নিয়ে ফল টোস্টে জানায়। status: perm | off | ok | fail
+    @PluginMethod
+    public void update(final PluginCall call) {
+        try {
+            final Context c = getContext().getApplicationContext();
+            final Cfg cfg = new Cfg(c);
+            if (!cfg.getAuto()) cfg.setAuto(true); // সরাসরি চেপেছেন, তাই স্বয়ংক্রিয় অবস্থান চালু
+            if (!LocationUpdater.INSTANCE.hasPerm(c)) {
+                android.content.SharedPreferences sp = c.getSharedPreferences("locask", Context.MODE_PRIVATE);
+                int n = sp.getInt("n", 0);
+                if (n < 2 && getActivity() != null) {
+                    sp.edit().putInt("n", n + 1).apply();
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 4412);
+                } else {
+                    LocationUpdater.INSTANCE.openAppSettings(c);
+                    toast("অনুমতি → লোকেশন → “অ্যাপ ব্যবহারের সময় অনুমতি দিন” বেছে নিন");
+                }
+                JSObject r = cfgJson(); r.put("status", "perm"); call.resolve(r);
+                return;
+            }
+            if (!LocationUpdater.INSTANCE.servicesOn(c)) {
+                LocationUpdater.INSTANCE.openLocationSettings(c);
+                toast("ফোনের লোকেশন বন্ধ আছে — চালু করে ফিরে এসে আবার চাপুন");
+                JSObject r = cfgJson(); r.put("status", "off"); call.resolve(r);
+                return;
+            }
+            LocationUpdater.INSTANCE.sync(c);
+            LocationUpdater.INSTANCE.register(c);
+            final java.util.concurrent.atomic.AtomicBoolean done = new java.util.concurrent.atomic.AtomicBoolean(false);
+            final Handler h = new Handler(Looper.getMainLooper());
+            final kotlin.jvm.functions.Function0<Unit> cancel = LocationUpdater.INSTANCE.freshFix(c, (got, moved) -> {
+                if (!done.compareAndSet(false, true)) return Unit.INSTANCE;
+                h.removeCallbacksAndMessages(null);
+                ClockWidget.Companion.refresh(c);
+                JSObject r = cfgJson();
+                r.put("status", got ? "ok" : "fail");
+                if (got) toast((moved ? "✓ অবস্থান হালনাগাদ হয়েছে: " : "✓ অবস্থান ঠিকই আছে: ") + new Cfg(c).placeName());
+                else toast("অবস্থান পাওয়া যায়নি — ফোনের লোকেশন ও নেটওয়ার্ক চালু আছে কিনা দেখুন");
+                call.resolve(r);
+                return Unit.INSTANCE;
+            });
+            toast("📍 অবস্থান খোঁজা হচ্ছে…");
+            h.postDelayed(() -> {
+                if (!done.compareAndSet(false, true)) return;
+                try { cancel.invoke(); } catch (Exception e) { }
+                JSObject r = cfgJson(); r.put("status", "fail");
+                toast("অবস্থান পাওয়া যায়নি — ফোনের লোকেশন ও নেটওয়ার্ক চালু আছে কিনা দেখুন");
+                call.resolve(r);
+            }, 12000);
+        } catch (Exception e) {
+            call.reject(String.valueOf(e.getMessage()));
+        }
+    }
+
     @PluginMethod
     public void openSettings(PluginCall call) {
         try {

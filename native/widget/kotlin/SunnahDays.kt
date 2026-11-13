@@ -20,12 +20,12 @@ object Sunnah {
 
     private val GROUPS = listOf(
         // রমজান (৯) ও জিলহজ (১২; আইয়ামে তাশরীকে রোজা নিষেধ) বাদ
-        G("আইয়ামে বীজের রোজা", 13..15, null, setOf(9, 12), true),
-        G("হিজামার সুন্নাহ দিন", 17..17, null, emptySet(), false),
-        G("হিজামার সুন্নাহ দিন", 19..19, null, emptySet(), false),
-        G("হিজামার সুন্নাহ দিন", 21..21, null, emptySet(), false),
+        G("বীজের রোজা", 13..15, null, setOf(9, 12), true),
+        G("হিজামার দিন", 17..17, null, emptySet(), false),
+        G("হিজামার দিন", 19..19, null, emptySet(), false),
+        G("হিজামার দিন", 21..21, null, emptySet(), false),
         G("আশুরার রোজা", 9..10, setOf(1), emptySet(), true),
-        G("আরাফার দিনের রোজা", 9..9, setOf(12), emptySet(), false),
+        G("আরাফার রোজা", 9..9, setOf(12), emptySet(), false),
         G("শাওয়ালের ছয় রোজা", 2..29, setOf(10), emptySet(), true)
     )
 
@@ -53,9 +53,9 @@ object Sunnah {
             if (k <= 1) {
                 val dow = dt.dayOfWeek
                 if (dow == DayOfWeek.MONDAY || dow == DayOfWeek.THURSDAY) {
-                    out.add(k to (if (k == 0) "আজ " + weekday(dow) + " — সুন্নাহ রোজা রাখুন" else "আগামীকাল " + weekday(dow) + " — সুন্নাহ রোজা"))
+                    out.add(k to (if (k == 0) "আজ " else "কাল ") + weekday(dow) + ", সুন্নাহ রোজা")
                 } else if (dow == DayOfWeek.FRIDAY) {
-                    out.add(k to (if (k == 0) "আজ জুমুআ — সূরা কাহফ পড়ুন" else "আগামীকাল শুক্রবার — সূরা কাহফ পড়ুন"))
+                    out.add(k to (if (k == 0) "আজ" else "কাল") + " জুমুআ, সূরা কাহফ পড়ুন")
                 }
             }
 
@@ -67,8 +67,8 @@ object Sunnah {
                     out.add(0 to "আজ " + g.title)
                 } else if (d == g.days.first) {
                     out.add(k to (
-                        if (k == 1) "আগামীকাল " + g.title + suffix
-                        else "আগামী " + Bn.num(dt.dayOfMonth) + " " + EN_MONTHS[dt.monthValue - 1] + " " + g.title + suffix
+                        if (k == 1) "কাল " + g.title + suffix
+                        else Bn.num(dt.dayOfMonth) + " " + EN_MONTHS[dt.monthValue - 1] + " " + g.title + suffix
                     ))
                 }
             }

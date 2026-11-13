@@ -67,10 +67,15 @@ class ClockWidget : AppWidgetProvider() {
         val app = ctx.applicationContext
         val ui = Handler(Looper.getMainLooper())
         fun say(m: String) { ui.post { try { Toast.makeText(app, m, Toast.LENGTH_SHORT).show() } catch (e: Exception) { } } }
-        if (!Cfg(app).auto) { say("স্বয়ংক্রিয় অবস্থান বন্ধ আছে — উইজেট-সেটিংসে চালু করুন"); return }
+        if (!Cfg(app).auto) Cfg(app).auto = true // সরাসরি চেপেছেন, তাই স্বয়ংক্রিয় অবস্থান চালু
         if (!LocationUpdater.hasPerm(app)) {
             say("আগে অবস্থানের অনুমতি দিন")
             try { app.startActivity(Intent(app, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) } catch (e: Exception) { }
+            return
+        }
+        if (!LocationUpdater.servicesOn(app)) {
+            say("ফোনের লোকেশন বন্ধ আছে — চালু করে আবার চাপুন")
+            LocationUpdater.openLocationSettings(app)
             return
         }
         val pr = goAsync()
@@ -268,7 +273,6 @@ class ClockWidget : AppWidgetProvider() {
                 for (t in sn) {
                     val item = RemoteViews(ctx.packageName, R.layout.widget_sl_item)
                     item.setTextViewText(R.id.sl_t, t)
-                    item.setTextViewTextSize(R.id.sl_t, TypedValue.COMPLEX_UNIT_SP, 9f * k)
                     rv.addView(R.id.zz_sl, item)
                 }
             }

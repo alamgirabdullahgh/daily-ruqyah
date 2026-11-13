@@ -23,6 +23,26 @@ object LocationUpdater {
         ctx.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
             ctx.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
+    // ফোনের লোকেশন সেবা (সুইচ) চালু আছে কি না
+    fun servicesOn(ctx: Context): Boolean = try {
+        val lm = ctx.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (Build.VERSION.SDK_INT >= 28) lm.isLocationEnabled
+        else lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER) || lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    } catch (e: Exception) { true }
+
+    // ফোনের লোকেশন চালু করার সেটিংস পাতা খোলে
+    fun openLocationSettings(ctx: Context) {
+        try { ctx.startActivity(Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) } catch (e: Exception) { }
+    }
+
+    // অ্যাপের অনুমতির পাতা খোলে (বারবার না বলার পর সরাসরি ডায়ালগ আর আসে না)
+    fun openAppSettings(ctx: Context) {
+        try {
+            ctx.startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                android.net.Uri.fromParts("package", ctx.packageName, null)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        } catch (e: Exception) { }
+    }
+
     // Android ১০+ এ ব্যাকগ্রাউন্ডে অবস্থান পেতে আলাদা "সব সময়" অনুমতি লাগে
     fun hasBg(ctx: Context): Boolean =
         Build.VERSION.SDK_INT < 29 || ctx.checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -101,11 +121,17 @@ object LocationUpdater {
         }
         val cancel: () -> Unit = { try { lm.removeUpdates(listener) } catch (e: Exception) { } }
         try {
-            if (!hasPerm(ctx) || !lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            // নেটওয়ার্ক-অবস্থান না থাকলে GPS দিয়ে চেষ্টা
+            val prov = when {
+                lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER) -> LocationManager.NETWORK_PROVIDER
+                lm.isProviderEnabled(LocationManager.GPS_PROVIDER) -> LocationManager.GPS_PROVIDER
+                else -> null
+            }
+            if (!hasPerm(ctx) || prov == null) {
                 if (fired.compareAndSet(false, true)) cb(false, false)
                 return cancel
             }
-            lm.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, listener, Looper.getMainLooper())
+            lm.requestSingleUpdate(prov, listener, Looper.getMainLooper())
         } catch (e: Exception) {
             if (fired.compareAndSet(false, true)) cb(false, false)
         }

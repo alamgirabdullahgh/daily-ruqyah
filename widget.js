@@ -63,7 +63,7 @@
       var o = {};
       parts.forEach(function (p) { o[p.type] = p.value; });
       var yr = parseInt(String(o.year).replace(/\D/g, ""), 10);
-      return bn(parseInt(o.day, 10)) + " " + HIJRI_MONTHS[parseInt(o.month, 10) - 1] + " " + bn(yr) + " হিজরি";
+      return bn(parseInt(o.day, 10)) + " " + HIJRI_MONTHS[parseInt(o.month, 10) - 1] + " " + bn(yr) + " হি:";
     } catch (e) { return ""; }
   }
 
@@ -80,12 +80,12 @@
   var EN_MONTHS_BN = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
   var WD_BN = { 1: "সোমবার", 4: "বৃহস্পতিবার", 5: "শুক্রবার" };
   var SUNNAH_GROUPS = [
-    { t: "আইয়ামে বীজের রোজা", a: 13, b: 15, skip: [9, 12], r: true },
-    { t: "হিজামার সুন্নাহ দিন", a: 17, b: 17 },
-    { t: "হিজামার সুন্নাহ দিন", a: 19, b: 19 },
-    { t: "হিজামার সুন্নাহ দিন", a: 21, b: 21 },
+    { t: "বীজের রোজা", a: 13, b: 15, skip: [9, 12], r: true },
+    { t: "হিজামার দিন", a: 17, b: 17 },
+    { t: "হিজামার দিন", a: 19, b: 19 },
+    { t: "হিজামার দিন", a: 21, b: 21 },
     { t: "আশুরার রোজা", a: 9, b: 10, only: [1], r: true },
-    { t: "আরাফার দিনের রোজা", a: 9, b: 9, only: [12] },
+    { t: "আরাফার রোজা", a: 9, b: 9, only: [12] },
     { t: "শাওয়ালের ছয় রোজা", a: 2, b: 29, only: [10], r: true }
   ];
   function hijriMD(d, inBd) {
@@ -102,8 +102,8 @@
     for (var k = 0; k <= 3; k++) {
       var dt = addDays(now, k), dow = dt.getDay(), hd = hijriMD(dt, inBdFlag);
       if (k <= 1) {
-        if (dow === 1 || dow === 4) out.push([k, k === 0 ? "আজ " + WD_BN[dow] + " — সুন্নাহ রোজা রাখুন" : "আগামীকাল " + WD_BN[dow] + " — সুন্নাহ রোজা"]);
-        else if (dow === 5) out.push([k, k === 0 ? "আজ জুমুআ — সূরা কাহফ পড়ুন" : "আগামীকাল শুক্রবার — সূরা কাহফ পড়ুন"]);
+        if (dow === 1 || dow === 4) out.push([k, (k === 0 ? "আজ " : "কাল ") + WD_BN[dow] + ", সুন্নাহ রোজা"]);
+        else if (dow === 5) out.push([k, (k === 0 ? "আজ" : "কাল") + " জুমুআ, সূরা কাহফ পড়ুন"]);
       }
       if (!hd) continue;
       SUNNAH_GROUPS.forEach(function (g) {
@@ -112,7 +112,7 @@
         if (g.skip && g.skip.indexOf(hd.m) >= 0) return;
         var suf = g.r ? " শুরু" : "";
         if (k === 0) out.push([0, "আজ " + g.t]);
-        else if (hd.d === g.a) out.push([k, k === 1 ? "আগামীকাল " + g.t + suf : "আগামী " + bn(dt.getDate()) + " " + EN_MONTHS_BN[dt.getMonth()] + " " + g.t + suf]);
+        else if (hd.d === g.a) out.push([k, k === 1 ? "কাল " + g.t + suf : bn(dt.getDate()) + " " + EN_MONTHS_BN[dt.getMonth()] + " " + g.t + suf]);
       });
     }
     out.sort(function (x, y) { return x[0] - y[0]; });
@@ -239,9 +239,9 @@
     ".drw-r{display:flex;align-items:center;justify-content:space-between;gap:8px}.drw-top{align-items:flex-end;gap:4px}.drw-mid{position:relative;flex:1;height:48px;min-width:0;color:#3B4A55}.drw-arc{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}" +
     ".drw-sun{display:flex;align-items:center;gap:5px;font-size:11px;color:#3B4A55;white-space:nowrap}" +
     ".drw-sun img{width:24px;height:24px;flex:none;display:block}" +
-    ".drw-pin{position:absolute;left:50%;bottom:0;transform:translateX(-50%);white-space:nowrap;border:.8px solid rgba(255,255,255,.28);background:linear-gradient(90deg,#16794c,#2bb583);color:#fff;border-radius:13px;padding:3px 10px;font-family:inherit;font-weight:700;font-size:9.5px;letter-spacing:.2px;line-height:1.25;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(22,121,76,.35)}" +
+    ".drw-pin{position:absolute;left:50%;bottom:0;transform:translateX(-50%);white-space:nowrap;border:.8px solid rgba(255,255,255,.28);background:linear-gradient(90deg,#16794c,#2bb583);color:#fff;border-radius:10px;padding:2px 8px;font-family:inherit;font-weight:700;font-size:7.5px;line-height:1.15;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(22,121,76,.35)}" +
     ".drw-sl-sun{position:absolute;white-space:nowrap;font-size:9px;font-weight:700;color:#B36B00;line-height:1;pointer-events:none}" +
-    ".drw-sn{flex:1;min-width:0;text-align:center;font-size:10px;line-height:1.3;font-weight:700;color:#1E7F58;padding:0 6px;transition:opacity .35s}.drw-sn.o{opacity:0}" +
+    ".drw-sn{flex:1;min-width:0;text-align:center;font-size:10px;line-height:1.3;font-weight:700;color:#1E7F58;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .35s,transform .35s}.drw-sn.o{opacity:0;transform:translateX(14px)}" +
     ".drw-time{display:flex;align-items:flex-end;gap:4px;margin-top:1px}" +
     ".drw-time b{font-size:40px;line-height:1;font-weight:800;letter-spacing:-.5px;font-variant-numeric:lining-nums}" +
     ".drw-time span{font-size:12px;color:#3B4A55;padding-bottom:6px}" +
@@ -325,7 +325,7 @@
       for (var i = 0; i < 5; i++)
         cells += '<div class="drw-c' + (i === s.cur ? " on" : "") + '" data-i="' + i + '"><i>' + NAMES[i] + "</i><b>" + fmt(s.m[i]) + "</b></div>";
       el.innerHTML =
-        '<div class="drw"><div class="drw-r drw-top"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span>' + '<div class="drw-mid">' + arc + '<button class="drw-pin" type="button" data-pin="1">হোম স্ক্রিনে যুক্ত করুন</button></div>' + '<span class="drw-sun">সূর্যাস্ত ' + fmt(s.sunset) + SUNSET + "</span></div>" +
+        '<div class="drw"><div class="drw-r drw-top"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span>' + '<div class="drw-mid">' + arc + '<button class="drw-pin" type="button" data-pin="1">হোম<br>স্ক্রিনে বসান</button></div>' + '<span class="drw-sun">সূর্যাস্ত ' + fmt(s.sunset) + SUNSET + "</span></div>" +
         '<div class="drw-b"><span>' + (nf ? nf.name + " শুরু " : "ওয়াক্ত শুরু ") + fmt(bs) + '</span><div class="drw-bar"><u style="width:' + (frac * 100).toFixed(1) + '%"></u><em>' + cd + '</em></div><span>' + (nf ? "শেষ " : "ওয়াক্ত শেষ ") + fmt(be) + "</span></div>" +
         '<div class="drw-p">' + cells + "</div>" +
         '<div class="drw-r"><div class="drw-time"><b>' + hh + ":" + mm + "</b><span>" + (now.getHours() < 12 ? "AM" : "PM") + "</span></div>" +
@@ -352,10 +352,27 @@
       setTimeout(function () { snI = (snI + 1) % snItems.length; paintSn(); var x = el.querySelector("[data-sn]"); if (x) x.classList.remove("o"); }, 360);
     }, 3600);
     var updBusy = false;
-    // "আপডেট লোকেশন": চাপলে এখনই নতুন অবস্থান নেয় (নেট লাগে); পাওয়া গেলে কার্ড নিজে বদলে যায়
+    // "আপডেট লোকেশন": অনুমতি না থাকলে চায়, ফোনের লোকেশন বন্ধ থাকলে চালু করার সেটিংস খোলে, নইলে এখনই নতুন অবস্থান নেয় (নেট লাগে)
     function updateLoc() {
       if (updBusy) return;
       updBusy = true; render();
+      var tries = 0;
+      function finish() { updBusy = false; render(); }
+      function go() {
+        NW.update().then(function (r) {
+          if (applyCfg(r)) render();
+          if (r && r.status === "perm") { waitPerm(); return; }
+          finish();
+        }, finish);
+      }
+      function waitPerm() { // অনুমতির ডায়ালগ/সেটিংসে ঘুরে আসার অপেক্ষা (সর্বোচ্চ ~২২ সেকেন্ড)
+        if (tries++ > 14) { finish(); return; }
+        setTimeout(function () {
+          NW.config().then(function (c) { if (c && c.hasPerm) go(); else waitPerm(); }, finish);
+        }, 1500);
+      }
+      if (NW && NW.update) { go(); return; }
+      // পুরোনো অ্যাপ বা ব্রাউজার: আগের পদ্ধতি
       locate(true);
       [3000, 8000, 15000].forEach(function (ms, n) {
         setTimeout(function () {
