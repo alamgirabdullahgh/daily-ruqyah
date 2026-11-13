@@ -11,6 +11,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.DashPathEffect
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.RadialGradient
 import android.graphics.RectF
 import android.graphics.Shader
@@ -236,7 +237,17 @@ class ClockWidget : AppWidgetProvider() {
             val sideW = lp.measureText("সূর্যোদয় " + Prayer.fmt(s.sunrise, c.bnDigits)) + lp.measureText("সূর্যাস্ত " + Prayer.fmt(s.sunset, c.bnDigits)) + 2 * 25 * den
             val midPx = ((widthDp - 28 - 8) * den - sideW).toInt()
             val sunLeft = durText(Math.ceil((s.sunset - s.nowMin).coerceAtLeast(0.0)).toInt(), c.bnDigits) + " বাকি"
-            rv.setImageViewBitmap(R.id.zz_arc, sunArc(srf, dark, midPx, den, sunLeft))
+            // রাতে: চাঁদ সূর্যাস্ত (ডান) থেকে পরের সূর্যোদয় (বাম) পর্যন্ত একই রেখায় উল্টো দিকে যায়; আকৃতি আজকের আসল কলা অনুযায়ী
+            var mf: Double? = null; var moonLeft = ""
+            if (srf == null && s.sunset > s.sunrise) {
+                val nl = (s.sunrise + 1440 - s.sunset).toDouble()
+                val el = if (s.nowMin >= s.sunset) s.nowMin - s.sunset else s.nowMin + 1440 - s.sunset
+                mf = (el / nl).coerceIn(0.0, 1.0)
+                moonLeft = durText(Math.ceil((nl - el).coerceAtLeast(0.0)).toInt(), c.bnDigits) + " বাকি"
+            }
+            val jd = System.currentTimeMillis() / 86400000.0 + 2440587.5 - 2451550.1
+            val phase = ((jd / 29.530588853) % 1.0 + 1.0) % 1.0
+            rv.setImageViewBitmap(R.id.zz_arc, sunArc(srf, dark, midPx, den, sunLeft, mf, phase, moonLeft))
             // অ্যাপের কার্ডে মাঝখানে "হোম স্ক্রিনে যুক্ত করুন" বোতাম (হোম স্ক্রিনের উইজেটে থাকে না)
             rv.setViewVisibility(R.id.zz_pin, if (pin) View.VISIBLE else View.GONE)
             if (pin) rv.setOnClickPendingIntent(R.id.zz_pin, PendingIntent.getBroadcast(
@@ -371,7 +382,7 @@ class ClockWidget : AppWidgetProvider() {
 
         // সূর্যপথের ছবি: wPx × hPx (ImageView-এর মাপের কাছাকাছি, তাই সমানুপাতে ছোট-বড় হয়, লেখা চ্যাপ্টা হয় না)।
         // সূর্য চললে তার ঠিক নিচে সূর্যাস্তের বাকি সময় লেখা থাকে; রাতে শুধু রেখা।
-        private fun sunArc(frac: Double?, dark: Boolean, wPx: Int, d: Float, label: String): Bitmap {
+        private fun sunArc(frac: Double?, dark: Boolean, wPx: Int, d: Float, label: String, moon: Double? = null, phase: Double = 0.0, moonLabel: String = ""): Bitmap {
             val w = wPx.coerceAtLeast((100 * d).toInt()); val h = (38 * d).toInt()
             val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
             val cv = Canvas(bmp)
@@ -408,6 +419,40 @@ class ClockWidget : AppWidgetProvider() {
                 }
                 // লেখা সূর্যের সাথে চলে না: অক্ষরেখার ঠিক মাঝখানে, রেখার নিচে স্থির
                 cv.drawText(label, cx, 22f * d, tp)
+            }
+            if (moon != null) {
+                val done = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    style = Paint.Style.STROKE; strokeWidth = 1.7f * d; strokeCap = Paint.Cap.ROUND; color = 0xFF7E8CD8.toInt()
+                }
+                cv.drawArc(oval, 0f, (-180.0 * moon).toFloat(), false, done) // ডান প্রান্ত থেকে উল্টো দিকে
+                val a = Math.PI * (2.0 - moon)
+                val mx = (cx + rx * Math.cos(a)).toFloat(); val my = (baseY + ry * Math.sin(a)).toFloat()
+                val glow = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    shader = RadialGradient(mx, my, 9f * d, intArrayOf(0x889FA8DA.toInt(), 0x009FA8DA), null, Shader.TileMode.CLAMP)
+                }
+                cv.drawCircle(mx, my, 9f * d, glow)
+                val mr = 4.6f * d
+                val pp = if (phase < 0.5) phase else 1.0 - phase
+                val k = Math.cos(2 * Math.PI * pp)
+                val rxT = (mr * Math.abs(k)).toFloat().coerceAtLeast(0.2f)
+                cv.save()
+                cv.translate(mx, my)
+                if (phase > 0.5) cv.scale(-1f, 1f) // কমার সময় বাম দিক আলোকিত
+                cv.drawCircle(0f, 0f, mr, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0x735C6BC0 })
+                val lit = Path().apply {
+                    moveTo(0f, -mr)
+                    arcTo(RectF(-mr, -mr, mr, mr), -90f, 180f)
+                    arcTo(RectF(-rxT, -mr, rxT, mr), 90f, if (k > 0) -180f else 180f)
+                    close()
+                }
+                cv.drawPath(lit, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFFF3E7A1.toInt() })
+                cv.drawCircle(0f, 0f, mr, Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE; strokeWidth = 0.6f * d; color = 0xB3B9A94E.toInt() })
+                cv.restore()
+                val tp = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    textSize = 8.5f * d; isFakeBoldText = true; textAlign = Paint.Align.CENTER
+                    color = if (dark) 0xFFB8C4FF.toInt() else 0xFF4A5AA8.toInt()
+                }
+                cv.drawText(moonLabel, cx, 22f * d, tp)
             }
             return bmp
         }
