@@ -530,6 +530,9 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 
 .dr-backrow{padding:8px 12px 0;display:flex;justify-content:flex-start}
 .dr-backrow[hidden]{display:none}
+.rs-box>.dr-backrow{padding:0;margin:0 0 6px;text-align:left}
+.rs-box>.dr-backrow .dr-backbtn{width:34px;height:34px;box-shadow:none}
+.rs-box>.dr-backrow .dr-backbtn svg{width:18px;height:18px}
 .dr-backbtn{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--border);background:var(--card-bg);color:var(--primary);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08);-webkit-tap-highlight-color:transparent}
 .dr-backbtn:active{background:color-mix(in srgb,var(--primary) 14%,var(--card-bg))}
 

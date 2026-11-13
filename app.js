@@ -963,6 +963,15 @@ async function surahView(body,mode,s,g){
  pv.onclick=()=>{location.hash="#read/"+mode+"/"+(s-1)};nx.onclick=()=>{location.hash="#read/"+mode+"/"+(s+1)};en.append(pv,nx);body.appendChild(en)}
 let RG=0;
 function renderReader(mode,s){const g=++RG,rd=$("drReader");GEN++;rd.innerHTML="";rd.appendChild(readerTop(mode,s));const body=el("div","dr-rbody");rd.appendChild(body);if(!s)surahList(body,mode);else surahView(body,mode,s,g)}
+// ফেরার তীর (←): যে পাতা খোলা, সেই পাতার কার্ডের ভেতরে উপরের বাম কোনায় বসে (পাতা বদলালে নতুন কার্ডে সরে যায়; কার্ডের ভেতরের লেখা নতুন করে আঁকলেও আবার বসে যায়)
+{let ob=null,cur=null;
+ const place=key=>{const bk=document.getElementById("drBackRow");if(!bk)return;
+  if(ob){ob.disconnect();ob=null}
+  const tgt=key==="home"?null:document.querySelector(".dr-main > .rs-box:not([hidden])");
+  if(!tgt){const hd=document.querySelector("header");if(hd&&bk.parentNode!==hd.parentNode)hd.insertAdjacentElement("afterend",bk);cur=null;return}
+  cur=tgt;const put=()=>{if(bk.parentNode!==tgt||tgt.firstElementChild!==bk){if(ob)ob.disconnect();tgt.insertBefore(bk,tgt.firstChild);if(ob)ob.observe(tgt,{childList:true})}};
+  ob=new MutationObserver(put);put();ob.observe(tgt,{childList:true})};
+ window.__drPlaceBack=place}
 function drShell(){
  setFs(+lsGet("drFs","26")||26);
  const side=$("drSide"),scrim=$("drScrim"),menu=$("drMenu"),box=$("rsBox"),rd=$("drReader");
@@ -984,7 +993,7 @@ function drShell(){
   else if(p[0]==="alarm"&&al){key="alarm";box.hidden=true;rd.hidden=true;al.hidden=false;window.DRALARM&&DRALARM.show();window.scrollTo(0,0)}
   else if(p[0]==="read"&&RMODES.some(m=>m[0]===p[1])){key="read/"+p[1];const s=+p[2]||0;box.hidden=true;rd.hidden=false;renderReader(p[1],s>=1&&s<=114?s:0);window.scrollTo(0,0)}
   else{rd.hidden=true;box.hidden=false;RG++;if(p[0]==="topics"){key="topics";SHOWT&&SHOWT(true);window.scrollTo(0,0)}else if(prev.startsWith("read/")||prev===""||prev==="home"||prev==="resp"||prev==="alarm"||prev==="amol")window.scrollTo(0,0)}
-  prev=key;lastH=h;{const bk=$("drBackRow");if(bk)bk.hidden=key==="home";window.__drNav=(window.__drNav||0)+1}document.body.classList.toggle("is-home",key==="home");{const sh=key==="home"?"":"none";["drWidget","drWBar"].forEach(i=>{const x=$(i);if(x)x.style.display=sh})}navs.forEach(a=>a.classList.toggle("on",a.dataset.nav===key))};
+  prev=key;lastH=h;{const bk=$("drBackRow");if(bk)bk.hidden=key==="home";window.__drPlaceBack&&window.__drPlaceBack(key);window.__drNav=(window.__drNav||0)+1}document.body.classList.toggle("is-home",key==="home");{const sh=key==="home"?"":"none";["drWidget","drWBar"].forEach(i=>{const x=$(i);if(x)x.style.display=sh})}navs.forEach(a=>a.classList.toggle("on",a.dataset.nav===key))};
  {const bk=$("drBack");if(bk)bk.onclick=()=>{if((window.__drNav||0)>1)history.back();else location.hash="#home"}}
  navs.forEach(a=>a.addEventListener("click",e=>{e.preventDefault();const h=a.getAttribute("href");if(location.hash===h)route();else location.hash=h;open(false)}));
  addEventListener("hashchange",route);
