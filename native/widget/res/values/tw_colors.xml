@@ -7,4 +7,6 @@
     <color name="w_cell_on">#CFE6D9</color>
     <color name="w_bar_bg">#8FA39A</color>
     <color name="w_bar_fg">#1E8E62</color>
+    <color name="w_sunnah">#1E7F58</color>
+    <color name="w_sun_txt">#B36B00</color>
 </resources>

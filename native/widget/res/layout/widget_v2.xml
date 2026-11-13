@@ -33,7 +33,7 @@
 
         <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:layout_weight="1">
@@ -42,25 +42,25 @@
                 android:id="@+id/zz_arc"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="fitXY" />
+                android:scaleType="fitCenter" />
 
             <TextView
                 android:id="@+id/zz_pin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="3dp"
                 android:background="@drawable/pin_bg"
                 android:gravity="center"
                 android:includeFontPadding="false"
-                android:maxLines="2"
-                android:paddingStart="7dp"
-                android:paddingTop="2dp"
-                android:paddingEnd="7dp"
-                android:paddingBottom="2dp"
-                android:text="📲 হোম স্ক্রিনে\nযুক্ত করুন"
-                android:textColor="@color/w_text"
-                android:textSize="9sp"
+                android:letterSpacing="0.02"
+                android:maxLines="1"
+                android:paddingStart="9dp"
+                android:paddingTop="3dp"
+                android:paddingEnd="9dp"
+                android:paddingBottom="3dp"
+                android:text="হোম স্ক্রিনে যুক্ত করুন"
+                android:textColor="#FFFFFF"
+                android:textSize="8.5sp"
                 android:textStyle="bold"
                 android:visibility="gone" />
         </FrameLayout>
@@ -126,7 +126,11 @@
                 android:gravity="center"
                 android:includeFontPadding="false"
                 android:maxLines="1"
-                android:text="১ ঘন্টা ২৩ মিনিট"
+                android:text="১ ঘন্টা ২৩ মিনিট বাকি"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="6sp"
+                android:autoSizeMaxTextSize="9sp"
+                android:autoSizeStepGranularity="0.5sp"
                 android:textColor="#FFFFFF"
                 android:textSize="9sp"
                 android:textStyle="bold"
@@ -314,9 +318,8 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="bottom"
             android:orientation="horizontal">
 
@@ -343,6 +346,19 @@
                 android:textColor="@color/w_text2"
                 android:textSize="12sp" />
         </LinearLayout>
+
+        <ViewFlipper
+            android:id="@+id/zz_sl"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:autoStart="true"
+            android:flipInterval="3600"
+            android:inAnimation="@android:anim/fade_in"
+            android:outAnimation="@android:anim/fade_out"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="wrap_content"

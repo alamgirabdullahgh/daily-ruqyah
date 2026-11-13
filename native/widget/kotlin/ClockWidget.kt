@@ -225,7 +225,13 @@ class ClockWidget : AppWidgetProvider() {
             // সূর্যোদয় থেকে সূর্যাস্ত পর্যন্ত উপরে গোল রেখা; এখনকার সময় অনুযায়ী সূর্য তার ওপর দিয়ে এগোয় (রাতে শুধু রেখা)
             val srf: Double? = if (s.sunset > s.sunrise && s.nowMin >= s.sunrise && s.nowMin <= s.sunset) (s.nowMin - s.sunrise) / (s.sunset - s.sunrise).toDouble() else null
             val dark = (ctx.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
-            rv.setImageViewBitmap(R.id.zz_arc, sunArc(srf, dark))
+            // মাঝের অংশের আনুমানিক প্রস্থ = উইজেট − দুই পাশের প্যাডিং − সূর্যোদয়/সূর্যাস্তের লেখা
+            val den = ctx.resources.displayMetrics.density
+            val lp = Paint(Paint.ANTI_ALIAS_FLAG).apply { textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 11f * k, ctx.resources.displayMetrics) }
+            val sideW = lp.measureText("সূর্যোদয় " + Prayer.fmt(s.sunrise, c.bnDigits)) + lp.measureText("সূর্যাস্ত " + Prayer.fmt(s.sunset, c.bnDigits)) + 2 * 25 * den
+            val midPx = ((widthDp - 28 - 8) * den - sideW).toInt()
+            val sunLeft = durText(Math.ceil((s.sunset - s.nowMin).coerceAtLeast(0.0)).toInt(), c.bnDigits) + " বাকি"
+            rv.setImageViewBitmap(R.id.zz_arc, sunArc(srf, dark, midPx, den, sunLeft))
             // অ্যাপের কার্ডে মাঝখানে "হোম স্ক্রিনে যুক্ত করুন" বোতাম (হোম স্ক্রিনের উইজেটে থাকে না)
             rv.setViewVisibility(R.id.zz_pin, if (pin) View.VISIBLE else View.GONE)
             if (pin) rv.setOnClickPendingIntent(R.id.zz_pin, PendingIntent.getBroadcast(
@@ -252,16 +258,20 @@ class ClockWidget : AppWidgetProvider() {
             size(R.id.zz_ws, 11f); size(R.id.zz_we, 11f)
             rv.setProgressBar(R.id.zz_wbar, 1000, (frac * 1000).toInt(), false)
             // বারের ভেতরে বাকি সময়, যেমন "১ ঘন্টা ২৩ মিনিট"; ঘণ্টা না থাকলে শুধু মিনিট
-            val left = Math.ceil((be - s.nowMin).coerceAtLeast(0.0)).toInt()
-            val lh = left / 60
-            val lm = left % 60
-            val cd = when {
-                lh > 0 && lm > 0 -> Prayer.fmtNum(lh, c.bnDigits) + " ঘন্টা " + Prayer.fmtNum(lm, c.bnDigits) + " মিনিট"
-                lh > 0 -> Prayer.fmtNum(lh, c.bnDigits) + " ঘন্টা"
-                else -> Prayer.fmtNum(lm, c.bnDigits) + " মিনিট"
-            }
+            val cd = durText(Math.ceil((be - s.nowMin).coerceAtLeast(0.0)).toInt(), c.bnDigits) + " বাকি"
             rv.setTextViewText(R.id.zz_cd, cd)
-            size(R.id.zz_cd, 9f)
+            // সময় ও ইংরেজি তারিখের মাঝে সুন্নাহ-স্লাইডার: একাধিক হলে একে একে বদলায়, একটা হলে স্থির
+            val sn = Sunnah.items(java.time.LocalDate.now(), c.hijriShift())
+            rv.removeAllViews(R.id.zz_sl)
+            if (sn.isEmpty()) rv.setViewVisibility(R.id.zz_sl, View.GONE) else {
+                rv.setViewVisibility(R.id.zz_sl, View.VISIBLE)
+                for (t in sn) {
+                    val item = RemoteViews(ctx.packageName, R.layout.widget_sl_item)
+                    item.setTextViewText(R.id.sl_t, t)
+                    item.setTextViewTextSize(R.id.sl_t, TypedValue.COMPLEX_UNIT_SP, 9f * k)
+                    rv.addView(R.id.zz_sl, item)
+                }
+            }
             val open = PendingIntent.getActivity(
                 ctx, 0, Intent(ctx, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
@@ -334,36 +344,58 @@ class ClockWidget : AppWidgetProvider() {
             return build(ctx, compute(ctx), widthDp, R.layout.widget_v2, true)
         }
 
-        private fun sunArc(frac: Double?, dark: Boolean): Bitmap {
-            val w = 360; val h = 120
+        // "১ ঘন্টা ২৩ মিনিট"; ঘন্টা না থাকলে শুধু মিনিট, মিনিট ০ হলে শুধু ঘন্টা
+        private fun durText(left: Int, bn: Boolean): String {
+            val lh = left / 60
+            val lm = left % 60
+            return when {
+                lh > 0 && lm > 0 -> Prayer.fmtNum(lh, bn) + " ঘন্টা " + Prayer.fmtNum(lm, bn) + " মিনিট"
+                lh > 0 -> Prayer.fmtNum(lh, bn) + " ঘন্টা"
+                else -> Prayer.fmtNum(lm, bn) + " মিনিট"
+            }
+        }
+
+        // সূর্যপথের ছবি: wPx × hPx (ImageView-এর মাপের কাছাকাছি, তাই সমানুপাতে ছোট-বড় হয়, লেখা চ্যাপ্টা হয় না)।
+        // সূর্য চললে তার ঠিক নিচে সূর্যাস্তের বাকি সময় লেখা থাকে; রাতে শুধু রেখা।
+        private fun sunArc(frac: Double?, dark: Boolean, wPx: Int, d: Float, label: String): Bitmap {
+            val w = wPx.coerceAtLeast((100 * d).toInt()); val h = (48 * d).toInt()
             val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
             val cv = Canvas(bmp)
-            val baseY = 84f; val topY = 8f; val cx = w / 2f; val rx = cx - 6f; val ry = baseY - topY
+            val baseY = 32f * d; val topY = 6f * d; val cx = w / 2f; val rx = cx - 5f * d; val ry = baseY - topY
             val oval = RectF(cx - rx, baseY - ry, cx + rx, baseY + ry)
             val track = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                style = Paint.Style.STROKE; strokeWidth = 3f; strokeCap = Paint.Cap.ROUND
+                style = Paint.Style.STROKE; strokeWidth = 1.3f * d; strokeCap = Paint.Cap.ROUND
                 color = if (dark) 0x77B3C9BB else 0x773B4A55
-                pathEffect = DashPathEffect(floatArrayOf(7f, 6f), 0f)
+                pathEffect = DashPathEffect(floatArrayOf(3f * d, 2.6f * d), 0f)
             }
             cv.drawArc(oval, 180f, 180f, false, track)
             if (frac != null) {
                 val done = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    style = Paint.Style.STROKE; strokeWidth = 3.5f; strokeCap = Paint.Cap.ROUND; color = 0xFFFFA000.toInt()
+                    style = Paint.Style.STROKE; strokeWidth = 1.7f * d; strokeCap = Paint.Cap.ROUND; color = 0xFFFFA000.toInt()
                 }
                 cv.drawArc(oval, 180f, (180.0 * frac).toFloat(), false, done)
                 val a = Math.PI * (1.0 + frac)
                 val sx = (cx + rx * Math.cos(a)).toFloat(); val sy = (baseY + ry * Math.sin(a)).toFloat()
                 val glow = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    shader = RadialGradient(sx, sy, 17f, intArrayOf(0x99FFC21A.toInt(), 0x00FFC21A), null, Shader.TileMode.CLAMP)
+                    shader = RadialGradient(sx, sy, 8f * d, intArrayOf(0x99FFC21A.toInt(), 0x00FFC21A), null, Shader.TileMode.CLAMP)
                 }
-                cv.drawCircle(sx, sy, 17f, glow)
-                val ray = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE; strokeWidth = 2f; strokeCap = Paint.Cap.ROUND; color = 0xFFFFB300.toInt() }
+                cv.drawCircle(sx, sy, 8f * d, glow)
+                val ray = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE; strokeWidth = 1f * d; strokeCap = Paint.Cap.ROUND; color = 0xFFFFB300.toInt() }
                 for (i in 0 until 8) {
                     val t = Math.PI / 4 * i
-                    cv.drawLine((sx + 9.5 * Math.cos(t)).toFloat(), (sy + 9.5 * Math.sin(t)).toFloat(), (sx + 13 * Math.cos(t)).toFloat(), (sy + 13 * Math.sin(t)).toFloat(), ray)
+                    cv.drawLine((sx + 4.6 * d * Math.cos(t)).toFloat(), (sy + 4.6 * d * Math.sin(t)).toFloat(), (sx + 6.3 * d * Math.cos(t)).toFloat(), (sy + 6.3 * d * Math.sin(t)).toFloat(), ray)
                 }
-                cv.drawCircle(sx, sy, 7f, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFFFFB300.toInt() })
-                cv.drawCircle(sx, sy, 4.2f, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFFFFE082.toInt() })
+                cv.drawCircle(sx, sy, 3.4f * d, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFFFFB300.toInt() })
+                cv.drawCircle(sx, sy, 2.1f * d, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFFFFE082.toInt() })
+                // সূর্যের নিচে বাকি সময়; দুই প্রান্তে কেটে না যায় তাই ভেতরে টেনে আনা
+                val tp = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    textSize = 8.5f * d; isFakeBoldText = true; textAlign = Paint.Align.CENTER
+                    color = if (dark) 0xFFFFC857.toInt() else 0xFFB36B00.toInt()
+                }
+                val half = tp.measureText(label) / 2f
+                val tx = sx.coerceIn(half + 2f * d, (w - half - 2f * d).coerceAtLeast(half + 2f * d))
+                val ty = (sy + 15f * d).coerceAtMost(h - 2f * d)
+                cv.drawText(label, tx, ty, tp)
             }
             return bmp
         }
