@@ -616,3 +616,18 @@ html:has(body:not(.is-home)){scroll-padding-top:calc(env(safe-area-inset-top) + 
 .dsy-sw i::before{content:"";position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
 .dsy-sw input:checked+i{background:var(--primary)}
 .dsy-sw input:checked+i::before{transform:translateX(16px)}
+
+/* ---------- সাইডবার: প্রিমিয়াম সাজ ---------- */
+.dr-side-sec{margin:22px 20px 8px;font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--accent);text-transform:none}
+.dr-side-sec::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none}
+.dr-nav{margin:4px 12px;padding:11px 12px;border:1px solid var(--border-light);background:var(--card-bg);border-radius:16px;box-shadow:0 1px 2px rgba(5,46,36,.05);gap:14px}
+.dr-nav i{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,var(--primary-light),var(--accent-light));border:1px solid var(--border)}
+.dr-nav .nv{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.dr-nav .nv b{font-size:15.5px;font-weight:700;line-height:1.35;color:var(--text-main)}
+.dr-nav .nv small{font-size:12.5px;font-weight:500;line-height:1.4;color:var(--text-muted,#6b7a75)}
+.dr-nav u{flex:none;text-decoration:none;font-size:24px;line-height:1;color:var(--accent);opacity:.85}
+.dr-nav:active,.dr-nav:hover{border-color:var(--accent);background:var(--primary-light)}
+.dr-nav.on{border-color:var(--accent);background:linear-gradient(90deg,var(--accent-light),var(--card-bg))}
+.dr-nav.on::before{display:none}
+.dr-nav.on .nv b{color:var(--primary)}
+.dr-nav.on i{background:var(--primary);color:#fff;border-color:var(--primary)}
