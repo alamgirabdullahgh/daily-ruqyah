@@ -561,8 +561,11 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 .drq-tab::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:transparent}
 .drq-tab.on{color:var(--primary);opacity:1}
 .drq-tab.on::before{background:var(--accent)}
-.drq-all[hidden]{display:none}
-.drq-allsec+.drq-allsec{margin-top:18px}
-.drq-allsec h4{margin:0 0 10px;color:var(--primary);font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px}
-.drq-allsec h4::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block}
 .drq-opts[hidden]{display:none}
+
+/* ট্রিটমেন্ট — সব একসাথে (#amol/all) */
+.am-gh{margin:22px 0 8px;display:flex;align-items:center;gap:8px}
+.am-gh::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.am-ch{margin:14px 0 8px;padding:9px 12px;border-radius:10px;background:var(--primary-light);color:var(--primary);font-weight:700;font-size:14.5px}
+.am-nazar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:6px 0 4px;padding:12px 14px;border-radius:10px;background:var(--primary-light);color:var(--primary);font-weight:600;font-size:14px;text-decoration:none}
+.am-nazar::after{content:"\2192";font-weight:700;opacity:.6}

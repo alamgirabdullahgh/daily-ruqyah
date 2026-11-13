@@ -39,8 +39,14 @@
    v.innerHTML=h||"আয়াত পাওয়া যায়নি।";
   }).catch(function(){v.textContent="আয়াত লোড করা যায়নি। ইন্টারনেট চালু করে আবার চেষ্টা করুন।";d.__done=0});
  }
+ function drawAll(){
+  var grp=function(G,name){var cs=DATA.cats.filter(function(c){return c.id.indexOf(G)===0});return'<section class="am-gsec"><h2 class="am-h am-gh">'+name+'</h2>'+cs.map(function(c){return'<section class="am-sec"><div class="am-ch"><i>'+c.icon+'</i> '+esc(c.title)+'</div>'+c.items.map(card).join("")+'</section>'}).join("")+'</section>'};
+  box.innerHTML='<h2 class="am-h">ট্রিটমেন্ট — সব একসাথে</h2><p class="am-intro">বদনজর, জাদু ও জিন — তিন বিষয়ের ট্রিটমেন্ট এক পাতায়। জাদু ও জিনের সব প্রকার নিচে ধারাবাহিকভাবে আছে; বদনজরের আয়াত বিষয়ভিত্তিক পাতায় খোলে।</p><div class="am-warn">⚕ রুকইয়াহ ও আমল মেডিক্যাল চিকিৎসার বিকল্প নয়। বইয়ে বর্ণিত লক্ষণ বহু রোগেরও হয়; গুরুতর বা হঠাৎ উপসর্গে আগে ডাক্তার দেখান।</div><section class="am-gsec"><h2 class="am-h am-gh">বদনজর</h2><a class="am-nazar" href="#search" data-nz="1">বদনজর — ট্রিটমেন্ট (আয়াত)</a></section><input class="am-q" id="amQ" type="search" placeholder="জাদু ও জিনে খুঁজুন (যেমন: হাঁড়ি, পুতুল, বন্দিশ, বিয়ে)" autocomplete="off" value="'+esc(Q)+'"><div id="amBody">'+grp("b2","জাদু")+grp("b1","জিন")+'</div>';
+  filter();
+ }
  function draw(){
   if(!box||!DATA)return;
+  if(CAT==="all"){drawAll();return}
   var G=/^b2/.test(CAT)?"b2":"b1",
    HD=G==="b2"?"জাদু — ট্রিটমেন্ট":"জিন (চালান) — ট্রিটমেন্ট",
    IN=G==="b2"?"এই ভাগে শুধু “যাদুগ্রস্ত উম্মতের গাইড” বইয়ের লেখা আছে — জাদুর প্রকার অনুযায়ী লক্ষণ ও চিকিৎসা, অধ্যায় ধরে।":"এই ভাগে শুধু “চালান কাটার গোপন বিদ্যা” বইয়ের লেখা আছে — চালানের প্রকার অনুযায়ী লক্ষণ ও চিকিৎসা, অধ্যায় ধরে।",
@@ -53,11 +59,12 @@
  function filter(){
   var q=Q.trim().toLowerCase(),b=document.getElementById("amBody");if(!b)return;
   var n=0;b.querySelectorAll(".am-it").forEach(function(a){var ok=!q||(a.__t||(a.__t=a.textContent.toLowerCase())).indexOf(q)>=0;a.style.display=ok?"":"none";if(ok)n++});
+  b.querySelectorAll(".am-sec").forEach(function(s){s.style.display=s.querySelector(".am-it:not([style*=\"none\"])")?"":"none"});b.querySelectorAll(".am-gsec").forEach(function(s){s.style.display=s.querySelector(".am-sec:not([style*=\"none\"])")?"":"none"});
   var e=b.querySelector(".am-empty");if(!n&&q){if(!e){e=document.createElement("div");e.className="am-empty";e.textContent="এই ট্যাবে কিছু পাওয়া যায়নি। অন্য ট্যাবে দেখুন।";b.appendChild(e)}}else if(e)e.remove();
  }
  function init(){
   box=document.getElementById("drAmol");if(!box||box.__w)return;box.__w=1;
-  box.addEventListener("click",function(e){var t=e.target.closest&&e.target.closest(".am-tab");if(t){CAT=t.dataset.c;draw();window.scrollTo(0,0)}});
+  box.addEventListener("click",function(e){var nz=e.target.closest&&e.target.closest(".am-nazar");if(nz){e.preventDefault();location.hash="#search";setTimeout(function(){window.__drOpenTopic&&window.__drOpenTopic("বদনজর")},90);return}var t=e.target.closest&&e.target.closest(".am-tab");if(t){CAT=t.dataset.c;draw();window.scrollTo(0,0)}});
   box.addEventListener("toggle",function(e){var d=e.target;if(d.classList&&d.classList.contains("am-ref")&&d.open)fillRef(d)},true);
   box.addEventListener("input",function(e){if(e.target.id==="amQ"){Q=e.target.value;filter()}});
  }

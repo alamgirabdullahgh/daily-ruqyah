@@ -14,7 +14,7 @@
   var H=document.getElementById("drLanding");if(!H)return;
   built=true;
   var h='<div class="drq-grid">';
-  var TS=1,TE=3; /* G[TS..TE] = বদনজর · জাদু · জিন: এক কার্ডে ট্যাব; চতুর্থ ট্যাব "সব" তিনটাই একসাথে দেখায় */
+  var TS=1,TE=3; /* G[TS..TE] = বদনজর · জাদু · জিন: এক কার্ডে ট্যাব; চতুর্থ ট্যাব "সব": একই তিন অপশন, তবে তিন বিষয়ের ফল একসাথে এক পাতায় */
   var item=function(o){
    var t=o[1];
    if(typeof t==="string")return '<li><a href="'+t+'">'+esc(o[0])+'</a></li>';
@@ -31,9 +31,7 @@
     var names=G.slice(TS,TE+1).map(function(x){return x[0]}).concat(["সব"]);
     h+='<section class="drq-card drq-tabcard"><h3 class="drq-tabs" role="tablist">'+names.map(function(n,i){return '<button type="button" role="tab" class="drq-tab'+(i?'':' on')+'" data-t="'+i+'" aria-selected="'+(i?'false':'true')+'">'+esc(n)+'</button>'}).join('')+'</h3>';
     for(var k=TS;k<=TE;k++)h+=ulOf(G[k],' data-pane="'+(k-TS)+'"'+(k>TS?' hidden':''));
-    h+='<div class="drq-all" data-pane="'+(TE-TS+1)+'" hidden>';
-    for(var m=TS;m<=TE;m++)h+='<div class="drq-allsec"><h4>'+esc(G[m][0])+'</h4>'+ulOf(G[m])+'</div>';
-    h+='</div></section>';
+    h+=ulOf(["সব",[["সিমটম ডায়াগনোসিস","#diag"],["রেসপন্স ডায়াগনোসিস","#resp"],["ট্রিটমেন্ট","#amol/all"]]],' data-pane="'+(TE-TS+1)+'" hidden')+'</section>';
     return;
    }
    h+='<section class="drq-card"><h3>'+esc(g[0])+'</h3>'+ulOf(g)+'</section>';
