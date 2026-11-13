@@ -251,7 +251,7 @@
       var bs = nf ? nf.start : s.ws[idx], be = nf ? nf.end : s.we[idx];
       var frac = Math.max(0, Math.min(1, (s.nowMin - bs) / Math.max(1, be - bs)));
       var left = Math.ceil(Math.max(0, be - s.nowMin)), lh = Math.floor(left / 60), lm = left % 60;
-      var cd = bn(lh + ":" + ("0" + lm).slice(-2));
+      var cd = lh > 0 ? bn(lh) + " ঘন্টা" + (lm > 0 ? " " + bn(lm) + " মিনিট" : "") : bn(lm) + " মিনিট";
       var arc = (function () {
         var CX = 60, CY = 28, RX = 57, RY = 26, f = (s.sunset > s.sunrise && s.nowMin >= s.sunrise && s.nowMin <= s.sunset) ? (s.nowMin - s.sunrise) / (s.sunset - s.sunrise) : null;
         var o = '<svg class="drw-arc" viewBox="0 0 120 40" preserveAspectRatio="none" aria-hidden="true"><path d="M3,28A57,26 0 0 1 117,28" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.1" stroke-dasharray="2.4 2.2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>';

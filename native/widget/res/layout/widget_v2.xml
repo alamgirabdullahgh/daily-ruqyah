@@ -126,7 +126,7 @@
                 android:gravity="center"
                 android:includeFontPadding="false"
                 android:maxLines="1"
-                android:text="১:২৩"
+                android:text="১ ঘন্টা ২৩ মিনিট"
                 android:textColor="#FFFFFF"
                 android:textSize="9sp"
                 android:textStyle="bold"
