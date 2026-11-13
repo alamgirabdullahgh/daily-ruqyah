@@ -632,18 +632,13 @@ html:has(body:not(.is-home)){scroll-padding-top:calc(env(safe-area-inset-top) + 
 .dr-nav.on .nv b{color:var(--primary)}
 .dr-nav.on i{background:var(--primary);color:#fff;border-color:var(--primary)}
 
-/* ---------- হোম: এক স্ক্রিনে (ব্যানার অপরিবর্তিত) ---------- */
-.dr-main{padding-top:8px}
-.drq-cards{padding:0 3px 8px}
-.drq-grid{gap:9px}
-.drq-card{padding:9px 14px 11px;border-top-width:3px}
-.drq-card h3{margin:0 0 7px;font-size:17px}
-.drq-opts{gap:5px}
-.drq-opts a,.drq-soon,.drq-tg{padding:6px 12px;font-size:13.5px}
-.drq-tabs{margin-bottom:7px}
-.drq-tab{padding:2px 0;font-size:16px}
-.drq-tab-all{font-size:16px}
-.drq-card.drq-sys{padding:0 14px}
-.drq-sys .dsy-row{padding:7px 0;gap:10px}
-.drq-sys .dsy-t b{font-size:14px;line-height:1.3}
-.drq-sys .dsy-s{margin-top:0;font-size:11.5px}
+/* ---------- হোম: এক স্ক্রিনে (ব্যানার অপরিবর্তিত; কার্ড প্রায় আগের মাপে, শুধু মাঝের ফাঁকা কম) ---------- */
+.dr-main{padding-top:6px}
+.drq-cards{padding:0 3px 6px}
+.drq-grid{gap:8px}
+.drq-card{padding:13px 20px 14px}
+.drq-card h3{margin:0 0 10px}
+.drq-opts a,.drq-soon,.drq-tg{padding:9px 14px}
+.drq-tabs{margin-bottom:10px}
+.drq-card.drq-sys{padding:2px 16px}
+.drq-sys .dsy-row{padding:8px 0}
