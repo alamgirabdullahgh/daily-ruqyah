@@ -239,7 +239,7 @@
     ".drw-r{display:flex;align-items:center;justify-content:space-between;gap:8px}.drw-top{align-items:flex-end;gap:4px}.drw-mid{position:relative;flex:1;height:38px;min-width:0;color:#3B4A55}.drw-arc{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}" +
     ".drw-sun{display:flex;align-items:center;gap:5px;font-size:11px;color:#3B4A55;white-space:nowrap}" +
     ".drw-sun img{width:18px;height:18px;flex:none;display:block}" +
-    ".drw-pin{position:absolute;left:50%;bottom:0;transform:translateX(-50%);white-space:nowrap;border:.8px solid rgba(255,255,255,.28);background:linear-gradient(90deg,#16794c,#2bb583);color:#fff;border-radius:10px;padding:2px 8px;font-family:inherit;font-weight:700;font-size:7px;line-height:1.15;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(22,121,76,.35)}" +
+    ".drw-pin{flex:none;margin:0 6px;white-space:nowrap;border:.8px solid rgba(255,255,255,.28);background:linear-gradient(90deg,#16794c,#2bb583);color:#fff;border-radius:10px;padding:1px 8px;font-family:inherit;font-weight:700;font-size:9px;line-height:1.15;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(22,121,76,.35)}" +
     ".drw-sl-sun{position:absolute;white-space:nowrap;font-size:9px;font-weight:700;color:#B36B00;line-height:1;pointer-events:none}" +
     ".drw-sn{flex:1;min-width:0;text-align:center;font-size:9px;line-height:1.3;font-weight:700;color:#1E7F58;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;will-change:opacity,transform;transform:translateZ(0);transition:opacity .35s,transform .35s}.drw-sn.o{opacity:0;transform:translateX(14px)}" +
     ".drw-time{display:flex;align-items:flex-end;gap:4px;margin-top:1px}" +
@@ -250,7 +250,7 @@
     ".drw-lr{display:flex;align-items:center;justify-content:flex-end;gap:6px}" +
     ".drw-upd{font-size:8px;line-height:1.1;text-align:center;color:#3B4A55;background:none;border:0;padding:0;margin-left:2px;cursor:pointer;font-family:inherit}" +
     ".drw-loc{font-size:12px;color:#3B4A55;cursor:pointer;background:none;border:0;padding:0;font-family:inherit}" +
-    ".drw-d{margin-top:2px;font-size:12px;color:#3B4A55;white-space:nowrap}" +
+    ".drw-d>span{flex:1;min-width:0}.drw-d>span:last-child{text-align:right}.drw-d{margin-top:2px;font-size:12px;color:#3B4A55;white-space:nowrap}" +
     ".drw-p{display:flex;margin:3px -4px 0}" +
     ".drw-c{flex:1;text-align:center;padding:2px 0 1px;border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}" +
     ".drw-c.on{background:#CFE6D9}" +
@@ -325,13 +325,13 @@
       for (var i = 0; i < 5; i++)
         cells += '<div class="drw-c' + (i === s.cur ? " on" : "") + '" data-i="' + i + '"><i>' + NAMES[i] + "</i><b>" + fmt(s.m[i]) + "</b></div>";
       el.innerHTML =
-        '<div class="drw"><div class="drw-r drw-top"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span>' + '<div class="drw-mid">' + arc + '<button class="drw-pin" type="button" data-pin="1">হোম<br>স্ক্রিনে বসান</button></div>' + '<span class="drw-sun">সূর্যাস্ত ' + fmt(s.sunset) + SUNSET + "</span></div>" +
+        '<div class="drw"><div class="drw-r drw-top"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span>' + '<div class="drw-mid">' + arc + '</div>' + '<span class="drw-sun">সূর্যাস্ত ' + fmt(s.sunset) + SUNSET + "</span></div>" +
         '<div class="drw-b"><span>' + (nf ? nf.name + " শুরু " : "ওয়াক্ত শুরু ") + fmt(bs) + '</span><div class="drw-bar"><u style="width:' + (frac * 100).toFixed(1) + '%"></u><em>' + cd + '</em></div><span>' + (nf ? "শেষ " : "ওয়াক্ত শেষ ") + fmt(be) + "</span></div>" +
         '<div class="drw-p">' + cells + "</div>" +
         '<div class="drw-r"><div class="drw-time"><b>' + hh + ":" + mm + "</b><span>" + (now.getHours() < 12 ? "AM" : "PM") + "</span></div>" +
         '<div class="drw-sn" data-sn="1"></div>' +
         '<div class="drw-en"><b>' + en + '</b><div class="drw-lr"><button class="drw-loc" type="button" data-loc="1">' + placeName(loc) + '</button><button class="drw-upd" type="button" data-upd="1">' + (updBusy ? "হচ্ছে…" : "আপডেট<br>লোকেশন") + "</button></div></div></div>" +
-        '<div class="drw-r drw-d"><span>' + hijriText(now, inBd(loc.lat, loc.lng)) + "</span><span>" + banglaText(addDays(now, BANGLA_ADJ)) + "</span></div>" +
+        '<div class="drw-r drw-d"><span>' + hijriText(now, inBd(loc.lat, loc.lng)) + '</span><button class="drw-pin" type="button" data-pin="1">হোম স্ক্রিনে বসান</button><span>' + banglaText(addDays(now, BANGLA_ADJ)) + "</span></div>" +
         "</div>";
       snItems = sunnahItems(now, inBd(loc.lat, loc.lng));
       paintSn();
