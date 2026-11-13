@@ -305,12 +305,17 @@
   ];
   function prefOff(g) { try { return localStorage.getItem("drsys_off_" + g) === "1"; } catch (e) { return false; } }
   function setPrefOff(g, off) { try { localStorage.setItem("drsys_off_" + g, off ? "1" : "0"); } catch (e) { } }
+  /* সময় এডিট: ব্যবহারকারীর বদলানো সময়/আবার-বাজার মিনিট ফোনে (localStorage) থাকে; না থাকলে ডিফল্ট (সূর্যোদয়/সূর্যাস্ত-ভিত্তিক বা রাত ১০টা) */
+  function cfgAll() { try { return JSON.parse(localStorage.getItem("drsys_cfg") || "{}") || {}; } catch (e) { return {}; } }
+  function cfgSet(id, c) { var o = cfgAll(); if (c && (c.time || c.nag)) o[id] = c; else delete o[id]; try { localStorage.setItem("drsys_cfg", JSON.stringify(o)); } catch (e) { } }
+  function cfgOf(d) { var c = cfgAll()[d.id] || {}; return { time: /^\d{1,2}:\d{2}$/.test(c.time || "") ? c.time : "", nag: +c.nag > 0 ? Math.min(+c.nag, 720) : 0 }; }
+  function sig(d) { var c = cfgOf(d); return c.time + "|" + c.nag; }
   function sysBuild(d, on) {
-    var a = { id: d.id, sys: d.g, v: SYS_V, on: on, title: d.title, repeat: 1, days: [], time: d.time || "00:00", urls: build({ r: d.ranges }) };
-    if (d.rel) { a.rel = d.rel; a.off = d.off; }
-    if (d.notBefore) a.notBefore = d.notBefore;
+    var c = cfgOf(d);
+    var a = { id: d.id, sys: d.g, v: SYS_V, sig: sig(d), on: on, title: d.title, repeat: 1, days: [], time: c.time || d.time || "00:00", urls: build({ r: d.ranges }) };
+    if (d.rel && !c.time) { a.rel = d.rel; a.off = d.off; if (d.notBefore) a.notBefore = d.notBefore; }
     if (d.persist) a.persist = true;
-    if (d.nag) a.nag = d.nag;
+    if (d.nag) a.nag = c.nag || d.nag;
     return a;
   }
   var sysBusy = false, sysDone = false;
@@ -324,7 +329,7 @@
         var i = -1;
         for (var k = 0; k < list.length; k++) if (list[k].id === d.id) { i = k; break; }
         if (i < 0) { list.push(sysBuild(d, !prefOff(d.g))); changed = true; }
-        else if (list[i].v !== SYS_V) { list[i] = sysBuild(d, list[i].on !== false); changed = true; }   // সংজ্ঞা বদলালে নতুনটা বসে, চালু/বন্ধ অবস্থা থাকে
+        else if (list[i].v !== SYS_V || (list[i].sig || "|0") !== sig(d)) { list[i] = sysBuild(d, list[i].on !== false); changed = true; }   // সংজ্ঞা বদলালে নতুনটা বসে, চালু/বন্ধ অবস্থা থাকে
       });
       if (changed) await persist();
       sysDone = true;
@@ -377,6 +382,43 @@
     if (NATIVE && P) { if (!sysDone) await sysEnsure(); try { await reload(); } catch (e) { } }
     sysPaint();
   }
+  /* সময় এডিটর: ✎ চাপলে কার্ডের নিচে খোলে। সূরা বাকারা: সকাল/বিকালের নির্দিষ্ট সময় (খালি = সূর্যোদয়ের ৩০ মিনিট আগে / সূর্যাস্তের ৪০ মিনিট আগে)।
+     জাদু রিনিউ বন্ধ: রাতের সময় + কত মিনিট পরে আবার বাজবে। "ডিফল্ট" চাপলে সব আগের নিয়মে ফেরে। */
+  function sysEditor(sec, g, host) {
+    host.textContent = "";
+    if (host.getAttribute("data-g") === g && host.getAttribute("data-open") === "1") { host.removeAttribute("data-open"); host.hidden = true; return; }
+    host.setAttribute("data-g", g); host.setAttribute("data-open", "1"); host.hidden = false;
+    var defs = SYS.filter(function (d) { return d.g === g; }), fields = [];
+    function row(label, node) { var r = el("label", "dsy-ef"); r.appendChild(el("span", "", label)); r.appendChild(node); host.appendChild(r); }
+    function tin(v) { var i = el("input"); i.type = "time"; i.value = v ? ("0" + v).slice(-5) : ""; return i; }
+    host.appendChild(el("b", "dsy-eh", g === "baq" ? "সূরা বাকারার সময়" : "জাদু রিনিউ বন্ধের সময়"));
+    defs.forEach(function (d) {
+      var c = cfgOf(d), i = tin(c.time || (g === "jadu" ? d.time : ""));
+      var lab = g === "baq" ? (d.rel === "sunrise" ? "সকালে (খালি = সূর্যোদয়ের ৩০ মি. আগে)" : "বিকালে (খালি = সূর্যাস্তের ৪০ মি. আগে)") : "রোজ রাতে";
+      row(lab, i); fields.push({ d: d, t: i });
+    });
+    var nagIn = null;
+    if (g === "jadu") { nagIn = el("input"); nagIn.type = "number"; nagIn.min = "1"; nagIn.max = "720"; nagIn.value = String(cfgOf(defs[0]).nag || defs[0].nag); row("বন্ধ করলে আবার বাজবে (মিনিট পরে)", nagIn); }
+    var bar = el("div", "dsy-eb"), ok = el("button", "dsy-ok", "সংরক্ষণ"), df = el("button", "dsy-df", "ডিফল্ট"), cl = el("button", "dsy-cl", "বন্ধ");
+    [ok, df, cl].forEach(function (b) { b.type = "button"; bar.appendChild(b); });
+    host.appendChild(bar);
+    var msg = el("small", "dsy-em", ""); host.appendChild(msg);
+    async function apply() {
+      try { await sysEnsure(); await sysRefresh(); } catch (e) { }
+      msg.textContent = "✔ সংরক্ষিত";
+    }
+    ok.onclick = function () {
+      fields.forEach(function (f) {
+        var nv = nagIn ? Math.max(1, Math.min(720, parseInt(nagIn.value, 10) || f.d.nag)) : 0;
+        var t = f.t.value;
+        if (g === "jadu" && t === f.d.time) t = "";
+        cfgSet(f.d.id, { time: t, nag: nv && nv !== f.d.nag ? nv : 0 });
+      });
+      apply();
+    };
+    df.onclick = function () { fields.forEach(function (f) { cfgSet(f.d.id, null); }); host.removeAttribute("data-open"); host.hidden = true; apply(); };
+    cl.onclick = function () { host.removeAttribute("data-open"); host.hidden = true; };
+  }
   /* হোম পাতার নিচের কার্ড: নিচের কার্ডের পরে, নেভিগেশন বারের উপরে */
   window.__drSysCard = function (H) {
     try {
@@ -385,6 +427,7 @@
       var sec = el("section", "drq-card drq-sys");
       sec.appendChild(el("b", "dsy-h dsy-fit", "অটোমেটিক এলার্ম"));
       var two = el("div", "dsy-two"); sec.appendChild(two);
+      var edHost = el("div", "dsy-edit"); edHost.hidden = true; sec.appendChild(edHost);
       [["baq", "সূরা বাকারা"], ["jadu", "জাদু রিনিউ বন্ধ"]].forEach(function (x) {
         var row = el("div", "dsy-row"); row.setAttribute("data-g", x[0]);
         var tx = el("div", "dsy-t"); tx.setAttribute("role", "button"); tx.tabIndex = 0;
@@ -396,6 +439,9 @@
           setTimeout(sysRefresh, 400);
         };
         row.appendChild(tx);
+        var ed = el("button", "dsy-ed", "✎"); ed.type = "button"; ed.title = "সময় বদলান"; ed.setAttribute("aria-label", "সময় বদলান: " + x[1]);
+        ed.onclick = function () { sysEditor(sec, x[0], edHost); };
+        row.appendChild(ed);
         var sw = el("label", "dsy-sw"); var cb = el("input"); cb.type = "checkbox"; cb.checked = true; cb.setAttribute("aria-label", "অটোমেটিক এলার্ম " + x[1]);
         cb.onchange = async function () {
           var want = cb.checked;

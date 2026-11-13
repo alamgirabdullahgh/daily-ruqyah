@@ -708,6 +708,45 @@ async function runMulti(parts,out,info,intro,ordered){
  G.forEach(g=>{
   out.appendChild(els("div","margin:16px 0 6px;padding:6px 12px;border-radius:10px;font-weight:700;background:color-mix(in srgb,var(--primary) 14%,transparent);color:var(--primary)","“"+g.t+"” — "+(g.u?bn2(g.u)+"টি আয়াত":(g.note||"কিছু পাওয়া যায়নি"))));
   g.items.forEach(it=>{const c=card(it,ex(it));out.appendChild(c);if(bud>0){c.querySelector(".rs-rh").click();bud-=Math.min(vset(lst(it,ex(it))).o,24)}})})}
+/* ───── হোমের প্রতিটি লাইনের "অডিও" বোতাম: রেসপন্স ডায়াগনোসিস / ট্রিটমেন্ট — ওই ক্যাটাগরির সব আয়াত এক ফাইলে (মার্জ অডিও)।
+   ডাউনলোডের নাম window.__sq থেকে আসে (যেমন "রেসপন্স ডায়াগনোসিস বদনজর" → রেসপন্স_ডায়াগনোসিস_বদনজর.mp3); লুকানো ডাউনলোড বোতাম mergeAudio নিজেই বসায়। ───── */
+async function topicKeys(topic){
+ await loadRoots();const key=r=>r.split(":").slice(0,2).join(":"),seen=new Set(),out=[];
+ for(const pp of topic.terms){const t=typeof pp==="string"?pp:pp[1],q=nz(t),isBn=!q&&/[\u0980-\u09FF]/.test(t);let items=[];
+  if(isBn){if(t.length>=2)items=searchBn(t)}else if(q&&q.length>=2)items=search(q);
+  {const f=typeof pp==="string"?null:pp[2];if(f&&items.length)items=applyFl(items,f)}
+  const u=new Set();items.forEach(it=>[...lst(it,it.sc===100)].forEach(f=>f.refs.forEach(r=>u.add(key(r)))));
+  [...u].filter(k=>!seen.has(k)).map(k=>k.split(":").map(Number)).sort((x,y)=>x[0]-y[0]||x[1]-y[1]).forEach(x=>{seen.add(x[0]+":"+x[1]);out.push(x)})}
+ return out}
+async function respKeys(cat){
+ const D=await rsFetch(BASE+"quran-diagnosis.json?v="+DV+"d20"),C=["বদনজর","জাদু","জিন"],seen=new Set(),out=[];
+ D.groups.filter(g=>cat==="সব"?C.includes(g.section):g.section===cat).forEach(g=>g.cats.forEach(c=>c.keys.forEach(k=>{const id=k.s+":"+k.a;if(!seen.has(id)){seen.add(id);out.push([k.s,k.a])}})));
+ return out}
+async function amolKeys(G){
+ const r=await fetch(new URL("data/amol-guide.json?v=5",location.href).href);if(!r.ok)throw 0;const D=await r.json(),seen=new Set(),out=[];
+ D.cats.filter(c=>c.id.indexOf(G)===0).forEach(c=>c.items.forEach(it=>(it.refs||[]).forEach(x=>{for(let a=x[1];a<=(x[2]||x[1]);a++){const id=x[0]+":"+a;if(!seen.has(id)){seen.add(id);out.push([x[0],a])}}})));
+ return out}
+async function treatKeys(cat){
+ const nz0=async()=>topicKeys(TOPICS.find(x=>x.name==="বদনজর")),seen=new Set(),out=[];
+ const parts=cat==="বদনজর"?[await nz0()]:cat==="জাদু"?[await amolKeys("b2")]:cat==="জিন"?[await amolKeys("b1")]:[await nz0(),await amolKeys("b2"),await amolKeys("b1")];
+ parts.forEach(l=>l.forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);out.push(k)}}));return out}
+window.__drHomeAudio=async(kind,cat,host)=>{
+ if(!host||host.dataset.busy==="1")return;
+ if(host.dataset.done==="1"){host.hidden=!host.hidden;return}
+ host.hidden=false;host.textContent="";host.dataset.busy="1";
+ const note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),res=el("div");host.append(note,res);
+ note.textContent="আয়াতের তালিকা তৈরি হচ্ছে…";
+ try{
+  const list=kind==="resp"?await respKeys(cat):await treatKeys(cat);
+  if(!list.length){note.textContent="এই ক্যাটাগরির জন্য আয়াতের তালিকা পাওয়া যায়নি";return}
+  window.__sq=(kind==="resp"?"রেসপন্স ডায়াগনোসিস":"ট্রিটমেন্ট")+" "+(cat==="সব"?"বদনজর জাদু জিন":cat);
+  note.textContent=bn2(list.length)+"টি আয়াত — অডিও প্রস্তুত হচ্ছে…";
+  if(list.length===1&&setAll()<=1&&repOf(list[0][0],list[0][1])<=1)await playOne(list[0][0],list[0][1],res,note);
+  else await mergeAudio(list,res,t=>note.textContent=t);
+  host.dataset.done="1";
+ }catch(e){console.error(e);note.textContent="অডিও তৈরি করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"}
+ finally{host.dataset.busy="0"}
+};
 async function run(topic){window.__bq="";GEN++;CURT=null;if(topic&&!topic.terms)topic=null;const raw=topic?topic.name:$("rsQ").value;window.__sq=raw;const q=nz(raw),out=$("rsOut"),info=$("rsInfo");out.innerHTML="";if(!R)info.textContent="⏳ ডেটা লোড হচ্ছে… (প্রথমবার ইন্টারনেট ধীর হলে সময় লাগে, পরে দ্রুত হবে)";
  if(topic)return runMulti(topic.terms,out,info,topic.intro,topic.ordered);
  {const parts=raw.split(/[,،，、]/).map(x=>x.trim()).filter(Boolean);if(parts.length>1)return runMulti(parts,out,info)}
