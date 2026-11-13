@@ -296,14 +296,26 @@
     }
     // সূর্যের অবস্থান ও লেখা: render ও tick দুটোই একই হিসাব ব্যবহার করে
     function sunGeom(s) {
-      if (!(s.sunset > s.sunrise && s.nowMin >= s.sunrise && s.nowMin <= s.sunset)) return null;
+      if (!(s.sunset > s.sunrise)) return null;
+      if (!(s.nowMin >= s.sunrise && s.nowMin <= s.sunset)) {
+        // রাত: চাঁদ সূর্যাস্ত (ডান) থেকে পরের সূর্যোদয় (বাম) পর্যন্ত একই অক্ষরেখায় উল্টো দিকে যায়
+        var nl = s.sunrise + 1440 - s.sunset, el2 = s.nowMin >= s.sunset ? s.nowMin - s.sunset : s.nowMin + 1440 - s.sunset;
+        var fm = Math.max(0, Math.min(1, el2 / nl)), am = Math.PI * (2 - fm);
+        var mx = 60 + 57 * Math.cos(am), my = 24 + 19 * Math.sin(am);
+        return { moon: true, x: mx.toFixed(2), y: my.toFixed(2), txt: durBn(Math.ceil(Math.max(0, nl - el2))) + " বাকি" };
+      }
       var f = (s.nowMin - s.sunrise) / (s.sunset - s.sunrise), a = Math.PI * (1 + f);
       var x = 60 + 57 * Math.cos(a), y = 24 + 19 * Math.sin(a), pc = (f * 100).toFixed(1);
       return { x: x.toFixed(2), y: y.toFixed(2), pc: pc, top: Math.min(y + 8, 28).toFixed(1) + "px", txt: durBn(Math.ceil(Math.max(0, s.sunset - s.nowMin))) + " বাকি" };
     }
+    // চাঁদের আইকন পিক্সেলে আঁকা; SVG-র preserveAspectRatio="none"-এর টান উল্টে গোল রাখার স্কেল
+    function moonTf(g) {
+      var m = el.querySelector(".drw-mid"), w = (m && m.clientWidth) || 300, h = (m && m.clientHeight) || 38;
+      return "translate(" + g.x + "," + g.y + ") scale(" + (120 / w).toFixed(4) + "," + (38 / h).toFixed(4) + ")";
+    }
     var lastSig = "";
     window.addEventListener("dr-sunnah", function () { if (el.isConnected) { lastSig = ""; render(); } });
-    function sigOf(s, now) { return [s.cur, shownIndex(s), sunGeom(s) ? 1 : 0, now.getDate(), updBusy ? 1 : 0].join("|"); }
+    function sigOf(s, now) { return [s.cur, shownIndex(s), (function (g) { return g ? (g.moon ? 2 : 1) : 0; })(sunGeom(s)), now.getDate(), updBusy ? 1 : 0].join("|"); }
     // প্রতি সেকেন্ডে: কাঠামো না বদলালে ভেতরের লেখা/মাপ জায়গাতেই বদলায় (পুরো উইজেট নতুন করে আঁকে না, তাই ঝিলিক নেই)
     function tick() {
       if (document.hidden) return;
@@ -319,7 +331,12 @@
       if (u && u.style.width !== w) u.style.width = w;
       setT(q(".drw-bar em"), durBn(Math.ceil(Math.max(0, be - s.nowMin))) + " বাকি");
       var g = sunGeom(s);
-      if (g) {
+      if (g && g.moon) {
+        setA(q(".drw-pr"), "d", "M117,24A57,19 0 0 0 " + g.x + "," + g.y);
+        setA(q(".drw-m"), "transform", moonTf(g));
+        var Lm = q(".drw-sl-sun");
+        if (Lm) { setT(Lm, g.txt); }
+      } else if (g) {
         setA(q(".drw-pr"), "d", "M3,24A57,19 0 0 1 " + g.x + "," + g.y);
         ["s1", "s2", "s3"].forEach(function (k) { var c = q(".drw-" + k); setA(c, "cx", g.x); setA(c, "cy", g.y); });
         var L = q(".drw-sl-sun");
@@ -343,7 +360,11 @@
         var g = sunGeom(s);
         var o = '<svg class="drw-arc" viewBox="0 0 120 38" preserveAspectRatio="none" aria-hidden="true"><path d="M3,24A57,19 0 0 1 117,24" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.1" stroke-dasharray="2.4 2.2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>';
         var lab = "";
-        if (g) {
+        if (g && g.moon) {
+          o += '<path class="drw-pr" d="M117,24A57,19 0 0 0 ' + g.x + ',' + g.y + '" fill="none" stroke="#7E8CD8" stroke-width="1.3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>' +
+            '<g class="drw-m" transform="' + moonTf(g) + '"><circle r="7" fill="#9FA8DA" fill-opacity=".28"/><path d="M0,-4.6A4.6,4.6 0 1 0 3.4,3.1A3.6,3.6 0 1 1 0,-4.6Z" fill="#E8D98A" stroke="#B9A94E" stroke-width=".5"/></g>';
+          lab = '<div class="drw-sl-sun" style="left:50%;transform:translateX(-50%);top:13px">' + g.txt + '</div>';
+        } else if (g) {
           o += '<path class="drw-pr" d="M3,24A57,19 0 0 1 ' + g.x + ',' + g.y + '" fill="none" stroke="#FFA000" stroke-width="1.3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>' +
             '<circle class="drw-s1" cx="' + g.x + '" cy="' + g.y + '" r="5.2" fill="#FFC21A" fill-opacity=".35"/><circle class="drw-s2" cx="' + g.x + '" cy="' + g.y + '" r="2.6" fill="#FFB300"/><circle class="drw-s3" cx="' + g.x + '" cy="' + g.y + '" r="1.4" fill="#FFE082"/>';
           lab = '<div class="drw-sl-sun" style="left:50%;transform:translateX(-50%);top:13px">' + g.txt + '</div>';

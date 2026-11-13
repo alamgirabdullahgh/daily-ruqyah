@@ -727,8 +727,9 @@ async function treatKeys(cat){
  const T=n=>topicKeys(TOPICS.find(x=>x.name===n)),seen=new Set(),out=[];
  const parts=cat==="সব"?[await T("বদনজর"),await T("জাদু"),await T("জিন")]:[await T(cat)];
  parts.forEach(l=>l.forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);out.push(k)}}));return out}
-const homeKeys=(kind,cat)=>kind==="resp"?respKeys(cat):treatKeys(cat);
-const homeTitle=(kind,cat)=>(kind==="resp"?"রেসপন্স ডায়াগনোসিস":"ট্রিটমেন্ট")+" "+(cat==="সব"?"বদনজর জাদু জিন":cat);
+async function bodyKeys(file){const D=await rsFetch(BASE+file),seen=new Set(),out=[];D.groups.forEach(g=>g.cats.forEach(c=>c.keys.forEach(k=>{const id=k.s+":"+k.a;if(!seen.has(id)){seen.add(id);out.push([k.s,k.a])}})));return out}
+const homeKeys=(kind,cat)=>kind==="resp"?respKeys(cat):kind==="phys"?bodyKeys(DISEASE.file):kind==="ment"?bodyKeys(MENTAL.file):treatKeys(cat);
+const homeTitle=(kind,cat)=>kind==="phys"||kind==="ment"?"দৈনন্দিন রুকইয়াহ "+cat:(kind==="resp"?"রেসপন্স ডায়াগনোসিস":"ট্রিটমেন্ট")+" "+(cat==="সব"?"বদনজর জাদু জিন":cat);
 /* পুনরাবৃত্তি: রেসপন্স ডায়াগনোসিস — প্রতিটি আয়াত ১১ বার, পুরো সেট ৩ বার; ট্রিটমেন্ট — প্রতিটি আয়াত ৩ বার, সেট ১ বার */
 const homeRep=kind=>kind==="resp"?{rep:11,set:3}:{rep:3,set:1};
 /* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */

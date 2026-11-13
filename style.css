@@ -709,3 +709,14 @@ html:has(body:not(.is-home)){scroll-padding-top:calc(env(safe-area-inset-top) + 
 .am-it{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important;border-radius:0!important}.am-ref{background:none;border-radius:8px}
 .am-sh{margin:16px 0 6px;font-size:1.05em;color:#0b4a3a}.am-st ul{margin:4px 0 0;padding-left:1.4em}.am-lk{display:flex;gap:8px;margin:4px 0 2px}.am-lk a{font-size:13px;padding:4px 12px;border-radius:999px;background:var(--primary-light);color:var(--primary);text-decoration:none}
 .am-orig{margin-top:18px;border-top:1px dashed var(--border-light);padding-top:8px}.am-orig summary{cursor:pointer;font-size:13.5px;color:var(--text-muted)}.am-sd{border-bottom:1px solid var(--border-light);padding:4px 0}.am-sd summary{cursor:pointer;padding:10px 2px;font-weight:600}.am-go{display:inline-block;margin:6px 0 10px;font-size:13.5px;color:var(--primary)}.am-sec2{margin:10px 0 16px}
+
+/* হোমের ২-কলাম সারি (শারীরিক/মানসিক): নাম + ছোট PDF/অডিও বোতাম এক লাইনে; খোলা প্যানেল পুরো প্রস্থে নিচে */
+.drq-opts.drq-two{flex-wrap:wrap}
+.drq-opts.drq-two li.drq-ai{display:contents}
+.drq-opts.drq-two .drq-air{order:1;flex:1 1 calc(50% - 4px);min-width:0;display:flex;align-items:center;gap:4px;background:var(--primary-light);border-radius:9px;padding-right:4px}
+.drq-opts.drq-two .drq-air>a{flex:1;width:auto;min-width:0;background:transparent;padding:10px 6px 10px 12px}
+.drq-opts.drq-two .drq-bt{position:static;transform:none;gap:3px;flex:none}
+.drq-opts.drq-two .drq-bt button{padding:5px 6px;font-size:11px}
+.drq-opts.drq-two .drq-bl{display:none}
+.drq-opts.drq-two .drq-pd .drq-bl{display:inline}
+.drq-opts.drq-two .drq-aup{order:2;flex:1 1 100%}
