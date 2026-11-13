@@ -27,9 +27,9 @@
    g[1].forEach(function(o){h+=item(o)});
    h+='</ul></section>';
   });
-  H.innerHTML=h+'</div><button type="button" class="drq-pin" id="drqPin">📲 হোম স্ক্রিনে উইজেট যুক্ত করুন</button>';
+  H.innerHTML=h+'</div>';
   H.addEventListener("click",function(e){
-   if(e.target.closest&&e.target.closest("#drqPin")){window.__drPinWidget&&window.__drPinWidget();return}
+   
    var tg=e.target.closest&&e.target.closest(".drq-tg");
    if(tg){var u=tg.nextElementSibling,on=u.hidden;u.hidden=!on;tg.setAttribute("aria-expanded",on?"true":"false");tg.classList.toggle("on",on);return}
    var a=e.target.closest&&e.target.closest("a[data-list],a[data-topic],a[data-disease],a[data-mental]");if(!a)return;
