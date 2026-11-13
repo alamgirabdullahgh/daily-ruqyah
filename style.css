@@ -491,8 +491,9 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 .am-ay-ar{font-family:var(--mf-font);font-size:var(--ar-size);line-height:2.1;color:var(--mf-ink)}
 .am-n{font-size:.6em;color:var(--accent)}
 .am-ay-bn{font-size:13.5px;line-height:1.7;color:var(--text-sub);margin-top:2px}
-.am-tx{white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.85;color:var(--text-main);padding:8px 0;border-top:1px dashed var(--border-light)}
+.am-tx{white-space:normal;word-break:break-word;font-size:14px;line-height:1.85;color:var(--text-main);padding:8px 0;border-top:1px dashed var(--border-light)}
 .am-tx:first-of-type{border-top:0}
+.am-tx p{margin:0 0 2px}.am-tx p.gp{margin-top:9px}.am-tx p:last-child{margin-bottom:0}
 .am-bk{font-size:12px;color:var(--text-muted);margin-top:6px}
 .am-ex-h{font-size:17px;font-weight:700;color:var(--danger);margin:4px 2px 6px}
 .am-ex{background:var(--card-bg);border:1px solid var(--border-light);border-radius:var(--radius-md);margin:0 0 8px}

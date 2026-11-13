@@ -12,12 +12,27 @@
   return loading;
  }
  function refLabel(r){var n=SN[r[0]]||("সূরা "+bn(r[0]));return "সূরা "+n+" "+bn(r[0])+":"+bn(r[1])+(r[2]?"-"+bn(r[2]):"")}
+
+ /* স্ক্যান থেকে আসা লেখায় প্রতি লাইনের শেষে জোর-নতুনলাইন আছে; বাক্যের মাঝের ভাঙা লাইন জুড়ে, তালিকা/শিরোনাম/অনুচ্ছেদ রেখে সাজাই */
+ function fmtTx(t){
+  var raw=String(t==null?"":t).replace(/\r/g,"").split("\n"),out=[],cur=null,gap=false;
+  var END=/[।?!:;)\]”"'॥]\s*$/,LIST=/^\s*([0-9০-৯]+\s*[.)।\-–:]|[-–—•*●▪◦]\s|সূরা\s)/;
+  raw.forEach(function(l){
+   l=l.replace(/\s+/g," ").trim();
+   if(!l){if(cur!==null){out.push({s:cur,g:false});cur=null}gap=true;return}
+   if(cur===null){cur=l;if(gap&&out.length)out[out.length-1].g=true;gap=false;return}
+   if(!END.test(cur)&&cur.length>=25&&!LIST.test(l)){cur+=" "+l}
+   else{out.push({s:cur,g:gap});cur=l;gap=false}
+  });
+  if(cur!==null)out.push({s:cur,g:gap});
+  return out.map(function(x,i){return'<p'+(i&&x.g?' class="gp"':'')+'>'+esc(x.s)+'</p>'}).join("");
+ }
  function card(it){
   var h='<article class="am-it" data-t="'+esc(it.t.toLowerCase())+'">';
   h+='<h3>'+esc(it.t)+'</h3><div class="am-tags"><span class="am-g am-g-'+(GC[it.g]||"s")+'">'+esc(it.g)+'</span>';
   if(it.src)h+='<span class="am-src">'+esc(it.src)+'</span>';
   h+='</div>';
-  if(it.pages)h+=it.pages.map(function(p,i){return'<div class="am-tx">'+esc(p)+'</div>'}).join("");
+  if(it.pages)h+=it.pages.map(function(p,i){return'<div class="am-tx">'+fmtTx(p)+'</div>'}).join("");
   if(it.why)h+='<p class="am-why">'+esc(it.why)+'</p>';
   if(it.ar)h+='<div class="am-ar" dir="rtl" lang="ar">'+esc(it.ar)+'</div>';
   if(it.how&&it.how.length)h+='<ol class="am-how">'+it.how.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ol>';
