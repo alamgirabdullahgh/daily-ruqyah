@@ -1,14 +1,14 @@
 /* আমল ও চিকিৎসা-নির্দেশিকা — data/amol-guide.json থেকে পাতা আঁকে। আয়াত দেখায় অ্যাপের নিজস্ব কুরআন-ডেটা (__drChunk) থেকে। */
 (function(){
  var SN={1:"ফাতিহা",2:"বাকারা",3:"আলে ইমরান",6:"আন'আম",7:"আ'রাফ",8:"আনফাল",10:"ইউনুস",11:"হূদ",12:"ইউসুফ",13:"রা'দ",15:"হিজর",16:"নাহল",18:"কাহফ",20:"ত্ব-হা",21:"আম্বিয়া",24:"নূর",25:"ফুরকান",27:"নামল",28:"কাসাস",29:"আনকাবুত",30:"রূম",31:"লুকমান",33:"আহযাব",35:"ফাতির",36:"ইয়াসীন",37:"সাফফাত",39:"যুমার",41:"ফুসসিলাত",43:"যুখরুফ",44:"দুখান",50:"ক্বাফ",54:"কামার",59:"হাশর",67:"মুলক",68:"কালাম",71:"নূহ",72:"জিন",85:"বুরূজ",94:"ইনশিরাহ",95:"তীন",99:"যিলযাল",105:"ফীল",112:"ইখলাস",113:"ফালাক",114:"নাস"};
- var BD="০১২৩৪৫৬৭৮৯",DATA=null,CAT="daily",Q="",box=null,loading=null;
+ var BD="০১২৩৪৫৬৭৮৯",DATA=null,CAT="daily",COND="",Q="",box=null,loading=null;
  var bn=function(n){return String(n).replace(/\d/g,function(d){return BD[d]})};
  var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
  var GC={"সহীহ হাদিস":"h","কুরআন":"q"};
  function load(){
   if(DATA)return Promise.resolve(DATA);
   if(loading)return loading;
-  loading=fetch(new URL("data/amol-guide.json?v=7",location.href).href).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){DATA=d;return d}).catch(function(e){loading=null;throw e});
+  loading=fetch(new URL("data/amol-guide.json?v=8",location.href).href).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){DATA=d;return d}).catch(function(e){loading=null;throw e});
   return loading;
  }
  function refLabel(r){var n=SN[r[0]]||("সূরা "+bn(r[0]));return "সূরা "+n+" "+bn(r[0])+":"+bn(r[1])+(r[2]?"-"+bn(r[2]):"")}
@@ -55,22 +55,17 @@
    v.innerHTML=h||"আয়াত পাওয়া যায়নি।";
   }).catch(function(){v.textContent="আয়াত লোড করা যায়নি। ইন্টারনেট চালু করে আবার চেষ্টা করুন।";d.__done=0});
  }
- function drawAll(){
-  var grp=function(G,name){var cs=DATA.cats.filter(function(c){return c.id.indexOf(G)===0});return'<section class="am-gsec"><h2 class="am-h am-gh">'+name+'</h2>'+cs.map(function(c){return'<section class="am-sec"><div class="am-ch"><i>'+c.icon+'</i> '+esc(c.title)+'</div>'+c.items.map(card).join("")+'</section>'}).join("")+'</section>'};
-  box.innerHTML='<h2 class="am-h">ট্রিটমেন্ট — সব একসাথে</h2><section class="am-gsec"><h2 class="am-h am-gh">বদনজর</h2><a class="am-nazar" href="#search" data-nz="1">বদনজর — ট্রিটমেন্ট (আয়াত)</a></section><input class="am-q" id="amQ" type="search" placeholder="জাদু ও জিনে খুঁজুন (যেমন: হাঁড়ি, পুতুল, বন্দিশ, বিয়ে)" autocomplete="off" value="'+esc(Q)+'"><div id="amBody">'+grp("b2","জাদু")+grp("b1","জিন")+'</div>';
-  filter();
- }
+ function bookOf(cid){return cid.indexOf("b2")===0?"যাদুগ্রস্ত উম্মতের গাইড":"চালান কাটার গোপন বিদ্যা"}
  function draw(){
   if(!box||!DATA)return;
-  if(CAT==="all"){drawAll();return}
-  var G=/^b2/.test(CAT)?"b2":"b1",
-   HD=G==="b2"?"জাদু — ট্রিটমেন্ট":"জিন (চালান) — ট্রিটমেন্ট",
-   IN=G==="b2"?"এই ভাগে শুধু “যাদুগ্রস্ত উম্মতের গাইড” বইয়ের লেখা আছে — জাদুর প্রকার অনুযায়ী লক্ষণ ও চিকিৎসা, অধ্যায় ধরে।":"এই ভাগে শুধু “চালান কাটার গোপন বিদ্যা” বইয়ের লেখা আছে — চালানের প্রকার অনুযায়ী লক্ষণ ও চিকিৎসা, অধ্যায় ধরে।",
-   cs=DATA.cats.filter(function(c){return c.id.indexOf(G)===0});
-  var tabs='<div class="am-tabs" role="tablist">'+cs.map(function(c){return'<button type="button" class="am-tab'+(CAT===c.id?" on":"")+'" data-c="'+c.id+'"><i>'+c.icon+'</i>'+esc(c.title)+'</button>'}).join("")+'</div>';
-  var c=cs.filter(function(x){return x.id===CAT})[0]||cs[0],body=c.items.map(card).join("");
-  box.innerHTML='<h2 class="am-h">'+HD+'</h2><input class="am-q" id="amQ" type="search" placeholder="খুঁজুন (যেমন: হাঁড়ি, পুতুল, বন্দিশ, বিয়ে)" autocomplete="off" value="'+esc(Q)+'">'+tabs+'<div id="amBody">'+body+'</div>';
-  filter();
+  var cd=null;
+  if(COND)cd=DATA.conds.filter(function(x){return x.id===COND})[0]||null;
+  if(!cd){
+   box.innerHTML='<h2 class="am-h">ট্রিটমেন্ট</h2><div class="am-cl">'+DATA.conds.map(function(c){return'<button type="button" class="am-cond" data-k="'+c.id+'"><i>'+c.icon+'</i><span>'+esc(c.title)+'</span><b>›</b></button>'}).join("")+'</div>';
+   return;
+  }
+  var body=cd.items.map(function(r){var it=DATA.cats.filter(function(c){return c.id===r[0]})[0].items[r[1]];var h=card(it);return h.replace('<div class="am-tags">','<div class="am-tags"><span class="am-src">'+esc(bookOf(r[0]))+'</span>')}).join("");
+  box.innerHTML='<button type="button" class="am-back">← সব রোগ/সমস্যা</button><h2 class="am-h"><i>'+cd.icon+'</i> '+esc(cd.title)+'</h2><div id="amBody">'+body+'</div>';
  }
  function filter(){
   var q=Q.trim().toLowerCase(),b=document.getElementById("amBody");if(!b)return;
@@ -80,13 +75,13 @@
  }
  function init(){
   box=document.getElementById("drAmol");if(!box||box.__w)return;box.__w=1;
-  box.addEventListener("click",function(e){var nz=e.target.closest&&e.target.closest(".am-nazar");if(nz){e.preventDefault();location.hash="#search";setTimeout(function(){window.__drOpenTopic&&window.__drOpenTopic("বদনজর")},90);return}var t=e.target.closest&&e.target.closest(".am-tab");if(t){CAT=t.dataset.c;draw();window.scrollTo(0,0)}});
+  box.addEventListener("click",function(e){var nz=e.target.closest&&e.target.closest(".am-nazar");if(nz){e.preventDefault();location.hash="#search";setTimeout(function(){window.__drOpenTopic&&window.__drOpenTopic("বদনজর")},90);return}var cb=e.target.closest&&e.target.closest(".am-cond");if(cb){COND=cb.dataset.k;draw();window.scrollTo(0,0);return}if(e.target.closest&&e.target.closest(".am-back")){COND="";draw();window.scrollTo(0,0)}});
   box.addEventListener("toggle",function(e){var d=e.target;if(d.classList&&d.classList.contains("am-ref")&&d.open)fillRef(d)},true);
   box.addEventListener("input",function(e){if(e.target.id==="amQ"){Q=e.target.value;filter()}});
  }
  window.__drAmol=function(sub){
   init();if(!box)return;
-  if(sub)CAT=sub;
+  COND=(sub&&/^c-/.test(sub))?sub:"";
   if(DATA){draw();return}
   box.innerHTML='<div class="am-load">লোড হচ্ছে…</div>';
   load().then(draw).catch(function(){box.innerHTML='<div class="am-load">তথ্য লোড করা যায়নি। ইন্টারনেট চালু করে আবার খুলুন।</div>'});
