@@ -771,3 +771,12 @@ body.is-home #drLanding:not([hidden]){width:100%;align-self:stretch;box-sizing:b
 #drLanding .drq-sys .dsy-two{padding:0}
 #drLanding .drq-sys .dsy-row{padding-left:0;padding-right:0}
 .dr-main>.rs-box h2,.dr-main>.rs-box>h3,#drSym #za>h2,#drSym .zs>h3,.dr-main .am-h,.dr-main .am-sh,.dr-reader>h2,.dr-reader>h3{margin-bottom:0;border-bottom-left-radius:0;border-bottom-right-radius:0}
+
+/* ===== হোম: প্রতিটি কার্ডে হেডিং + আইটেম দুটোর পেছনেই সাদা কার্ড (আগের মতো); পাশের ফাঁকা ৬px ও পুরো প্রস্থ আগের মতোই ===== */
+#drLanding .drq-grid>.drq-card{background:var(--card-bg);border:1px solid var(--border-light);border-top:4px solid var(--primary);border-radius:14px;box-shadow:var(--shadow-card);padding:0 6px 8px}
+#drLanding .drq-grid>.drq-card>h3,#drLanding .drq-grid>.drq-card>.dsy-h{background:transparent;border:0;box-shadow:none;border-radius:0;padding:9px 10px;margin:0}
+#drLanding .drq-grid>.drq-card>.drq-tabs{padding:4px 4px}
+#drLanding .drq-grid>.drq-tabcard{border-top:4px solid var(--primary);border-bottom:4px solid var(--primary);padding-bottom:8px}
+/* একেবারে নিচের কার্ড: সবুজ দাগ ওপরে নয়, নিচে */
+#drLanding .drq-grid>.drq-card:last-child{border-top:1px solid var(--border-light);border-bottom:4px solid var(--primary)}
+#drLanding .drq-grid>.drq-card>.drq-opts>li:first-child>a,#drLanding .drq-grid>.drq-card>.drq-opts>li:first-child,#drLanding .drq-grid>.drq-card>.drq-opts>li:first-child .drq-air{border-top-left-radius:9px;border-top-right-radius:9px}
