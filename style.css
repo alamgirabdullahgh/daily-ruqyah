@@ -955,3 +955,10 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:auto 0 6px;flex:
 #drLanding .drq-grid>.drq-card>.drq-tabs .drq-tab{gap:8px;width:auto;justify-self:stretch}
 #drLanding .drq-grid>.drq-card>.drq-tabs .drq-tab::before,#drLanding .drq-grid>.drq-card>.drq-tabs .drq-tab-all::before{width:8px;height:8px}
 #drLanding .drq-grid>.drq-card>.drq-tabs .drq-tab[data-t="0"]{justify-content:flex-start;padding-left:6px}
+
+/* v231: শারীরিক/মানসিক পাতা — ব্যাক বাটন "অঙ্গভিত্তিক" হেডিংয়ের একেবারে বাম পাশে (ওপরের আলাদা বাটন লুকানো), ৭ কলামের গ্রিড, শব্দ না ভেঙে বড় লেখা (মাপ জেএস মেলায়) */
+#rsBox:has(.dr-combo-h)>.dr-backrow{display:none}
+.dr-combo-back{position:absolute;left:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;box-shadow:none;flex:none}
+.dr-combo-back svg{width:18px;height:18px}
+.dr-combo-grid .dr-btn5{height:60px;min-height:60px;padding:0 1px}
+.dr-combo-grid .dr-btn5 span{overflow-wrap:normal;word-break:keep-all;hyphens:none;font-size:14px;line-height:1.15}
