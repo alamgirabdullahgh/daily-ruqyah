@@ -930,3 +930,6 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:auto 0 6px;flex:
 .drq-hero-act a{transform:none;width:36px;height:36px}
 .drq-hero-act .drq-wa{top:6px;left:6px;bottom:auto;right:auto}
 .drq-hero-act .drq-call{bottom:6px;right:6px;top:auto;left:auto}
+
+/* দৈনন্দিন রুকইয়াহ: PDF ও অডিও বাটন নামের বাটনের বাম পাশে */
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-air>.drq-bt{order:-1}
