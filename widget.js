@@ -565,7 +565,21 @@
     el.style.minHeight = "130px";
     el.style.paddingTop = "12px";
     var last = "", h = 0, failed = 0;
+    // আগের বারের কার্ডের উচ্চতা মনে রাখা: খোলার সাথেই জায়গা ঠিক মাপে থাকে, নিচের অংশ পরে লাফ দেয় না
+    try { var ch = +localStorage.getItem("drWH") || 0; if (ch >= 100 && ch < 600) { h = ch; el.style.minHeight = ch + "px"; el.style.height = ch + "px"; } } catch (e) { }
+    // প্রথম অবস্থানের আগে পাতার প্রস্থ থিতু হওয়া চাই (না হলে ভুল প্রস্থে কার্ড বানিয়ে পরে আবার বানাতে হয়, আর সময় ঝিলিক দেয়)
+    var okW = -1, okN = 0, okDone = false;
+    function layoutReady() {
+      if (okDone) return true;
+      var r0 = el.getBoundingClientRect(), cw = document.documentElement.clientWidth;
+      if (!(r0.width > 0 && Math.abs(r0.width - cw) < 2)) { okN = 0; okW = -1; return false; }
+      if (Math.abs(r0.width - okW) < 0.5) okN++; else okN = 0;
+      okW = r0.width;
+      if (okN >= 1) okDone = true;
+      return okDone;
+    }
     function send(force) {
+      if (!layoutReady()) return;
       var r = el.getBoundingClientRect(), cs = getComputedStyle(el);
       var pl = parseFloat(cs.paddingLeft) || 0, pr = parseFloat(cs.paddingRight) || 0;
       var full = r.width - pl - pr, w = Math.min(full, 660), x = r.left + pl + (full - w) / 2, y = r.top + 12;
@@ -586,7 +600,7 @@
       last = key;
       NW.card({ visible: shown, x: x, y: y, w: w }).then(function (o) {
         failed = 0;
-        if (o && o.h && Math.abs(o.h + 12 - h) > 1) { h = o.h + 12; el.style.minHeight = h + "px"; el.style.height = h + "px"; }
+        if (o && o.h && Math.abs(o.h + 12 - h) > 1) { h = o.h + 12; el.style.minHeight = h + "px"; el.style.height = h + "px"; try { localStorage.setItem("drWH", String(Math.round(h))); } catch (e) { } }
       }, function () { last = ""; if (++failed > 24) { clearInterval(iv); NW.card({ visible: false, x: 0, y: 0, w: 300 }).catch(function () { }); el.removeAttribute("data-drw"); el.style.cssText = "padding:0 12px"; mount(el); } });
     }
     var iv = setInterval(function () { send(false); }, 250);
@@ -601,7 +615,7 @@
     send(true);
     // অবস্থান: খোলার সময় একবার (অনুমতি চায়), এরপর সামনে ফিরলে ও প্রতি ১০ মিনিটে
     function loc(ask) { NW.locate({ ask: ask }).catch(function () { }); }
-    loc(true);
+    setTimeout(function () { loc(true); }, 3000); // প্রথম পর্দা আঁকার পরে (শুরুতে নেটিভ কাজ জমলে পাতা আটকে থাকে)
     setInterval(function () { loc(false); }, 10 * 60 * 1000);
     document.addEventListener("visibilitychange", function () { if (!document.hidden) loc(false); });
   }

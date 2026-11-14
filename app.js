@@ -1252,7 +1252,7 @@ function drUpdater(){
   if(Date.now()-(+lsGet("drChk","0")||0)>5*1000)check()});
  setInterval(()=>{if(!document.hidden)check()},5*1000);
  P.info().then(i=>{cur=i;ver.textContent=NAME+" v"+i.versionName}).catch(()=>{});
- check()}
+ setTimeout(check,4000)}
 drUpdater();
 })();
 

@@ -177,11 +177,15 @@ public class WidgetPlugin extends Plugin {
     // ───── অ্যাপের ভেতরে হোম-স্ক্রিনের উইজেটটাই (একই RemoteViews) ওয়েবপেজের নির্দিষ্ট জায়গায় বসানো ─────
     private View cardView;
     private int cardW = 0;
-    private String cardSig = "", cardSlSig = "";
+    private volatile String cardSig = "", cardSlSig = "";
     private Boolean lastVis = null;
     private int lastW = -1;
     private float lastTx = 0, lastTy = 0;
     private final Handler ui = new Handler(Looper.getMainLooper());
+    // ভারী হিসাব (নামাজের সময়, অবস্থান, ছবি আঁকা) UI থ্রেডে নয়, আলাদা থ্রেডে; UI থ্রেডে শুধু তৈরি RemoteViews বসানো হয়
+    // (না হলে অ্যাপ খোলার সময় পুরো পাতা কয়েক সেকেন্ড আটকে থাকত)
+    private final java.util.concurrent.ExecutorService bg = java.util.concurrent.Executors.newSingleThreadExecutor();
+    private final java.util.concurrent.atomic.AtomicBoolean busy = new java.util.concurrent.atomic.AtomicBoolean(false);
     // প্রতি সেকেন্ডে শুধু "ছাপ" মেলানো হয় (সস্তা); কার্ড আঁকা হয় কেবল ছাপ বদলালে (মিনিট/ওয়াক্ত/সেটিং বদলালে)
     private final Runnable tick = new Runnable() {
         @Override public void run() {
@@ -191,17 +195,84 @@ public class WidgetPlugin extends Plugin {
     };
 
     private void redraw() {
+        if (!busy.compareAndSet(false, true)) return;
+        final int w = cardW;
+        bg.execute(() -> {
+            try {
+                String sig = ClockWidget.Companion.cardSig(getContext(), w);
+                if (sig.equals(cardSig)) return;
+                String sl = ClockWidget.Companion.cardSlSig(getContext(), w);
+                final RemoteViews rv = sl.equals(cardSlSig)
+                        ? ClockWidget.Companion.viewForCardNoSl(getContext(), w)
+                        : ClockWidget.Companion.viewForCard(getContext(), w);
+                final String fsig = sig, fsl = sl;
+                ui.post(() -> {
+                    try {
+                        if (cardView != null && cardW == w) {
+                            rv.reapply(getContext(), cardView);
+                            cardSig = fsig;
+                            cardSlSig = fsl;
+                        }
+                    } catch (Exception e) { }
+                });
+            } catch (Exception e) {
+            } finally {
+                busy.set(false);
+            }
+        });
+    }
+
+    // UI থ্রেডে: কার্ড (নেই বা মাপ বদলালে) বসানো, জায়গা/দৃশ্যমানতা ঠিক করা, উচ্চতা ফেরত দেওয়া
+    private void place(final PluginCall call, final boolean vis, final double x, final double y, final int wdp,
+                       final RemoteViews rv, final String sig, final String sl) {
         try {
-            String sig = ClockWidget.Companion.cardSig(getContext(), cardW);
-            if (sig.equals(cardSig)) return;
-            String sl = ClockWidget.Companion.cardSlSig(getContext(), cardW);
-            RemoteViews rv = sl.equals(cardSlSig)
-                    ? ClockWidget.Companion.viewForCardNoSl(getContext(), cardW)
-                    : ClockWidget.Companion.viewForCard(getContext(), cardW);
-            rv.reapply(getContext(), cardView);
-            cardSig = sig;
-            cardSlSig = sl;
-        } catch (Exception e) { }
+            float d = getContext().getResources().getDisplayMetrics().density;
+            ViewGroup parent = (ViewGroup) getBridge().getWebView().getParent();
+            if (cardView != null && cardView.getParent() != parent) { parent.removeView(cardView); cardView = null; }
+            if (cardView == null || cardW != wdp) {
+                if (rv == null) { call.reject("card-not-ready"); return; }
+                if (cardView != null) parent.removeView(cardView);
+                cardW = wdp;
+                lastVis = null;
+                cardSig = sig;
+                cardSlSig = sl;
+                cardView = rv.apply(getContext(), parent);
+                // কার্ডে চাপলে (ওয়াক্তের ঘর বাদে) উইজেট-সেটিংস খোলে
+                cardView.setOnClickListener(v -> {
+                    try {
+                        Intent i = new Intent(getContext(), WidgetSettingsActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getContext().startActivity(i);
+                    } catch (Exception e) { }
+                });
+                parent.addView(cardView, new ViewGroup.LayoutParams((int) (wdp * d), ViewGroup.LayoutParams.WRAP_CONTENT));
+                ui.removeCallbacks(tick);
+                ui.postDelayed(tick, 1000);
+            }
+            // জায়গা/দৃশ্যমানতা বদলালেই কেবল মাপ-বসানো হয়; আগে প্রতি কলে (২ সেকেন্ডে) মাপ নিয়ে আবার layout হতো, তাতে লেখা নতুন করে ফিট হয়ে ঝিলিক দিত
+            View wv = getBridge().getWebView();
+            float tx = (float) (x * d) + wv.getLeft(), ty = (float) (y * d) + wv.getTop();
+            boolean created = lastVis == null;
+            if (created || lastW != wdp) {
+                cardView.measure(View.MeasureSpec.makeMeasureSpec((int) (wdp * d), View.MeasureSpec.EXACTLY),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                cardView.layout(0, 0, cardView.getMeasuredWidth(), cardView.getMeasuredHeight());
+                lastW = wdp;
+            }
+            if (created || tx != lastTx) { cardView.setTranslationX(tx); lastTx = tx; }
+            if (created || ty != lastTy) { cardView.setTranslationY(ty); lastTy = ty; }
+            if (lastVis == null || lastVis != vis) {
+                cardView.setVisibility(vis ? View.VISIBLE : View.INVISIBLE);
+                if (vis) cardView.bringToFront();
+                lastVis = vis;
+            }
+            if (vis) redraw();
+            JSObject r = new JSObject();
+            r.put("h", cardView.getMeasuredHeight() / d);
+            call.resolve(r);
+        } catch (Exception e) {
+            call.reject(String.valueOf(e.getMessage()));
+        }
     }
 
     @PluginMethod
@@ -209,53 +280,18 @@ public class WidgetPlugin extends Plugin {
         final boolean vis = Boolean.TRUE.equals(call.getBoolean("visible", true));
         final double x = call.getDouble("x", 0.0), y = call.getDouble("y", 0.0), w = call.getDouble("w", 0.0);
         if (getActivity() == null) { call.reject("activity-not-ready"); return; }
-        getActivity().runOnUiThread(() -> {
+        final int wdp = (int) Math.max(200, Math.round(w));
+        if (cardView != null && cardW == wdp) {
+            getActivity().runOnUiThread(() -> place(call, vis, x, y, wdp, null, null, null));
+            return;
+        }
+        // নতুন কার্ড দরকার: ভারী অংশ আলাদা থ্রেডে বানিয়ে তারপর UI থ্রেডে বসানো
+        bg.execute(() -> {
             try {
-                float d = getContext().getResources().getDisplayMetrics().density;
-                ViewGroup parent = (ViewGroup) getBridge().getWebView().getParent();
-                if (cardView != null && cardView.getParent() != parent) { parent.removeView(cardView); cardView = null; }
-                int wdp = (int) Math.max(200, Math.round(w));
-                if (cardView == null || cardW != wdp) {
-                    if (cardView != null) parent.removeView(cardView);
-                    cardW = wdp;
-                    lastVis = null;
-                    cardSig = ClockWidget.Companion.cardSig(getContext(), wdp);
-                    cardSlSig = ClockWidget.Companion.cardSlSig(getContext(), wdp);
-                    RemoteViews rv = ClockWidget.Companion.viewForCard(getContext(), wdp);
-                    cardView = rv.apply(getContext(), parent);
-                    // কার্ডে চাপলে (ওয়াক্তের ঘর বাদে) উইজেট-সেটিংস খোলে
-                    cardView.setOnClickListener(v -> {
-                        try {
-                            Intent i = new Intent(getContext(), WidgetSettingsActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            getContext().startActivity(i);
-                        } catch (Exception e) { }
-                    });
-                    parent.addView(cardView, new ViewGroup.LayoutParams((int) (wdp * d), ViewGroup.LayoutParams.WRAP_CONTENT));
-                    ui.removeCallbacks(tick);
-                    ui.postDelayed(tick, 1000);
-                }
-                // জায়গা/দৃশ্যমানতা বদলালেই কেবল মাপ-বসানো হয়; আগে প্রতি কলে (২ সেকেন্ডে) মাপ নিয়ে আবার layout হতো, তাতে লেখা নতুন করে ফিট হয়ে ঝিলিক দিত
-                View wv = getBridge().getWebView();
-                float tx = (float) (x * d) + wv.getLeft(), ty = (float) (y * d) + wv.getTop();
-                boolean created = lastVis == null;
-                if (created || lastW != wdp) {
-                    cardView.measure(View.MeasureSpec.makeMeasureSpec((int) (wdp * d), View.MeasureSpec.EXACTLY),
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-                    cardView.layout(0, 0, cardView.getMeasuredWidth(), cardView.getMeasuredHeight());
-                    lastW = wdp;
-                }
-                if (created || tx != lastTx) { cardView.setTranslationX(tx); lastTx = tx; }
-                if (created || ty != lastTy) { cardView.setTranslationY(ty); lastTy = ty; }
-                if (lastVis == null || lastVis != vis) {
-                    cardView.setVisibility(vis ? View.VISIBLE : View.INVISIBLE);
-                    if (vis) cardView.bringToFront();
-                    lastVis = vis;
-                }
-                if (vis) redraw();
-                JSObject r = new JSObject();
-                r.put("h", cardView.getMeasuredHeight() / d);
-                call.resolve(r);
+                final String sig = ClockWidget.Companion.cardSig(getContext(), wdp);
+                final String sl = ClockWidget.Companion.cardSlSig(getContext(), wdp);
+                final RemoteViews rv = ClockWidget.Companion.viewForCard(getContext(), wdp);
+                getActivity().runOnUiThread(() -> place(call, vis, x, y, wdp, rv, sig, sl));
             } catch (Exception e) {
                 call.reject(String.valueOf(e.getMessage()));
             }
