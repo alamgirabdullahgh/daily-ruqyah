@@ -738,3 +738,17 @@ body.is-home .drq-cards{padding-bottom:8px}
 .drq-grid>.drq-tabcard{border-top:4px solid transparent}
 /* বদনজর/জাদু/জিন কার্ড: ওপরের কার্ডের মতো মাথায় এবং শেষ কার্ডের মতো নিচে সরু (৪px) সবুজ দাগ; নিচের দাগ ১px→৪px হওয়ায় নিচের প্যাডিং ৩px কমানো, যাতে কার্ডের উচ্চতা আগের মতোই থাকে */
 .drq-grid>.drq-tabcard{border-top:4px solid var(--primary);border-bottom:4px solid var(--primary);padding-bottom:11px}
+
+/* ===== সব পাতায় পাশের ফাঁকা খুব কম (৬px) + হোমে একটাই ব্যাকগ্রাউন্ড কার্ড, তার ওপরেই সবকিছু ===== */
+.dr-main{padding-left:6px;padding-right:6px}
+#drWidget{padding:0 6px}
+.dr-brand{width:calc(100% - 12px)}
+.dr-backrow{padding-left:8px;padding-right:8px}
+body.is-home #drLanding:not([hidden]){flex:0 0 auto;width:100%;max-width:660px;margin:auto auto 0;box-sizing:border-box;
+ background:var(--card-bg);border:1px solid var(--border-light);border-top:4px solid var(--primary);border-bottom:4px solid var(--primary);
+ border-radius:22px;box-shadow:var(--shadow-card);padding:10px 10px 12px}
+body.is-home #drLanding .drq-support{margin-top:0}
+#drLanding .drq-grid{gap:0}
+#drLanding .drq-grid>.drq-card{background:transparent;border:0;border-radius:0;box-shadow:none;padding:12px 2px}
+#drLanding .drq-grid>.drq-card+.drq-card{border-top:1px solid var(--border-light)}
+

@@ -601,7 +601,7 @@
       NW.card({ visible: shown, x: x, y: y, w: w }).then(function (o) {
         failed = 0;
         if (o && o.h && Math.abs(o.h + 12 - h) > 1) { h = o.h + 12; el.style.minHeight = h + "px"; el.style.height = h + "px"; try { localStorage.setItem("drWH", String(Math.round(h))); } catch (e) { } }
-      }, function () { last = ""; if (++failed > 24) { clearInterval(iv); NW.card({ visible: false, x: 0, y: 0, w: 300 }).catch(function () { }); el.removeAttribute("data-drw"); el.style.cssText = "padding:0 12px"; mount(el); } });
+      }, function () { last = ""; if (++failed > 24) { clearInterval(iv); NW.card({ visible: false, x: 0, y: 0, w: 300 }).catch(function () { }); el.removeAttribute("data-drw"); el.style.cssText = "padding:0 6px"; mount(el); } });
     }
     var iv = setInterval(function () { send(false); }, 250);
     setInterval(function () { send(true); }, 2000);
