@@ -968,3 +968,6 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:auto 0 6px;flex:
 
 /* অঙ্গভিত্তিক/রোগভিত্তিক তালিকা: হোমের শারীরিক-মানসিকের মতো — বাম কলামে PDF ও অডিও নামের বাম পাশে, ডান কলামে ডান পাশে */
 .dr-physhost .drq-opts.drq-two>li.drq-ai:nth-child(odd) .drq-air>.drq-bt{order:-1}
+
+/* গবেষণার মৌলিক নীতিমালা: শুধু সার্চ পাতায় সার্চ বারের ওপরে; তালিকা/বিষয়ের পাতায় নয় */
+#rsBox.dr-tonly #drPrin,#rsBox.dr-topic #drPrin{display:none!important}
