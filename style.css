@@ -26,7 +26,7 @@ body.is-home #drWidget .drw{border-radius:24px 24px 0 0}
 #drWidget{padding:0 12px}
 .dr-menu{flex:none;width:44px;height:44px;border:0;border-radius:14px;background:rgba(255,255,255,.08);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s}
 .dr-menu:active{background:rgba(255,255,255,.2)}
-.dr-brand{display:flex;align-items:center;justify-content:center;gap:9px;min-width:0;min-height:var(--bar-h);padding:0 8px}
+.dr-brand{display:flex;align-items:center;justify-content:flex-start;gap:10px;min-width:0;min-height:var(--bar-h);padding:0 14px 0 12px}
 .dr-brand img{width:30px;height:30px;border-radius:9px;box-shadow:0 0 0 1.5px rgba(216,178,90,.7)}
 .dr-brand span{font-family:var(--font-display);font-size:20px;letter-spacing:.07em;font-weight:700;color:#f6e9c4;white-space:nowrap;text-shadow:0 1px 0 rgba(0,0,0,.25)}
 .dr-bar-sp{flex:none;width:44px}
@@ -925,3 +925,6 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:auto 0 6px;flex:
 .drq-hero .drq-st-t>span{background:linear-gradient(180deg,#fffbe8 0%,#f9dd8f 48%,#d49a35 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.85));font-weight:800}
 .drq-hero .drq-tk{height:26px;margin:0 -2px;border-radius:13px;background:linear-gradient(to right,rgba(3,16,22,0),rgba(3,16,22,.6) 14%,rgba(3,16,22,.6) 86%,rgba(3,16,22,0))}
 .drq-hero .drq-tk span{line-height:26px;font-size:clamp(16px,4.6vw,18.5px);font-weight:800;text-shadow:0 1px 3px rgba(0,0,0,.9)}
+
+/* নেভ বারে অ্যাকাউন্ট আইটেম + ছোট বার্তা */
+.dr-toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;background:rgba(5,46,36,.94);color:#f6e9c4;padding:10px 18px;border-radius:14px;font-size:14px;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.3);max-width:86vw;text-align:center}
