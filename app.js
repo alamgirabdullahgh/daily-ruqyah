@@ -492,7 +492,6 @@ async function symPdfBuild(cat,say){
  T("Daily Ruqyah",f(700,40),"#0a5240",M,60);
  wrap(title,f(700,34),CW).forEach(l=>T(l,f(700,34),"#111",M,50));
  T("গবেষণা সংস্করণ"+(dt?" · "+dt:""),f(400,22),"#666",M,40);
- wrap("⚕ এই রেফারেন্সের সবকিছু প্যাটার্ন-মিল; কোনো নিশ্চিত রোগনির্ণয় নয়। মেডিক্যাল স্ক্রিনিং ও বিশেষজ্ঞ ডাক্তারের পরীক্ষার বিকল্প নয়।",f(400,22),CW).forEach(l=>T(l,f(400,22),"#8a5a00",M,34));
  put({line:1,c:"#0a5240",w:3},30);
  const DOT=["🟢","🟠","🔴"];
  for(const sec of secs){
@@ -1043,7 +1042,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
     const by=new Map();SEL.forEach(x=>{const k=(x.sec?x.sec+" — ":"")+x.name;if(!by.has(k))by.set(k,[]);by.get(k).push("সূরা "+x.sn+" "+bn2(x.s)+":"+bn2(x.a))});
     let m="আসসালামু আলাইকুম"+(name?", "+name:"")+"।\n"+(SEL.size?"রুকইয়াহ রোগ নির্ণয়ে আয়াত শোনার সময় আপনার রিয়্যাকশন হয়েছে যেগুলোতে:\n":"");
     by.forEach((l,k)=>{m+="\n• "+k+"\n   "+l.join("، ")});
-    if(TSEL.size){m+="\n\n⏱ সমস্যা বাড়ে: "+[...TSEL].join(", ");TM.forEach(([n,r])=>{if(TSEL.has(n))m+="\n   "+n+" — আয়াত: "+r.map(refTxt).join("، ")});m+="\n(এটি সমস্যা-বাড়ার সময়ের ইঙ্গিত; নিশ্চিত রোগনির্ণয় নয়)"}
+    if(TSEL.size){m+="\n\n⏱ সমস্যা বাড়ে: "+[...TSEL].join(", ");TM.forEach(([n,r])=>{if(TSEL.has(n))m+="\n   "+n+" — আয়াত: "+r.map(refTxt).join("، ")});}
     if(DSEL){const r=DU.find(x=>x[0]===DSEL)[1];m+="\n\n⏳ সমস্যা চলছে: "+DSEL+"\n   আয়াত (সময়-এককের উল্লেখ): "+r.map(refTxt).join("، ")}
     m+="\n\n— Daily Ruqyah";
     const a=document.createElement("a");a.href="https://wa.me/"+n+"?text="+encodeURIComponent(m);a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove()});

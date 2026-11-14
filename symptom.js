@@ -15,7 +15,7 @@ function B(i,c,o){const d=q(D[i][c][o]),f=d[0],k=ch[i+"."+c],u=k&&k[0]==o?k[1]:-
 let h=`<div style="font-size:11px;font-weight:700;margin-bottom:3px">${cols[c]} → ${T[i][1][c][o]} <span class="zk">(একটি সারিতে ক্লিক করে বেছে নিন)</span></div>`;
 if(f=="R")h+=`<div class="zr zp${u==0?" zh":""}" style="border-color:${C[0]}" ${a} data-l="0"><span class="ze">${E}</span> — গ্রেড ছাড়া এই অপশনটি নির্বাচন করুন${u==0?CH:""}</div>`;
 else d.slice(1).split("|").forEach((t,j)=>{h+=`<div class="zr${t?" zp":""}${u==j+1?" zh":""}" style="border-color:${C[j]}"${t?` ${a} data-l="${j+1}"`:""}>${t||`<span class="ze">${E}</span>`}${u==j+1?CH:""}</div>`});
-return h+`<div class="zl">${FL[f]} — প্যাটার্ন-মিল; মেডিক্যাল স্ক্রিনিং প্রতিস্থাপন করে না</div>`+X(i+"."+c+"."+o)}
+return h+`<div class="zl">${FL[f]}</div>`+X(i+"."+c+"."+o)}
 function U(){document.querySelectorAll(".zo").forEach(x=>{const[i,c,o]=x.dataset.i.split(".").map(Number),k=ch[i+"."+c],n=k&&k[0]==o;x.classList.toggle("zc",!!n);x.style.boxShadow=n&&k[1]?`inset 0 -4px 0 ${C[k[1]-1]}`:""})}
 $("za").addEventListener("click",v=>{const n=v.target.closest("[data-i]");if(!n)return;const[i,c,o]=n.dataset.i.split(".").map(Number),k=i+"."+c,b=$("zg"+i);
 if(n.dataset.l!=null){const l=+n.dataset.l;if(ch[k]&&ch[k][0]==o&&ch[k][1]==l)delete ch[k];else ch[k]=[o,l];U();b.innerHTML=B(i,c,o);return}
