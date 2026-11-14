@@ -820,7 +820,7 @@ window.__drHomePrebuild=async()=>{if(HPRE)return;HPRE=true;
   try{await homePdf("x",cat)}catch(e){console.error(e)}
   try{await homeAudio("x",cat).p}catch(e){console.error(e)}
   await new Promise(r=>setTimeout(r,300))}
- for(const k of["বদনজর","জাদু","জিন"]){try{await window.__drGitAudio(k,"").p}catch(e){console.error(e)}await new Promise(r=>setTimeout(r,300))}};
+ for(const k of["বদনজর","জাদু","জিন"]){const n=window.__drGitCount?window.__drGitCount(k):1;for(let i=0;i<n;i++){try{await window.__drGitAudio(k,i?String(i-1):"").p}catch(e){console.error(e)}await new Promise(r=>setTimeout(r,300))}}};
 window.__drHomePdf=async(kind,cat,host)=>{
  if(!host)return;
  if(host.dataset.done==="1"){host.hidden=!host.hidden;return}
@@ -1060,19 +1060,17 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
     await mergeAudio(list,e.out,t=>e.say(t),{rep:1,set:1,grp:2,grpRep:11,noplay:true,name:"শরীরের গিঁট ধ্বংসের রুকইয়াহ "+kind+(sv!==""?" "+String(tp0(C,sv)):"")});e.done=true;return e})().catch(err=>{GAUD.delete(k);throw err});GAUD.set(k,e)}
   if(say)e.say=say;return e}
  const tp0=(C,sv)=>{const tp=TOPICS.find(x=>x.name===C.types);return tp?String(tp.terms[+sv][0]).split(" — ")[0]:""};
- window.__drGitAudio=gitAudio;
+ window.__drGitAudio=gitAudio;window.__drGitCount=k=>{const C=GITN[k],tp=C.types?TOPICS.find(x=>x.name===C.types):null;return 1+(tp?tp.terms.length:0)};
  window.__drGit=(host,kind,before)=>{const C=GITN[kind];if(!C||!host)return;const old=document.getElementById("drGit");if(old)old.remove();
   const box=els("div","margin:14px 0 16px;padding:12px 12px 14px;border-radius:14px;background:var(--primary-light,#e6efe9);border:1.5px solid var(--accent)");box.id="drGit";
   box.append(els("div","font-weight:800;font-size:17px;line-height:1.6;color:var(--accent);text-align:center;margin:0 0 8px","শরীরের প্রতিটি পয়েন্টে থাকা "+C.noun+" গিঁট ধ্বংসের রুকইয়াহ"));
-  box.append(els("div","font-size:13.5px;line-height:1.7;color:var(--text-main);margin:0 0 10px","অডিও তৈরি হবে এভাবে: "+C.noun.replace(/র$/,"")+"র একটি আয়াত একবার, তারপর শরীরের একটি অঙ্গের আয়াত একবার — এই জোড়া ১১ বার; এরপর পরের জোড়া। এভাবে সবগুলো অঙ্গ ও সবগুলো আয়াত শেষ হবে।"));
-  let sel=null;
-  if(C.types){const tp=TOPICS.find(x=>x.name===C.types),sl=document.createElement("select");sl.style.cssText="width:100%;padding:9px 10px;margin:0 0 10px;border-radius:10px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-main);font:inherit";
-   const o0=document.createElement("option");o0.value="";o0.textContent="সব "+C.noun.replace(/র$/,"")+" (সব প্রকার)";sl.append(o0);
-   (tp?tp.terms:[]).forEach((x,i)=>{const o=document.createElement("option");o.value=String(i);o.textContent=String(x[0]).split(" — ")[0];sl.append(o)});sel=sl;box.append(sl)}
-  const st=els("div","font-size:13px;color:var(--text-muted);margin:6px 0"),out=el("div");
-  const show=async()=>{out.textContent="";const e=gitAudio(kind,sel?sel.value:"",t=>st.textContent=t);st.textContent=e.done?"":"⏳ অডিও আগে থেকেই ব্যাকগ্রাউন্ডে তৈরি হচ্ছে…";
-   try{await e.p;st.textContent="";out.textContent="";out.append(e.out)}catch(x){console.error(x);st.textContent="অডিও তৈরি করা যায়নি"}};
-  if(sel)sel.onchange=show;box.append(st,out);show();
+  box.append(els("div","font-size:13.5px;line-height:1.7;color:var(--text-main);margin:0 0 10px","অডিও তৈরি হবে এভাবে: "+C.noun.replace(/র$/,"")+"র একটি আয়াত একবার, তারপর শরীরের একটি অঙ্গের আয়াত একবার — এই জোড়া ১১ বার; এরপর পরের জোড়া। এভাবে সবগুলো অঙ্গ ও সবগুলো আয়াত শেষ হবে। শরীরের প্রতিটি অঙ্গে থাকা এই গিঁটগুলো এভাবেই ভাঙা হয়।"));
+  const tpD=C.types?TOPICS.find(x=>x.name===C.types):null,names=[C.types?"সব "+C.noun.replace(/র$/,""):C.noun.replace(/র$/,"")].concat(tpD?tpD.terms.map(x=>String(x[0]).split(" — ")[0]):[]);
+  const rw=els("div","display:flex;flex-direction:column;gap:8px");
+  names.forEach((nm,i)=>{const sv=i===0?"":String(i-1),r=els("div","border-radius:12px;background:var(--card-bg);border:1px solid var(--border-light);padding:8px 10px"),hd=els("div","display:flex;align-items:center;gap:8px"),host2=els("div","margin-top:6px"),stt=els("div","font-size:12.5px;color:var(--text-muted)");host2.hidden=true;
+   const b=mkBtn("🔊 অডিও",async()=>{if(!host2.hidden){host2.hidden=true;return}host2.hidden=false;host2.textContent="";const g=gitAudio(kind,sv,t=>stt.textContent=t);stt.textContent=g.done?"":"⏳ আগে থেকেই ব্যাকগ্রাউন্ডে তৈরি হচ্ছে…";host2.append(stt);try{await g.p;stt.textContent="";host2.append(g.out)}catch(x){console.error(x);stt.textContent="অডিও তৈরি করা যায়নি"}});
+   b.style.cssText+=";margin:0;flex:none";hd.append(els("b","flex:1;font-size:15.5px;line-height:1.5",nm),b);r.append(hd,host2);rw.append(r)});
+  box.append(rw);
   box.append(els("div","font-weight:700;color:var(--accent);margin:12px 0 4px","📍 অডিও শোনার সময় যে অঙ্গে সমস্যা বা প্রতিক্রিয়া হবে, সাথে সাথে এই তালিকায় সেই অঙ্গে টিক দিন"));
   const mk=gitMarks(kind),grid=els("div","display:grid;grid-template-columns:1fr 1fr;gap:6px");
   ORG.forEach(o=>{const nm=o[0].split(" (")[0],lb=els("label","display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:var(--card-bg);border:1px solid var(--border-light);font-size:14.5px;cursor:pointer"),cb=document.createElement("input");cb.type="checkbox";cb.checked=mk.has(nm);cb.style.cssText="width:20px;height:20px;accent-color:var(--primary);flex:none";cb.onchange=()=>{if(cb.checked)mk.add(nm);else mk.delete(nm);gitSave(kind,mk)};lb.append(cb,els("span",null,nm));grid.append(lb)});
