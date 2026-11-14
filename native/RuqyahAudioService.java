@@ -35,6 +35,7 @@ public class RuqyahAudioService extends Service {
     private List<List<String>> items = new ArrayList<>();
     private int repeat = 1, round = 0, idx = 0, cand = 0, fails = 0, attempts = 0;
     private boolean stopped = false;
+    private int prevAlarmVol = -1, boostedVol = -1; // অ্যালার্ম ভলিউম মাঝারির নিচে থাকলে বাড়ানো হয়; অডিও শেষে আগের মান ফেরে
     private JSONObject cur = null;      // চলতি অ্যালার্ম
     private int curId = -1;
     private boolean persist = false;    // true হলে শেষ না হওয়া পর্যন্ত থামে না (সূরা বাকারা)
@@ -90,12 +91,40 @@ public class RuqyahAudioService extends Service {
                 wfl.acquire();
             }
         } catch (Throwable e) { }
+        ensureMediumVolume();
         try {
             AudioManager am = getSystemService(AudioManager.class);
             am.requestAudioFocus(null, AudioManager.STREAM_ALARM, AudioManager.AUDIOFOCUS_GAIN);
         } catch (Exception e) { }
         playCurrent();
         return persist ? START_STICKY : START_NOT_STICKY;
+    }
+
+    /* অ্যালার্ম অডিও "অ্যালার্ম" স্ট্রিমে বাজে, যার ভলিউম ফোনের মিডিয়া ভলিউম থেকে আলাদা — তাই মিডিয়া ফুল দিলেও আওয়াজ কম হতো।
+       এখন বাজানো শুরুর সময় অ্যালার্ম ভলিউম অন্তত মাঝারি (সর্বোচ্চের ৬০%) করা হয়; বেশি থাকলে ছোঁয়া হয় না। অডিও শেষে আগের মান ফেরে (মাঝখানে ব্যবহারকারী নিজে বদলালে ফেরানো হয় না)। */
+    private void ensureMediumVolume() {
+        try {
+            AudioManager am = getSystemService(AudioManager.class);
+            int max = am.getStreamMaxVolume(AudioManager.STREAM_ALARM);
+            int cur = am.getStreamVolume(AudioManager.STREAM_ALARM);
+            int target = Math.max(1, Math.round(max * 0.6f));
+            if (cur < target) {
+                if (prevAlarmVol < 0) prevAlarmVol = cur;
+                am.setStreamVolume(AudioManager.STREAM_ALARM, target, 0);
+                boostedVol = target;
+                AlarmStore.log(this, "অ্যালার্ম ভলিউম " + cur + " → " + target + " (মাঝারি)");
+            }
+        } catch (Throwable e) { AlarmStore.log(this, "ভলিউম বাড়ানো যায়নি: " + e.getClass().getSimpleName()); }
+    }
+
+    private void restoreVolume() {
+        try {
+            if (prevAlarmVol >= 0 && boostedVol >= 0) {
+                AudioManager am = getSystemService(AudioManager.class);
+                if (am.getStreamVolume(AudioManager.STREAM_ALARM) == boostedVol) am.setStreamVolume(AudioManager.STREAM_ALARM, prevAlarmVol, 0);
+            }
+        } catch (Throwable e) { }
+        prevAlarmVol = -1; boostedVol = -1;
     }
 
     // বাকারার মতো লম্বা অডিও: প্রতিটি আয়াত শেষে জায়গা মনে রাখে (সার্ভিস মরে গেলে সেখান থেকে চলে)
@@ -160,6 +189,7 @@ public class RuqyahAudioService extends Service {
             mp = new MediaPlayer();
             mp.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build());
             mp.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
+            mp.setVolume(1f, 1f);
             String src = c.get(cand);
             if (src.startsWith("/") && !new java.io.File(src).exists()) throw new java.io.FileNotFoundException(src);
             mp.setDataSource(src);
@@ -185,6 +215,7 @@ public class RuqyahAudioService extends Service {
         try { if (wl != null && wl.isHeld()) wl.release(); } catch (Exception e) { }
         try { if (wfl != null && wfl.isHeld()) wfl.release(); } catch (Throwable e) { }
         try { getSystemService(AudioManager.class).abandonAudioFocus(null); } catch (Exception e) { }
+        restoreVolume();
         try { AlarmStore.sp(this).edit().remove("resume").apply(); } catch (Exception e) { }
         if (manual && o != null && id >= 0) {
             int nag = o.optInt("nag", 0);
@@ -203,6 +234,7 @@ public class RuqyahAudioService extends Service {
         release();
         try { if (wl != null && wl.isHeld()) wl.release(); } catch (Exception e) { }
         try { if (wfl != null && wfl.isHeld()) wfl.release(); } catch (Throwable e) { }
+        restoreVolume();
         super.onDestroy();
     }
 }

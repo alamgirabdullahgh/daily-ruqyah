@@ -358,6 +358,9 @@
     return day + when(("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2));
   }
   var sysCard = null, sysTimer = 0;
+  var ICON_PLAY = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
+  var ICON_STOP = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>';
+  function paintStop(b, playing) { b.innerHTML = playing ? ICON_STOP : ICON_PLAY; b.setAttribute("aria-label", playing ? "অডিও বন্ধ করুন" : "অডিও চালু করুন"); b.title = playing ? "অডিও বন্ধ" : "অডিও চালু"; b.setAttribute("data-on", playing ? "1" : "0"); }
   function sysPaint() {
     if (!sysCard) return;
     ["baq", "jadu"].forEach(function (g) {
@@ -373,6 +376,7 @@
       row.classList.toggle("off", !on);
       var playing = NATIVE && P && mine.indexOf(info.playingId) >= 0;
       row.classList.toggle("play", !!playing);
+      var sb2 = row.querySelector(".dsy-stop"); if (sb2) paintStop(sb2, !!playing);
       if (!(NATIVE && P)) { sub.textContent = "অ্যালার্ম শুধু ইনস্টল করা অ্যাপে বাজে"; return; }
       if (playing) { sub.textContent = "▶ বাজছে — বন্ধ করতে এখানে চাপুন"; return; }
       if (!on) { sub.textContent = "বন্ধ আছে"; return; }
@@ -474,15 +478,27 @@
           sysRefresh();
         };
         sw.appendChild(cb); sw.appendChild(el("i"));
-        /* অডিও বন্ধ বাটন: সবসময় চাপা যায় — যা-ই বাজুক (অ্যালার্ম বা অ্যাপের অডিও) থামিয়ে দেয় */
-        var stp = el("button", "dsy-stop"); stp.type = "button"; stp.setAttribute("aria-label", "অডিও বন্ধ করুন"); stp.title = "অডিও বন্ধ";
-        stp.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16.5 9.5l5 5M21.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+        /* অডিও অন/অফ বাটন (প্লেয়ারের মতো): বাজছে না → ▶ চাপলে এখনই চালু; বাজছে → ⏹ চাপলে বন্ধ। সবসময় চাপা যায় */
+        var stp = el("button", "dsy-stop"); stp.type = "button";
         stp.onclick = async function (ev) {
           ev.stopPropagation();
-          try { document.querySelectorAll("audio").forEach(function (au) { try { au.pause(); } catch (e) { } }); } catch (e) { }
-          try { if (P) await P.stop({ nonag: false }); } catch (e) { }
-          setTimeout(sysRefresh, 400);
+          var playingNow = row.classList.contains("play");
+          if (playingNow || !(NATIVE && P)) {
+            try { document.querySelectorAll("audio").forEach(function (au) { try { au.pause(); } catch (e) { } }); } catch (e) { }
+            try { if (P) await P.stop({ nonag: false }); } catch (e) { }
+          } else {
+            if (row.classList.contains("off")) { var sb = row.querySelector(".dsy-s"); if (sb) sb.textContent = "আগে টগল চালু করুন"; return; }
+            try {
+              if (!sysDone) await sysEnsure();
+              await reload();
+              var mine = ids(x[0]);
+              var al = list.filter(function (q) { return mine.indexOf(q.id) >= 0; })[0];
+              if (al) await P.testPlay({ alarm: al });
+            } catch (e) { }
+          }
+          setTimeout(sysRefresh, 500);
         };
+        paintStop(stp, false);
         if (x[0] === "baq") { row.appendChild(stp); row.appendChild(tx); row.appendChild(sw); }
         else { row.appendChild(sw); row.appendChild(tx); row.appendChild(stp); }
         two.appendChild(row);
