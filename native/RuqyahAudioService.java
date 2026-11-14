@@ -31,6 +31,7 @@ public class RuqyahAudioService extends Service {
     private final Handler h = new Handler(Looper.getMainLooper());
     private MediaPlayer mp;
     private PowerManager.WakeLock wl;
+    private android.net.wifi.WifiManager.WifiLock wfl; // স্ক্রিন বন্ধে নেট থেকে অডিও চালানোর সময় ওয়াই-ফাই ঘুমিয়ে না যায়
     private List<List<String>> items = new ArrayList<>();
     private int repeat = 1, round = 0, idx = 0, cand = 0, fails = 0, attempts = 0;
     private boolean stopped = false;
@@ -80,6 +81,15 @@ public class RuqyahAudioService extends Service {
             wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "dailyruqyah:audio");
             wl.acquire((persist ? 8L : 3L) * 60 * 60 * 1000L);
         } catch (Exception e) { }
+        try {
+            if (wfl != null && wfl.isHeld()) wfl.release();
+            android.net.wifi.WifiManager wm = (android.net.wifi.WifiManager) getApplicationContext().getSystemService(android.content.Context.WIFI_SERVICE);
+            if (wm != null) {
+                wfl = wm.createWifiLock(android.net.wifi.WifiManager.WIFI_MODE_FULL_HIGH_PERF, "dailyruqyah:audio");
+                wfl.setReferenceCounted(false);
+                wfl.acquire();
+            }
+        } catch (Throwable e) { }
         try {
             AudioManager am = getSystemService(AudioManager.class);
             am.requestAudioFocus(null, AudioManager.STREAM_ALARM, AudioManager.AUDIOFOCUS_GAIN);
@@ -173,6 +183,7 @@ public class RuqyahAudioService extends Service {
         h.removeCallbacksAndMessages(null);
         release();
         try { if (wl != null && wl.isHeld()) wl.release(); } catch (Exception e) { }
+        try { if (wfl != null && wfl.isHeld()) wfl.release(); } catch (Throwable e) { }
         try { getSystemService(AudioManager.class).abandonAudioFocus(null); } catch (Exception e) { }
         try { AlarmStore.sp(this).edit().remove("resume").apply(); } catch (Exception e) { }
         if (manual && o != null && id >= 0) {
@@ -191,6 +202,7 @@ public class RuqyahAudioService extends Service {
         playingId = -1;
         release();
         try { if (wl != null && wl.isHeld()) wl.release(); } catch (Exception e) { }
+        try { if (wfl != null && wfl.isHeld()) wfl.release(); } catch (Throwable e) { }
         super.onDestroy();
     }
 }

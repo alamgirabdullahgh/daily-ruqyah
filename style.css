@@ -871,3 +871,29 @@ body.is-home #drLanding:not([hidden]){width:100%;align-self:stretch;box-sizing:b
 .dr-btn5{height:64px;min-height:64px;padding:1px;font-size:clamp(12.5px,3.7vw,15px);font-weight:800;line-height:1.2}
 .dr-btn5 span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;overflow-wrap:break-word}
 .dr-btn5.dr-sm6{font-size:clamp(10.5px,3vw,12.5px)}
+
+/* v222: চিকিৎসা পাতা — সার্চ/সারাংশ নেই, ব্যাক বাটন প্রথম হেডিংয়ের বাম পাশে */
+#rsBox.dr-tonly.dr-topic #rsInfo{display:none!important}
+#rsBox.dr-topic{position:relative}
+#rsBox.dr-topic>.dr-backrow{position:absolute;top:13px;left:26px;margin:0;padding:0;width:auto;z-index:3}
+#rsBox.dr-topic .rs-grp:first-child .rs-gh{padding-left:44px;min-height:34px;display:flex;align-items:center}
+/* v222: হোমের ছবির ব্যানার (দুই লাইন লেখা + হোয়াটসঅ্যাপ + ফোন) */
+body.is-home .drq-support.drq-hero,.drq-support.drq-hero{position:relative;overflow:hidden;border-radius:16px;margin:10px 0 8px;min-height:150px;display:flex;flex-direction:column;justify-content:flex-end;box-shadow:var(--shadow-card);isolation:isolate}
+.drq-hero-bg{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+.drq-hero-tx{padding:46px 10px 6px;background:linear-gradient(to top,rgba(4,26,24,.72),rgba(4,26,24,0))}
+.drq-hero .drq-st{display:flex;justify-content:center;height:auto;line-height:1.4;margin:0 0 4px;padding:0;border:0;border-radius:0;background:none;box-shadow:none;color:#fff;font-size:16px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.drq-hero .drq-st[hidden]{display:none}
+.drq-hero .drq-st-t{margin:0 auto}
+.drq-hero .drq-tk{height:26px;border:0;border-radius:0;background:none;box-shadow:none}
+.drq-hero .drq-tk span{line-height:26px;color:#ffe9a8!important;font-size:15px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.drq-hero-act{position:absolute;top:10px;left:10px;display:flex;gap:8px}
+.drq-hero-act a{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin:0;background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(0,0,0,.25);text-decoration:none}
+.drq-hero-act .drq-call{background:#1E7F58}
+/* v222: "৩টি একসাথে" — বাটন নয়, অন্য ট্যাবের মতো লেখা, ফন্ট বড় */
+.drq-tabs,#drLanding .drq-grid>.drq-card>.drq-tabs{grid-template-columns:1fr .9fr .8fr 1.5fr!important}
+.drq-tab-all{border:0!important;box-shadow:none!important;background:none!important;border-radius:0;padding:6px 0!important;overflow:visible;font-weight:700;color:var(--text-muted)!important;opacity:.75!important;font-size:clamp(15px,4.8vw,19px)!important}
+.drq-tab-all span{font-size:inherit!important}
+.drq-tab-all::before{display:inline-block!important;content:"";width:7px;height:7px;border-radius:50%;background:transparent;flex:none}
+.drq-tab-all.on{background:none!important;color:var(--primary)!important;opacity:1!important}
+.drq-tab-all.on::before{background:var(--accent)}
+.drq-tab-all:active{transform:none;box-shadow:none}

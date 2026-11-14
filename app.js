@@ -1053,7 +1053,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
     lb.append(els("span",null,"রিয়্যাকশন হয়েছে"),cb);return lb};
    showDiag({host:out,infoEl:info,pick})};}
  SHOWT=showTopics;$("rsTp").onclick=()=>showTopics();
- window.__drOpenTopic=n=>{const t=TOPICS.find(x=>x.name===n);if(t){q.value=t.name;setDir();rs.classList.remove("on");$("rsBox").classList.add("dr-tonly");goTopic(t)}};window.__drOpenDisease=()=>showDiag(DISEASE);window.__drOpenMental=()=>showDiag(MENTAL);
+ window.__drOpenTopic=n=>{const t=TOPICS.find(x=>x.name===n);if(t){q.value=t.name;setDir();rs.classList.remove("on");$("rsBox").classList.add("dr-tonly","dr-topic");goTopic(t)}};window.__drOpenDisease=()=>showDiag(DISEASE);window.__drOpenMental=()=>showDiag(MENTAL);
  /* নামের তালিকা: প্রতিটি রোগ/অঙ্গের নাম আলাদা; নামে চাপলে শুধু সেটার আয়াত */
  const DIS_KEEP=new Set(["পাইলস (অর্শ/বাওয়াসির)","জ্বর","ক্যান্সার","পাতলা পায়খানা","আমাশয়","কোষ্ঠকাঠিন্য (পায়খানা কষা)","যৌন দুর্বলতা","চর্মরোগ (শ্বেতী/কুষ্ঠ)"].map(x=>x.normalize("NFC")));
  const keepDis=(secs,CFG)=>CFG===DISEASE?secs.filter(x=>DIS_KEEP.has(String(x.name).normalize("NFC"))):secs;
@@ -1196,7 +1196,7 @@ function drShell(){
  const navs=[...document.querySelectorAll(".dr-nav,.dr-bn,.dr-sbtn")].filter(x=>x.id!=="drMenu");
  let prev="";
  let lastH="home";
- const route=()=>{open(false);const h=(location.hash||"#home").replace(/^#/,""),p=h.split("/");{const rb=$("rsBox");if(rb)rb.classList.remove("dr-tonly")}
+ const route=()=>{open(false);const h=(location.hash||"#home").replace(/^#/,""),p=h.split("/");{const rb=$("rsBox"),hd=window.__drHold;window.__drHold=false;if(rb){if(hd)rb.classList.add("dr-tonly");else rb.classList.remove("dr-tonly","dr-topic")}}
   document.querySelectorAll("audio").forEach(a=>{try{a.pause()}catch(e){}});
   const al=$("drAlarm");if(al)al.hidden=true;const hm=$("drHome");if(hm)hm.hidden=true;const ln=$("drLanding");if(ln)ln.hidden=true;const am=$("drAmol");if(am)am.hidden=true;const sy=$("drSym");if(sy)sy.hidden=true;
   if(p[0]==="timewidget"){window.DRALARM&&DRALARM.openWidget();location.hash="#"+lastH;return}
