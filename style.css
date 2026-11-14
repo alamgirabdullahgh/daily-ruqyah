@@ -965,3 +965,6 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:auto 0 6px;flex:
 
 .dr-physhost .drq-opts{margin:0 0 4px}
 .dr-physhost .drq-opts.drq-two{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px}
+
+/* অঙ্গভিত্তিক/রোগভিত্তিক তালিকা: হোমের শারীরিক-মানসিকের মতো — বাম কলামে PDF ও অডিও নামের বাম পাশে, ডান কলামে ডান পাশে */
+.dr-physhost .drq-opts.drq-two>li.drq-ai:nth-child(odd) .drq-air>.drq-bt{order:-1}
