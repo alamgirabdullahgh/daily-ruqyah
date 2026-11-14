@@ -849,3 +849,16 @@ body.is-home #drLanding:not([hidden]){width:100%;align-self:stretch;box-sizing:b
 /* তিন বোতাম: লেখা বদলেছে (দুই লাইন/এক লাইন), বোতামের মাপ আগের মতোই; লেখা বড় ও বোল্ড */
 #drLanding .drq-opts.drq-three .drq-air>a{height:46px;min-height:46px;padding:2px 1px;line-height:1.15;font-weight:800;font-size:clamp(10px,3.6vw,14.5px)}
 #drLanding .drq-opts.drq-three .drq-air>a>span{display:block;text-align:center;white-space:nowrap}
+
+/* v217: অঙ্গ/রোগ বাটন ৫ কলাম — মাপ স্থির, লেখা বড় ও বোল্ড, লম্বা নাম দুই লাইনে */
+.dr-btn5{height:58px;min-height:58px;box-sizing:border-box;padding:2px 2px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:clamp(11px,3.3vw,13.5px);font-weight:800;line-height:1.2;overflow:hidden;letter-spacing:0}
+.dr-btn5 span{display:block;max-width:100%;overflow-wrap:anywhere}
+/* v217: নিচের কার্ড (লক্ষণ/প্রতিক্রিয়া/চিকিৎসা) — PDF ও অডিও বাটনের মাপ হুবহু সমান */
+#drLanding .drq-opts.drq-three .drq-bt{align-items:stretch}
+#drLanding .drq-opts.drq-three .drq-bt button{box-sizing:border-box;height:34px;min-height:34px;padding:0 2px;display:inline-flex;align-items:center;justify-content:center;line-height:1;font-size:11px;flex:1 1 0}
+#drLanding .drq-opts.drq-three .drq-bt button .drq-bi,#drLanding .drq-opts.drq-three .drq-bt button .drq-bl{font-size:11px;line-height:1}
+/* v217: দৈনন্দিন রুকইয়াহ কার্ড — PDF/অডিও নিচের কার্ডের মতো ছোট মাপে, একটার নিচে আরেকটা */
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt{flex-direction:column;gap:4px;width:56px;flex:none;align-items:stretch;justify-content:center}
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button{box-sizing:border-box;flex:none;flex-direction:row;width:100%;height:26px;min-height:26px;padding:0 2px;gap:3px;font-size:11px;line-height:1;border-radius:10px}
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button .drq-bi,#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button .drq-bl{font-size:11px;line-height:1;margin:0}
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-air>a{min-height:56px}
