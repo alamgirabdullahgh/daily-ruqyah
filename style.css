@@ -946,3 +946,12 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:auto 0 6px;flex:
 .dsy-stop{width:34px;height:34px;background:var(--primary);color:#fff;border:0;box-shadow:0 2px 0 color-mix(in srgb,var(--primary) 55%,#000)}
 .dsy-stop:active{background:var(--primary-dark,var(--primary));color:#fff;transform:translateY(2px);box-shadow:none}
 .dsy-stop[data-on="1"]{background:#b3261e;box-shadow:0 2px 0 #7d1a15}
+
+/* v230: হোমের সব কার্ডের হেডিং একই ছাঁচে — ফোঁটা সবার একই মাপ (৮px) ও একই বাম-দূরত্বে, লেখাও একই জায়গা থেকে শুরু।
+   দৈনন্দিন রুকইয়াহ কার্ড মাপকাঠি: কার্ডের ৬px ভেতরে + হেডিংয়ের ১০px ভেতরে ফোঁটা, তারপর ৮px ফাঁক, তারপর লেখা */
+#drLanding .drq-grid>.drq-card>.dsy-h{display:flex;align-items:center;gap:8px}
+#drLanding .drq-grid>.drq-card>.dsy-h::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+#drLanding .drq-grid>.drq-card>.drq-tabs{padding:4px 4px 4px 4px}
+#drLanding .drq-grid>.drq-card>.drq-tabs .drq-tab{gap:8px;width:auto;justify-self:stretch}
+#drLanding .drq-grid>.drq-card>.drq-tabs .drq-tab::before,#drLanding .drq-grid>.drq-card>.drq-tabs .drq-tab-all::before{width:8px;height:8px}
+#drLanding .drq-grid>.drq-card>.drq-tabs .drq-tab[data-t="0"]{justify-content:flex-start;padding-left:6px}
