@@ -49,7 +49,7 @@
   var startTk=function(){if(window.__drTicker)window.__drTicker(tk,function(){var a=(window.__drSunnahRules&&window.__drSunnahRules.support)||[];var st=document.getElementById("drSupSt");var s0=a.filter(function(x){return /হাদিয়া/.test(x)})[0]||a[0]||"";if(st){var tt=st.querySelector(".drq-st-t");if(tt&&tt.getAttribute("data-s")!==s0){tt.setAttribute("data-s",s0);var m=s0.match(/^([^,،]+[,،])\s*(.+)$/);tt.innerHTML=m?"<span>"+esc(m[1])+"</span><span>"+esc(m[2])+"</span>":"<span>"+esc(s0)+"</span>"}st.hidden=!s0}return a.filter(function(x){return x!==s0})});else setTimeout(startTk,300)};
   startTk();
   fitT();setTimeout(fitT,400);
-  setTimeout(function(){window.__drHomePrebuild&&window.__drHomePrebuild()},8000); /* PDF আগে থেকে ব্যাকগ্রাউন্ডে বানানো থাকে */
+  setTimeout(function(){window.__drHomePrebuild&&window.__drHomePrebuild()},1500); /* PDF আগে থেকে ব্যাকগ্রাউন্ডে বানানো থাকে */
   H.addEventListener("click",function(e){
    
    var au=e.target.closest&&e.target.closest(".drq-au,.drq-pd");

@@ -808,17 +808,17 @@ window.__drHomePrebuild=async()=>{if(HPRE)return;HPRE=true;
  let offReady=false;
  for(let t=0;t<40&&!offReady;t++){
   try{const np=NAO();if(np){const r=await np.status();offReady=r.done>=r.total}else offReady=offOn()&&(await offCount())>=OFFN}catch(e){}
-  if(!offReady)await new Promise(r=>setTimeout(r,15000))}
+  if(!offReady)break}
  for(const cat of["বদনজর","জাদু","জিন","সব"])for(const kind of["sym","resp","treat"]){
   try{await homePdf(kind,cat)}catch(e){console.error(e)}
-  if(offReady&&kind!=="sym"){try{await homeAudio(kind,cat).p}catch(e){console.error(e)}}
-  await new Promise(r=>setTimeout(r,1500))}
+  if(kind!=="sym"){try{await homeAudio(kind,cat).p}catch(e){console.error(e)}}
+  await new Promise(r=>setTimeout(r,300))}
  /* শারীরিক/মানসিক পাতার প্রতিটি অঙ্গ ও রোগের PDF ও জোড়া অডিওও একইভাবে আগে থেকে বানানো থাকে */
  let xs=[];try{xs=window.__drXReg?await window.__drXReg():[]}catch(e){console.error(e)}
  for(const cat of xs){
   try{await homePdf("x",cat)}catch(e){console.error(e)}
-  if(offReady){try{await homeAudio("x",cat).p}catch(e){console.error(e)}}
-  await new Promise(r=>setTimeout(r,1500))}};
+  try{await homeAudio("x",cat).p}catch(e){console.error(e)}
+  await new Promise(r=>setTimeout(r,300))}};
 window.__drHomePdf=async(kind,cat,host)=>{
  if(!host)return;
  if(host.dataset.done==="1"){host.hidden=!host.hidden;return}
@@ -850,14 +850,12 @@ window.__drHomeAudio=async(kind,cat,host)=>{
    while(e.out.firstChild)res.appendChild(e.out.firstChild);host.dataset.done="1";
    const a=res.querySelector("audio");if(a)a.play().catch(()=>{});
    return}
-  /* এখনো তৈরি হয়নি: তৈরি হওয়ার অপেক্ষায় না থেকে সাথে সাথে বাজাই (আয়াত একটার পর একটা), ফাইল তৈরি হলে নিচে আসে */
-  const list=await homeKeys(kind,cat),seq=[];
-  for(let q=0;q<e.set||q<homeRep(kind).set;q++)for(const k of list)for(let r=0;r<homeRep(kind).rep;r++)seq.push(k);
-  playList(seq,live);host.dataset.done="1";
-  note.textContent="⬇ ডাউনলোডের ফাইল পেছনে তৈরি হচ্ছে…";
-  await e.p;
-  note.textContent="✅ ফাইল তৈরি — নিচের প্লেয়ার থেকে শোনা, শেয়ার ও ডাউনলোড করা যাবে";
-  while(e.out.firstChild)res.appendChild(e.out.firstChild);
+   /* এখনো তৈরি হয়নি: আধা-আয়াত বাজিয়ে আবার শুরু না করে, জোড়া ফাইল তৈরি হওয়ার পর একবারেই সম্পূর্ণটা বাজে */
+   note.textContent="⏳ অডিও জোড়া লাগছে — হলেই নিজে থেকে বাজবে…";
+   await e.p;
+   note.textContent="✅ "+bn2(e.n)+"টি আয়াত × "+bn2(e.rep)+" বার"+(e.set>1?" × "+bn2(e.set)+" সেট":"");
+   while(e.out.firstChild)res.appendChild(e.out.firstChild);host.dataset.done="1";
+   {const a=res.querySelector("audio");if(a)a.play().catch(()=>{})}
  }catch(e){console.error(e);note.textContent="অডিও তৈরি করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"}
  finally{host.dataset.busy="0"}
 };
@@ -1066,7 +1064,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
  const keepDis=(secs,CFG)=>CFG===DISEASE?secs.filter(x=>DIS_KEEP.has(String(x.name).normalize("NFC"))):secs;
  const showNames=(title,items,sub,up)=>{GEN++;$("rsBox").classList.add("dr-tonly");CURT=null;window.__bq="";rs.classList.remove("on");pad.classList.remove("on");const out=$("rsOut"),info=$("rsInfo");out.innerHTML="";info.textContent="";if(up){const ub=mkBtn("← পেছনে",up);ub.style.margin="0 0 8px";info.appendChild(ub)}if(title)info.appendChild(els("div","font-weight:700;color:var(--primary);margin-bottom:4px",title));if(sub)info.appendChild(els("div","font-size:13px;color:var(--text-muted);margin-bottom:8px",sub));
   const w=els("div","display:flex;flex-direction:column;gap:8px;margin-top:8px");
-  items.forEach(it=>{if(it.head){w.appendChild(els("div","margin:12px 2px 0;padding-bottom:6px;border-bottom:1.5px solid var(--accent);font-weight:800;font-size:15px;color:var(--accent)",it.head));return}const b=document.createElement("button");b.type="button";b.className="dr-btn dr-btn-row";b.appendChild(els("span",null,it.name));const e=els("span","font-size:12px;font-weight:400;color:var(--text-muted);white-space:nowrap",(it.note?it.note+"  ":"")+"›");b.appendChild(e);b.onclick=it.fn;w.appendChild(b)});
+  items.forEach(it=>{if(it.head){w.appendChild(els("div","margin:12px 2px 0;padding-bottom:6px;border-bottom:1.5px solid var(--accent);font-weight:800;font-size:15px;color:var(--accent)",it.head));return}const b=document.createElement("button");b.type="button";b.className="dr-btn dr-btn-row";b.appendChild(els("span",null,it.name));const e=els("span","font-size:12px;font-weight:400;color:var(--text-muted);white-space:nowrap",(it.note?it.note+"  ":"")+"›");b.appendChild(e);b.onclick=()=>{window.__drPushSub&&window.__drPushSub(()=>showNames(title,items,sub,up));it.fn()};w.appendChild(b)});
   out.appendChild(w);window.scrollTo({top:rs.getBoundingClientRect().top+scrollY-60,behavior:"smooth"})};
  const nameList=async(CFG,title,sub,up)=>{GEN++;$("rsInfo").textContent="লোড হচ্ছে…";$("rsOut").innerHTML="";let D;try{D=await rsFetch(BASE+CFG.file)}catch(e){$("rsInfo").textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
   const secs=[];D.groups.forEach(g=>{let x=secs.find(y=>y.name===g.section);if(!x)secs.push(x={name:g.section,ids:new Set()});g.cats.forEach(c=>c.keys.forEach(k=>x.ids.add(k.s+":"+k.a)))});
@@ -1083,7 +1081,9 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
    if(it.result)g.appendChild(els("div","margin:0 0 8px;padding:9px 12px;border-radius:10px;background:var(--primary-light,#e6efe9);color:var(--primary);font-size:15px;line-height:1.7",it.result));
    if(it.ifNot){const w=els("div","padding:9px 12px;border-radius:10px;background:var(--accent-light,#f6efdc);color:var(--text-main);font-size:15px;line-height:1.7",it.ifNot);if(it.diag){const b=mkBtn("🩺 রোগ নির্ণয় (ডায়াগনোসিস) করুন",()=>{location.hash="#diag"});b.style.margin="8px 0 0";b.style.display="block";w.appendChild(b)}g.appendChild(w)}
    wrap.appendChild(g)});
-  out.appendChild(wrap);window.scrollTo(0,0)};
+  out.appendChild(wrap);window.scrollTo(0,0);
+   /* মৌলিক নীতি: চিকিৎসার আয়াতের নিচে ওই অঙ্গ সম্পর্কিত বাকি সব আয়াতও থাকবে */
+   {const tp=TOPICS.find(x=>x.name===n);if(tp&&tp.terms){const hd=els("div","margin:18px 2px 10px;padding:9px 12px;border-radius:12px;background:var(--primary-light,#e6efe9);border-right:5px solid var(--accent);border-left:5px solid var(--accent);font-weight:800;font-size:16px;color:var(--accent);text-align:center","📖 "+n+" সম্পর্কিত অন্যান্য আয়াত");const sub=el("div"),sinfo=el("div");out.append(hd,sinfo,sub);runMulti(tp.terms,sub,sinfo,tp.intro,tp.ordered).catch(e=>console.error(e))}}};
  window.__drOpenOrgan=async n=>{const d=await loadOT(),list=d&&d[String(n).normalize("NFC")];if(list&&list.length)renderOrganTreat(n,list);else window.__drOpenTopic(n)};
  const organList=(names,title,sub,up)=>showNames(title,names.map(n=>({name:n,fn:()=>window.__drOpenOrgan(n)})),sub,up);
  /* অঙ্গ ও রোগের PDF/অডিওর আয়াত-তালিকা: নাম → [[সূরা,আয়াত]…] (অঙ্গের তালিকা ব্যবহারের সময় গণনা হয়) */
@@ -1114,7 +1114,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   const qa=x=>String(x).replace(/"/g,"&quot;");
   const mkList=(items,pre)=>{const ul=document.createElement("ul");ul.className="drq-opts drq-two";
    items.forEach((it,i)=>{const li=document.createElement("li");li.className="drq-ai";const air=document.createElement("div");air.className="drq-air";air.style.order=String(i*2+1);
-    const a=document.createElement("a");a.href="#search";a.textContent=shortL(it.name);a.setAttribute("aria-label",it.name);a.onclick=e=>{e.preventDefault();it.fn()};air.appendChild(a);
+    const a=document.createElement("a");a.href="#search";a.textContent=shortL(it.name);a.setAttribute("aria-label",it.name);a.onclick=e=>{e.preventDefault();window.__drPushSub&&window.__drPushSub(back);it.fn()};air.appendChild(a);
     const cat=pre+"|"+it.name;
     if(it.has){const bt=document.createElement("span");bt.className="drq-bt";
      bt.innerHTML='<button type="button" class="drq-pd" data-au="x" data-c="'+qa(cat)+'" aria-label="'+qa(it.name)+' — PDF"><span class="drq-bi">📄</span><span class="drq-bl"> PDF</span></button><button type="button" class="drq-au" data-au="x" data-c="'+qa(cat)+'" aria-label="'+qa(it.name)+' — অডিও">🔊<span class="drq-bl"> অডিও</span></button>';air.appendChild(bt)}
@@ -1128,7 +1128,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   host.appendChild(mkList(secs.map(x=>({name:x.name,has:x.ids.size>0,fn:()=>{$("rsBox").classList.add("dr-tonly");showDiag(Object.assign({},CFG,{only:x.name,back}))}})),prD));
   host.addEventListener("click",e=>{const au=e.target.closest&&e.target.closest(".drq-au,.drq-pd");if(!au)return;e.preventDefault();const li=au.closest("li"),isP=au.classList.contains("drq-pd"),hp=li&&li.querySelector('.drq-aup[data-k="'+(isP?"pdf":"au")+'"]');const fn=isP?window.__drHomePdf:window.__drHomeAudio;fn&&fn("x",au.getAttribute("data-c"),hp)});
   $("rsOut").appendChild(host);
-  regX().catch(()=>{});setTimeout(()=>window.__drHomePrebuild&&window.__drHomePrebuild(),4000);
+  regX().catch(()=>{});setTimeout(()=>window.__drHomePrebuild&&window.__drHomePrebuild(),800);
   fitX();setTimeout(fitX,250)};
  window.__drOpenList=k=>{
   const phys=()=>showNames("🩺 শারীরিক",[{name:"অঙ্গভিত্তিক",fn:()=>window.__drOpenList("organ")},{name:"রোগভিত্তিক",fn:()=>window.__drOpenList("disease")}],"একটি বেছে নিন");
@@ -1257,9 +1257,12 @@ function drShell(){
   else if(p[0]==="read"&&RMODES.some(m=>m[0]===p[1])){key="read/"+p[1];const s=+p[2]||0;box.hidden=true;rd.hidden=false;renderReader(p[1],s>=1&&s<=114?s:0);window.scrollTo(0,0)}
   else{rd.hidden=true;box.hidden=false;RG++;if(p[0]==="topics"){key="topics";SHOWT&&SHOWT(true);window.scrollTo(0,0)}else if(prev.startsWith("read/")||prev===""||prev==="home"||prev==="resp"||prev==="alarm"||prev==="amol")window.scrollTo(0,0)}
   prev=key;lastH=h;{const bk=$("drBackRow");if(bk)bk.hidden=key==="home";window.__drPlaceBack&&window.__drPlaceBack(key);window.__drNav=(window.__drNav||0)+1}document.body.classList.toggle("is-home",key==="home");{const sh=key==="home"?"":"none";["drWidget","drWBar"].forEach(i=>{const x=$(i);if(x)x.style.display=sh})}navs.forEach(a=>a.classList.toggle("on",a.dataset.nav===key))};
- {const bk=$("drBack");if(bk)bk.onclick=()=>{if((window.__drNav||0)>1)history.back();else location.hash="#home"}}
+ window.__drSubs=[];
+ window.__drPushSub=fn=>{try{history.pushState({drSub:1},"");window.__drSubs.push(fn)}catch(e){}};
+ addEventListener("popstate",()=>{if(!window.__drSubs.length)return;const fn=window.__drSubs.pop();try{fn&&fn()}catch(e){console.error(e)}});
+ {const bk=$("drBack");if(bk)bk.onclick=()=>{if(window.__drSubs.length)history.back();else if((window.__drNav||0)>1)history.back();else location.hash="#home"}}
  navs.forEach(a=>a.addEventListener("click",e=>{e.preventDefault();const h=a.getAttribute("href");if(location.hash===h)route();else location.hash=h;open(false)}));
- addEventListener("hashchange",route);
+ addEventListener("hashchange",()=>{window.__drSubs.length=0;route()});
  route()}
 init();drShell();
 // ---------- অ্যাপের নিজের আপডেট (শুধু ইনস্টল করা APK-তে; ওয়েবে ব্রাউজার নিজেই নতুন করে) ----------
