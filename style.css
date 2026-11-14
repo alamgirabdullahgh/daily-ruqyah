@@ -780,3 +780,11 @@ body.is-home #drLanding:not([hidden]){width:100%;align-self:stretch;box-sizing:b
 /* একেবারে নিচের কার্ড: সবুজ দাগ ওপরে নয়, নিচে */
 #drLanding .drq-grid>.drq-card:last-child{border-top:1px solid var(--border-light);border-bottom:4px solid var(--primary)}
 #drLanding .drq-grid>.drq-card>.drq-opts>li:first-child>a,#drLanding .drq-grid>.drq-card>.drq-opts>li:first-child,#drLanding .drq-grid>.drq-card>.drq-opts>li:first-child .drq-air{border-top-left-radius:9px;border-top-right-radius:9px}
+
+/* ===== বদনজর/জাদু/জিন/সব কার্ড: সিমটম · রেসপন্স · ট্রিটমেন্ট এক লাইনে ৩ ঘরে; প্রতিটির নিচে PDF ও অডিও বাটন ===== */
+#drLanding .drq-opts.drq-three{gap:6px;flex-wrap:wrap}
+#drLanding .drq-opts.drq-three .drq-air{order:1;flex:1 1 calc(33.333% - 4px);min-width:0;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:6px;padding:8px 4px 8px;border-radius:9px;text-align:center}
+#drLanding .drq-opts.drq-three .drq-air>a{flex:none;width:auto;padding:2px 2px;font-size:13px;line-height:1.3;justify-content:center;text-align:center;background:transparent}
+#drLanding .drq-opts.drq-three .drq-bt{display:flex;justify-content:center;gap:4px;margin-top:auto}
+#drLanding .drq-opts.drq-three .drq-bt button{padding:5px 6px;font-size:10px}
+#drLanding .drq-opts.drq-three .drq-aup{order:2;flex:1 1 100%}
