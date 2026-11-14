@@ -758,3 +758,16 @@ body.is-home .drq-cards{padding-bottom:8px}
 .dr-main>.rs-box h2,.dr-main>.rs-box>h3,#drSym #za>h2,#drSym .zs>h3,.dr-main .am-h,.dr-main .am-sh,.dr-reader>h2,.dr-reader>h3{box-sizing:border-box;background:var(--card-bg);border:1px solid var(--border-light);border-top:4px solid var(--primary);border-radius:14px;box-shadow:var(--shadow-card);padding:9px 16px;margin:0 0 8px;line-height:1.35}
 #drSym #za h2,#drSym .zs>h3{text-align:center}
 .dr-main .am-h i{font-style:normal}
+
+/* ===== পুরো প্রস্থ: flex-কলামে margin:auto থাকায় পাত্রটা লেখার মাপে সরু হয়ে যেত; এখন সবসময় পুরো প্রস্থ, পাশে শুধু ৬px ===== */
+body.is-home #drLanding:not([hidden]){width:100%;align-self:stretch;box-sizing:border-box;padding-left:0;padding-right:0}
+#drLanding .drq-grid,#drLanding .drq-support{width:100%;box-sizing:border-box}
+
+/* ===== হেডিং ও তার নিচের আইটেম লাগানো: মাঝে ফাঁক নেই, হেডিংয়ের নিচের কোণ সোজা ===== */
+#drLanding .drq-grid>.drq-card>h3,#drLanding .drq-grid>.drq-card>.dsy-h{margin:0;border-bottom-left-radius:0;border-bottom-right-radius:0}
+#drLanding .drq-grid>.drq-card>.drq-tabs{margin-bottom:0}
+#drLanding .drq-grid>.drq-card>.drq-opts{margin-top:0}
+#drLanding .drq-grid>.drq-card>.drq-opts>li:first-child>a,#drLanding .drq-grid>.drq-card>.drq-opts>li:first-child,#drLanding .drq-grid>.drq-card>.drq-opts>li:first-child .drq-air{border-top-left-radius:0;border-top-right-radius:0}
+#drLanding .drq-sys .dsy-two{padding:0}
+#drLanding .drq-sys .dsy-row{padding-left:0;padding-right:0}
+.dr-main>.rs-box h2,.dr-main>.rs-box>h3,#drSym #za>h2,#drSym .zs>h3,.dr-main .am-h,.dr-main .am-sh,.dr-reader>h2,.dr-reader>h3{margin-bottom:0;border-bottom-left-radius:0;border-bottom-right-radius:0}
