@@ -788,3 +788,7 @@ body.is-home #drLanding:not([hidden]){width:100%;align-self:stretch;box-sizing:b
 #drLanding .drq-opts.drq-three .drq-bt{display:flex;justify-content:center;gap:4px;margin-top:auto}
 #drLanding .drq-opts.drq-three .drq-bt button{padding:5px 6px;font-size:10px}
 #drLanding .drq-opts.drq-three .drq-aup{order:2;flex:1 1 100%}
+
+/* সিমটম/রেসপন্স/ট্রিটমেন্ট: লেখাটা বোতামের মতো বোঝা যায় (পেছনের রঙ একই; বর্ডার + নিচে ছায়া + চাপলে একটু বসে যায়) */
+#drLanding .drq-opts.drq-three .drq-air>a{border:1.5px solid color-mix(in srgb,var(--primary) 38%,transparent);border-radius:10px;box-shadow:0 2px 0 color-mix(in srgb,var(--primary) 30%,transparent);padding:8px 4px;margin:0 2px;min-height:44px;display:flex;align-items:center;justify-content:center;transition:transform .08s,box-shadow .08s}
+#drLanding .drq-opts.drq-three .drq-air>a:active{transform:translateY(2px);box-shadow:0 0 0 transparent}
