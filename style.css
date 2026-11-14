@@ -751,3 +751,10 @@ body.is-home .drq-cards{padding-bottom:8px}
 #drLanding .drq-grid>.drq-card>.dsy-h{display:block;line-height:1.35}
 #drLanding .drq-grid>.drq-card>.drq-tabs{padding:4px 12px}
 #drLanding .drq-sys .dsy-two{padding:0 6px}
+
+/* ===== সব পাতা: বড় সাদা কার্ড নেই; কার্ড বলতে শুধু হেডিং (সবুজ মাথার দাগসহ), হেডিংয়ের নিচের অংশ ব্যাকগ্রাউন্ডের ওপর ভাসে ===== */
+.dr-main>.rs-box{background:transparent!important;border:0!important;box-shadow:none!important;padding:6px 0 20px!important}
+.dr-main>.rs-box>.dr-backrow{margin:0 0 8px 0}
+.dr-main>.rs-box h2,.dr-main>.rs-box>h3,#drSym #za>h2,#drSym .zs>h3,.dr-main .am-h,.dr-main .am-sh,.dr-reader>h2,.dr-reader>h3{box-sizing:border-box;background:var(--card-bg);border:1px solid var(--border-light);border-top:4px solid var(--primary);border-radius:14px;box-shadow:var(--shadow-card);padding:9px 16px;margin:0 0 8px;line-height:1.35}
+#drSym #za h2,#drSym .zs>h3{text-align:center}
+.dr-main .am-h i{font-style:normal}
