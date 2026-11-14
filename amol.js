@@ -67,6 +67,7 @@
   if(!cd){
    var vis=DATA.conds.filter(function(c){return !GRP||c.items.some(function(r){return(r[0].indexOf("b2")===0?"jadu":"jin")===GRP})});
    box.innerHTML='<h2 class="am-h">'+(GRP==="jadu"?"জাদু — ট্রিটমেন্ট":GRP==="jin"?"জিন — ট্রিটমেন্ট":"ট্রিটমেন্ট")+'</h2><div class="am-cl">'+vis.map(function(c){return'<button type="button" class="am-cond" data-k="'+c.id+'"><i>'+c.icon+'</i><span>'+esc(c.title)+'</span><b>›</b></button>'}).join("")+'</div>';
+   if((GRP==="jadu"||GRP==="jin")&&window.__drGit){var cl=box.querySelector(".am-cl");window.__drGit(box,GRP==="jadu"?"জাদু":"জিন",cl)}
    return;
   }
   var sc=ST[cd.id];
