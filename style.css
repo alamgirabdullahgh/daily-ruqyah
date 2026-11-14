@@ -718,16 +718,9 @@ html:has(body:not(.is-home)){scroll-padding-top:calc(env(safe-area-inset-top) + 
 .drq-opts.drq-two .drq-air>a{padding:10px 4px 10px 10px}
 .drq-opts.drq-two .drq-aup{order:2;flex:1 1 100%}
 
-/* হোমের প্রথম কার্ড (দৈনন্দিন রুকইয়াহ): মাপ নিচের "অটোমেটিক এলার্ম" কার্ডের সমান */
-.drq-grid>.drq-card:first-child{padding:2px 16px 12px}
-.drq-grid>.drq-card:first-child h3{margin:0;padding:9px 0 0;font-size:14.5px;line-height:1.35}
-.drq-grid>.drq-card:first-child h3::before{width:6px;height:6px}
-.drq-grid>.drq-card:first-child .drq-opts{margin-top:2px}
-.drq-grid>.drq-card:first-child .drq-opts.drq-two .drq-air>a{padding-top:6px;padding-bottom:6px}
-
 /* ---------- হোম: কার্ডের তিনটি গোছা নিচে বসে ----------
    নিচের নেভিগেশন বার থেকে শেষ কার্ডের দূরত্ব = কার্ডগুলোর মাঝের ফাঁকা (৮px)।
-   স্ক্রিনে বাড়তি জায়গা থাকলে সেটা স্লাইডিং লাইনের নিচে ফাঁকা হয়ে যায়; কার্ডের মাঝের ফাঁকা বাড়ে না।
+   স্লাইডিং লাইন কার্ডগুলোর সাথে নিচে নামে; স্ক্রিনে বাড়তি জায়গা থাকলে সেটা স্লাইডিং লাইনের ওপরে (উইজেটের নিচে) ফাঁকা হয়ে যায়; কার্ডের মাঝের ফাঁকা বাড়ে না।
    জায়গা না থাকলে (বা "৩টি একসাথে" খুললে) margin-top:auto শূন্য হয়, আগের মতোই স্ক্রল চলে। */
 .dr-bnav{height:calc(60px + env(safe-area-inset-bottom));box-sizing:border-box}
 .dr-bn{justify-content:center}
@@ -735,5 +728,5 @@ body.is-home{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
 body.is-home{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 body.is-home .dr-main{flex:1 1 auto;display:flex;flex-direction:column}
 body.is-home #drLanding:not([hidden]){flex:1 1 auto;display:flex;flex-direction:column}
-body.is-home .drq-grid{margin-top:auto}
+body.is-home .drq-support{margin-top:auto}
 body.is-home .drq-cards{padding-bottom:8px}

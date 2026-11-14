@@ -333,13 +333,17 @@ async function saveBlob(blob,name){
   for(let o=0;o<blob.size;o+=S){const u8=new Uint8Array(await blob.slice(o,o+S).arrayBuffer());let b="";for(let i=0;i<u8.length;i+=8192)b+=String.fromCharCode.apply(null,u8.subarray(i,i+8192));DRDl.chunk(id,btoa(b))}
   DRDl.end(id)}catch(e){try{DRDl.fail(String(e))}catch(x){}}}
 window.__drSave=(b)=>saveBlob(b,window.__lastFN||"quran-audio.mp3");
-// ---------- শেয়ার: প্রথমে ব্রাউজারের নিজস্ব ফাইল-শেয়ার, না চললে নেটিভ শেয়ার-শিট (DRDl.endShare) ----------
+// ---------- শেয়ার: অডিও ফাইলই যায়, কিন্তু WhatsApp-এ "ডকুমেন্ট" হিসেবে (অডিও হিসেবে গেলে ১৬MB সীমা থাকে, ডকুমেন্টে থাকে না) ----------
+// অ্যাপে (APK): নেটিভ শেয়ার-শিট, MIME application/octet-stream — WhatsApp তাই ডকুমেন্ট ধরে; ফাইলের নাম/.mp3 একই থাকে।
+// সাধারণ ব্রাউজারে: Web Share (ব্রাউজার নিজের নিয়মে MIME ঠিক করে)।
 async function shareBlob(blob,name){
+ const DOC="application/octet-stream";
+ if(window.DRDl&&DRDl.endShare){
+  try{const id="s"+Date.now(),S=3*512*1024;DRDl.begin(id,name,DOC);
+   for(let o=0;o<blob.size;o+=S){const u8=new Uint8Array(await blob.slice(o,o+S).arrayBuffer());let b="";for(let i=0;i<u8.length;i+=8192)b+=String.fromCharCode.apply(null,u8.subarray(i,i+8192));DRDl.chunk(id,btoa(b))}
+   DRDl.endShare(id,DOC);return}catch(e){try{DRDl.fail(String(e))}catch(x){}return}}
  try{const f=new File([blob],name,{type:blob.type||"audio/mpeg"});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name.replace(/\.[^.]+$/,"")});return}}catch(e){if(e&&e.name==="AbortError")return}
- if(!window.DRDl||!DRDl.endShare){alert("এই ফোনে শেয়ার চালু করা যায়নি");return}
- try{const id="s"+Date.now(),S=3*512*1024;DRDl.begin(id,name,blob.type||"audio/mpeg");
-  for(let o=0;o<blob.size;o+=S){const u8=new Uint8Array(await blob.slice(o,o+S).arrayBuffer());let b="";for(let i=0;i<u8.length;i+=8192)b+=String.fromCharCode.apply(null,u8.subarray(i,i+8192));DRDl.chunk(id,btoa(b))}
-  DRDl.endShare(id,blob.type||"audio/mpeg")}catch(e){try{DRDl.fail(String(e))}catch(x){}}}
+ alert("এই ফোনে শেয়ার চালু করা যায়নি")}
 // ---------- আয়াতের অডিও থেকে অংশ কাটা ----------
 const CUT=new Map(); // "সূরা:আয়াত" → [শুরু সেকেন্ড, শেষ সেকেন্ড]
 const selList=()=>[...SELV].map(k=>k.split(":").map(Number)).sort((x,y)=>x[0]-y[0]||x[1]-y[1]);

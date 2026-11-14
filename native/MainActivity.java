@@ -105,8 +105,10 @@ public class MainActivity extends BridgeActivity {
                 Uri u = uris.remove(id);
                 if (u == null) { toast("শেয়ার করা যায়নি (এই ফোনের Android পুরনো)"); return; }
                 Intent i = new Intent(Intent.ACTION_SEND);
-                i.setType(mime == null || mime.isEmpty() ? "audio/mpeg" : mime);
+                // অডিও MIME দিলে WhatsApp "অডিও" ধরে ১৬MB-এ আটকায়; তাই সবসময় সাধারণ ফাইল (ডকুমেন্ট) হিসেবে পাঠানো হয়
+                i.setType("application/octet-stream");
                 i.putExtra(Intent.EXTRA_STREAM, u);
+                i.setClipData(android.content.ClipData.newRawUri("", u));
                 i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 Intent ch = Intent.createChooser(i, "শেয়ার করুন");
                 ch.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

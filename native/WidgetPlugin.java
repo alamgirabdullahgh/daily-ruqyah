@@ -177,18 +177,27 @@ public class WidgetPlugin extends Plugin {
     // ───── অ্যাপের ভেতরে হোম-স্ক্রিনের উইজেটটাই (একই RemoteViews) ওয়েবপেজের নির্দিষ্ট জায়গায় বসানো ─────
     private View cardView;
     private int cardW = 0;
+    private String cardSig = "", cardSlSig = "";
     private final Handler ui = new Handler(Looper.getMainLooper());
+    // প্রতি সেকেন্ডে শুধু "ছাপ" মেলানো হয় (সস্তা); কার্ড আঁকা হয় কেবল ছাপ বদলালে (মিনিট/ওয়াক্ত/সেটিং বদলালে)
     private final Runnable tick = new Runnable() {
         @Override public void run() {
             if (cardView != null && cardView.getVisibility() == View.VISIBLE) redraw();
-            ui.postDelayed(this, 3000);
+            ui.postDelayed(this, 1000);
         }
     };
 
     private void redraw() {
         try {
-            RemoteViews rv = ClockWidget.Companion.viewForCard(getContext(), cardW);
+            String sig = ClockWidget.Companion.cardSig(getContext(), cardW);
+            if (sig.equals(cardSig)) return;
+            String sl = ClockWidget.Companion.cardSlSig(getContext(), cardW);
+            RemoteViews rv = sl.equals(cardSlSig)
+                    ? ClockWidget.Companion.viewForCardNoSl(getContext(), cardW)
+                    : ClockWidget.Companion.viewForCard(getContext(), cardW);
             rv.reapply(getContext(), cardView);
+            cardSig = sig;
+            cardSlSig = sl;
         } catch (Exception e) { }
     }
 
@@ -206,6 +215,8 @@ public class WidgetPlugin extends Plugin {
                 if (cardView == null || cardW != wdp) {
                     if (cardView != null) parent.removeView(cardView);
                     cardW = wdp;
+                    cardSig = ClockWidget.Companion.cardSig(getContext(), wdp);
+                    cardSlSig = ClockWidget.Companion.cardSlSig(getContext(), wdp);
                     RemoteViews rv = ClockWidget.Companion.viewForCard(getContext(), wdp);
                     cardView = rv.apply(getContext(), parent);
                     // কার্ডে চাপলে (ওয়াক্তের ঘর বাদে) উইজেট-সেটিংস খোলে
@@ -218,7 +229,7 @@ public class WidgetPlugin extends Plugin {
                     });
                     parent.addView(cardView, new ViewGroup.LayoutParams((int) (wdp * d), ViewGroup.LayoutParams.WRAP_CONTENT));
                     ui.removeCallbacks(tick);
-                    ui.postDelayed(tick, 3000);
+                    ui.postDelayed(tick, 1000);
                 }
                 cardView.measure(View.MeasureSpec.makeMeasureSpec((int) (wdp * d), View.MeasureSpec.EXACTLY),
                         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));

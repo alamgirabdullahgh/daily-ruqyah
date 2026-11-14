@@ -369,6 +369,30 @@ class ClockWidget : AppWidgetProvider() {
             return build(ctx, compute(ctx), widthDp, R.layout.widget_v2, true)
         }
 
+        // একই কার্ড, কিন্তু সুন্নাহ-স্লাইডার ছোঁয়া হয় না (চলমান স্লাইড রিসেট/ঝিলিক এড়াতে)
+        @JvmStatic
+        fun viewForCardNoSl(ctx: Context, widthDp: Int): RemoteViews {
+            LocationUpdater.sync(ctx)
+            return build(ctx, compute(ctx), widthDp, R.layout.widget_v2, true, withSl = false)
+        }
+
+        // অ্যাপের কার্ডে যা যা দেখা যায় তার "ছাপ": মিনিট, চলতি/দেখানো ওয়াক্ত, জায়গা, মাপ, ডিজিট, থিম, প্রস্থ।
+        // ছাপ আগের মতো হলে কার্ড আবার আঁকা হয় না (আগে প্রতি ৩ সেকেন্ডে পুরোটা আবার আঁকা হতো, তাই সময়গুলো ঝিলিক দিত)
+        @JvmStatic
+        fun cardSig(ctx: Context, widthDp: Int): String {
+            LocationUpdater.sync(ctx)
+            val c = Cfg(ctx)
+            val s = compute(ctx)
+            val dark = (ctx.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+                android.content.res.Configuration.UI_MODE_NIGHT_YES
+            return listOf(System.currentTimeMillis() / 60000L, s.cur, shownIndex(c, s), c.placeName(), c.scale, c.bnDigits, dark, widthDp, s.hijri, s.bangla)
+                .joinToString("|")
+        }
+
+        // সুন্নাহ-স্লাইডারের লেখা/মাপ বদলেছে কিনা বোঝার ছাপ
+        @JvmStatic
+        fun cardSlSig(ctx: Context, widthDp: Int): String = slSig(ctx, widthDp)
+
         // "১ ঘন্টা ২৩ মিনিট"; ঘন্টা না থাকলে শুধু মিনিট, মিনিট ০ হলে শুধু ঘন্টা
         private fun durText(left: Int, bn: Boolean): String {
             val lh = left / 60
