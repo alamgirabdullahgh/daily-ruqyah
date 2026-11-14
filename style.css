@@ -897,3 +897,17 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{position:relative;overf
 .drq-tab-all.on{background:none!important;color:var(--primary)!important;opacity:1!important}
 .drq-tab-all.on::before{background:var(--accent)}
 .drq-tab-all:active{transform:none;box-shadow:none}
+
+/* v223: হোম ব্যানার — উচ্চতা বাকি জায়গা অনুযায়ী (সব কার্ড স্ক্রিনে, নেভিগেশন বারের সামান্য ওপরে); হাদিয়ার লেখা দুই লাইন, বড়, বোল্ড; আইকন দুই পাশে */
+body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:auto 0 6px;flex:1 1 0;height:auto;min-height:74px;max-height:134px;justify-content:center}
+.drq-hero-bg{height:100%;width:100%}
+.drq-hero-tx{padding:3px 50px 2px;background:radial-gradient(ellipse at 50% 55%,rgba(3,16,22,.62),rgba(3,16,22,0) 78%);text-align:center}
+.drq-hero .drq-st{display:block;height:auto;line-height:1.25;margin:0 0 2px;padding:0;white-space:normal;overflow:visible;font-size:clamp(15.5px,4.9vw,19.5px);font-weight:800;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.75)}
+.drq-hero .drq-st-t{display:block;margin:0 auto;flex:none}
+.drq-hero .drq-st-t>span{display:block;white-space:nowrap}
+.drq-hero .drq-tk{height:18px}
+.drq-hero .drq-tk span{line-height:18px;font-size:13px;font-weight:700}
+.drq-hero-act{inset:0;top:0;left:0;right:0;display:block;pointer-events:none}
+.drq-hero-act a{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;pointer-events:auto}
+.drq-hero-act .drq-wa{left:8px}
+.drq-hero-act .drq-call{right:8px}
