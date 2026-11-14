@@ -281,7 +281,7 @@ class ClockWidget : AppWidgetProvider() {
             if (withSl) {
                 val sn = Sunnah.items(ctx, java.time.LocalDate.now(), c.hijriShift())
                 rv.removeAllViews(R.id.zz_sl)
-                if (sn.isEmpty()) rv.setViewVisibility(R.id.zz_sl, View.GONE) else {
+                if (sn.isEmpty()) rv.setViewVisibility(R.id.zz_sl, View.INVISIBLE) else {
                     rv.setViewVisibility(R.id.zz_sl, View.VISIBLE)
                     for (t in (if (sn.size == 1) sn + sn else sn)) {
                         val item = RemoteViews(ctx.packageName, R.layout.widget_sl_item)
