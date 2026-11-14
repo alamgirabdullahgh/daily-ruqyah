@@ -10,7 +10,6 @@ import android.content.pm.ServiceInfo;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.audiofx.LoudnessEnhancer;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -31,16 +30,12 @@ public class RuqyahAudioService extends Service {
 
     private final Handler h = new Handler(Looper.getMainLooper());
     private MediaPlayer mp;
-    private LoudnessEnhancer boost; // অডিওর নিজের আওয়াজে বাড়তি গেইন
     // আওয়াজ কমবেশি করতে শুধু এই দুটো সংখ্যা বদলান: অ্যালার্ম ভলিউমের সর্বনিম্ন অংশ (১.০ = সর্বোচ্চ) আর বাড়তি গেইন (মিলিবেল; ৬০০ = ৬ ডেসিবেল)
-    private static final float ALARM_VOL_FRACTION = 1.0f;
-    private static final int GAIN_MB = 600;
     private PowerManager.WakeLock wl;
     private android.net.wifi.WifiManager.WifiLock wfl; // স্ক্রিন বন্ধে নেট থেকে অডিও চালানোর সময় ওয়াই-ফাই ঘুমিয়ে না যায়
     private List<List<String>> items = new ArrayList<>();
     private int repeat = 1, round = 0, idx = 0, cand = 0, fails = 0, attempts = 0;
     private boolean stopped = false;
-    private int prevAlarmVol = -1, boostedVol = -1; // অ্যালার্ম ভলিউম নির্ধারিত মানের নিচে থাকলে বাড়ানো হয়; অডিও শেষে আগের মান ফেরে
     private JSONObject cur = null;      // চলতি অ্যালার্ম
     private int curId = -1;
     private boolean persist = false;    // true হলে শেষ না হওয়া পর্যন্ত থামে না (সূরা বাকারা)
@@ -96,41 +91,15 @@ public class RuqyahAudioService extends Service {
                 wfl.acquire();
             }
         } catch (Throwable e) { }
-        ensureMediumVolume();
         try {
             AudioManager am = getSystemService(AudioManager.class);
-            am.requestAudioFocus(null, AudioManager.STREAM_ALARM, AudioManager.AUDIOFOCUS_GAIN);
+            am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         } catch (Exception e) { }
         playCurrent();
         return persist ? START_STICKY : START_NOT_STICKY;
     }
 
-    /* অ্যালার্ম অডিও "অ্যালার্ম" স্ট্রিমে বাজে, যার ভলিউম ফোনের মিডিয়া ভলিউম থেকে আলাদা — তাই মিডিয়া ফুল দিলেও আওয়াজ কম হতো।
-       এখন বাজানো শুরুর সময় অ্যালার্ম ভলিউম ALARM_VOL_FRACTION (এখন সর্বোচ্চ) পর্যন্ত তোলা হয়; আগেই এর বেশি থাকলে ছোঁয়া হয় না। অডিও শেষে আগের মান ফেরে (মাঝখানে ব্যবহারকারী নিজে বদলালে ফেরানো হয় না)। */
-    private void ensureMediumVolume() {
-        try {
-            AudioManager am = getSystemService(AudioManager.class);
-            int max = am.getStreamMaxVolume(AudioManager.STREAM_ALARM);
-            int cur = am.getStreamVolume(AudioManager.STREAM_ALARM);
-            int target = Math.max(1, Math.round(max * ALARM_VOL_FRACTION));
-            if (cur < target) {
-                if (prevAlarmVol < 0) prevAlarmVol = cur;
-                am.setStreamVolume(AudioManager.STREAM_ALARM, target, 0);
-                boostedVol = target;
-                AlarmStore.log(this, "অ্যালার্ম ভলিউম " + cur + " → " + target + " (বাড়ানো)");
-            }
-        } catch (Throwable e) { AlarmStore.log(this, "ভলিউম বাড়ানো যায়নি: " + e.getClass().getSimpleName()); }
-    }
-
-    private void restoreVolume() {
-        try {
-            if (prevAlarmVol >= 0 && boostedVol >= 0) {
-                AudioManager am = getSystemService(AudioManager.class);
-                if (am.getStreamVolume(AudioManager.STREAM_ALARM) == boostedVol) am.setStreamVolume(AudioManager.STREAM_ALARM, prevAlarmVol, 0);
-            }
-        } catch (Throwable e) { }
-        prevAlarmVol = -1; boostedVol = -1;
-    }
+    /* আওয়াজ ফোনের নিজের ভলিউমের (মিডিয়া ভলিউম) সাথে চলে: ফোনে বাড়ালে বাড়ে, কমালে কমে, শূন্য করলে বাজে না। অ্যাপ নিজে থেকে ভলিউম বদলায় না এবং বাড়তি গেইনও দেয় না। */
 
     // বাকারার মতো লম্বা অডিও: প্রতিটি আয়াত শেষে জায়গা মনে রাখে (সার্ভিস মরে গেলে সেখান থেকে চলে)
     private void saveResume() {
@@ -156,7 +125,6 @@ public class RuqyahAudioService extends Service {
     }
 
     private void release() {
-        if (boost != null) { try { boost.release(); } catch (Throwable e) { } boost = null; }
         if (mp != null) { try { mp.reset(); mp.release(); } catch (Exception e) { } mp = null; }
     }
 
@@ -193,14 +161,9 @@ public class RuqyahAudioService extends Service {
         release();
         try {
             mp = new MediaPlayer();
-            mp.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build());
+            mp.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build());
             mp.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
             mp.setVolume(1f, 1f);
-            try { // বাড়তি গেইন: ফোন সাপোর্ট না করলে চুপচাপ বাদ যায়, অডিও স্বাভাবিকভাবেই বাজে
-                boost = new LoudnessEnhancer(mp.getAudioSessionId());
-                boost.setTargetGain(GAIN_MB);
-                boost.setEnabled(true);
-            } catch (Throwable e) { boost = null; AlarmStore.log(this, "বাড়তি গেইন চালু হয়নি: " + e.getClass().getSimpleName()); }
             String src = c.get(cand);
             if (src.startsWith("/") && !new java.io.File(src).exists()) throw new java.io.FileNotFoundException(src);
             mp.setDataSource(src);
@@ -226,7 +189,6 @@ public class RuqyahAudioService extends Service {
         try { if (wl != null && wl.isHeld()) wl.release(); } catch (Exception e) { }
         try { if (wfl != null && wfl.isHeld()) wfl.release(); } catch (Throwable e) { }
         try { getSystemService(AudioManager.class).abandonAudioFocus(null); } catch (Exception e) { }
-        restoreVolume();
         try { AlarmStore.sp(this).edit().remove("resume").apply(); } catch (Exception e) { }
         if (manual && o != null && id >= 0) {
             int nag = o.optInt("nag", 0);
@@ -245,7 +207,6 @@ public class RuqyahAudioService extends Service {
         release();
         try { if (wl != null && wl.isHeld()) wl.release(); } catch (Exception e) { }
         try { if (wfl != null && wfl.isHeld()) wfl.release(); } catch (Throwable e) { }
-        restoreVolume();
         super.onDestroy();
     }
 }
