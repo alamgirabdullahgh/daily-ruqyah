@@ -383,13 +383,13 @@
         cells += '<div class="drw-c' + (i === s.cur ? " on" : "") + '" data-i="' + i + '"><i>' + NAMES[i] + "</i><b>" + fmt(s.m[i]) + "</b></div>";
       var keepSn = el.querySelector("[data-sn]");
       el.innerHTML =
-        '<div class="drw"><div class="drw-r drw-top"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span>' + '<div class="drw-mid">' + arc + '</div>' + '<span class="drw-sun">সূর্যাস্ত ' + fmt(s.sunset) + SUNSET + "</span></div>" +
+        '<div class="drw"><div class="drw-pr"><button class="drw-pin" type="button" data-pin="1">হোম স্ক্রিনে বসান</button></div><div class="drw-r drw-top"><span class="drw-sun">' + SUNRISE + "সূর্যোদয় " + fmt(s.sunrise) + '</span>' + '<div class="drw-mid">' + arc + '</div>' + '<span class="drw-sun">সূর্যাস্ত ' + fmt(s.sunset) + SUNSET + "</span></div>" +
         '<div class="drw-b"><span>' + (nf ? nf.name + " শুরু " : "ওয়াক্ত শুরু ") + fmt(bs) + '</span><div class="drw-bar"><u style="width:' + (frac * 100).toFixed(1) + '%"></u><em>' + cd + '</em></div><span>' + (nf ? "শেষ " : "ওয়াক্ত শেষ ") + fmt(be) + "</span></div>" +
         '<div class="drw-p">' + cells + "</div>" +
         '<div class="drw-r"><div class="drw-time"><b>' + hh + ":" + mm + "</b><span>" + (now.getHours() < 12 ? "AM" : "PM") + "</span></div>" +
         '<div class="drw-sn" data-sn="1"></div>' +
         '<div class="drw-en"><b>' + en + '</b><div class="drw-lr"><button class="drw-loc" type="button" data-loc="1">' + placeName(loc) + '</button><button class="drw-upd" type="button" data-upd="1">' + (updBusy ? "হচ্ছে…" : "আপডেট<br>লোকেশন") + "</button></div></div></div>" +
-        '<div class="drw-r drw-d"><span>' + hijriText(now, inBd(loc.lat, loc.lng)) + '</span><button class="drw-pin" type="button" data-pin="1">হোম স্ক্রিনে বসান</button><span>' + banglaText(addDays(now, BANGLA_ADJ)) + "</span></div>" +
+        '<div class="drw-r drw-d"><span>' + hijriText(now, inBd(loc.lat, loc.lng)) + '</span><span>' + banglaText(addDays(now, BANGLA_ADJ)) + "</span></div>" +
         "</div>";
       if (keepSn) { var ns = el.querySelector("[data-sn]"); if (ns && ns.parentNode) ns.parentNode.replaceChild(keepSn, ns); }
       snItems = sunnahItems(now, inBd(loc.lat, loc.lng));
@@ -621,7 +621,8 @@
   }
   function auto() {
     var el = document.getElementById("drWidget");
-    if (NW && NW.card) nativeCard(el); else mount(el);
+    if (NW && NW.card) { try { NW.card({ visible: false, x: 0, y: 0, w: 300 }).catch(function () { }); } catch (e) { } if (NW.locate) { try { NW.locate({ ask: true }).catch(function () { }); } catch (e) { } } }
+    mount(el);
   }
   // স্ক্রিপ্ট <body>-র শেষে, তাই #drWidget আগেই আছে: DOMContentLoaded-এর অপেক্ষা না করে সঙ্গে সঙ্গে শুরু (না হলে সব স্ক্রিপ্ট শেষ হওয়া পর্যন্ত ফাঁকা থাকত)
   if (document.getElementById("drWidget")) auto(); else document.addEventListener("DOMContentLoaded", auto);

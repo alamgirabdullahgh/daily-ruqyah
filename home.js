@@ -17,13 +17,15 @@
   var TS=1,TE=3; /* G[TS..TE] = বদনজর · জাদু · জিন: এক কার্ডে ট্যাব; চতুর্থ ট্যাব "সব": একই তিন অপশন, তবে তিন বিষয়ের ফল একসাথে এক পাতায় */
   var AU={"সিমটম ডায়াগনোসিস":"sym","রেসপন্স ডায়াগনোসিস":"resp","ট্রিটমেন্ট":"treat","শারীরিক":"phys","মানসিক":"ment"};
   var audioLi=function(a,o,cat){var k=AU[o[0]];if(!k||!cat)return '<li>'+a+'</li>';var c=esc(cat);return '<li class="drq-ai"><div class="drq-air">'+a+'<span class="drq-bt"><button type="button" class="drq-pd" data-au="'+k+'" data-c="'+c+'" aria-label="'+esc(o[0])+' — PDF"><span class="drq-bi">📄</span><span class="drq-bl"> PDF</span></button>'+(k==="sym"?'':'<button type="button" class="drq-au" data-au="'+k+'" data-c="'+c+'" aria-label="'+esc(o[0])+' — অডিও">🔊<span class="drq-bl"> অডিও</span></button>')+'</span></div><div class="drq-aup" data-k="pdf" hidden></div>'+(k==="sym"?'':'<div class="drq-aup" data-k="au" hidden></div>')+'</li>'};
+  var LBL={"সিমটম ডায়াগনোসিস":"<span>লক্ষণ ভিত্তিক<br>রোগ নির্ণয়</span>","রেসপন্স ডায়াগনোসিস":"<span>প্রতিক্রিয়া ভিত্তিক<br>রোগ নির্ণয়</span>","ট্রিটমেন্ট":"<span>চিকিৎসা</span>"};
+  var lab=function(n){return LBL[n]||esc(n)};
   var item=function(o,cat){
    var t=o[1];
-   if(typeof t==="string")return audioLi('<a href="'+t+'">'+esc(o[0])+'</a>',o,cat);
+   if(typeof t==="string")return audioLi('<a href="'+t+'">'+lab(o[0])+'</a>',o,cat);
    if(t.soon)return '<li><span class="drq-soon">'+esc(o[0])+'<small>শীঘ্রই আসছে</small></span></li>';
    if(t.sub){var r='<li class="drq-grp"><button type="button" class="drq-tg" aria-expanded="false">'+esc(o[0])+'</button><ul class="drq-sub" hidden>';t.sub.forEach(function(x){r+=item(x)});return r+'</ul></li>'}
-   if(t.list)return audioLi('<a href="#search" data-list="'+t.list+'">'+esc(o[0])+'</a>',o,cat);
-   return audioLi('<a href="#search" data-'+(t.topic?'topic="'+esc(t.topic)+'"':t.mental?'mental="1"':'disease="1"')+'>'+esc(o[0])+'</a>',o,cat);
+   if(t.list)return audioLi('<a href="#search" data-list="'+t.list+'">'+lab(o[0])+'</a>',o,cat);
+   return audioLi('<a href="#search" data-'+(t.topic?'topic="'+esc(t.topic)+'"':t.mental?'mental="1"':'disease="1"')+'>'+lab(o[0])+'</a>',o,cat);
   };
   var ulOf=function(g,attr,cls,cat){var r='<ul class="drq-opts'+(cls?' '+cls:'')+'"'+(attr||'')+'>';g[1].forEach(function(o){r+=item(o,cat)});return r+'</ul>'};
   G.forEach(function(g,gi){
@@ -39,6 +41,7 @@
    h+='<section class="drq-card"><h3>'+esc(g[0])+'</h3>'+ulOf(g,'',gi===0?'drq-two':'',gi===0?'দৈনন্দিন':'')+'</section>';
   });
   H.innerHTML=h+'</div>';
+  {var wd=document.getElementById('drWidget');if(wd)H.insertBefore(wd,H.firstChild)}
   var fitT=function(){H.querySelectorAll('.drq-two').forEach(function(ul){var as=[].slice.call(ul.querySelectorAll('.drq-air>a'));if(!as.length||!as[0].clientWidth)return;var m=99;as.forEach(function(el){el.style.fontSize='';var f=parseFloat(getComputedStyle(el).fontSize);while(el.scrollWidth>el.clientWidth&&f>8){f-=.5;el.style.fontSize=f+'px'}m=Math.min(m,f)});as.forEach(function(el){el.style.fontSize=m+'px'})})};
   var fitA=function(){var t=H.querySelector('.drq-tab-all');if(!t||!t.clientWidth)return;t.style.fontSize='';var f=parseFloat(getComputedStyle(t).fontSize);while(t.scrollWidth>t.clientWidth&&f>10){f-=.5;t.style.fontSize=f+'px'}};var fitT0=fitT;fitT=function(){fitT0();fitA()};
   window.addEventListener('resize',function(){fitT()});
