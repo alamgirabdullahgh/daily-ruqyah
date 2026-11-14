@@ -857,8 +857,9 @@ body.is-home #drLanding:not([hidden]){width:100%;align-self:stretch;box-sizing:b
 #drLanding .drq-opts.drq-three .drq-bt{align-items:stretch}
 #drLanding .drq-opts.drq-three .drq-bt button{box-sizing:border-box;height:34px;min-height:34px;padding:0 2px;display:inline-flex;align-items:center;justify-content:center;line-height:1;font-size:11px;flex:1 1 0}
 #drLanding .drq-opts.drq-three .drq-bt button .drq-bi,#drLanding .drq-opts.drq-three .drq-bt button .drq-bl{font-size:11px;line-height:1}
-/* v217: দৈনন্দিন রুকইয়াহ কার্ড — PDF/অডিও নিচের কার্ডের মতো ছোট মাপে, একটার নিচে আরেকটা */
-#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt{flex-direction:column;gap:4px;width:56px;flex:none;align-items:stretch;justify-content:center}
-#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button{box-sizing:border-box;flex:none;flex-direction:row;width:100%;height:26px;min-height:26px;padding:0 2px;gap:3px;font-size:11px;line-height:1;border-radius:10px}
-#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button .drq-bi,#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button .drq-bl{font-size:11px;line-height:1;margin:0}
-#drLanding .drq-opts.drq-two:not(.drq-three) .drq-air>a{min-height:56px}
+/* v218: দৈনন্দিন রুকইয়াহ কার্ড — PDF/অডিও আগের মতোই পাশাপাশি দাঁড়ানো (আইকনের নিচে লেখা), শুধু উচ্চতা নিচের কার্ডের বাটনের সমান (৩৪px) */
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt{display:flex;flex-direction:row;width:auto;flex:none;gap:4px;align-items:stretch}
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button{box-sizing:border-box;flex:none;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:auto;height:34px;min-height:34px;padding:0 6px;font-size:10px;line-height:1;border-radius:10px}
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button .drq-bi{font-size:13px;line-height:1;margin:0}
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button .drq-bl{font-size:10px;line-height:1;margin:0}
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-air>a{min-height:34px}
