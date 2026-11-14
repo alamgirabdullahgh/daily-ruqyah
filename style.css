@@ -866,3 +866,8 @@ body.is-home #drLanding:not([hidden]){width:100%;align-self:stretch;box-sizing:b
 #drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button{flex-direction:column;gap:2px;width:34px;height:clamp(44px,13.2vw,56px);min-height:0;padding:0}
 #drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button .drq-bi{font-size:12px;line-height:1}
 #drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button .drq-bl{font-size:9px;line-height:1}
+
+/* v221: অঙ্গ/রোগ গ্রিড — ৬ কলাম, বড় বোল্ড নাম, সর্বোচ্চ দুই লাইন; অতিরিক্ত ব্র্যাকেটের লেখা বাদ */
+.dr-btn5{height:64px;min-height:64px;padding:1px;font-size:clamp(12.5px,3.7vw,15px);font-weight:800;line-height:1.2}
+.dr-btn5 span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;overflow-wrap:break-word}
+.dr-btn5.dr-sm6{font-size:clamp(10.5px,3vw,12.5px)}

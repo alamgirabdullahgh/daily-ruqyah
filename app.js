@@ -1069,12 +1069,14 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
  const combo=async kind=>{const mental=kind==="mental",CFG=mental?MENTAL:DISEASE,title=mental?"🧠 মানসিক":"🩺 শারীরিক";GEN++;$("rsInfo").textContent="লোড হচ্ছে…";$("rsOut").innerHTML="";let D;try{D=await rsFetch(BASE+CFG.file)}catch(e){$("rsInfo").textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
   const secs=[];D.groups.forEach(g=>{let x=secs.find(y=>y.name===g.section);if(!x)secs.push(x={name:g.section,ids:new Set()});g.cats.forEach(c=>c.keys.forEach(k=>x.ids.add(k.s+":"+k.a)))});
   {const f=keepDis(secs,CFG);secs.length=0;f.forEach(x=>secs.push(x))}addGSecs(secs,CFG);const back=()=>combo(kind),organs=mental?["অন্তর (হৃদয়)","বুক ও বক্ষ"]:ORG.map(o=>o[0]);
-  /* উপরে "অঙ্গভিত্তিক" হেডিং + সব অঙ্গ পাঁচ কলামের গ্রিডে; তার নিচে "রোগভিত্তিক" হেডিং + সব রোগ পাঁচ কলামে; বাটনে শুধু নাম */
+  /* উপরে "অঙ্গভিত্তিক" হেডিং + সব অঙ্গ ছয় কলামের গ্রিডে; তার নিচে "রোগভিত্তিক" হেডিং + সব রোগ পাঁচ কলামে; বাটনে শুধু নাম */
    const HS="display:flex;align-items:center;gap:8px;margin:16px 2px 10px;padding:9px 12px;border-radius:12px;background:var(--primary-light,#e6efe9);border-right:5px solid var(--accent);border-left:5px solid var(--accent);font-weight:800;font-size:17px;color:var(--accent);justify-content:center";
-   const btn=(label,note,fn)=>{const x=document.createElement("button");x.type="button";x.className="dr-btn dr-btn4 dr-btn5";x.appendChild(els("span",null,label));x.onclick=fn;return x};
+   const SHORT={"কণ্ঠনালী ও কণ্ঠার হাড়":"কণ্ঠনালী","বুক ও বক্ষ":"বুক","অন্ত্র ও নাড়িভুঁড়ি":"অন্ত্র","সাদা স্রাব ও অনবরত মাসিক":"সাদা স্রাব ও মাসিক"};
+   const shortL=n=>{const k=String(n).normalize("NFC");if(SHORT[k])return SHORT[k];return k.replace(/\s*\([^)]*\)/g,"").trim()||k};
+   const btn=(label,note,fn)=>{const x=document.createElement("button");x.type="button";x.className="dr-btn dr-btn4 dr-btn5";const sl=shortL(label);if(sl.split(/\s+/).some(w=>[...w].length>10))x.classList.add("dr-sm6");x.appendChild(els("span",null,sl));x.onclick=fn;return x};
    const dbtn=x=>btn(x.name,secNote(x),()=>{$("rsBox").classList.add("dr-tonly");showDiag(Object.assign({},CFG,{only:x.name,back}))});
    showNames(title,[],"");
-   const GS="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;align-items:stretch";
+   const GS="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;align-items:stretch";
    const out=$("rsOut");
    out.appendChild(els("div",HS,"🫀 অঙ্গভিত্তিক"));
    const og=els("div",GS);organs.forEach(n=>og.appendChild(btn(n,"",()=>window.__drOpenTopic(n))));out.appendChild(og);
