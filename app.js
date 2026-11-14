@@ -305,16 +305,17 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=(s,
  // কোনো সীমা নেই: প্রতিটি আয়াত নামিয়েই সাথে সাথে MP3-তে এনকোড হয়, মেমোরিতে শুধু ছোট MP3 টুকরো জমে — তাই হাজারো আয়াতেও একটাই ফাইল
  out.textContent="";let L=null;try{L=await loadLame()}catch(e){console.error(e)}
  if(!L){note("MP3 বানানোর লাইব্রেরি পাওয়া যায়নি (ইন্টারনেট দেখুন), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");playList(ST()>1?Array.from({length:ST()},()=>list).flat():list,out);return}
- const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));AS.loc=AS.net=0;let pool=null;try{pool=await mkEncPool()}catch(e){console.error(e);pool=null}const jobs=[],marks=[];
+ const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));AS.loc=AS.net=0;let pool=null;try{pool=await mkEncPool()}catch(e){console.error(e);pool=null}const jobs=[],marks=[],memo=new Map(),MK=x=>x[0]+":"+x[1];
  let wl=null;try{wl=await navigator.wakeLock.request("screen")}catch(e){}
  const push=pcm=>{for(let i=0;i<pcm.length;i+=B){const m=enc.encodeBuffer(pcm.subarray(i,i+B));if(m.length)mp3.push(new Uint8Array(m))}};
  const W=14,pf=[],get=i=>pf[i]||(pf[i]=fetchAud(list[i][0],list[i][1]).then(ab=>ab?ctx.decodeAudioData(ab).then(d=>({d}),()=>({err:1})):null).catch(()=>null));/* সামনের ১৪টি আয়াত একসাথে আনা ও ডিকোড হয় (আগে ৪টি, ডিকোড ক্রমে); এনকোডার ওয়ার্কারগুলো তাই বসে থাকে না */let ok=0,bad=0,cutN=0;
- for(let i=0;i<list.length;i++){for(let j=i;j<Math.min(i+W,list.length);j++)get(j);
+ for(let i=0;i<list.length;i++){for(let j=i;j<Math.min(i+W,list.length);j++)if(!(opt&&opt.memo&&memo.has(MK(list[j]))))get(j);
+  if(opt&&opt.memo&&pool&&memo.has(MK(list[i]))){jobs.push(memo.get(MK(list[i])));ok++;if(i%200===0){note("অডিও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+"…");await new Promise(r=>setTimeout(r))}continue}
   note("অডিও প্রস্তুত ও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+(bad?" (বাদ: "+bn2(bad)+")":"")+"…");
   const dr=await get(i);pf[i]=null;
   if(!dr){bad++;if(!ok&&bad>=5)break;continue}
   try{if(dr.err)throw 0;const d=dr.d,ch=d.getChannelData(0),pcm=smoothAyah(tsm(ch,sr,spdOf()),sr),rp=RP(list[i][0],list[i][1]);
-    if(pool){const fl=new Int16Array(pcm.length+gap.length);fl.set(pcm);fl.set(gap,pcm.length);await pool.room();jobs.push({p:pool.run(fl,sr),pcm:fl,rp})}else{for(let q=0;q<rp;q++){push(pcm);push(gap)}marks.push(mp3.length)}
+    if(pool){const fl=new Int16Array(pcm.length+gap.length);fl.set(pcm);fl.set(gap,pcm.length);await pool.room();{const jb={p:pool.run(fl,sr),pcm:fl,rp};jobs.push(jb);if(opt&&opt.memo)memo.set(MK(list[i]),jb)}}else{for(let q=0;q<rp;q++){push(pcm);push(gap)}marks.push(mp3.length)}
     ok++}catch(e){bad++;if(!ok&&bad>=5)break}
   if(i%10===0)await new Promise(r=>setTimeout(r))}
  try{ctx.close()}catch(x){}try{wl&&wl.release()}catch(x){}
@@ -1056,15 +1057,15 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
     if(sv!==""){const tp=TOPICS.find(x=>x.name===C.types);add(await topicKeys({terms:[tp.terms[+sv]]}))}else for(const n of C.src){const tt=TOPICS.find(x=>x.name===n);if(tt)add(await topicKeys(tt))}
     const O=[],s2=new Set();for(const o of ORG)for(const x of await topicKeys({terms:o[2]}))if(!s2.has(x[0]+":"+x[1])){s2.add(x[0]+":"+x[1]);O.push(x)}
     if(!B.length||!O.length)throw new Error("empty");
-    const N=Math.max(B.length,O.length),list=[];for(let i=0;i<N;i++)list.push(B[i%B.length],O[i%O.length]);
-    await mergeAudio(list,e.out,t=>e.say(t),{rep:1,set:1,grp:2,grpRep:11,noplay:true,name:"শরীরের গিঁট ধ্বংসের রুকইয়াহ "+kind+(sv!==""?" "+String(tp0(C,sv)):"")});e.done=true;return e})().catch(err=>{GAUD.delete(k);throw err});GAUD.set(k,e)}
+    const list=[];/* প্রতিটি অঙ্গের আয়াত স্থির; তার সাথে ১১টি আলাদা আয়াত (বদনজর/জাদু/জিনের) পরপর: আয়াত-১, অঙ্গ, আয়াত-২, অঙ্গ … ; পরের অঙ্গে ওই তালিকার পরের ১১টি */for(let j=0;j<O.length;j++)for(let k=0;k<11;k++)list.push(B[(11*j+k)%B.length],O[j]);
+    await mergeAudio(list,e.out,t=>e.say(t),{rep:1,set:1,memo:true,noplay:true,name:"শরীরের গিঁট ধ্বংসের রুকইয়াহ "+kind+(sv!==""?" "+String(tp0(C,sv)):"")});e.done=true;return e})().catch(err=>{GAUD.delete(k);throw err});GAUD.set(k,e)}
   if(say)e.say=say;return e}
  const tp0=(C,sv)=>{const tp=TOPICS.find(x=>x.name===C.types);return tp?String(tp.terms[+sv][0]).split(" — ")[0]:""};
  window.__drGitAudio=gitAudio;window.__drGitCount=k=>{const C=GITN[k],tp=C.types?TOPICS.find(x=>x.name===C.types):null;return 1+(tp?tp.terms.length:0)};
  window.__drGit=(host,kind,before)=>{const C=GITN[kind];if(!C||!host)return;const old=document.getElementById("drGit");if(old)old.remove();
   const box=els("div","margin:14px 0 16px;padding:12px 12px 14px;border-radius:14px;background:var(--primary-light,#e6efe9);border:1.5px solid var(--accent)");box.id="drGit";
   box.append(els("div","font-weight:800;font-size:17px;line-height:1.6;color:var(--accent);text-align:center;margin:0 0 8px","শরীরের প্রতিটি পয়েন্টে থাকা "+C.noun+" গিঁট ধ্বংসের রুকইয়াহ"));
-  box.append(els("div","font-size:13.5px;line-height:1.7;color:var(--text-main);margin:0 0 10px","অডিও তৈরি হবে এভাবে: "+C.noun.replace(/র$/,"")+"র একটি আয়াত একবার, তারপর শরীরের একটি অঙ্গের আয়াত একবার — এই জোড়া ১১ বার; এরপর পরের জোড়া। এভাবে সবগুলো অঙ্গ ও সবগুলো আয়াত শেষ হবে। শরীরের প্রতিটি অঙ্গে থাকা এই গিঁটগুলো এভাবেই ভাঙা হয়।"));
+  box.append(els("div","font-size:13.5px;line-height:1.7;color:var(--text-main);margin:0 0 10px","অডিও তৈরি হবে এভাবে: শরীরের একটি অঙ্গের আয়াত স্থির থাকে; তার সাথে "+C.noun.replace(/র$/,"")+"র ১১টি আলাদা আয়াত একটার পর একটা আঘাত করে — আয়াত-১, অঙ্গ, আয়াত-২, অঙ্গ, আয়াত-৩, অঙ্গ… ১১ বার। এরপর পরের অঙ্গে একইভাবে। এভাবে অঙ্গে থাকা গিঁটগুলো ভাঙা হয়।"));
   const tpD=C.types?TOPICS.find(x=>x.name===C.types):null,names=[C.types?"সব "+C.noun.replace(/র$/,""):C.noun.replace(/র$/,"")].concat(tpD?tpD.terms.map(x=>String(x[0]).split(" — ")[0]):[]);
   const rw=els("div","display:flex;flex-direction:column;gap:8px");
   names.forEach((nm,i)=>{const sv=i===0?"":String(i-1),r=els("div","border-radius:12px;background:var(--card-bg);border:1px solid var(--border-light);padding:8px 10px"),hd=els("div","display:flex;align-items:center;gap:8px"),host2=els("div","margin-top:6px"),stt=els("div","font-size:12.5px;color:var(--text-muted)");host2.hidden=true;
