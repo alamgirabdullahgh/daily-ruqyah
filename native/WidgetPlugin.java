@@ -178,6 +178,9 @@ public class WidgetPlugin extends Plugin {
     private View cardView;
     private int cardW = 0;
     private String cardSig = "", cardSlSig = "";
+    private Boolean lastVis = null;
+    private int lastW = -1;
+    private float lastTx = 0, lastTy = 0;
     private final Handler ui = new Handler(Looper.getMainLooper());
     // প্রতি সেকেন্ডে শুধু "ছাপ" মেলানো হয় (সস্তা); কার্ড আঁকা হয় কেবল ছাপ বদলালে (মিনিট/ওয়াক্ত/সেটিং বদলালে)
     private final Runnable tick = new Runnable() {
@@ -215,6 +218,7 @@ public class WidgetPlugin extends Plugin {
                 if (cardView == null || cardW != wdp) {
                     if (cardView != null) parent.removeView(cardView);
                     cardW = wdp;
+                    lastVis = null;
                     cardSig = ClockWidget.Companion.cardSig(getContext(), wdp);
                     cardSlSig = ClockWidget.Companion.cardSlSig(getContext(), wdp);
                     RemoteViews rv = ClockWidget.Companion.viewForCard(getContext(), wdp);
@@ -231,14 +235,23 @@ public class WidgetPlugin extends Plugin {
                     ui.removeCallbacks(tick);
                     ui.postDelayed(tick, 1000);
                 }
-                cardView.measure(View.MeasureSpec.makeMeasureSpec((int) (wdp * d), View.MeasureSpec.EXACTLY),
-                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-                cardView.layout(0, 0, cardView.getMeasuredWidth(), cardView.getMeasuredHeight());
+                // জায়গা/দৃশ্যমানতা বদলালেই কেবল মাপ-বসানো হয়; আগে প্রতি কলে (২ সেকেন্ডে) মাপ নিয়ে আবার layout হতো, তাতে লেখা নতুন করে ফিট হয়ে ঝিলিক দিত
                 View wv = getBridge().getWebView();
-                cardView.setTranslationX((float) (x * d) + wv.getLeft());
-                cardView.setTranslationY((float) (y * d) + wv.getTop());
-                cardView.setVisibility(vis ? View.VISIBLE : View.INVISIBLE);
-                cardView.bringToFront();
+                float tx = (float) (x * d) + wv.getLeft(), ty = (float) (y * d) + wv.getTop();
+                boolean created = lastVis == null;
+                if (created || lastW != wdp) {
+                    cardView.measure(View.MeasureSpec.makeMeasureSpec((int) (wdp * d), View.MeasureSpec.EXACTLY),
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                    cardView.layout(0, 0, cardView.getMeasuredWidth(), cardView.getMeasuredHeight());
+                    lastW = wdp;
+                }
+                if (created || tx != lastTx) { cardView.setTranslationX(tx); lastTx = tx; }
+                if (created || ty != lastTy) { cardView.setTranslationY(ty); lastTy = ty; }
+                if (lastVis == null || lastVis != vis) {
+                    cardView.setVisibility(vis ? View.VISIBLE : View.INVISIBLE);
+                    if (vis) cardView.bringToFront();
+                    lastVis = vis;
+                }
                 if (vis) redraw();
                 JSObject r = new JSObject();
                 r.put("h", cardView.getMeasuredHeight() / d);

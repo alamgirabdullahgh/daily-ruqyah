@@ -730,3 +730,6 @@ body.is-home .dr-main{flex:1 1 auto;display:flex;flex-direction:column}
 body.is-home #drLanding:not([hidden]){flex:1 1 auto;display:flex;flex-direction:column}
 body.is-home .drq-support{margin-top:auto}
 body.is-home .drq-cards{padding-bottom:8px}
+
+/* নিচের (শেষ) কার্ড: মাথার সরু সবুজ দাগ ওপরে না থেকে নিচের প্রান্তে বসে (উচ্চতা একই, কারণ দাগের পুরুত্ব একই) */
+.drq-grid>.drq-card:last-child{border-top:1px solid var(--border-light);border-bottom:4px solid var(--primary)}
