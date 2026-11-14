@@ -736,5 +736,5 @@ body.is-home .drq-cards{padding-bottom:8px}
 
 /* বদনজর/জাদু/জিন কার্ড: মাথার সরু সবুজ দাগ নেই (উচ্চতা একই থাকে) */
 .drq-grid>.drq-tabcard{border-top:4px solid transparent}
-/* বদনজর/জাদু/জিন কার্ড: ওপর-নিচে নয়, দুই পাশে সরু সবুজ দাগ (ওপরের কার্ডের মাথার দাগের মতো); পাশের পুরুত্ব ১px→৪px হওয়ায় ভেতরের প্যাডিং ৩px কমানো, যাতে লেখা সরে না যায় */
-.drq-grid>.drq-tabcard{border-left:4px solid var(--primary);border-right:4px solid var(--primary);padding-left:17px;padding-right:17px}
+/* বদনজর/জাদু/জিন কার্ড: ওপরের কার্ডের মতো মাথায় এবং শেষ কার্ডের মতো নিচে সরু (৪px) সবুজ দাগ; নিচের দাগ ১px→৪px হওয়ায় নিচের প্যাডিং ৩px কমানো, যাতে কার্ডের উচ্চতা আগের মতোই থাকে */
+.drq-grid>.drq-tabcard{border-top:4px solid var(--primary);border-bottom:4px solid var(--primary);padding-bottom:11px}
