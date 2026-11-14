@@ -819,7 +819,8 @@ window.__drHomePrebuild=async()=>{if(HPRE)return;HPRE=true;
  for(const cat of xs){
   try{await homePdf("x",cat)}catch(e){console.error(e)}
   try{await homeAudio("x",cat).p}catch(e){console.error(e)}
-  await new Promise(r=>setTimeout(r,300))}};
+  await new Promise(r=>setTimeout(r,300))}
+ for(const k of["বদনজর","জাদু","জিন"]){try{await window.__drGitAudio(k,"").p}catch(e){console.error(e)}await new Promise(r=>setTimeout(r,300))}};
 window.__drHomePdf=async(kind,cat,host)=>{
  if(!host)return;
  if(host.dataset.done==="1"){host.hidden=!host.hidden;return}
@@ -1049,6 +1050,17 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
  const GITN={"বদনজর":{noun:"বদনজরের",src:["বদনজর"],types:null},"জাদু":{noun:"জাদুর",src:["জাদু","জাদুর প্রকার"],types:"জাদুর প্রকার"},"জিন":{noun:"জিনের",src:["জিন","চালানের প্রকার"],types:"চালানের প্রকার"}};
  const gitMarks=k=>{try{return new Set(JSON.parse(localStorage.getItem("drGitMarks:"+k)||"[]"))}catch(e){return new Set()}};
  const gitSave=(k,s)=>{try{localStorage.setItem("drGitMarks:"+k,JSON.stringify([...s]))}catch(e){}};
+ const GAUD=new Map();
+ function gitAudio(kind,sv,say){const C=GITN[kind],k=kind+"|"+sv;let e=GAUD.get(k);
+  if(!e){e={say:()=>{},out:el("div")};e.p=(async()=>{await loadRoots();const B=[],seen=new Set(),add=l=>l.forEach(x=>{const id=x[0]+":"+x[1];if(!seen.has(id)){seen.add(id);B.push(x)}});
+    if(sv!==""){const tp=TOPICS.find(x=>x.name===C.types);add(await topicKeys({terms:[tp.terms[+sv]]}))}else for(const n of C.src){const tt=TOPICS.find(x=>x.name===n);if(tt)add(await topicKeys(tt))}
+    const O=[],s2=new Set();for(const o of ORG)for(const x of await topicKeys({terms:o[2]}))if(!s2.has(x[0]+":"+x[1])){s2.add(x[0]+":"+x[1]);O.push(x)}
+    if(!B.length||!O.length)throw new Error("empty");
+    const N=Math.max(B.length,O.length),list=[];for(let i=0;i<N;i++)list.push(B[i%B.length],O[i%O.length]);
+    await mergeAudio(list,e.out,t=>e.say(t),{rep:1,set:1,grp:2,grpRep:11,noplay:true,name:"শরীরের গিঁট ধ্বংসের রুকইয়াহ "+kind+(sv!==""?" "+String(tp0(C,sv)):"")});e.done=true;return e})().catch(err=>{GAUD.delete(k);throw err});GAUD.set(k,e)}
+  if(say)e.say=say;return e}
+ const tp0=(C,sv)=>{const tp=TOPICS.find(x=>x.name===C.types);return tp?String(tp.terms[+sv][0]).split(" — ")[0]:""};
+ window.__drGitAudio=gitAudio;
  window.__drGit=(host,kind,before)=>{const C=GITN[kind];if(!C||!host)return;const old=document.getElementById("drGit");if(old)old.remove();
   const box=els("div","margin:14px 0 16px;padding:12px 12px 14px;border-radius:14px;background:var(--primary-light,#e6efe9);border:1.5px solid var(--accent)");box.id="drGit";
   box.append(els("div","font-weight:800;font-size:17px;line-height:1.6;color:var(--accent);text-align:center;margin:0 0 8px","শরীরের প্রতিটি পয়েন্টে থাকা "+C.noun+" গিঁট ধ্বংসের রুকইয়াহ"));
@@ -1058,17 +1070,9 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
    const o0=document.createElement("option");o0.value="";o0.textContent="সব "+C.noun.replace(/র$/,"")+" (সব প্রকার)";sl.append(o0);
    (tp?tp.terms:[]).forEach((x,i)=>{const o=document.createElement("option");o.value=String(i);o.textContent=String(x[0]).split(" — ")[0];sl.append(o)});sel=sl;box.append(sl)}
   const st=els("div","font-size:13px;color:var(--text-muted);margin:6px 0"),out=el("div");
-  const go=mkBtn("🔊 অডিও তৈরি করুন",async()=>{go.disabled=true;out.textContent="";
-   try{await loadRoots();let B=[];const seen=new Set(),add=l=>l.forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);B.push(k)}});
-    if(sel&&sel.value!==""){const tp=TOPICS.find(x=>x.name===C.types);add(await topicKeys({terms:[tp.terms[+sel.value]]}))}
-    else for(const n of C.src){const t=TOPICS.find(x=>x.name===n);if(t)add(await topicKeys(t))}
-    const OT2=[];{const s2=new Set();for(const o of ORG){const t=TOPICS.find(x=>x.name===o[0]);if(!t)continue;for(const k of await topicKeys({terms:o[2]}))if(!s2.has(k[0]+":"+k[1])){s2.add(k[0]+":"+k[1]);OT2.push(k)}}}
-    if(!B.length||!OT2.length)throw new Error("empty");
-    const N=Math.max(B.length,OT2.length),list=[];for(let i=0;i<N;i++){list.push(B[i%B.length],OT2[i%OT2.length])}
-    st.textContent="জোড়া "+bn2(N)+"টি × ১১ বার — প্রায় "+bn2(Math.round(N*2*11*7/3600*10)/10)+" ঘণ্টার অডিও; তৈরি হতে সময় লাগবে, অ্যাপ খোলা রাখুন…";
-    await mergeAudio(list,out,t=>st.textContent=t,{rep:1,set:1,grp:2,grpRep:11,name:"শরীরের গিঁট ধ্বংসের রুকইয়াহ "+kind})}
-   catch(e){console.error(e);st.textContent="অডিও তৈরি করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"}go.disabled=false});
-  go.style.margin="0 0 6px";box.append(go,st,out);
+  const show=async()=>{out.textContent="";const e=gitAudio(kind,sel?sel.value:"",t=>st.textContent=t);st.textContent=e.done?"":"⏳ অডিও আগে থেকেই ব্যাকগ্রাউন্ডে তৈরি হচ্ছে…";
+   try{await e.p;st.textContent="";out.textContent="";out.append(e.out)}catch(x){console.error(x);st.textContent="অডিও তৈরি করা যায়নি"}};
+  if(sel)sel.onchange=show;box.append(st,out);show();
   box.append(els("div","font-weight:700;color:var(--accent);margin:12px 0 4px","📍 অডিও শোনার সময় যে অঙ্গে সমস্যা বা প্রতিক্রিয়া হবে, সাথে সাথে এই তালিকায় সেই অঙ্গে টিক দিন"));
   const mk=gitMarks(kind),grid=els("div","display:grid;grid-template-columns:1fr 1fr;gap:6px");
   ORG.forEach(o=>{const nm=o[0].split(" (")[0],lb=els("label","display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:var(--card-bg);border:1px solid var(--border-light);font-size:14.5px;cursor:pointer"),cb=document.createElement("input");cb.type="checkbox";cb.checked=mk.has(nm);cb.style.cssText="width:20px;height:20px;accent-color:var(--primary);flex:none";cb.onchange=()=>{if(cb.checked)mk.add(nm);else mk.delete(nm);gitSave(kind,mk)};lb.append(cb,els("span",null,nm));grid.append(lb)});
