@@ -822,7 +822,7 @@ window.__drHomePdf=async(kind,cat,host)=>{
  try{
   const r=await homePdf(kind,cat,t=>note.textContent=t);
   note.textContent="✅ "+bn2(r.N)+" পৃষ্ঠার PDF";
-  const row=els("div","display:flex;gap:6px;margin:4px 0"),dl=mkBtn("⬇ PDF ডাউনলোড",()=>saveBlob(r.pdf,r.nm));dl.style.margin="0";row.append(dl);
+  const row=els("div","display:flex;gap:6px;margin:4px 0"),dl=mkBtn("⬇ PDF ডাউনলোড",()=>saveBlob(r.pdf,r.nm)),shp=mkBtn("📤 শেয়ার",()=>shareBlob(r.pdf,r.nm));dl.style.margin="0";shp.style.margin="0";row.append(dl,shp);
   const pg=els("div","max-height:62vh;overflow:auto;border:1px solid var(--border-light);border-radius:10px;background:#fff");
   r.imgs.forEach(u8=>{const im=document.createElement("img");im.loading="lazy";im.style.cssText="display:block;width:100%;height:auto";im.src=URL.createObjectURL(new Blob([u8],{type:"image/jpeg"}));pg.appendChild(im)});
   host.append(row,pg);host.dataset.done="1";
