@@ -862,3 +862,7 @@ body.is-home #drLanding:not([hidden]){width:100%;align-self:stretch;box-sizing:b
 #drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button{box-sizing:border-box;flex:none;display:inline-flex;flex-direction:row;align-items:center;justify-content:center;gap:0;width:clamp(44px,13.2vw,56px);height:34px;min-height:34px;padding:0 2px;font-size:11px;line-height:1;border-radius:10px;white-space:nowrap}
 #drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button .drq-bi,#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button .drq-bl{font-size:11px;line-height:1;margin:0}
 #drLanding .drq-opts.drq-two:not(.drq-three) .drq-air>a{min-height:34px;padding:6px 2px}
+/* v220: দৈনন্দিন রুকইয়াহ কার্ড — PDF/অডিও বাটন দাঁড়ানো (সরু ও লম্বা: আগের মাপ উল্টে), পাশাপাশি; আইকন উপরে, লেখা নিচে */
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button{flex-direction:column;gap:2px;width:34px;height:clamp(44px,13.2vw,56px);min-height:0;padding:0}
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button .drq-bi{font-size:12px;line-height:1}
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button .drq-bl{font-size:9px;line-height:1}
