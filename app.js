@@ -1066,7 +1066,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   {const f=keepDis(secs,CFG);secs.length=0;f.forEach(x=>secs.push(x))}addGSecs(secs,CFG);const back=()=>nameList(CFG,title,sub,up);
   showNames(title,secs.map(x=>({name:x.name,note:secNote(x),fn:()=>{$("rsBox").classList.add("dr-tonly");showDiag(Object.assign({},CFG,{only:x.name,back}));}})),sub,up)};
  const OT={d:null};
- const loadOT=async()=>{if(OT.d)return OT.d;try{OT.d=await rsFetch(BASE+"organ-treat.json?v=1")}catch(e){OT.d={}}return OT.d};
+ const loadOT=async()=>{if(OT.d)return OT.d;try{OT.d=await rsFetch(BASE+"organ-treat.json?v=2")}catch(e){OT.d={}}return OT.d};
  /* অঙ্গে চাপলে: ওই অঙ্গের জন্য সমস্যাভিত্তিক চিকিৎসা (data/organ-treat.json) থাকলে সমস্যার হেডিং + নিচে চিকিৎসার আয়াত ও নিয়ম; না থাকলে আগের মতো শব্দভিত্তিক আয়াত */
  const renderOrganTreat=(n,list)=>{GEN++;CURT=null;window.__bq="";rs.classList.remove("on");pad.classList.remove("on");const box=$("rsBox");box.classList.add("dr-tonly","dr-topic");const out=$("rsOut"),info=$("rsInfo");out.innerHTML="";info.textContent="";
   const wrap=els("div","display:flex;flex-direction:column;gap:12px");

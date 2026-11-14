@@ -1,7 +1,7 @@
-const V="dr-shell-v231";
+const V="dr-shell-v232";
 // ডেইলি রুকিয়া — অফলাইনে অ্যাপ খোলার জন্য। আয়াতের বড় ডেটা অ্যাপ নিজেই (Cache API "rs-…") জমা রাখে, তাই এখানে শুধু অ্যাপের কাঠামো।
 
-const SHELL=["./","index.html","style.css?v=90","app.js?v=61","home.js?v=19","alarm.js?v=12","amol.js?v=15","data/amol-guide.json?v=8","data/amol-struct.json?v=2","data/sunnah.json?v=1","data/sunnah.js?v=1","symptom.js?v=4","widget.js?v=30","boot.js?v=6","reveal.js?v=1","manifest.webmanifest","icons/icon-192.png","icons/icon-512.png","fonts/indopak-waqf-lazim.woff2","fonts/noto-sans-bengali-bengali-wght.woff2","fonts/noto-sans-bengali-latin-wght.woff2","data/lame.min.js?v=1","data/hadith-norm.js?v=2","data/hadith.js?v=15"];
+const SHELL=["./","index.html","style.css?v=90","app.js?v=62","home.js?v=19","alarm.js?v=12","amol.js?v=15","data/amol-guide.json?v=8","data/amol-struct.json?v=2","data/sunnah.json?v=1","data/sunnah.js?v=1","symptom.js?v=4","widget.js?v=30","boot.js?v=6","reveal.js?v=1","manifest.webmanifest","icons/icon-192.png","icons/icon-512.png","fonts/indopak-waqf-lazim.woff2","fonts/noto-sans-bengali-bengali-wght.woff2","fonts/noto-sans-bengali-latin-wght.woff2","data/lame.min.js?v=1","data/hadith-norm.js?v=2","data/hadith.js?v=15"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith("dr-shell-")&&k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener("fetch",e=>{
