@@ -41,7 +41,6 @@
    h+='<section class="drq-card"><h3>'+esc(g[0])+'</h3>'+ulOf(g,'',gi===0?'drq-two':'',gi===0?'দৈনন্দিন':'')+'</section>';
   });
   H.innerHTML=h+'</div>';
-  {var wd=document.getElementById('drWidget');if(wd)H.insertBefore(wd,H.firstChild)}
   var fitT=function(){H.querySelectorAll('.drq-two').forEach(function(ul){var as=[].slice.call(ul.querySelectorAll('.drq-air>a'));if(!as.length||!as[0].clientWidth)return;var m=99;as.forEach(function(el){el.style.fontSize='';var f=parseFloat(getComputedStyle(el).fontSize);while(el.scrollWidth>el.clientWidth&&f>8){f-=.5;el.style.fontSize=f+'px'}m=Math.min(m,f)});as.forEach(function(el){el.style.fontSize=m+'px'})})};
   var fitA=function(){var t=H.querySelector('.drq-tab-all');if(!t||!t.clientWidth)return;t.style.fontSize='';var f=parseFloat(getComputedStyle(t).fontSize);while(t.scrollWidth>t.clientWidth&&f>10){f-=.5;t.style.fontSize=f+'px'}};var fitT0=fitT;fitT=function(){fitT0();fitA()};
   window.addEventListener('resize',function(){fitT()});

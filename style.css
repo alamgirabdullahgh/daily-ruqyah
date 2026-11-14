@@ -846,12 +846,6 @@ body.is-home #drLanding:not([hidden]){width:100%;align-self:stretch;box-sizing:b
 .dr-btn4{font-size:12.5px;padding:8px 3px;min-height:54px;gap:2px;border-radius:10px;line-height:1.3}
 .dr-btn4 small{font-size:10px}
 
-/* v214: সময়ের উইজেট বাদ — হোমের উপরে স্থির কার্ড; "হোম স্ক্রিনে বসান" কার্ডের উপরে মাঝখানে */
-#drLanding>#drWidget{background:var(--card-bg);border:1px solid var(--border-light);border-top:4px solid var(--primary);border-radius:14px;box-shadow:var(--shadow-card);padding:8px 8px 6px;margin:0 0 8px}
-#drWidget .drw{background:transparent!important;border-top:0!important;border-radius:0!important;margin:0 auto!important;padding:2px 4px!important}
-.drw-pr{display:flex;justify-content:center;margin:2px 0 6px}
-#drWidget .drw-pin{margin:0;padding:6px 18px;font-size:12.5px;border-radius:999px}
 /* তিন বোতাম: লেখা বদলেছে (দুই লাইন/এক লাইন), বোতামের মাপ আগের মতোই; লেখা বড় ও বোল্ড */
 #drLanding .drq-opts.drq-three .drq-air>a{height:46px;min-height:46px;padding:2px 1px;line-height:1.15;font-weight:800;font-size:clamp(10px,3.6vw,14.5px)}
 #drLanding .drq-opts.drq-three .drq-air>a>span{display:block;text-align:center;white-space:nowrap}
-body.is-home .drq-support{margin-top:0}
