@@ -473,6 +473,61 @@ async function ayatPdfBuild(list,title,say){
  say("⏳ PDF ফাইল জোড়া হচ্ছে…");
  const pdf=jpegPdf(imgs,W,H),nm=("আয়াত-"+String(title).replace(/[\\\/:*?"<>|\n\r]+/g," ").trim().slice(0,40)).trim()+".pdf";
  return{pdf,nm,imgs,N}}
+/* সিমটম ডায়াগনোসিস PDF: টুলের (symptom.js) পুরো রেফারেন্স — প্রতিটি ক্ষেত্র × অপশনের বিবরণ, গ্রেডসহ — পেজ ক্যানভাসে এঁকে PDF */
+async function symPdfBuild(cat,say){
+ const W=1240,H=1754,M=96,CW=W-2*M,FOOT=70,BOT=H-M-FOOT,BNF='"DR Bangla",sans-serif';
+ const f=(w,px)=>w+" "+px+"px "+BNF;
+ say("⏳ প্রস্তুত হচ্ছে…");
+ try{await Promise.all([document.fonts.load(f(400,26),"আয়াত"),document.fonts.load(f(700,26),"আয়াত")])}catch(e){}
+ if(!window.__drSymDoc){if(!window.__drSymInit)throw new Error("no-sym");window.__drSymInit(true)}
+ const g={"বদনজর":0,"জাদু":1,"জিন":2}[cat],secs=window.__drSymDoc(g===undefined?-1:g),title=homeTitle("sym",cat);
+ const mc=document.createElement("canvas").getContext("2d");
+ const wrap=(text,font,maxW)=>{mc.font=font;const ws=String(text||"").split(/\s+/).filter(Boolean),out=[];let cur="";
+  for(const w of ws){const t=cur?cur+" "+w:w;if(cur&&mc.measureText(t).width>maxW){out.push(cur);cur=w}else cur=t}
+  if(cur)out.push(cur);return out};
+ const pages=[[]];let y=M;
+ const put=(o,h)=>{if(y+h>BOT){pages.push([]);y=M}o.y=y;pages[pages.length-1].push(o);y+=h};
+ const T=(t,font,c,x,h)=>put({t,font,c,x:x==null?M:x,al:"left",dir:"ltr"},h);
+ let dt="";try{dt=new Date().toLocaleDateString("bn-BD",{year:"numeric",month:"long",day:"numeric"})}catch(e){}
+ T("Daily Ruqyah",f(700,40),"#0a5240",M,60);
+ wrap(title,f(700,34),CW).forEach(l=>T(l,f(700,34),"#111",M,50));
+ T("গবেষণা সংস্করণ"+(dt?" · "+dt:""),f(400,22),"#666",M,40);
+ wrap("⚕ এই রেফারেন্সের সবকিছু প্যাটার্ন-মিল; কোনো নিশ্চিত রোগনির্ণয় নয়। মেডিক্যাল স্ক্রিনিং ও বিশেষজ্ঞ ডাক্তারের পরীক্ষার বিকল্প নয়।",f(400,22),CW).forEach(l=>T(l,f(400,22),"#8a5a00",M,34));
+ put({line:1,c:"#0a5240",w:3},30);
+ const DOT=["🟢","🟠","🔴"];
+ for(const sec of secs){
+  if(y+200>BOT){pages.push([]);y=M}
+  T(sec.title,f(700,34),"#0a5240",M,56);
+  for(const it of sec.items){
+   const hl=wrap(it.head,f(700,26),CW),blocks=[];
+   it.rows.forEach(r=>wrap(r[1],f(400,24),CW-44).forEach((l,i)=>blocks.push({t:(i?"":(r[0]<0?"⚪":DOT[r[0]]||"•")+" ")+l,x:M+(i?44:16),font:f(400,24),c:"#222",h:36})));
+   blocks.push({t:it.fl,x:M+16,font:f(400,20),c:"#777",h:34});
+   if(it.x){const xl=it.x.slice(1);blocks.push({t:it.x[0],x:M+16,font:f(700,22),c:"#0a5240",h:36});
+    xl.forEach(t=>{if(t[0]==="#")blocks.push({t:t.slice(1),x:M+16,font:f(700,22),c:"#0a5240",h:36});else wrap(t,f(400,22),CW-60).forEach((l,i)=>blocks.push({t:(i?"":"• ")+l,x:M+(i?60:32),font:f(400,22),c:"#333",h:32}))})}
+   const hh=hl.length*40+blocks.reduce((s,b)=>s+b.h,0)+30;
+   if(hh<=BOT-M&&y+hh>BOT){pages.push([]);y=M}
+   hl.forEach(l=>T(l,f(700,26),"#111",M,40));
+   blocks.forEach(b=>T(b.t,b.font,b.c,b.x,b.h));
+   put({line:1,c:"#d8e2dd",w:1},30)}
+  await new Promise(r=>setTimeout(r))}
+ const N=pages.length,imgs=[];
+ for(let p=0;p<N;p++){
+  say("⏳ পেজ বানানো হচ্ছে… "+bn2(p+1)+"/"+bn2(N));
+  const cv=document.createElement("canvas");cv.width=W;cv.height=H;const c=cv.getContext("2d");
+  c.fillStyle="#fff";c.fillRect(0,0,W,H);c.textBaseline="alphabetic";
+  for(const o of pages[p]){
+   if(o.line){c.fillStyle=o.c;c.fillRect(M,o.y+o.w,CW,o.w);continue}
+   c.font=o.font;c.fillStyle=o.c;c.direction="ltr";c.textAlign="left";
+   const fs=parseInt(o.font.match(/(\d+)px/)[1]);c.fillText(o.t,o.x,o.y+Math.round(fs*1.05))}
+  c.fillStyle="#d8e2dd";c.fillRect(M,H-M-FOOT+18,CW,1);
+  c.font=f(400,20);c.fillStyle="#777";c.textAlign="left";c.fillText("Daily Ruqyah",M,H-M-FOOT+52);
+  c.textAlign="right";c.fillText("পৃষ্ঠা "+bn2(p+1)+" / "+bn2(N),W-M,H-M-FOOT+52);
+  const bl=await new Promise(r=>cv.toBlob(r,"image/jpeg",0.85));
+  imgs.push(new Uint8Array(await bl.arrayBuffer()));cv.width=cv.height=0;
+  await new Promise(r=>setTimeout(r))}
+ say("⏳ PDF ফাইল জোড়া হচ্ছে…");
+ const pdf=jpegPdf(imgs,W,H),nm=("সিমটম-ডায়াগনোসিস-"+(cat==="সব"?"বদনজর-জাদু-জিন":cat)).trim()+".pdf";
+ return{pdf,nm,imgs,N}}
 async function ayatPdf(list,title,say){const r=await ayatPdfBuild(list,title,say);await saveBlob(r.pdf,r.nm);return r.N}
 function audioBar(info,all,cb,title){if(!all.length)return;const box=els("div","margin-top:8px"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),out=el("div"),row=els("div","display:flex;flex-wrap:wrap;gap:6px;align-items:center");
  const sel=el("select","rs-sel");RECS.forEach(r=>{const o=document.createElement("option");o.value=r[0];o.textContent=r[1];sel.appendChild(o)});sel.value=recId();sel.onchange=()=>{try{localStorage.setItem("rsRec",sel.value)}catch(e){}};
@@ -733,13 +788,13 @@ async function treatKeys(cat){
  parts.forEach(l=>l.forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);out.push(k)}}));return out}
 async function bodyKeys(file){const D=await rsFetch(BASE+file),seen=new Set(),out=[];D.groups.forEach(g=>g.cats.forEach(c=>c.keys.forEach(k=>{const id=k.s+":"+k.a;if(!seen.has(id)){seen.add(id);out.push([k.s,k.a])}})));return out}
 const homeKeys=(kind,cat)=>kind==="resp"?respKeys(cat):kind==="phys"?bodyKeys(DISEASE.file):kind==="ment"?bodyKeys(MENTAL.file):treatKeys(cat);
-const homeTitle=(kind,cat)=>kind==="phys"||kind==="ment"?"দৈনন্দিন রুকইয়াহ "+cat:(kind==="resp"?"রেসপন্স ডায়াগনোসিস":"ট্রিটমেন্ট")+" "+(cat==="সব"?"বদনজর জাদু জিন":cat);
+const homeTitle=(kind,cat)=>kind==="sym"?"সিমটম ডায়াগনোসিস "+(cat==="সব"?"বদনজর জাদু জিন":cat):kind==="phys"||kind==="ment"?"দৈনন্দিন রুকইয়াহ "+cat:(kind==="resp"?"রেসপন্স ডায়াগনোসিস":"ট্রিটমেন্ট")+" "+(cat==="সব"?"বদনজর জাদু জিন":cat);
 /* পুনরাবৃত্তি: রেসপন্স ডায়াগনোসিস — প্রতিটি আয়াত ১১ বার, পুরো সেট ৩ বার; ট্রিটমেন্ট — প্রতিটি আয়াত ৩ বার, সেট ১ বার */
 const homeRep=kind=>kind==="resp"?{rep:11,set:3}:{rep:3,set:1};
 /* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */
 const HPDF=new Map();
 function homePdf(kind,cat,say){const k=kind+"|"+cat;let e=HPDF.get(k);
- if(!e){e={say:()=>{}};e.p=(async()=>{const list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty");return ayatPdfBuild(list,homeTitle(kind,cat),t=>e.say(t))})().catch(err=>{HPDF.delete(k);throw err});HPDF.set(k,e)}
+ if(!e){e={say:()=>{}};e.p=(async()=>{if(kind==="sym")return symPdfBuild(cat,t=>e.say(t));const list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty");return ayatPdfBuild(list,homeTitle(kind,cat),t=>e.say(t))})().catch(err=>{HPDF.delete(k);throw err});HPDF.set(k,e)}
  if(say)e.say=say;return e.p}
 /* জোড়া অডিওও আগে থেকে বানানো থাকে: ফোনে অফলাইন অডিও নামানো থাকলে (সব আয়াত) ব্যাকগ্রাউন্ডে প্রতিটি ক্যাটাগরির ফাইল জোড়া হয়ে বসে; বোতাম চাপলে সাথে সাথে বাজে ও ডাউনলোড/শেয়ার করা যায় */
 const HAUD=new Map();
@@ -754,9 +809,9 @@ window.__drHomePrebuild=async()=>{if(HPRE)return;HPRE=true;
  for(let t=0;t<40&&!offReady;t++){
   try{const np=NAO();if(np){const r=await np.status();offReady=r.done>=r.total}else offReady=offOn()&&(await offCount())>=OFFN}catch(e){}
   if(!offReady)await new Promise(r=>setTimeout(r,15000))}
- for(const cat of["বদনজর","জাদু","জিন","সব"])for(const kind of["resp","treat"]){
+ for(const cat of["বদনজর","জাদু","জিন","সব"])for(const kind of["sym","resp","treat"]){
   try{await homePdf(kind,cat)}catch(e){console.error(e)}
-  if(offReady){try{await homeAudio(kind,cat).p}catch(e){console.error(e)}}
+  if(offReady&&kind!=="sym"){try{await homeAudio(kind,cat).p}catch(e){console.error(e)}}
   await new Promise(r=>setTimeout(r,1500))}};
 window.__drHomePdf=async(kind,cat,host)=>{
  if(!host)return;
