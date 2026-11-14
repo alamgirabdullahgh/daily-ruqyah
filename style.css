@@ -1,18 +1,10 @@
-@font-face{font-family:"DR Sans";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/anek-bangla-bengali-400.woff2) format("woff2");size-adjust:94%;unicode-range:U+0951-0952,U+0964-0965,U+0980-09FE,U+200C-200D,U+20B9,U+25CC,U+A8F1}
-@font-face{font-family:"DR Sans";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/anek-bangla-latin-400.woff2) format("woff2");size-adjust:96%;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2212,U+FEFF,U+FFFD}
-@font-face{font-family:"DR Sans";font-style:normal;font-weight:500;font-display:swap;src:url(fonts/anek-bangla-bengali-500.woff2) format("woff2");size-adjust:94%;unicode-range:U+0951-0952,U+0964-0965,U+0980-09FE,U+200C-200D,U+20B9,U+25CC,U+A8F1}
-@font-face{font-family:"DR Sans";font-style:normal;font-weight:500;font-display:swap;src:url(fonts/anek-bangla-latin-500.woff2) format("woff2");size-adjust:96%;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2212,U+FEFF,U+FFFD}
-@font-face{font-family:"DR Sans";font-style:normal;font-weight:600;font-display:swap;src:url(fonts/anek-bangla-bengali-600.woff2) format("woff2");size-adjust:94%;unicode-range:U+0951-0952,U+0964-0965,U+0980-09FE,U+200C-200D,U+20B9,U+25CC,U+A8F1}
-@font-face{font-family:"DR Sans";font-style:normal;font-weight:600;font-display:swap;src:url(fonts/anek-bangla-latin-600.woff2) format("woff2");size-adjust:96%;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2212,U+FEFF,U+FFFD}
-@font-face{font-family:"DR Sans";font-style:normal;font-weight:700 900;font-display:swap;src:url(fonts/anek-bangla-bengali-700.woff2) format("woff2");size-adjust:94%;unicode-range:U+0951-0952,U+0964-0965,U+0980-09FE,U+200C-200D,U+20B9,U+25CC,U+A8F1}
-@font-face{font-family:"DR Sans";font-style:normal;font-weight:700 900;font-display:swap;src:url(fonts/anek-bangla-latin-700.woff2) format("woff2");size-adjust:96%;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2212,U+FEFF,U+FFFD}
+/* ফন্ট: পুরো অ্যাপে মাত্র দুটি — বাংলা (ও ইংরেজি সংখ্যা/অক্ষর): Noto Sans Bengali; আরবি: IndoPak (মাসনুন রুকইয়াহর কুরআনের ফন্ট) */
+@font-face{font-family:"DR Bangla";font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/noto-sans-bengali-bengali-wght.woff2) format("woff2-variations");size-adjust:90%;unicode-range:U+0951-0952,U+0964-0965,U+0980-09FE,U+1CD0,U+1CD2,U+1CD5-1CD6,U+1CD8,U+1CE1,U+1CEA,U+1CED,U+1CF2,U+1CF5-1CF7,U+200C-200D,U+20B9,U+25CC,U+A8F1}
+@font-face{font-family:"DR Bangla";font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/noto-sans-bengali-latin-wght.woff2) format("woff2-variations");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"DR Arabic";font-style:normal;font-weight:400 700;font-display:swap;src:url(fonts/indopak-waqf-lazim.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+08A0-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FEFF}
 /* Daily Ruqyah — premium থিম: গভীর পান্না-সবুজ + সোনালি, হাতির-দাঁতের মতো উষ্ণ জমিন */
-@font-face{font-family:"Amiri";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/amiri-arabic-400-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE80-FEFC}
-@font-face{font-family:"Amiri";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/amiri-arabic-700-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE80-FEFC}
-:root{--mf-paper:#fbf6e9;--mf-ink:#2d3a6b;--mf-accent:#c2762b;--mf-line:#c9c3a8;--mf-head:#ece9f6;--mf-font:"Scheherazade New","Amiri","Noto Naskh Arabic","Droid Arabic Naskh",serif}
-@font-face{font-family:"Scheherazade New";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/scheherazade-new-arabic-400-normal.woff2) format("woff2")}
-@font-face{font-family:"Scheherazade New";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/scheherazade-new-arabic-700-normal.woff2) format("woff2")}
-:root{--primary:#0a5240;--primary-dark:#073b2e;--primary-light:#e4efe9;--accent:#b8923a;--accent-light:#f6efdc;--danger:#c0392b;--danger-light:#fbe4e0;--info:#0b6aa0;--info-light:#e0f0f8;--success:#16794c;--warning:#b36b00;--warning-light:#fff6e0;--bg:#f3efe4;--card-bg:#fffdf9;--border:#d9d1b8;--border-light:#e8e2d0;--text-main:#16241e;--text-sub:#3c5247;--text-muted:#68786f;--radius-sm:8px;--radius-md:12px;--radius-lg:18px;--shadow-card:0 1px 0 rgba(255,255,255,.8) inset,0 12px 32px -14px rgba(7,59,46,.28),0 2px 6px rgba(7,59,46,.06);--shadow-pop:0 10px 30px rgba(7,59,46,.25);--bar-h:56px;--ar-size:26px;--font-main:"DR Sans","Noto Sans Bengali","Hind Siliguri",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--font-head:"DR Sans","Noto Sans Bengali","Hind Siliguri",system-ui,sans-serif;--font-display:Georgia,"Iowan Old Style","Palatino Linotype","Times New Roman",serif}
+:root{--mf-paper:#fbf6e9;--mf-ink:#2d3a6b;--mf-accent:#c2762b;--mf-line:#c9c3a8;--mf-head:#ece9f6;--mf-font:var(--font-ar)}
+:root{--primary:#0a5240;--primary-dark:#073b2e;--primary-light:#e4efe9;--accent:#b8923a;--accent-light:#f6efdc;--danger:#c0392b;--danger-light:#fbe4e0;--info:#0b6aa0;--info-light:#e0f0f8;--success:#16794c;--warning:#b36b00;--warning-light:#fff6e0;--bg:#f3efe4;--card-bg:#fffdf9;--border:#d9d1b8;--border-light:#e8e2d0;--text-main:#16241e;--text-sub:#3c5247;--text-muted:#68786f;--radius-sm:8px;--radius-md:12px;--radius-lg:18px;--shadow-card:0 1px 0 rgba(255,255,255,.8) inset,0 12px 32px -14px rgba(7,59,46,.28),0 2px 6px rgba(7,59,46,.06);--shadow-pop:0 10px 30px rgba(7,59,46,.25);--bar-h:56px;--ar-size:26px;--font-main:"DR Bangla",system-ui,sans-serif;--font-ar:"DR Arabic","Noto Naskh Arabic",serif;--font-head:var(--font-main);--font-display:var(--font-main)}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--bar-h) + 12px)}
 html{background:var(--bg)}
@@ -53,7 +45,7 @@ body.is-home #drWidget .drw{border-radius:24px 24px 0 0}
 .dr-side-sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
 .dr-nav{display:flex;align-items:center;gap:13px;margin:2px 10px;padding:9px 10px;border-radius:14px;color:var(--text-main);text-decoration:none;font-size:15.5px;font-weight:600;position:relative;transition:background .15s}
 .dr-nav i{flex:none;width:38px;height:38px;border-radius:12px;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:17px;font-weight:700;border:1px solid var(--border-light)}
-.dr-nav i.ar{font-family:"Amiri","Noto Naskh Arabic",serif;font-size:20px}
+.dr-nav i.ar{font-family:var(--font-ar);font-size:20px}
 .dr-nav:active,.dr-nav:hover{background:var(--primary-light)}
 .dr-nav.on{background:linear-gradient(90deg,var(--accent-light),transparent);color:var(--primary)}
 .dr-nav.on::before{content:"";position:absolute;left:-10px;top:10px;bottom:10px;width:4px;border-radius:0 4px 4px 0;background:var(--accent)}
@@ -100,8 +92,8 @@ body.is-home #drWidget .drw{border-radius:24px 24px 0 0}
 .rs-vt{font-size:var(--ar-size);line-height:2.2;text-align:center;padding:16px 14px 4px;font-weight:400}
 .rs-vt mark{background:none;color:#c0171b;border-radius:0;padding:0}
 .rs-vf{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 12px;padding:9px 14px;background:var(--primary-light);font-size:12.5px;border-top:1px solid var(--border-light)}
-.rs-ar{unicode-bidi:isolate;font-family:"Amiri","Noto Naskh Arabic","Droid Arabic Naskh","Traditional Arabic",serif;direction:rtl}
-#rsQ{flex:1;box-sizing:border-box;border:0;outline:0;background:transparent;color:inherit;padding:10px 6px;font-size:22px;text-align:center;min-width:0;-webkit-appearance:none;appearance:none;font-family:"Amiri","Noto Naskh Arabic",var(--font-main),sans-serif;-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+.rs-ar{unicode-bidi:isolate;font-family:var(--font-ar);direction:rtl}
+#rsQ{flex:1;box-sizing:border-box;border:0;outline:0;background:transparent;color:inherit;padding:10px 6px;font-size:22px;text-align:center;min-width:0;-webkit-appearance:none;appearance:none;font-family:var(--font-ar),var(--font-main),sans-serif;-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 #rsQ::placeholder{text-align:center;opacity:.55}
 #rsQ::placeholder{opacity:.45;font-size:17px}
 #rsQ::-webkit-search-cancel-button,#rsQ::-webkit-search-decoration{-webkit-appearance:none;display:none}
@@ -119,7 +111,7 @@ body.is-home #drWidget .drw{border-radius:24px 24px 0 0}
 .rs-pad .rs-lg button.on{background:var(--primary);color:#fff}
 .rs-rs.bn .rs-ri{direction:ltr}
 .rs-rs.bn .rs-ri b{font-family:inherit;font-size:16px;font-weight:600;letter-spacing:0}
-.rs-pad button{border:1px solid var(--border-light);background:var(--card-bg);color:inherit;border-radius:7px;padding:7px 0;font-size:21px;cursor:pointer;font-family:"Amiri","Noto Naskh Arabic","Droid Arabic Naskh","Traditional Arabic",serif!important;font-weight:700;line-height:1.5}
+.rs-pad button{border:1px solid var(--border-light);background:var(--card-bg);color:inherit;border-radius:7px;padding:7px 0;font-size:21px;cursor:pointer;font-family:var(--font-ar)!important;font-weight:700;line-height:1.5}
 .rs-pad button:active{background:var(--primary);color:#fff}
 .rs-info:empty{display:none}
 .rs-root{border:0;border-top:1px solid var(--border-light);border-radius:0;margin-top:6px;overflow:visible}
@@ -149,7 +141,7 @@ body.is-home #drWidget .drw{border-radius:24px 24px 0 0}
 .rs-rs .rs-rh2{position:sticky;top:0;background:var(--card-bg);font-size:12.5px;color:var(--text-muted);padding:8px 12px;border-bottom:1px solid var(--border-light)}
 .rs-rs .rs-ri{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border-light);cursor:pointer;direction:rtl}
 .rs-rs .rs-ri:active,.rs-rs .rs-ri:hover{background:var(--primary);color:#fff}
-.rs-rs .rs-ri b{font-size:22px;font-weight:400;letter-spacing:.35em;font-family:"Amiri","Noto Naskh Arabic","Droid Arabic Naskh",serif}
+.rs-rs .rs-ri b{font-size:22px;font-weight:400;letter-spacing:.35em;font-family:var(--font-ar)}
 .rs-rs .rs-ri span{font-size:12px;opacity:.75;direction:ltr;white-space:nowrap}
 /* বিষয়ের তালিকা: নাম ওপরে এক লাইনে, বিবরণ নিচে (লম্বা হলে ভেঙে যাবে) */
 .rs-rs .rs-tr{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:3px;direction:ltr;text-align:left;padding:10px 14px}
@@ -214,12 +206,12 @@ body.is-home #drWidget .drw{border-radius:24px 24px 0 0}
 .dr-sn{flex:1;min-width:0}
 .dr-sn b{display:block;font-size:15.5px;color:var(--text-main)}
 .dr-sn small{display:block;margin-top:2px;font-size:12px;color:var(--text-muted)}
-.dr-sa{flex:none;font-family:"Amiri","Noto Naskh Arabic",serif;font-size:24px;color:var(--primary);direction:rtl}
+.dr-sa{flex:none;font-family:var(--font-ar);font-size:24px;color:var(--primary);direction:rtl}
 .dr-hero{margin:2px 0 14px;padding:20px 14px 16px;text-align:center;color:#fff;border-radius:20px;background:linear-gradient(135deg,#052e24,#0a5240 60%,#0d6650);box-shadow:inset 0 0 0 1px rgba(216,178,90,.55),0 14px 30px -16px rgba(5,46,36,.8)}
-.dr-hero .ar{display:block;font-family:"Amiri","Noto Naskh Arabic",serif;font-size:38px;line-height:1.5;color:#f6e9c4;direction:rtl}
+.dr-hero .ar{display:block;font-family:var(--font-ar);font-size:38px;line-height:1.5;color:#f6e9c4;direction:rtl}
 .dr-hero b{display:block;margin-top:2px;font-size:17px;letter-spacing:.02em}
 .dr-hero small{display:block;margin-top:4px;font-size:12.5px;opacity:.82}
-.dr-bis{margin:14px 0 4px;text-align:center;font-family:"Amiri","Noto Naskh Arabic",serif;font-size:calc(var(--ar-size) + 2px);line-height:2;color:var(--primary);direction:rtl}
+.dr-bis{margin:14px 0 4px;text-align:center;font-family:var(--font-ar);font-size:calc(var(--ar-size) + 2px);line-height:2;color:var(--primary);direction:rtl}
 .dr-ay{position:relative;margin:0 0 12px;padding:0;border:1px solid var(--border-light);border-radius:18px;background:var(--card-bg);box-shadow:0 8px 22px -16px rgba(7,59,46,.55);overflow:hidden}
 .dr-ah{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--primary-light);border-bottom:1px solid var(--border-light);font-size:12.5px;color:var(--text-sub)}
 .dr-an{flex:none;min-width:30px;height:30px;padding:0 6px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1.5px solid var(--accent);background:var(--card-bg);color:var(--primary);font-size:13px;font-weight:800}
@@ -271,7 +263,7 @@ body.is-home #drWidget .drw{border-radius:24px 24px 0 0}
 .hd-hd{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--text-muted);margin-bottom:6px}
 .hd-hd b{color:var(--primary);font-size:13px}
 .hd-gr{background:color-mix(in srgb,var(--primary) 12%,transparent);color:var(--primary);border-radius:999px;padding:1px 9px;font-size:11.5px}
-.hd-ar{font-family:"Amiri","Noto Naskh Arabic","Droid Arabic Naskh","Traditional Arabic",serif;font-size:calc(var(--ar-size,26px) - 3px);line-height:2.1;direction:rtl;text-align:right;unicode-bidi:isolate;white-space:pre-line}
+.hd-ar{font-family:var(--font-ar);font-size:calc(var(--ar-size,26px) - 3px);line-height:2.1;direction:rtl;text-align:right;unicode-bidi:isolate;white-space:pre-line}
 .hd-ar mark,.hd-bn mark{background:var(--accent);color:#fff;border-radius:5px;padding:0 3px}
 .hd-bn{font-size:14.5px;line-height:1.8;margin-top:6px;color:inherit;white-space:pre-line}
 .hd-no{font-size:12.5px;color:var(--text-muted);margin-top:6px}
@@ -394,7 +386,7 @@ body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
 
 /* Symptom Diagnosis টুল */
 #drSym{padding:6px 0 20px!important}
-#za{max-width:100%;font-family:Arial;color:#222;background:#fff;border:1px solid #bbb;border-radius:6px;padding:6px}
+#za{max-width:100%;font-family:inherit;color:#222;background:#fff;border:1px solid #bbb;border-radius:6px;padding:6px}
 #za table{width:100%;table-layout:fixed;border-collapse:collapse}
 #za td,#za th{border:1px solid #bbb;padding:2px;vertical-align:top}
 #za th{font-size:11px;background:#444;color:#fff}
@@ -411,7 +403,7 @@ body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
 .zl{font-size:9px;opacity:.6;padding:2px 6px}
 .zm{background:#fff3cd;color:#664d03;border:1px solid #ffe69c;border-radius:6px;padding:8px;font-size:12px;margin:8px 0;line-height:1.5}
 .zf{background:#eef6ee;color:#1b3a1b;border:1px dashed #2e7d32;border-radius:4px;padding:6px;font-size:11px;margin-top:4px}
-#za textarea{width:95%;font-size:11px;font-family:Arial;margin-top:3px}
+#za textarea{width:95%;font-size:11px;font-family:inherit;margin-top:3px}
 .zx{font-size:11px;line-height:1.5;background:#eef2f7;color:#1a2a3a;border-left:5px solid #37474f;border-radius:2px;padding:5px 7px;margin-top:3px}
 .zx b{display:block;font-size:10px;color:#37474f;margin-bottom:3px}
 .zx ul{margin:3px 0;padding-left:16px}.zx li{margin:2px 0}
@@ -583,7 +575,7 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 .drq-tab-all svg{flex:none;opacity:.8}
 .drq-tab-all span{line-height:1.2;text-align:left}
 
-/* প্রিমিয়াম লেখা: হেডিং/ট্যাব/কার্ড-শিরোনামে সেরিফ (Noto Serif Bengali + Georgia), বাকি লেখায় Hind Siliguri */
+/* হেডিং/ট্যাব/কার্ড-শিরোনামও একই বাংলা ফন্টে (অ্যাপে আলাদা কোনো হেডিং-ফন্ট নেই) */
 .rs-box h2,.rs-box h3,#za h2,#za h3,.drq-card h3,.drq-tab,.dr-side-sec,.drq-pin,.dr-hello{font-family:var(--font-head)}
 #za h2{letter-spacing:.005em;line-height:1.35}
 .drq-card h3,.drq-tab{letter-spacing:.01em}
@@ -594,7 +586,7 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 .drq-tab-all span{line-height:1.15}
 @media (max-width:340px){.drq-tab{font-size:15px}.drq-tab-all{font-size:16px}}
 /* উইজেটের মাপ আগের ফন্টেই মাপা, তাই ওটা আগের ফন্টে থাকল (লেখা ঠাসাঠাসি না হওয়ার জন্য) */
-#drWidget{font-family:system-ui,-apple-system,"Segoe UI","Noto Sans Bengali",Roboto,sans-serif}
+#drWidget{font-family:var(--font-main)}
 /* প্রতিটি পাতাই এখন একটা সাদা কার্ড; ফেরার তীর (←) সেই কার্ডের ভেতরে উপরের বাম কোনায় বসে (আগে স্বচ্ছ বাক্স ছিল বলে তীর পটভূমিতে পড়ত) */
 .dr-main>.rs-box{background:var(--card-bg)!important;border:1px solid var(--border-light)!important;border-radius:22px!important;box-shadow:var(--shadow-card)!important;padding:12px 10px 20px!important}
 .dr-main>.rs-box>.dr-backrow{margin:0 0 8px 2px}
@@ -732,3 +724,16 @@ html:has(body:not(.is-home)){scroll-padding-top:calc(env(safe-area-inset-top) + 
 .drq-grid>.drq-card:first-child h3::before{width:6px;height:6px}
 .drq-grid>.drq-card:first-child .drq-opts{margin-top:2px}
 .drq-grid>.drq-card:first-child .drq-opts.drq-two .drq-air>a{padding-top:6px;padding-bottom:6px}
+
+/* ---------- হোম: কার্ডের তিনটি গোছা নিচে বসে ----------
+   নিচের নেভিগেশন বার থেকে শেষ কার্ডের দূরত্ব = কার্ডগুলোর মাঝের ফাঁকা (৮px)।
+   স্ক্রিনে বাড়তি জায়গা থাকলে সেটা স্লাইডিং লাইনের নিচে ফাঁকা হয়ে যায়; কার্ডের মাঝের ফাঁকা বাড়ে না।
+   জায়গা না থাকলে (বা "৩টি একসাথে" খুললে) margin-top:auto শূন্য হয়, আগের মতোই স্ক্রল চলে। */
+.dr-bnav{height:calc(60px + env(safe-area-inset-bottom));box-sizing:border-box}
+.dr-bn{justify-content:center}
+body.is-home{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
+body.is-home{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+body.is-home .dr-main{flex:1 1 auto;display:flex;flex-direction:column}
+body.is-home #drLanding:not([hidden]){flex:1 1 auto;display:flex;flex-direction:column}
+body.is-home .drq-grid{margin-top:auto}
+body.is-home .drq-cards{padding-bottom:8px}

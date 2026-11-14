@@ -424,7 +424,7 @@ function jpegPdf(imgs,W,H){
  return new Blob(parts,{type:"application/pdf"})}
 async function ayatPdfBuild(list,title,say){
  const W=1240,H=1754,M=96,CW=W-2*M,FOOT=70,BOT=H-M-FOOT;
- const AR='"Amiri","Noto Naskh Arabic","Droid Arabic Naskh","Traditional Arabic",serif',BNF='"Noto Sans Bengali","Hind Siliguri","Siyam Rupali","Nirmala UI",sans-serif';
+ const AR='"DR Arabic","Noto Naskh Arabic",serif',BNF='"DR Bangla",sans-serif';
  const f=(w,px,fam)=>w+" "+px+"px "+fam;
  say("⏳ আয়াত লোড হচ্ছে…");
  try{await Promise.all([document.fonts.load(f(400,38,AR),"بِسْمِ"),document.fonts.load(f(700,38,AR),"بِسْمِ"),document.fonts.load(f(400,26,BNF),"আয়াত"),document.fonts.load(f(700,26,BNF),"আয়াত")])}catch(e){}
