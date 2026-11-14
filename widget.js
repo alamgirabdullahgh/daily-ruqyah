@@ -78,7 +78,7 @@
   // সাপ্তাহিক: সোম-বৃহস্পতির রোজা, শুক্রবারে সূরা কাহফ (১ দিন আগে থেকে)।
   // মাসিক/বার্ষিক (হিজরি তারিখ ধরে, ৩ দিন আগে থেকে): আইয়ামে বীজ, হিজামার দিন, আশুরা, আরাফা, শাওয়ালের ছয় রোজা।
   // নিয়ম ও লেখা এক ফাইলে: data/sunnah.json (ফোনের হোম-স্ক্রিন উইজেটও একই ফাইল পড়ে)
-  var SUN = null;
+  var SUN = window.__drSunnahInline || null;
   try {
     fetch("data/sunnah.json?v=1").then(function (r) { return r.json(); }).then(function (j) {
       SUN = j; window.__drSunnahRules = j;
@@ -609,5 +609,6 @@
     var el = document.getElementById("drWidget");
     if (NW && NW.card) nativeCard(el); else mount(el);
   }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", auto); else auto();
+  // স্ক্রিপ্ট <body>-র শেষে, তাই #drWidget আগেই আছে: DOMContentLoaded-এর অপেক্ষা না করে সঙ্গে সঙ্গে শুরু (না হলে সব স্ক্রিপ্ট শেষ হওয়া পর্যন্ত ফাঁকা থাকত)
+  if (document.getElementById("drWidget")) auto(); else document.addEventListener("DOMContentLoaded", auto);
 })();
