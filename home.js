@@ -68,3 +68,34 @@
  /* আর কোনো স্ক্রিপ্টের আগে #home খুললে app.js এটা পায় না; তাই লোড হওয়ার পর নিজেই আঁকি */
  var l=document.getElementById("drLanding");if(l&&!l.hidden)window.__drLanding();
 })();
+
+/* হোমে উইজেট-সহ চারটি কার্ড স্ক্রিনের ভেতরে (নিচের নেভিগেশন বারের ওপরে) ধরানো:
+   শেষ কার্ডের নিচটা মেপে দেখে; নেভের নিচে নেমে গেলে ফাঁক ও প্যাডিং ধাপে ধাপে কমায় (body[data-fit]=1..৩, CSS: style.css-এর শেষে)।
+   ৩ ধাপেও না ধরলে (যেমন "৩টি একসাথে" খোলা) কিছুই চেপে ছোট করে না — স্বাভাবিক মাপে স্ক্রল হয়। */
+(function(){
+ var busy=false,raf=0;
+ function fit(){
+  if(busy)return;busy=true;
+  try{
+   var b=document.body,nav=document.querySelector(".dr-bnav"),last=document.querySelector(".drq-card.drq-sys"),L=document.getElementById("drLanding");
+   if(!b||!nav||!last||!L||L.hidden||!b.classList.contains("is-home")||last.offsetParent===null){if(b)b.removeAttribute("data-fit");return}
+   var lim=nav.getBoundingClientRect().top-6,y=window.pageYOffset||0,ok=false,l;
+   for(l=0;l<=3;l++){
+    if(l)b.setAttribute("data-fit",String(l));else b.removeAttribute("data-fit");
+    if(last.getBoundingClientRect().bottom+y<=lim){ok=true;break}
+   }
+   if(!ok)b.removeAttribute("data-fit");
+  }finally{busy=false}
+ }
+ function soon(){cancelAnimationFrame(raf);raf=requestAnimationFrame(fit)}
+ window.__drFit=soon;
+ window.addEventListener("resize",soon);window.addEventListener("orientationchange",soon);window.addEventListener("hashchange",function(){setTimeout(fit,60)});
+ window.addEventListener("load",function(){soon();setTimeout(fit,600);setTimeout(fit,1800)});
+ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(soon);
+ if(window.ResizeObserver){
+  var ro=new ResizeObserver(soon);
+  var iv=setInterval(function(){var a=["drLanding","drWidget","drHero"].map(function(i){return document.getElementById(i)});if(a[0]){a.forEach(function(e){e&&ro.observe(e)});clearInterval(iv);soon()}},300);
+  setTimeout(function(){clearInterval(iv)},8000);
+ }
+ document.addEventListener("click",function(e){if(e.target.closest&&e.target.closest(".drq-tab"))setTimeout(fit,120)});
+})();
