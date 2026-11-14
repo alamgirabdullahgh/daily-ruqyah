@@ -929,13 +929,67 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   const ft=el("div","dr-bak"),fi=document.createElement("input");fi.type="file";fi.accept=".json,application/json";fi.style.display="none";fi.onchange=()=>{if(fi.files[0])importTopics(fi.files[0]);fi.value=""};
   ft.append(mkBtn("📥 নিজের তালিকার ব্যাকআপ নামান",exportTopics),mkBtn("📤 ব্যাকআপ ফেরান",()=>fi.click()),fi);ft.style.position="static";rs.appendChild(ft)};
 // ---------- রোগ নির্ণয়ের তালিকা (quran-diagnosis.json) ----------
+
+ /* ধাপভিত্তিক গাইড: জ্বর / সাদা স্রাব ও অনবরত মাসিক / দাঁত লেগে যাওয়া — রোগভিত্তিক তালিকায় ওই নামে চাপলে ওপরে দেখায় */
+ const GUIDES={
+ "জ্বর":[
+  {k:"warn",h:"⚠️ আগে জেনে নিন",p:"এই পদ্ধতি শুধু সাধারণ জ্বরের জন্য — যে জ্বর জিন, জাদু বা বদনজরের কারণে নয়। জিন-জাদু-বদনজরের সন্দেহ থাকলে আগে “সিমটম ডায়াগনোসিস” দেখে নিন।\nজ্বর খুব বেশি হলে, কয়েকদিন ধরে চললে, বা রোগী শিশু/বৃদ্ধ/গর্ভবতী হলে ঝাড়ফুঁকের পাশাপাশি ডাক্তার দেখান।"},
+  {k:"dua",h:"📖 দোয়া",ar:"بِسْمِ اللَّهِ الْكَبِيرِ، أَعُوذُ بِاللَّهِ الْعَظِيمِ مِنْ شَرِّ كُلِّ عِرْقٍ نَعَّارٍ، وَمِنْ شَرِّ حَرِّ النَّارِ",pr:"বিসমিল্লাহিল কাবীর, আ‘ঊযু বিল্লাহিল ‘আযীম, মিন শাররি কুল্লি ‘ইরকিন না‘‘আর, ওয়া মিন শাররি হাররিন নার।",bn:"অর্থ: মহান আল্লাহর নামে। উথলে ওঠা প্রতিটি রগের অনিষ্ট থেকে এবং জাহান্নামের আগুনের তাপের অনিষ্ট থেকে আমি মহান আল্লাহর কাছে আশ্রয় চাই।",p:"হাদিসে শব্দ এসেছে “কুল্লি ‘ইরকিন না‘‘আর” (كُلِّ عِرْقٍ نَعَّارٍ)। ওপরের দোয়া সেই হাদিসের হুবহু শব্দে লেখা।"},
+  {k:"steps",h:"🧾 পদ্ধতি — ধাপে ধাপে",st:[
+   ["পানি নিন","একটি পাত্রে পরিষ্কার পানি নিন। পরিমাণ এমন হবে যাতে তিন ঢোক খাওয়া ও মাথায় দেওয়ার পরও কাপড় ভেজানোর মতো পানি থাকে।"],
+   ["দোয়া ১১ বার পড়ুন","ওপরের দোয়াটি ১১ বার পড়ুন।"],
+   ["পানিতে ফুঁ দিন","১১ বার পড়া শেষ হলে পানিতে ফুঁ দিন।"],
+   ["তিন ঢোক পান করুন","ফুঁ দেওয়া পানি থেকে তিন ঢোক খান।"],
+   ["মাথায় দিন","এরপর অল্প একটু পানি মাথায় দিন।"],
+   ["কাপড় ভিজিয়ে শরীর মুছুন","বাকি পানিতে একটি কাপড় ভিজিয়ে মাথা থেকে পা পর্যন্ত সম্পূর্ণ শরীর ভালোভাবে মুছুন। কাপড়টি অবশ্যই ভেজা ভেজা থাকবে, যাতে পানি শরীরে লাগে।"]]},
+  {k:"info",h:"ℹ️ কোনটা হাদিসে, কোনটা আমলে",p:"হাদিসে শুধু দোয়াটি আছে — জ্বর ও সব ব্যথার জন্য নবী ﷺ সাহাবীদের এটি শেখাতেন। ১১ বার পড়া, পানিতে ফুঁ দিয়ে পান করা, মাথায় দেওয়া ও কাপড়ে শরীর মোছার নিয়ম হাদিসে নেই; এটি রুকইয়াহ-চিকিৎসকদের আমলের পদ্ধতি।"},
+  {k:"ref",h:"📚 রেফারেন্স (চাপলে হাদিস দেখুন)",lb:"জামে‘ আত-তিরমিযী ২০৭৫ · সুনানু ইবনি মাজাহ ৩৫২৬ · মুসনাদ আহমাদ ২৭২৯",ar:"عَنِ ابْنِ عَبَّاسٍ، أَنَّ النَّبِيَّ ﷺ كَانَ يُعَلِّمُهُمْ مِنَ الْحُمَّى وَمِنَ الْأَوْجَاعِ كُلِّهَا أَنْ يَقُولُوا: «بِسْمِ اللَّهِ الْكَبِيرِ، أَعُوذُ بِاللَّهِ الْعَظِيمِ مِنْ شَرِّ كُلِّ عِرْقٍ نَعَّارٍ، وَمِنْ شَرِّ حَرِّ النَّارِ»",bn:"ইবনু আব্বাস (রাযি.) থেকে বর্ণিত: নবী ﷺ জ্বর ও সব ধরনের ব্যথার জন্য তাঁদের শেখাতেন যে তাঁরা বলবে — “বিসমিল্লাহিল কাবীর, আ‘ঊযু বিল্লাহিল ‘আযীম, মিন শাররি কুল্লি ‘ইরকিন না‘‘আর, ওয়া মিন শাররি হাররিন নার।”",gr:"হাদিসের মান: ইমাম তিরমিযী বলেছেন, হাদিসটি গরীব; ইবরাহীম ইবনু ইসমাঈল ইবনু আবী হাবীবার সূত্র ছাড়া তাঁরা এটি জানেন না, আর তিনি হাদিসে দুর্বল গণ্য। আলবানী ও শু‘আইব আরনাঊত সনদকে যঈফ বলেছেন; ইমাম হাকিম সহীহ বলেছেন এবং যাহাবী তাতে একমত হয়েছেন। অর্থাৎ সনদ নিয়ে মতভেদ আছে।",src:[["জামে‘ আত-তিরমিযী ২০৭৫","https://sunnah.com/tirmidhi:2075"],["সুনানু ইবনি মাজাহ ৩৫২৬","https://sunnah.com/ibnmajah:3526"]]}
+ ],
+ "সাদা স্রাব ও অনবরত মাসিক":[
+  {k:"info",h:"ℹ️ আগে জেনে নিন",p:"এটি রুকইয়াহ-চিকিৎসকদের আমলের পদ্ধতি; এর জন্য নির্দিষ্ট কোনো হাদিসের রেফারেন্স দেওয়া হয়নি। পদ্ধতিটি পর্দা বজায় রেখে করুন।\nস্রাব বা রক্তপাত অনেক দিন ধরে চললে, খুব বেশি হলে বা দুর্গন্ধ/ব্যথা থাকলে ঝাড়ফুঁকের পাশাপাশি চিকিৎসকের পরামর্শ নিন।"},
+  {k:"steps",h:"🧾 এক দফার পদ্ধতি",st:[
+   ["হাত রাখুন","লজ্জাস্থানে হাত রাখুন।"],
+   ["আয়াতুল কুরসি পড়ুন","আয়াতুল কুরসি (সূরা বাকারা ২:২৫৫) পড়ুন।"],
+   ["হাতে ফুঁ দিয়ে মাসেহ করুন","প্রতিবার পড়ার পর হাতে ফুঁ দিয়ে লজ্জাস্থানে মাসেহ করুন।"],
+   ["মোট ১১ বার","এভাবে পড়া–ফুঁ–মাসেহ মোট ১১ বার করুন। এই ১১ বার মিলে এক দফা।"]]},
+  {k:"steps",h:"⏱ ফল না হলে — ১০ মিনিট পরপর",st:[
+   ["১ম দফা","ওপরের নিয়মে ১১ বার। ইনশাআল্লাহ ১০ মিনিটের মধ্যে ভালো হয়ে যাবে।"],
+   ["২য় দফা","১০ মিনিটের মধ্যে ভালো না হলে আবার একই নিয়মে ১১ বার।"],
+   ["৩য় দফা","এরপরও না হলে আরও ১০ মিনিট পর আবার একই নিয়মে ১১ বার। এভাবে ১০ মিনিট পরপর মোট তিনবার করবেন — ইনশাআল্লাহ অবশ্যই বন্ধ হবে।"]]},
+  {k:"v",h:"📖 আয়াতুল কুরসি",s:2,f:255,t:255}
+ ],
+ "দাঁত লেগে যাওয়া":[
+  {k:"warn",h:"⚠️ আগে দেখে নিন",p:"রোগী শ্বাস নিচ্ছে কিনা দেখুন। দাঁত লেগে যাওয়া ও অজ্ঞান হওয়ার কারণ খিঁচুনি, মূর্ছা বা অন্য শারীরিক সমস্যাও হতে পারে। রোগীর মুখে কিছু ঢোকাবেন না। শ্বাসকষ্ট হলে, দীর্ঘ সময় জ্ঞান না ফিরলে বা বারবার হলে সঙ্গে সঙ্গে জরুরি চিকিৎসা নিন।"},
+  {k:"steps",h:"🧾 এক দফার পদ্ধতি",st:[
+   ["ঠোঁট ফাঁক করুন","রোগীর ঠোঁট ফাঁক করুন, যাতে দাঁত দেখা যায়।"],
+   ["দাঁতের ওপর সূরা ফাতিহা পড়ুন","দাঁতের ওপর সূরা ফাতিহা পড়ুন।"],
+   ["প্রতিবার পড়ার পর একটি ফুঁ","সূরা ফাতিহা পড়তে হবে সাতবার। প্রতিবার পড়া শেষে একবার করে ফুঁ দিন — মোট সাতবার পড়া, সাতটি ফুঁ।"],
+   ["ফল","ইনশাআল্লাহ প্রথমবারেই রোগীর দাঁত খুলে যাবে এবং জ্ঞান ফিরে আসবে।"]]},
+  {k:"steps",h:"🔁 না খুললে",st:[
+   ["আবার করুন","কোনো কারণে প্রথমবারে না খুললে একই নিয়মে (৭ বার পাঠ, প্রতিবার একটি ফুঁ) পরপর তিনবার করুন — ইনশাআল্লাহ অবশ্যই খুলবে।"]]},
+  {k:"v",h:"📖 সূরা ফাতিহা",s:1,f:1,t:7},
+  {k:"info",h:"📚 সূরা ফাতিহা দিয়ে রুকইয়ার হাদিস",p:"আবু সাঈদ খুদরী (রাযি.)-এর বর্ণনায় সূরা ফাতিহা দিয়ে ঝাড়ফুঁকের ঘটনা সহীহ বুখারী ও সহীহ মুসলিমে আছে; তিরমিযীর বর্ণনায় “সাতবার”-এর উল্লেখ আছে (তিরমিযী ২০৬৩)। দাঁতের ওপর পড়া ও প্রতিবার ফুঁ দেওয়ার নিয়মটি আমলের পদ্ধতি।"}
+ ]};
+ const GSECS=["সাদা স্রাব ও অনবরত মাসিক","দাঁত লেগে যাওয়া"];
+ const secNote=x=>x.note||(GUIDES[x.name]?"দোয়া ও পদ্ধতি + ":"")+bn2(x.ids.size)+"টি আয়াত";
+ const addGSecs=(secs,CFG)=>{if(CFG===DISEASE)GSECS.forEach(n=>{if(!secs.find(y=>y.name===n))secs.push({name:n,ids:new Set(),note:"ধাপে ধাপে পদ্ধতি"})})};
+ const guideNode=blocks=>{const root=els("div","margin:8px 0 14px");
+  const card=(h,warn)=>{const c=els("div","border:1px solid var(--border-light);border-radius:12px;padding:12px;margin:10px 0;background:var(--card-bg);"+(warn?"border-inline-start:4px solid #c0392b":""));if(h)c.appendChild(els("div","font-weight:800;font-size:15px;color:var(--primary);margin-bottom:8px",h));return c};
+  const para=t=>els("div","line-height:1.75;font-size:14.5px;white-space:pre-line;margin-top:4px",t);
+  blocks.forEach(b=>{
+   if(b.k==="warn"||b.k==="info"){const c=card(b.h,b.k==="warn");c.appendChild(para(b.p));root.appendChild(c)}
+   else if(b.k==="dua"){const c=card(b.h);c.appendChild(els("div","direction:rtl;text-align:center;font-size:23px;line-height:2.1;padding:6px 4px;border-radius:10px;background:color-mix(in srgb,var(--primary) 8%,transparent)",b.ar)).className="rs-ar";c.appendChild(els("div","margin-top:8px;font-size:14px;color:var(--text-muted);line-height:1.7",b.pr));c.appendChild(para(b.bn));const cp=copyBtn("📋 কপি",()=>b.ar+"\n"+b.pr+"\n"+b.bn,1);cp.style.marginTop="8px";c.appendChild(cp);if(b.p)c.appendChild(els("div","margin-top:8px;font-size:12.5px;color:var(--text-muted);line-height:1.6",b.p));root.appendChild(c)}
+   else if(b.k==="steps"){const c=card(b.h);b.st.forEach((x,i)=>{const r=els("div","display:flex;gap:10px;align-items:flex-start;margin:10px 0 0");r.appendChild(els("div","flex:none;width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center",bn2(i+1)));const t=el("div");t.appendChild(els("div","font-weight:700;font-size:14.5px",x[0]));t.appendChild(els("div","font-size:14px;line-height:1.7;margin-top:2px;color:var(--text-muted)",x[1]));r.appendChild(t);c.appendChild(r)});root.appendChild(c)}
+   else if(b.k==="v"){const c=card(null),d=document.createElement("details"),sm=document.createElement("summary");sm.style.cssText="cursor:pointer;font-weight:800;font-size:15px;color:var(--primary)";sm.textContent=b.h+" (দেখতে চাপুন)";d.appendChild(sm);const bx=el("div");bx.style.marginTop="8px";d.appendChild(bx);let ld=0;d.ontoggle=()=>{if(!d.open||ld)return;ld=1;bx.textContent="লোড হচ্ছে…";Promise.all([chunk("a",b.s),chunk(TR,b.s)]).then(([A,B])=>{bx.textContent="";for(let a=b.f;a<=b.t;a++){const v=el("div","rs-vi"),ar=el("div","rs-vt rs-ar"),bn=el("div","rs-vb");ar.textContent=(A||[])[a-1]||"";bn.textContent=((B||[])[a-1]||"");v.append(els("div","font-size:12px;color:var(--text-muted)","সূরা "+SN[b.s-1]+" — "+bn2(b.s)+":"+bn2(a)),ar,bn);bx.appendChild(v)}}).catch(()=>{bx.textContent="লোড করা যায়নি"})};c.appendChild(d);root.appendChild(c)}
+   else if(b.k==="ref"){const c=card(b.h),d=document.createElement("details"),sm=document.createElement("summary");sm.style.cssText="cursor:pointer;font-weight:700;font-size:14.5px;line-height:1.6;color:var(--accent)";sm.textContent=b.lb;d.appendChild(sm);const bx=el("div");bx.style.cssText="margin-top:10px;padding-top:8px;border-top:1px dashed var(--border-light)";bx.appendChild(els("div","direction:rtl;text-align:right;font-size:20px;line-height:2.1","")).className="rs-ar";bx.firstChild.textContent=b.ar;bx.appendChild(para(b.bn));bx.appendChild(els("div","margin-top:8px;font-size:13px;line-height:1.7;color:var(--text-muted)",b.gr));const ls=els("div","margin-top:8px;display:flex;flex-wrap:wrap;gap:8px");b.src.forEach(x=>{const a=document.createElement("a");a.href=x[1];a.target="_blank";a.rel="noopener";a.textContent="🔗 "+x[0]+" (sunnah.com)";a.style.cssText="font-size:13px;color:var(--primary);text-decoration:underline";ls.appendChild(a)});bx.appendChild(ls);d.appendChild(bx);c.appendChild(d);root.appendChild(c)}
+  });return root};
  const showDiag=async(cfg)=>{window.__bq="";const CF=Object.assign({file:"quran-diagnosis.json?v="+DV+"d20",title:"🩺 রোগ নির্ণয় (ডায়াগনোসিস)",sq:"রোগ নির্ণয়",nm:"নির্ণয়",badge:["আয়াতে সরাসরি আছে","শব্দভিত্তিক"],intro:null},cfg&&(cfg.file||cfg.host)?cfg:{});GEN++;CURT=null;rs.classList.remove("on");pad.classList.remove("on");const out=CF.host||$("rsOut"),info=CF.infoEl||$("rsInfo");out.innerHTML="";info.textContent="লোড হচ্ছে…";q.value="";setDir();window.__sq=CF.sq;
   let D;try{D=await rsFetch(BASE+CF.file)}catch(e){info.textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
   info.textContent="";if(CF.only!=null){D=Object.assign({},D,{groups:D.groups.filter(g=>g.section===CF.only)});if(CF.back){const bb=mkBtn("← তালিকায় ফিরুন",CF.back);bb.style.margin="0 0 8px";info.appendChild(bb)}}if(!CF.host)info.appendChild(els("div","font-weight:700;color:var(--primary);margin-bottom:4px",CF.only!=null?CF.only:CF.title));
   const resolve=sel=>{const terms=[];sel.forEach(x=>{const t=TOPICS.find(y=>y.name===x.topic);if(t)t.terms.forEach(y=>{if(x.all||(x.prefix?y[0].split(" — ")[0]===x.prefix:(x.titles||[]).includes(y[0])))terms.push(y)})});return terms};
   const keyList=cs=>{const list=[],seen=new Set();cs.forEach(c=>c.keys.forEach(k=>{const id=k.s+":"+k.a;if(!seen.has(id)){seen.add(id);list.push([k.s,k.a])}}));return{list}};
   const audio=(cs,label)=>{const w=els("div","margin-top:6px"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),res=el("div"),b=mkBtn("🔊 "+label,()=>{window.__sq=CF.sq+" "+(cs.length===1?cs[0].name:label);const k=keyList(cs);if(k.list.length===1&&setAll()<=1&&repOf(k.list[0][0],k.list[0][1])<=1){playOne(k.list[0][0],k.list[0][1],res,note);return}mergeAudio(k.list,res,t=>note.textContent=t)});b.style.margin="0";w.append(b,note,res);w.btn=b;return w};
-  const allB=audio(D.groups.flatMap(g=>g.cats),"সব রোগের "+CF.nm+" অডিও একসাথে ("+bn2(new Set(D.groups.flatMap(g=>g.cats.flatMap(c=>c.keys.map(k=>k.s+":"+k.a)))).size)+"টি আয়াত)");{const rc=repCtl(),row=el("div","rs-top"),nAy=new Set(D.groups.flatMap(g=>g.cats.flatMap(c=>c.keys.map(k=>k.s+":"+k.a)))).size;
+  const allB=audio(D.groups.flatMap(g=>g.cats),"সব রোগের "+CF.nm+" অডিও একসাথে ("+bn2(new Set(D.groups.flatMap(g=>g.cats.flatMap(c=>c.keys.map(k=>k.s+":"+k.a)))).size)+"টি আয়াত)");if(CF.only!=null&&GUIDES[CF.only]&&/quran-disease/.test(CF.file||""))out.appendChild(guideNode(GUIDES[CF.only]));if(D.groups.length){const rc=repCtl(),row=el("div","rs-top"),nAy=new Set(D.groups.flatMap(g=>g.cats.flatMap(c=>c.keys.map(k=>k.s+":"+k.a)))).size;
   allB.btn.textContent="🔊 সব অডিও ("+bn2(nAy)+"টি)";allB.btn.classList.add("rs-mb");
   row.dataset.all="1";allB.dataset.all="1";row.append(...rc.children,allB.btn);allB.style.marginTop="0";allB.style.marginBottom="10px";out.append(row,allB)}
   let curSec="";
@@ -1011,18 +1065,18 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   out.appendChild(w);window.scrollTo({top:rs.getBoundingClientRect().top+scrollY-60,behavior:"smooth"})};
  const nameList=async(CFG,title,sub,up)=>{GEN++;$("rsInfo").textContent="লোড হচ্ছে…";$("rsOut").innerHTML="";let D;try{D=await rsFetch(BASE+CFG.file)}catch(e){$("rsInfo").textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
   const secs=[];D.groups.forEach(g=>{let x=secs.find(y=>y.name===g.section);if(!x)secs.push(x={name:g.section,ids:new Set()});g.cats.forEach(c=>c.keys.forEach(k=>x.ids.add(k.s+":"+k.a)))});
-  const back=()=>nameList(CFG,title,sub,up);
-  showNames(title,secs.map(x=>({name:x.name,note:bn2(x.ids.size)+"টি আয়াত",fn:()=>{$("rsBox").classList.add("dr-tonly");showDiag(Object.assign({},CFG,{only:x.name,back}));}})),sub,up)};
+  addGSecs(secs,CFG);const back=()=>nameList(CFG,title,sub,up);
+  showNames(title,secs.map(x=>({name:x.name,note:secNote(x),fn:()=>{$("rsBox").classList.add("dr-tonly");showDiag(Object.assign({},CFG,{only:x.name,back}));}})),sub,up)};
  const organList=(names,title,sub,up)=>showNames(title,names.map(n=>({name:n,fn:()=>window.__drOpenTopic(n)})),sub,up);
  const combo=async kind=>{const mental=kind==="mental",CFG=mental?MENTAL:DISEASE,title=mental?"🧠 মানসিক":"🩺 শারীরিক";GEN++;$("rsInfo").textContent="লোড হচ্ছে…";$("rsOut").innerHTML="";let D;try{D=await rsFetch(BASE+CFG.file)}catch(e){$("rsInfo").textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
   const secs=[];D.groups.forEach(g=>{let x=secs.find(y=>y.name===g.section);if(!x)secs.push(x={name:g.section,ids:new Set()});g.cats.forEach(c=>c.keys.forEach(k=>x.ids.add(k.s+":"+k.a)))});
-  const back=()=>combo(kind),organs=mental?["অন্তর (হৃদয়)","বুক ও বক্ষ"]:ORG.map(o=>o[0]);
+  addGSecs(secs,CFG);const back=()=>combo(kind),organs=mental?["অন্তর (হৃদয়)","বুক ও বক্ষ"]:ORG.map(o=>o[0]);
   /* রোগ → সম্পর্কিত অঙ্গ (মিললে একই সারিতে; না মিললে শেষে আলাদা) */
-  const d2o=mental?{"দুশ্চিন্তা ও অশান্তি":"অন্তর (হৃদয়)","হতাশা ও বিষণ্ণতা":"অন্তর (হৃদয়)","ভয় ও আতঙ্ক":"অন্তর (হৃদয়)","ওয়াসওয়াসা ও কুমন্ত্রণা":"বুক ও বক্ষ"}:{"মাথাব্যথা":"মাথা","পেটব্যথা":"পেট","দাঁতব্যথা":"দাঁত","সর্দি-কাশি ও নাকের সমস্যা":"নাক","গলাব্যথা":"ঘাড় ও গলা","পিঠ ও কোমরব্যথা":"পিঠ ও মেরুদণ্ড","হাড়-জোড়ার ব্যথা ও বাত":"হাড়","চোখের সমস্যা ও ঝাপসা দেখা":"চোখ","কানের সমস্যা":"কান","চর্মরোগ (শ্বেতী/কুষ্ঠ)":"চামড়া (ত্বক)","শ্বাসকষ্ট ও বুক চাপা":"বুক ও বক্ষ","বুক ধড়ফড়":"অন্তর (হৃদয়)","পাইলস (অর্শ/বাওয়াসির)":"অন্ত্র ও নাড়িভুঁড়ি"};
+  const d2o=mental?{"দুশ্চিন্তা ও অশান্তি":"অন্তর (হৃদয়)","হতাশা ও বিষণ্ণতা":"অন্তর (হৃদয়)","ভয় ও আতঙ্ক":"অন্তর (হৃদয়)","ওয়াসওয়াসা ও কুমন্ত্রণা":"বুক ও বক্ষ"}:{"মাথাব্যথা":"মাথা","পেটব্যথা":"পেট","দাঁতব্যথা":"দাঁত","সর্দি-কাশি ও নাকের সমস্যা":"নাক","গলাব্যথা":"ঘাড় ও গলা","পিঠ ও কোমরব্যথা":"পিঠ ও মেরুদণ্ড","হাড়-জোড়ার ব্যথা ও বাত":"হাড়","চোখের সমস্যা ও ঝাপসা দেখা":"চোখ","কানের সমস্যা":"কান","চর্মরোগ (শ্বেতী/কুষ্ঠ)":"চামড়া (ত্বক)","শ্বাসকষ্ট ও বুক চাপা":"বুক ও বক্ষ","বুক ধড়ফড়":"অন্তর (হৃদয়)","পাইলস (অর্শ/বাওয়াসির)":"অন্ত্র ও নাড়িভুঁড়ি","সাদা স্রাব ও অনবরত মাসিক":"গর্ভ (জরায়ু)","দাঁত লেগে যাওয়া":"দাঁত"};
   const BS="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:2px;flex:1;width:100%;min-width:0;text-align:left;padding:9px 10px;border:1px solid var(--border-light);border-radius:10px;background:var(--card-bg);color:inherit;font:inherit;font-size:14px;font-weight:700;cursor:pointer;overflow-wrap:anywhere";
   const HS="padding-bottom:6px;border-bottom:1.5px solid var(--accent);font-weight:800;font-size:14.5px;color:var(--accent)";
   const btn=(label,note,fn)=>{const x=document.createElement("button");x.type="button";x.style.cssText=BS;x.appendChild(els("span",null,label));if(note)x.appendChild(els("span","font-size:11.5px;font-weight:400;color:var(--text-muted)",note));x.onclick=fn;return x};
-  const dbtn=x=>btn(x.name,bn2(x.ids.size)+"টি আয়াত",()=>{$("rsBox").classList.add("dr-tonly");showDiag(Object.assign({},CFG,{only:x.name,back}))});
+  const dbtn=x=>btn(x.name,secNote(x),()=>{$("rsBox").classList.add("dr-tonly");showDiag(Object.assign({},CFG,{only:x.name,back}))});
   const col=()=>els("div","display:flex;flex-direction:column;gap:6px;min-width:0");
   showNames(title,[],"যেকোনো নামে চাপুন, সেই সম্পর্কিত আয়াত দেখা যাবে");
   const grid=els("div","display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:stretch");
