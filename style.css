@@ -792,3 +792,25 @@ body.is-home #drLanding:not([hidden]){width:100%;align-self:stretch;box-sizing:b
 /* সিমটম/রেসপন্স/ট্রিটমেন্ট: লেখাটা বোতামের মতো বোঝা যায় (পেছনের রঙ একই; বর্ডার + নিচে ছায়া + চাপলে একটু বসে যায়) */
 #drLanding .drq-opts.drq-three .drq-air>a{border:1.5px solid color-mix(in srgb,var(--primary) 38%,transparent);border-radius:10px;box-shadow:0 2px 0 color-mix(in srgb,var(--primary) 30%,transparent);padding:8px 4px;margin:0 2px;min-height:44px;display:flex;align-items:center;justify-content:center;transition:transform .08s,box-shadow .08s}
 #drLanding .drq-opts.drq-three .drq-air>a:active{transform:translateY(2px);box-shadow:0 0 0 transparent}
+
+/* ===== একই বোতাম-ধরন সব জায়গায়: হালকা সবুজ পেছনে + সরু সবুজ বর্ডার + নিচে ছায়া + চাপলে বসে যায় ===== */
+.dr-btn,.rs-tp,.am-cond{box-sizing:border-box;background:var(--primary-light);border:1.5px solid color-mix(in srgb,var(--primary) 38%,transparent);border-radius:12px;box-shadow:0 2px 0 color-mix(in srgb,var(--primary) 30%,transparent);color:var(--primary);font:inherit;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .08s,box-shadow .08s}
+.dr-btn:active,.rs-tp:active,.am-cond:active{transform:translateY(2px);box-shadow:0 0 0 transparent}
+.dr-btn{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;min-width:0;width:100%;min-height:48px;padding:9px 8px;text-align:center;font-size:14px;line-height:1.35;overflow-wrap:anywhere}
+.dr-btn small{font-size:11px;font-weight:400;color:var(--text-muted)}
+.dr-btn-row{flex-direction:row;justify-content:space-between;text-align:left;padding:12px 14px}
+.am-cond{border-bottom-width:1.5px;margin:0 0 8px;padding:12px 12px}
+.am-cl{gap:0}
+
+/* ===== হোম: তিন বোতাম এক লাইনে (লেখা ভাঙে না, তিনটারই মাপ সমান); PDF/অডিও বোতাম আরও বড়, নিচের পুরো জায়গা জুড়ে ===== */
+#drLanding .drq-opts.drq-three .drq-air>a{white-space:nowrap;font-size:clamp(9.5px,3.15vw,13px);padding:9px 1px;margin:0;letter-spacing:0;overflow:hidden;min-height:46px}
+#drLanding .drq-opts.drq-three .drq-air{padding:8px 5px}
+#drLanding .drq-opts.drq-three .drq-bt{display:flex;width:100%;gap:5px;margin-top:2px}
+#drLanding .drq-opts.drq-three .drq-bt button{flex:1 1 0;min-width:0;justify-content:center;padding:11px 2px;font-size:12px;border-radius:10px}
+#drLanding .drq-opts.drq-three .drq-bt .drq-bi{font-size:12px}
+
+/* শারীরিক/মানসিক সারি: এক লাইনেই; নামটা বোতামের মতো */
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-air>a{border:1.5px solid color-mix(in srgb,var(--primary) 38%,transparent);border-radius:10px;box-shadow:0 2px 0 color-mix(in srgb,var(--primary) 30%,transparent);padding:10px 8px;min-height:44px;display:flex;align-items:center;justify-content:center;text-align:center}
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-air>a:active{transform:translateY(2px);box-shadow:none}
+#drLanding .drq-opts.drq-three .drq-bt button{font-size:11px;padding:11px 1px;white-space:nowrap}
+#drLanding .drq-opts.drq-three .drq-bt .drq-bl{margin-left:0}

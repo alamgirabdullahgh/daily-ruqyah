@@ -1014,7 +1014,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
     let tb=null;if(c.treat)bt.appendChild(tb=mkBtn("📚 চিকিৎসা",()=>{const terms=resolve(c.treat);if(!terms.length)return alert("এই রোগের জন্য আয়াতের তালিকা পাওয়া যায়নি");gt({name:c.name,terms,intro:"“"+c.name+"” — সংশ্লিষ্ট সব আয়াত",ordered:false});window.scrollTo({top:0,behavior:"smooth"})}));
     const au=audio([c],"অডিও");if(KV&&c.keys.length===1){KV.va.className="rs-va rs-va1";KV.va.replaceChildren(...[tb,KV.cpb,au.btn,KV.wb].filter(Boolean));box.append(au)}else{/* চিকিৎসা ও অডিও বোতাম এক লাইনে; জায়গা কম হলে লেখার সাইজ নিজে ছোট হয় */const pr=el("div","rs-pair");pr.append(...[tb,au.btn].filter(Boolean));box.append(pr,au)}out.appendChild(box)}if(CATS.includes(g.section))for(let i=st0;i<out.children.length;i++)out.children[i].dataset.cat=g.section}
   if(!CF.host)window.scrollTo({top:rs.getBoundingClientRect().top+scrollY-60,behavior:"smooth"})};
- const DISEASE={file:"quran-disease.json?v="+DV+"x3",title:"💊 শারীরিক রোগ ও আরোগ্যের আয়াত",sq:"শারীরিক রোগ",nm:"আয়াত",badge:["সরাসরি আছে","অঙ্গ অনুযায়ী কাছের আয়াত"],intro:"প্রথমে ঠিক করা হয়েছে রোগটি শরীরের কোন কোন অঙ্গ বা বিষয়ের সাথে সম্পর্কিত; তারপর প্রতিটির জন্য সবচেয়ে কাছের একটি আয়াত (শুধু প্রাসঙ্গিক অংশ)। প্রতিটির নিচে “মিল” লেখা আছে — আয়াতে সরাসরি রোগ/অঙ্গের শব্দ আছে, নাকি শুধু অর্থ বা শব্দের মিল। কুরআনে রোগের নাম (যেমন অর্শ/বাওয়াসির) নেই, তাই অঙ্গ ও লক্ষণের শব্দ ধরে কাছের আয়াত নেওয়া হয়েছে; কোনোটি আয়াতে সরাসরি রোগের কথা নয়। প্রতিটি অঙ্গের নিচে ‘চিকিৎসা: এই রোগের সব আয়াত’ বোতামে ওই অঙ্গের সব আয়াত ও মার্জ অডিও। খসড়া তালিকা: ব্যবহারের আগে আলেম বা অভিজ্ঞদের পর্যালোচনা প্রয়োজন।"};
+ const DISEASE={file:"quran-disease.json?v="+DV+"x4",title:"💊 শারীরিক রোগ ও আরোগ্যের আয়াত",sq:"শারীরিক রোগ",nm:"আয়াত",badge:["সরাসরি আছে","অঙ্গ অনুযায়ী কাছের আয়াত"],intro:"প্রথমে ঠিক করা হয়েছে রোগটি শরীরের কোন কোন অঙ্গ বা বিষয়ের সাথে সম্পর্কিত; তারপর প্রতিটির জন্য সবচেয়ে কাছের একটি আয়াত (শুধু প্রাসঙ্গিক অংশ)। প্রতিটির নিচে “মিল” লেখা আছে — আয়াতে সরাসরি রোগ/অঙ্গের শব্দ আছে, নাকি শুধু অর্থ বা শব্দের মিল। কুরআনে রোগের নাম (যেমন অর্শ/বাওয়াসির) নেই, তাই অঙ্গ ও লক্ষণের শব্দ ধরে কাছের আয়াত নেওয়া হয়েছে; কোনোটি আয়াতে সরাসরি রোগের কথা নয়। প্রতিটি অঙ্গের নিচে ‘চিকিৎসা: এই রোগের সব আয়াত’ বোতামে ওই অঙ্গের সব আয়াত ও মার্জ অডিও। খসড়া তালিকা: ব্যবহারের আগে আলেম বা অভিজ্ঞদের পর্যালোচনা প্রয়োজন।"};
  const MENTAL={file:"quran-mental.json?v="+DV+"m1",title:"🧠 মানসিক সমস্যা ও সান্ত্বনার আয়াত",sq:"মানসিক সমস্যা",nm:"আয়াত",badge:["সরাসরি আছে","অর্থের মিল"],intro:null};
 
  /* ───── হোম: রোগীর তথ্য + পুরো রোগ নির্ণয় একসাথে; প্রতিটি আয়াতের পাশে টিক; নিচে WhatsApp-এ পাঠানো ───── */
@@ -1055,33 +1055,30 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
  SHOWT=showTopics;$("rsTp").onclick=()=>showTopics();
  window.__drOpenTopic=n=>{const t=TOPICS.find(x=>x.name===n);if(t){q.value=t.name;setDir();rs.classList.remove("on");$("rsBox").classList.add("dr-tonly");goTopic(t)}};window.__drOpenDisease=()=>showDiag(DISEASE);window.__drOpenMental=()=>showDiag(MENTAL);
  /* নামের তালিকা: প্রতিটি রোগ/অঙ্গের নাম আলাদা; নামে চাপলে শুধু সেটার আয়াত */
+ const DIS_KEEP=new Set(["পাইলস (অর্শ/বাওয়াসির)","জ্বর","ক্যান্সার","পাতলা পায়খানা","আমাশয়","কোষ্ঠকাঠিন্য (পায়খানা কষা)","যৌন দুর্বলতা","চর্মরোগ (শ্বেতী/কুষ্ঠ)"].map(x=>x.normalize("NFC")));
+ const keepDis=(secs,CFG)=>CFG===DISEASE?secs.filter(x=>DIS_KEEP.has(String(x.name).normalize("NFC"))):secs;
  const showNames=(title,items,sub,up)=>{GEN++;$("rsBox").classList.add("dr-tonly");CURT=null;window.__bq="";rs.classList.remove("on");pad.classList.remove("on");const out=$("rsOut"),info=$("rsInfo");out.innerHTML="";info.textContent="";if(up){const ub=mkBtn("← পেছনে",up);ub.style.margin="0 0 8px";info.appendChild(ub)}info.appendChild(els("div","font-weight:700;color:var(--primary);margin-bottom:4px",title));if(sub)info.appendChild(els("div","font-size:13px;color:var(--text-muted);margin-bottom:8px",sub));
   const w=els("div","display:flex;flex-direction:column;gap:8px;margin-top:8px");
-  items.forEach(it=>{if(it.head){w.appendChild(els("div","margin:12px 2px 0;padding-bottom:6px;border-bottom:1.5px solid var(--accent);font-weight:800;font-size:15px;color:var(--accent)",it.head));return}const b=document.createElement("button");b.type="button";b.style.cssText="display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;padding:12px 14px;border:1px solid var(--border-light);border-radius:12px;background:var(--card-bg);color:inherit;font:inherit;font-weight:700;cursor:pointer";b.appendChild(els("span",null,it.name));const e=els("span","font-size:12px;font-weight:400;color:var(--text-muted);white-space:nowrap",(it.note?it.note+"  ":"")+"›");b.appendChild(e);b.onclick=it.fn;w.appendChild(b)});
+  items.forEach(it=>{if(it.head){w.appendChild(els("div","margin:12px 2px 0;padding-bottom:6px;border-bottom:1.5px solid var(--accent);font-weight:800;font-size:15px;color:var(--accent)",it.head));return}const b=document.createElement("button");b.type="button";b.className="dr-btn dr-btn-row";b.appendChild(els("span",null,it.name));const e=els("span","font-size:12px;font-weight:400;color:var(--text-muted);white-space:nowrap",(it.note?it.note+"  ":"")+"›");b.appendChild(e);b.onclick=it.fn;w.appendChild(b)});
   out.appendChild(w);window.scrollTo({top:rs.getBoundingClientRect().top+scrollY-60,behavior:"smooth"})};
  const nameList=async(CFG,title,sub,up)=>{GEN++;$("rsInfo").textContent="লোড হচ্ছে…";$("rsOut").innerHTML="";let D;try{D=await rsFetch(BASE+CFG.file)}catch(e){$("rsInfo").textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
   const secs=[];D.groups.forEach(g=>{let x=secs.find(y=>y.name===g.section);if(!x)secs.push(x={name:g.section,ids:new Set()});g.cats.forEach(c=>c.keys.forEach(k=>x.ids.add(k.s+":"+k.a)))});
-  addGSecs(secs,CFG);const back=()=>nameList(CFG,title,sub,up);
+  {const f=keepDis(secs,CFG);secs.length=0;f.forEach(x=>secs.push(x))}addGSecs(secs,CFG);const back=()=>nameList(CFG,title,sub,up);
   showNames(title,secs.map(x=>({name:x.name,note:secNote(x),fn:()=>{$("rsBox").classList.add("dr-tonly");showDiag(Object.assign({},CFG,{only:x.name,back}));}})),sub,up)};
  const organList=(names,title,sub,up)=>showNames(title,names.map(n=>({name:n,fn:()=>window.__drOpenTopic(n)})),sub,up);
  const combo=async kind=>{const mental=kind==="mental",CFG=mental?MENTAL:DISEASE,title=mental?"🧠 মানসিক":"🩺 শারীরিক";GEN++;$("rsInfo").textContent="লোড হচ্ছে…";$("rsOut").innerHTML="";let D;try{D=await rsFetch(BASE+CFG.file)}catch(e){$("rsInfo").textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
   const secs=[];D.groups.forEach(g=>{let x=secs.find(y=>y.name===g.section);if(!x)secs.push(x={name:g.section,ids:new Set()});g.cats.forEach(c=>c.keys.forEach(k=>x.ids.add(k.s+":"+k.a)))});
-  addGSecs(secs,CFG);const back=()=>combo(kind),organs=mental?["অন্তর (হৃদয়)","বুক ও বক্ষ"]:ORG.map(o=>o[0]);
-  /* রোগ → সম্পর্কিত অঙ্গ (মিললে একই সারিতে; না মিললে শেষে আলাদা) */
-  const d2o=mental?{"দুশ্চিন্তা ও অশান্তি":"অন্তর (হৃদয়)","হতাশা ও বিষণ্ণতা":"অন্তর (হৃদয়)","ভয় ও আতঙ্ক":"অন্তর (হৃদয়)","ওয়াসওয়াসা ও কুমন্ত্রণা":"বুক ও বক্ষ"}:{"মাথাব্যথা":"মাথা","পেটব্যথা":"পেট","দাঁতব্যথা":"দাঁত","সর্দি-কাশি ও নাকের সমস্যা":"নাক","গলাব্যথা":"ঘাড় ও গলা","পিঠ ও কোমরব্যথা":"পিঠ ও মেরুদণ্ড","হাড়-জোড়ার ব্যথা ও বাত":"হাড়","চোখের সমস্যা ও ঝাপসা দেখা":"চোখ","কানের সমস্যা":"কান","চর্মরোগ (শ্বেতী/কুষ্ঠ)":"চামড়া (ত্বক)","শ্বাসকষ্ট ও বুক চাপা":"বুক ও বক্ষ","বুক ধড়ফড়":"অন্তর (হৃদয়)","পাইলস (অর্শ/বাওয়াসির)":"অন্ত্র ও নাড়িভুঁড়ি","সাদা স্রাব ও অনবরত মাসিক":"গর্ভ (জরায়ু)","দাঁত লেগে যাওয়া":"দাঁত"};
-  const BS="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:2px;flex:1;width:100%;min-width:0;text-align:left;padding:9px 10px;border:1px solid var(--border-light);border-radius:10px;background:var(--card-bg);color:inherit;font:inherit;font-size:14px;font-weight:700;cursor:pointer;overflow-wrap:anywhere";
+  {const f=keepDis(secs,CFG);secs.length=0;f.forEach(x=>secs.push(x))}addGSecs(secs,CFG);const back=()=>combo(kind),organs=mental?["অন্তর (হৃদয়)","বুক ও বক্ষ"]:ORG.map(o=>o[0]);
+  /* অঙ্গভিত্তিক ও রোগভিত্তিক আলাদা দুই ভাগ; প্রতি লাইনে দুটি বাটন; অঙ্গের সারিতে রোগ বসানোর আগের নিয়ম বাদ */
   const HS="padding-bottom:6px;border-bottom:1.5px solid var(--accent);font-weight:800;font-size:14.5px;color:var(--accent)";
-  const btn=(label,note,fn)=>{const x=document.createElement("button");x.type="button";x.style.cssText=BS;x.appendChild(els("span",null,label));if(note)x.appendChild(els("span","font-size:11.5px;font-weight:400;color:var(--text-muted)",note));x.onclick=fn;return x};
+  const btn=(label,note,fn)=>{const x=document.createElement("button");x.type="button";x.className="dr-btn";x.appendChild(els("span",null,label));if(note)x.appendChild(els("small",null,note));x.onclick=fn;return x};
   const dbtn=x=>btn(x.name,secNote(x),()=>{$("rsBox").classList.add("dr-tonly");showDiag(Object.assign({},CFG,{only:x.name,back}))});
-  const col=()=>els("div","display:flex;flex-direction:column;gap:6px;min-width:0");
   showNames(title,[],"যেকোনো নামে চাপুন, সেই সম্পর্কিত আয়াত দেখা যাবে");
-  const grid=els("div","display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:stretch");
-  grid.append(els("div",HS,"🫀 অঙ্গভিত্তিক"),els("div",HS,"💊 রোগভিত্তিক"));
-  const used=new Set();
-  organs.forEach(n=>{const L=col(),R=col();L.appendChild(btn(n,"",()=>window.__drOpenTopic(n)));secs.forEach(x=>{if(d2o[x.name]===n){R.appendChild(dbtn(x));used.add(x.name)}});grid.append(L,R)});
-  const rest=secs.filter(x=>!used.has(x.name));
-  if(rest.length){const h=els("div",HS+";grid-column:1/-1;margin-top:6px","💊 অন্যান্য রোগ (নির্দিষ্ট অঙ্গ ছাড়া)");grid.appendChild(h);rest.forEach(x=>{const c=col();c.appendChild(dbtn(x));grid.appendChild(c)})}
-  $("rsOut").appendChild(grid)};
+  const wrap=els("div","display:flex;flex-direction:column;gap:6px;margin-top:6px");
+  const sect=(h,items)=>{wrap.appendChild(els("div",HS,h));const g=els("div","display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin:6px 0 14px;align-items:stretch");items.forEach(x=>g.appendChild(x));wrap.appendChild(g)};
+  sect("🫀 অঙ্গভিত্তিক",organs.map(n=>btn(n,"",()=>window.__drOpenTopic(n))));
+  sect("💊 রোগভিত্তিক",secs.map(dbtn));
+  $("rsOut").appendChild(wrap)};
  window.__drOpenList=k=>{
   const phys=()=>showNames("🩺 শারীরিক",[{name:"অঙ্গভিত্তিক",fn:()=>window.__drOpenList("organ")},{name:"রোগভিত্তিক",fn:()=>window.__drOpenList("disease")}],"একটি বেছে নিন");
   const ment=()=>showNames("🧠 মানসিক",[{name:"অঙ্গভিত্তিক",fn:()=>window.__drOpenList("mentalorgan")},{name:"রোগভিত্তিক",fn:()=>window.__drOpenList("mental")}],"একটি বেছে নিন");
