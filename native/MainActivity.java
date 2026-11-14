@@ -58,11 +58,20 @@ public class MainActivity extends BridgeActivity {
         private final Map<String, OutputStream> os = new HashMap<>();
         private final Map<String, String> where = new HashMap<>();
         private final Map<String, Uri> uris = new HashMap<>();
+        private final Map<String, String> shareNames = new HashMap<>();
 
         @JavascriptInterface public void begin(String id, String name, String mime) {
             try {
                 OutputStream o;
-                if (Build.VERSION.SDK_INT >= 29) {
+                if ("application/octet-stream".equals(mime)) {
+                    // শেয়ারের জন্য: অ্যাপের ক্যাশে ফাইল (AudioShareProvider "সাধারণ ফাইল" হিসেবে দেখাবে → WhatsApp-এ ডকুমেন্ট)
+                    File d = AudioShareProvider.dir(MainActivity.this);
+                    File[] old = d.listFiles();
+                    if (old != null) for (File x : old) x.delete();
+                    String safe = name.replace("/", "-");
+                    o = new FileOutputStream(new File(d, safe));
+                    shareNames.put(id, safe);
+                } else if (Build.VERSION.SDK_INT >= 29) {
                     ContentValues v = new ContentValues();
                     v.put(MediaStore.Downloads.DISPLAY_NAME, name);
                     v.put(MediaStore.Downloads.MIME_TYPE, mime);
@@ -103,6 +112,8 @@ public class MainActivity extends BridgeActivity {
                 if (o != null) { o.flush(); o.close(); }
                 where.remove(id);
                 Uri u = uris.remove(id);
+                String sn = shareNames.remove(id);
+                if (sn != null) u = AudioShareProvider.uri(MainActivity.this, sn);
                 if (u == null) { toast("শেয়ার করা যায়নি (এই ফোনের Android পুরনো)"); return; }
                 Intent i = new Intent(Intent.ACTION_SEND);
                 // অডিও MIME দিলে WhatsApp "অডিও" ধরে ১৬MB-এ আটকায়; তাই সবসময় সাধারণ ফাইল (ডকুমেন্ট) হিসেবে পাঠানো হয়

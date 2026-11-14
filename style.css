@@ -733,3 +733,6 @@ body.is-home .drq-cards{padding-bottom:8px}
 
 /* নিচের (শেষ) কার্ড: মাথার সরু সবুজ দাগ ওপরে না থেকে নিচের প্রান্তে বসে (উচ্চতা একই, কারণ দাগের পুরুত্ব একই) */
 .drq-grid>.drq-card:last-child{border-top:1px solid var(--border-light);border-bottom:4px solid var(--primary)}
+
+/* বদনজর/জাদু/জিন কার্ড: মাথার সরু সবুজ দাগ নেই (উচ্চতা একই থাকে) */
+.drq-grid>.drq-tabcard{border-top:4px solid transparent}
