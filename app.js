@@ -53,7 +53,7 @@ const BEXCL=[[["মুখ","চেহারা","মুখমণ্ডল","ব�
 const JINNL=new Set(["جِنّ","جانّ","شَيْطان","إِبْلِيس","مارِد","مَرِيد","عِفْرِيت","خَنّاس"]);
 // আগুন-গুচ্ছ: আগুন/অগ্নি/অনল/নার লিখলে আরবির নার ছাড়াও সা'ঈর, হারীক, ওয়াক্বূদ, জায্ওয়াহ, ক্বাবাস, তালাযযা, হাত্বাব, শিহাব ইত্যাদির আয়াতও আসে
 const FIREL=new Set(["نار","سَعِير","حَرِيق","جَذْوَة","قَبَس","وَقُود","أَوْقَدُ","اسْتَوْقَدَ","مُوقَدَة","تَلَظَّى","حَطَب","شِهاب","شُهُب"]);
-const BLEM=[[["ভালোবাসা","ভালবাসা","প্রেম","মহব্বত","মুহাব্বত","মুহব্বত","ভালোবাসি","ভালোবাসে","ভালোবাসেন","ভালোবাসতে"],f=>LOVEL.has(f.l)&&!/প্রাধান্য/.test(f.m)],[["আগুন","অগ্নি","অনল","নার"],f=>FIREL.has(f.l)||/আগুন|অগ্নি|অনল/.test(f.m)],[["জিন","জ্বিন","জ্বীন","জীন","জিন জাতি","জ্বিন জাতি","জিনজাতি","জিনের","জিনদের"],f=>JINNL.has(f.l)||(f.l==="جِنَّة"&&/জ্বিন|জিন/.test(f.m))||/শয়তান|ইবলিস|ইবলীস|মারিদ|ইফরিত|জ্বিন/.test(f.m)]];
+const BLEM=[[["কপাল","ললাট"],f=>f.refs.some(r=>["37:103:4","11:56:13","55:41:5","96:15:6","96:16:1"].includes(r))],[["চুল","কেশ"],f=>f.refs.includes("2:196:12")],[["মাথা","মস্তক","শির","শিরোদেশ","মাথাব্যথা","মাথা ব্যথা","শিরঃপীড়া","মাথাধরা","মাথা ধরা","মাথাঘোরা","মাথা ঘোরা","মাথাঘুরা","মাথা ঘুরা"],f=>f.refs.includes("56:19:2")||/মাথাঘুর|মাথাব্যথা|শিরঃপীড়া/.test(f.m)],[["ভালোবাসা","ভালবাসা","প্রেম","মহব্বত","মুহাব্বত","মুহব্বত","ভালোবাসি","ভালোবাসে","ভালোবাসেন","ভালোবাসতে"],f=>LOVEL.has(f.l)&&!/প্রাধান্য/.test(f.m)],[["আগুন","অগ্নি","অনল","নার"],f=>FIREL.has(f.l)||/আগুন|অগ্নি|অনল/.test(f.m)],[["জিন","জ্বিন","জ্বীন","জীন","জিন জাতি","জ্বিন জাতি","জিনজাতি","জিনের","জিনদের"],f=>JINNL.has(f.l)||(f.l==="جِنَّة"&&/জ্বিন|জিন/.test(f.m))||/শয়তান|ইবলিস|ইবলীস|মারিদ|ইফরিত|জ্বিন/.test(f.m)]];
 function searchBn(q){const out=[];const xs=[];for(const[k,ph]of BEXCL)if(k.some(x=>fb(x)===fb(q)))ph.forEach(p=>xs.push(fb(p)));let qs=[q];for(const g of BSYN)if(g.some(x=>fb(x)===fb(q))){qs=g.slice();break}
  for(const[k,ex]of BEXT)if(k.some(x=>fb(x)===fb(q)))qs=qs.concat(ex.filter(x=>!qs.includes(x)));
  const fq=qs.map(fb);const vst=fq.filter(x=>x.endsWith("া")&&x.length>=4).map(x=>x.slice(0,-1));
@@ -73,7 +73,7 @@ async function bnSuggest(q){const fq=fb(bnw(q));if(fq.length<3)return[];BWL=BWL|
 const BSTOP=new Set(["সহ","ও","এবং","এর","তার","তাদের","যে","এই","সে","কি","কী","না","তো","হয়","করে","থেকে","দ্বারা","জন্য","একটি","এক","তাঁর","তিনি","আর","বা","যারা","তারা","আমার","আমি","আমাকে","আমাদের","আমরা","আমাদেরকে","তোমার","তুমি","তোমাকে","তোমরা","তোমাদের","তাকে","তাঁকে","তাঁদের","তিনি","সে","এটি","ওই","ঐ","সেই","এর","ওর","তা","যা","কে","হে","নিশ্চয়","অবশ্যই","কিন্তু","যদি","তবে","পর","মধ্যে","উপর","প্রতি","সাথে","সঙ্গে","করা","করো","করুন","হবে","হল","হলো","ছিল","আছে","তাহলে","এবং","অথবা"]);
 const bnw=x=>x.replace(/[()\[\],.;:!?"'“”‘’।–—-]/g,"");
 function bnHit(w,toks){w=fb(bnw(w));if(w.length<2)return false;for(let k of toks){k=fb(k);if(w===k)return true;let n=0;const L=Math.min(w.length,k.length);while(n<L&&w[n]===k[n])n++;if(n>=3&&n>=Math.ceil(L*0.7))return true}return false}
-const BSYN=[["ভালোবাসা","ভালবাসা","প্রেম","মহব্বত","মুহাব্বত","মুহব্বত","ভালোবাসি","ভালোবাসে","ভালোবাসেন","ভালোবাসতে"],["আগুন","অগ্নি","অনল","নার"],["জিনা","জেনা","যিনা","যেনা"],["ইবলিস","ইবলীস","ইবলিশ","ইবলীশ"],["চুল","কেশ","কেশগুচ্ছ","কেশরাজি","কেশদাম","ঝুঁটি"],["মাথা","মস্তক","শির","শিরোদেশ"],["চোখ","নয়ন","চক্ষু","আঁখি","দৃষ্টি"],["হাত","হস্ত"],["পা","চরণ"],["মুখ","চেহারা","মুখমণ্ডল","বদন","আনন"],["কান","কর্ণ","শ্রবণ"],["পেট","উদর","জঠর"],["পিঠ","পৃষ্ঠ","পৃষ্ঠদেশ"],["বুক","বক্ষ","সিনা","ছাতি"],["ঘাড়","গর্দান","গ্রীবা","গলা"],["কণ্ঠ","কণ্ঠদেশ","কণ্ঠনালী"],["অন্তর","হৃদয়","মন","কলব"],["রক্ত","খুন","শোণিত"],["কপাল","ললাট","ভ্রূ"],["জিহ্বা","জিভ","জবান","রসনা"],["দাঁত","দন্ত"],["নাক","নাসিকা","নাসারন্ধ্র"],["আঙুল","অঙ্গুলি","আঙ্গুল"]];
+const BSYN=[["ভালোবাসা","ভালবাসা","প্রেম","মহব্বত","মুহাব্বত","মুহব্বত","ভালোবাসি","ভালোবাসে","ভালোবাসেন","ভালোবাসতে"],["আগুন","অগ্নি","অনল","নার"],["জিনা","জেনা","যিনা","যেনা"],["ইবলিস","ইবলীস","ইবলিশ","ইবলীশ"],["চুল","কেশ","কেশগুচ্ছ","কেশরাজি","কেশদাম","ঝুঁটি"],["মাথা","মস্তক","শির","শিরোদেশ"],["চোখ","নয়ন","চক্ষু","আঁখি","দৃষ্টি","দৃষ্টিশক্তি"],["হাত","হস্ত"],["পা","চরণ"],["মুখ","চেহারা","মুখমণ্ডল","বদন","আনন"],["কান","কর্ণ","শ্রবণ","শ্রবণশক্তি"],["পেট","উদর","জঠর"],["পিঠ","পৃষ্ঠ","পৃষ্ঠদেশ"],["বুক","বক্ষ","সিনা","ছাতি"],["ঘাড়","গর্দান","গ্রীবা","গলা"],["কণ্ঠ","কণ্ঠদেশ","কণ্ঠনালী"],["অন্তর","হৃদয়","মন","কলব"],["রক্ত","খুন","শোণিত"],["কপাল","ললাট","ভ্রূ"],["জিহ্বা","জিহবা","জিভ","জবান","রসনা"],["দাঁত","দন্ত"],["নাক","নাসিকা","নাসারন্ধ্র"],["আঙুল","অঙ্গুলি","আঙ্গুল","আঙ্গুলি","আঙুলি"],["চামড়া","ত্বক","চর্ম"],["মাংস","গোশত","গোস্ত"],["হাড়","অস্থি","অস্তি","হাড্ডি"],["গর্ভ","গর্ভাশয়","মাতৃগর্ভ","জরায়ু"]];
 /* আরবির মতো সরাসরি অবস্থান: quran-chunks/m — প্রতিটা আয়াতে "আরবি শব্দ নং:অনুবাদের শব্দ-শুরু-শেষ"। না থাকলে নিচের আন্দাজ-পদ্ধতি (markBn) কাজ করে */
 function alRange(str,w){for(const it of String(str||"").split(",")){const p=it.split(":");if(+p[0]===w&&p[1]){const r=p[1].split("-").map(Number);if(r.length===2&&r[0]>=0&&r[1]>=r[0])return r}}return null}
 /* দুই রঙের মার্ক: <mark> = মূল শব্দ; span.rs-gold = সমস্যার সাথে সংশ্লিষ্ট অংশ (box.__port = [শুরু, শেষ], ০-ভিত্তিক শব্দ-সূচক) */
@@ -609,7 +609,7 @@ async function refView(s,a,e){GEN++;CURT=null;const out=$("rsOut"),info=$("rsInf
   let wl=false;wb.onclick=async()=>{wh.classList.toggle("on");if(wl)return;wl=true;wh.textContent="লোড হচ্ছে…";
    try{const m=((await chunk("w",s))||[])[i-1].split("|");wh.textContent="";A[i-1].split(" ").forEach((x,k)=>{const c=el("div","rs-wc"),ar=el("div","rs-wa rs-ar",x),bm=el("div","rs-wm",m[k]||"");c.append(ar,bm);wh.appendChild(c)})}catch(e){wh.textContent="লোড করা যায়নি — আবার চাপুন";wl=false}};
   va.append(wb,copyBtn("📋 কপি",()=>vtext(s,i)),playBtn(s,i),selBox(s,i));box.append(rf,tx,tb,va,wh);out.appendChild(box)}}
-// বিষয়ভিত্তিক আয়াত (আলাদা বোতামে): কুরআনে সরাসরি নেই এমন বিষয়, যেমন বদনজর — সংশ্লিষ্ট শব্দগুলোর আয়াত আলাদা ভাগে দেখায়।
+// অঙ্গ-প্রত্যঙ্গ/বদনজর ইত্যাদির আয়াত: কুরআনে সরাসরি নেই এমন বিষয়, যেমন বদনজর — সংশ্লিষ্ট শব্দগুলোর আয়াত আলাদা ভাগে দেখায়।
 // নতুন বিষয় যোগ করতে TOPICS-এ একটা অংশ বাড়ান: {name:"বিষয়", desc:"তালিকায় ছোট বিবরণ", intro:"ফল দেখানোর আগের ব্যাখ্যা", terms:[["ভাগের শিরোনাম","সার্চের শব্দ (বাংলা অর্থ বা আরবি)"], ...]}
 const TOPICS=[
  {name:"বদনজর",alias:["বদনজর","বদ নজর","নজর","নজর লাগা","নজরলাগা","নজর দোষ","কুনজর","কুদৃষ্টি","চোখ লাগা","evil eye","evileye"],desc:"চোখ · হাসাদ (হিংসা)",intro:"কুরআনে “বদনজর” শব্দটি সরাসরি নেই; এই বিষয়ের সাথে সংশ্লিষ্ট চোখ ও হাসাদ (হিংসা) সংক্রান্ত আয়াতগুলো আলাদা ভাগে দেখানো হচ্ছে",terms:[["চোখ সংক্রান্ত আয়াত","চোখ"],["হাসাদ (হিংসা) সংক্রান্ত আয়াত","حسد"],["মুগ্ধতার নজর — ইয়াকূব (আ.)-এর আলাদা দরজায় ঢোকার নির্দেশ (১২:৬৭)","দরজা",{"v":"12:67"}]]},
@@ -918,21 +918,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   l.slice().sort((a,b)=>a.rn<b.rn?-1:a.rn>b.rn?1:0).forEach(r=>{const row=el("div","rs-ri"),b=el("b",null,[...r.rn].join(" ")),c=el("span",null,bn2(r.n)+" বার");row.append(b,c);row.onclick=()=>{q.value=r.rn;rs.classList.remove("on");go();window.scrollTo({top:rs.getBoundingClientRect().top+scrollY-60,behavior:"smooth"})};rs.appendChild(row)})};
  const go=()=>(ALLF=false,run()).catch(e=>{console.error(e);$("rsInfo").textContent="ডেটা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"});
  const goTopic=t=>(ALLF=false,run(t)).catch(e=>{console.error(e);$("rsInfo").textContent="ডেটা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"});
- const showTopics=async force=>{if(!force&&rs.classList.contains("on")&&rs.dataset.k==="topics"){rs.classList.remove("on");return}
-  pad.classList.remove("on");rs.innerHTML="";rs.dataset.k="topics";rs.classList.add("bn","on");$("rsOut").innerHTML="";$("rsInfo").textContent="";
-  const secH=t=>rs.appendChild(el("div","dr-sec",t));
-  const drRow=(ic,title,desc,count,fn,hero)=>{const row=el("div","dr-row"+(hero?" hero":"")),i=el("div","dr-ic",ic),tx=el("div","dr-tx"),end=el("div","dr-end"),n=el("span","dr-cnt",count);tx.append(el("b",null,title));end.append(n,el("span","dr-go","›"));row.append(i,tx,end);row.onclick=fn;rs.appendChild(row);return n};
-  secH("রোগ নির্ণয় ও চিকিৎসা");
-  drRow("💊","শারীরিক রোগ ও আরোগ্যের আয়াত","রোগ → সংশ্লিষ্ট অঙ্গ → কাছের আয়াত (পাইলস, জ্বর, মাথা-পেট-দাঁত-গলা-পিঠের ব্যথা, ঘুম, ক্লান্তি…)","",()=>showDiag(DISEASE),1);
-  let L=[];try{L=await TS.load()}catch(e){}
-  if(rs.dataset.k!=="topics"||!rs.classList.contains("on"))return;
-  if(L.length){secH("আপনার তালিকা");L.forEach(t=>{drRow("📚",t.name,"",bn2(t.refs.length)+" আয়াত",()=>{q.value="";setDir();rs.classList.remove("on");openTopic(t);window.scrollTo({top:rs.getBoundingClientRect().top+scrollY-60,behavior:"smooth"})})})}
-  
-  secH("বিষয়সমূহ");
-  const cnt=[];TOPICS.forEach((t,i)=>{const n=drRow(bn2(i+1),t.name,t.desc||"","…",()=>{q.value=t.name;setDir();rs.classList.remove("on");goTopic(t);window.scrollTo({top:rs.getBoundingClientRect().top+scrollY-60,behavior:"smooth"})});cnt.push([t,n])});fillCounts(cnt);
-  const ft=el("div","dr-bak"),fi=document.createElement("input");fi.type="file";fi.accept=".json,application/json";fi.style.display="none";fi.onchange=()=>{if(fi.files[0])importTopics(fi.files[0]);fi.value=""};
-  ft.append(mkBtn("📥 নিজের তালিকার ব্যাকআপ নামান",exportTopics),mkBtn("📤 ব্যাকআপ ফেরান",()=>fi.click()),fi);ft.style.position="static";rs.appendChild(ft)};
-// ---------- রোগ নির্ণয়ের তালিকা (quran-diagnosis.json) ----------
+ // ---------- রোগ নির্ণয়ের তালিকা (quran-diagnosis.json) ----------
 
  /* ধাপভিত্তিক গাইড: জ্বর / সাদা স্রাব ও অনবরত মাসিক / দাঁত লেগে যাওয়া — রোগভিত্তিক তালিকায় ওই নামে চাপলে ওপরে দেখায় */
  const GUIDES={
@@ -1057,8 +1043,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
     cb.onchange=()=>{if(cb.checked)SEL.set(id,{sec:g.section||"",name:c.name,s:k.s,a:k.a,sn:SN[k.s-1]});else SEL.delete(id);upd()};
     lb.append(els("span",null,"রিয়্যাকশন হয়েছে"),cb);return lb};
    showDiag({host:out,infoEl:info,pick})};}
- SHOWT=showTopics;$("rsTp").onclick=()=>showTopics();
- window.__drOpenTopic=n=>{const t=TOPICS.find(x=>x.name===n);if(t){q.value=t.name;setDir();rs.classList.remove("on");$("rsBox").classList.add("dr-tonly","dr-topic");goTopic(t)}};window.__drOpenDisease=()=>showDiag(DISEASE);window.__drOpenMental=()=>showDiag(MENTAL);
+  window.__drOpenTopic=n=>{const t=TOPICS.find(x=>x.name===n);if(t){q.value=t.name;setDir();rs.classList.remove("on");$("rsBox").classList.add("dr-tonly","dr-topic");goTopic(t)}};window.__drOpenDisease=()=>showDiag(DISEASE);window.__drOpenMental=()=>showDiag(MENTAL);
  /* নামের তালিকা: প্রতিটি রোগ/অঙ্গের নাম আলাদা; নামে চাপলে শুধু সেটার আয়াত */
  const DIS_KEEP=new Set(["পাইলস (অর্শ/বাওয়াসির)","জ্বর","ক্যান্সার","পাতলা পায়খানা","আমাশয়","কোষ্ঠকাঠিন্য (পায়খানা কষা)","যৌন দুর্বলতা","চর্মরোগ (শ্বেতী/কুষ্ঠ)"].map(x=>x.normalize("NFC")));
  const keepDis=(secs,CFG)=>CFG===DISEASE?secs.filter(x=>DIS_KEEP.has(String(x.name).normalize("NFC"))):secs;
@@ -1255,7 +1240,7 @@ function drShell(){
   else if(p[0]==="amol"&&am){key="amol";box.hidden=true;rd.hidden=true;am.hidden=false;window.__drAmol&&window.__drAmol(p[1]);window.scrollTo(0,0)}
   else if(p[0]==="alarm"&&al){key="alarm";box.hidden=true;rd.hidden=true;al.hidden=false;window.DRALARM&&DRALARM.show();window.scrollTo(0,0)}
   else if(p[0]==="read"&&RMODES.some(m=>m[0]===p[1])){key="read/"+p[1];const s=+p[2]||0;box.hidden=true;rd.hidden=false;renderReader(p[1],s>=1&&s<=114?s:0);window.scrollTo(0,0)}
-  else{rd.hidden=true;box.hidden=false;RG++;if(p[0]==="topics"){key="topics";SHOWT&&SHOWT(true);window.scrollTo(0,0)}else if(prev.startsWith("read/")||prev===""||prev==="home"||prev==="resp"||prev==="alarm"||prev==="amol")window.scrollTo(0,0)}
+  else{rd.hidden=true;box.hidden=false;RG++;if(p[0]==="topics"){location.replace("#home");return}else if(prev.startsWith("read/")||prev===""||prev==="home"||prev==="resp"||prev==="alarm"||prev==="amol")window.scrollTo(0,0)}
   prev=key;lastH=h;{const bk=$("drBackRow");if(bk)bk.hidden=key==="home";window.__drPlaceBack&&window.__drPlaceBack(key);window.__drNav=(window.__drNav||0)+1}document.body.classList.toggle("is-home",key==="home");{const sh=key==="home"?"":"none";["drWidget","drWBar"].forEach(i=>{const x=$(i);if(x)x.style.display=sh})}navs.forEach(a=>a.classList.toggle("on",a.dataset.nav===key))};
  window.__drSubs=[];
  window.__drPushSub=fn=>{try{history.pushState({drSub:1},"");window.__drSubs.push(fn)}catch(e){}};

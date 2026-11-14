@@ -76,7 +76,7 @@
     anchor.parentNode.insertBefore(hb, anchor.nextSibling);
     var booksEl = $("hdBooks"), chipsEl = $("hdChips"), infoEl = $("hdInfo"), outEl = $("hdOut"), moreEl = $("hdMore");
 
-    var quranIds = ["rsTp", "rsRs", "rsInfo", "rsOut"];
+    var quranIds = ["rsRs", "rsInfo", "rsOut"];
 
     function syncJump() {
       if (mode !== "b" || !st || st.browse !== undefined || !st.all || !st.all.length) { jump.hidden = true; return; }
@@ -476,8 +476,6 @@
       } else if (t.closest("#rsX")) {
         if (mode === "h") { e.stopImmediatePropagation(); e.preventDefault(); q.value = ""; clearAll(); intro(); q.focus(); }
         else clearAll();
-      } else if (mode === "b" && t.closest("#rsTp")) {
-        clearAll();
       }
     }, true);
     /* কুরআনের তালিকা (রুট/শব্দ/বিষয়) থেকে কিছু বাছলে প্রশ্ন বদলে যায় — হাদিসও সেই অনুযায়ী মিলিয়ে নেওয়া */
@@ -496,7 +494,6 @@
       if (mode !== "h" || !e.target.closest || !e.target.closest("button")) return;
       setTimeout(function () { if (q.value.trim()) search(); else intro(); }, 0);
     });
-    /* সাইডবারের "বিষয়ভিত্তিক আয়াত" কুরআনের নিজস্ব — তাই সেখানে গেলে শুধু কুরআনে ফেরা */
     addEventListener("hashchange", function () { if (/^#topics/.test(location.hash) && mode === "h") setMode("q"); });
 
     var saved = "q";
