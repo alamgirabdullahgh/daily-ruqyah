@@ -467,7 +467,6 @@
           try { await P.stop({ nonag: false }); } catch (e) { }
           setTimeout(sysRefresh, 400);
         };
-        row.appendChild(tx);
         var sw = el("label", "dsy-sw"); var cb = el("input"); cb.type = "checkbox"; cb.checked = true; cb.setAttribute("aria-label", "অটোমেটিক এলার্ম " + x[1]);
         cb.onchange = async function () {
           var want = cb.checked;
@@ -475,7 +474,17 @@
           sysRefresh();
         };
         sw.appendChild(cb); sw.appendChild(el("i"));
-        row.appendChild(sw);
+        /* অডিও বন্ধ বাটন: সবসময় চাপা যায় — যা-ই বাজুক (অ্যালার্ম বা অ্যাপের অডিও) থামিয়ে দেয় */
+        var stp = el("button", "dsy-stop"); stp.type = "button"; stp.setAttribute("aria-label", "অডিও বন্ধ করুন"); stp.title = "অডিও বন্ধ";
+        stp.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16.5 9.5l5 5M21.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+        stp.onclick = async function (ev) {
+          ev.stopPropagation();
+          try { document.querySelectorAll("audio").forEach(function (au) { try { au.pause(); } catch (e) { } }); } catch (e) { }
+          try { if (P) await P.stop({ nonag: false }); } catch (e) { }
+          setTimeout(sysRefresh, 400);
+        };
+        if (x[0] === "baq") { row.appendChild(stp); row.appendChild(tx); row.appendChild(sw); }
+        else { row.appendChild(sw); row.appendChild(tx); row.appendChild(stp); }
         two.appendChild(row);
       });
       grid.appendChild(sec);

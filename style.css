@@ -933,3 +933,11 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:auto 0 6px;flex:
 
 /* দৈনন্দিন রুকইয়াহ: শুধু শারীরিক-এর PDF ও অডিও বাটন নামের বাটনের বাম পাশে; মানসিক আগের মতো ডানে */
 #drLanding .drq-opts.drq-two:not(.drq-three)>li.drq-ai:first-child .drq-air>.drq-bt{order:-1}
+
+/* অটোমেটিক এলার্ম: টগল দাঁড়ানো (ওপরে = চালু); জাদু-র টগল লেখার বামে; দুই পাশে ছোট অডিও-বন্ধ বাটন */
+.dsy-sw{width:20px;height:36px}
+.dsy-sw i::before{top:19px;transition:.2s}
+.dsy-sw input:checked+i::before{transform:translateY(-16px)}
+.drq-sys .dsy-row[data-g="jadu"] .dsy-t{text-align:left}
+.dsy-stop{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--primary) 38%,transparent);background:var(--primary-light);color:var(--primary);display:inline-flex;align-items:center;justify-content:center;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dsy-stop:active{background:var(--primary);color:#fff}
