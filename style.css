@@ -814,3 +814,16 @@ body.is-home #drLanding:not([hidden]){width:100%;align-self:stretch;box-sizing:b
 #drLanding .drq-opts.drq-two:not(.drq-three) .drq-air>a:active{transform:translateY(2px);box-shadow:none}
 #drLanding .drq-opts.drq-three .drq-bt button{font-size:11px;padding:11px 1px;white-space:nowrap}
 #drLanding .drq-opts.drq-three .drq-bt .drq-bl{margin-left:0}
+
+/* v212: ট্যাব ৪টি সমান ভাগ; শারীরিক/মানসিকের PDF+অডিও বড়; বোতামের লেখা বড় */
+.drq-tabs,#drLanding .drq-grid>.drq-card>.drq-tabs{grid-template-columns:repeat(4,1fr)!important}
+.drq-tab{gap:3px;font-size:clamp(14px,4.6vw,18px);white-space:nowrap;min-width:0;padding:6px 0}
+.drq-tab::before{width:6px;height:6px}
+.drq-tab-all,.drq-tab-all span{font-size:clamp(11px,3.6vw,15px);gap:2px;white-space:nowrap}
+.drq-tab-all svg{width:10px;height:10px}
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-air{flex-direction:column;align-items:stretch;gap:6px;padding:8px 5px}
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-air>a{flex:none;width:auto;margin:0 2px;font-size:clamp(15px,4.6vw,18px);padding:10px 4px;min-height:48px}
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt{display:flex;width:100%;gap:5px}
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-bt button{flex:1 1 0;min-width:0;padding:11px 2px;font-size:12px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap}
+#drLanding .drq-opts.drq-two:not(.drq-three) .drq-pd .drq-bi{font-size:12px}
+#drLanding .drq-opts.drq-three .drq-air>a{font-size:clamp(10px,3.5vw,14px)}
