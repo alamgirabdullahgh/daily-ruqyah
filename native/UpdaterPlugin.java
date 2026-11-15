@@ -1,10 +1,8 @@
 package com.dailyruqyah.app;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageInstaller;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -15,8 +13,6 @@ import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -115,55 +111,28 @@ public class UpdaterPlugin extends Plugin {
             call.reject("permission");
             return;
         }
-        if (busy) {
+        if (UpdateService.running) {
             call.reject("busy");
             return;
         }
-        busy = true;
-        new Thread(() -> {
-            PackageInstaller inst = c.getPackageManager().getPackageInstaller();
-            int id = -1;
-            try {
-                PackageInstaller.SessionParams p = new PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL);
-                if (Build.VERSION.SDK_INT >= 31) p.setRequireUserAction(PackageInstaller.SessionParams.USER_ACTION_NOT_REQUIRED);
-                id = inst.createSession(p);
-                PackageInstaller.Session s = inst.openSession(id);
-                HttpURLConnection cn = (HttpURLConnection) new URL(url).openConnection();
-                cn.setConnectTimeout(15000);
-                cn.setReadTimeout(30000);
-                if (cn.getResponseCode() != 200) throw new Exception("HTTP " + cn.getResponseCode());
-                long total = cn.getContentLengthLong();
-                try (InputStream in = cn.getInputStream(); OutputStream out = s.openWrite("a", 0, -1)) {
-                    byte[] buf = new byte[32 * 1024];
-                    long done = 0;
-                    int last = -1, n;
-                    while ((n = in.read(buf)) >= 0) {
-                        out.write(buf, 0, n);
-                        done += n;
-                        if (total > 0) {
-                            int pct = (int) Math.max(0, Math.min(100, done * 100 / total));
-                            if (pct != last) {
-                                last = pct;
-                                JSObject o = new JSObject();
-                                o.put("pct", pct);
-                                notifyListeners("progress", o);
-                            }
-                        }
-                    }
-                    s.fsync(out);
-                }
-                BgUpdater.sp(c).edit().putBoolean("reopen", true).apply();
-                PendingIntent pi = PendingIntent.getBroadcast(
-                        c, id, new Intent(c, UpdateResultReceiver.class).putExtra("silent", Build.VERSION.SDK_INT >= 31),
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
-                s.commit(pi.getIntentSender());
-                call.resolve();
-            } catch (Exception e) {
-                try { if (id >= 0) inst.abandonSession(id); } catch (Exception x) { }
-                call.reject("install failed: " + e.getClass().getSimpleName());
-            } finally {
-                busy = false;
-            }
-        }).start();
+        // ডাউনলোড ফোরগ্রাউন্ড সার্ভিসে চলে: অ্যাপ মিনিমাইজ বা অন্য অ্যাপে গেলেও আপডেট চলতেই থাকে
+        UpdateService.listener = pct -> {
+            JSObject o = new JSObject();
+            o.put("pct", pct);
+            notifyListeners("progress", o);
+        };
+        UpdateService.done = ok -> {
+            UpdateService.listener = null;
+            UpdateService.done = null;
+            if (ok) call.resolve(); else call.reject("install failed");
+        };
+        try {
+            Intent in = new Intent(c, UpdateService.class).putExtra("url", url);
+            if (Build.VERSION.SDK_INT >= 26) c.startForegroundService(in); else c.startService(in);
+        } catch (Exception e) {
+            UpdateService.listener = null;
+            UpdateService.done = null;
+            call.reject("install failed: " + e.getClass().getSimpleName());
+        }
     }
 }

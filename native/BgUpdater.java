@@ -74,6 +74,7 @@ public class BgUpdater {
     // ব্যাকগ্রাউন্ড থ্রেড থেকে ডাকতে হবে
     static void backgroundCheck(Context c, long minGapMs) {
         SharedPreferences sp = sp(c);
+        if (UpdateService.running) return;
         if (System.currentTimeMillis() - sp.getLong("t", 0L) < minGapMs) return;
         Info i;
         try { i = fetch(); } catch (Exception e) { return; }
@@ -98,7 +99,14 @@ public class BgUpdater {
     interface Pct { void on(int p); }
 
     // APK নামিয়ে PackageInstaller-এ জমা দেয়; silent হলে (Android 12+) ফোন অনুমতি দিলে নিশ্চিত-পর্দা ছাড়াই বসে
+    private static final java.util.concurrent.atomic.AtomicBoolean INST = new java.util.concurrent.atomic.AtomicBoolean(false);
+
     static void install(Context c, String url, boolean silent, Pct pct) throws Exception {
+        if (!INST.compareAndSet(false, true)) throw new Exception("busy");
+        try { install0(c, url, silent, pct); } finally { INST.set(false); }
+    }
+
+    private static void install0(Context c, String url, boolean silent, Pct pct) throws Exception {
         PackageInstaller inst = c.getPackageManager().getPackageInstaller();
         PackageInstaller.SessionParams p = new PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL);
         if (Build.VERSION.SDK_INT >= 31) {
@@ -194,11 +202,7 @@ public class BgUpdater {
         @Override
         public void onReceive(Context c, Intent i) {
             schedule(c);
-            final BroadcastReceiver.PendingResult pr = goAsync();
-            final Context app = c.getApplicationContext();
-            new Thread(() -> {
-                try { backgroundCheck(app, 9 * 60 * 1000L); } catch (Exception e) { } finally { pr.finish(); }
-            }).start();
+            UpdateJobService.kick(c.getApplicationContext()); // কাজ JobScheduler-এ; রিসিভার সাথে সাথে শেষ
         }
     }
 }
