@@ -798,10 +798,12 @@ async function topicKeys(topic){
   [...u].filter(k=>!seen.has(k)).map(k=>k.split(":").map(Number)).sort((x,y)=>x[0]-y[0]||x[1]-y[1]).forEach(x=>{seen.add(x[0]+":"+x[1]);out.push(x)})}
  return out}
 async function respKeys(cat){
+ if(cat!=="সব")return[];
  const D=await rsFetch(BASE+"quran-diagnosis.json?v="+DV+"d20"),C=["বদনজর","জাদু","জিন"],seen=new Set(),out=[];
  D.groups.filter(g=>cat==="সব"?C.includes(g.section):g.section===cat).forEach(g=>g.cats.forEach(c=>c.keys.forEach(k=>{const id=k.s+":"+k.a;if(!seen.has(id)){seen.add(id);out.push([k.s,k.a])}})));
  return out}
 async function treatKeys(cat){
+ if(cat!=="সব")return[];
  const T=n=>topicKeys(TOPICS.find(x=>x.name===n)),seen=new Set(),out=[];
  const parts=cat==="সব"?[await T("বদনজর"),await T("জাদু"),await T("জিন")]:[await T(cat)];
  parts.forEach(l=>l.forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);out.push(k)}}));return out}
@@ -853,7 +855,7 @@ window.__drHomePdf=async(kind,cat,host)=>{
   const pg=els("div","max-height:62vh;overflow:auto;border:1px solid var(--border-light);border-radius:10px;background:#fff");
   r.imgs.forEach(u8=>{const im=document.createElement("img");im.loading="lazy";im.style.cssText="display:block;width:100%;height:auto";im.src=URL.createObjectURL(new Blob([u8],{type:"image/jpeg"}));pg.appendChild(im)});
   host.append(row,pg);host.dataset.done="1";
- }catch(e){console.error(e);note.textContent="PDF বানানো যায়নি — ইন্টারনেট দেখে আবার চাপুন"}
+ }catch(e){console.error(e);note.textContent=/empty/.test(String(e&&e.message))?"এখানে এখনো কিছু যোগ করা হয়নি":"PDF বানানো যায়নি — ইন্টারনেট দেখে আবার চাপুন"}
  finally{host.dataset.busy="0"}
 };
 /* অডিও: চাপলেই সাথে সাথে বাজে (আয়াত একটার পর একটা, নির্ধারিত পুনরাবৃত্তিসহ); পাশাপাশি পেছনে একটি ফাইল জোড়া হয় — তৈরি হলে নিচে প্লেয়ার, শেয়ার ও ডাউনলোড আসে */
@@ -877,7 +879,7 @@ window.__drHomeAudio=async(kind,cat,host)=>{
    note.textContent="✅ "+bn2(e.n)+"টি আয়াত × "+bn2(e.rep)+" বার"+(e.set>1?" × "+bn2(e.set)+" সেট":"");
    while(e.out.firstChild)res.appendChild(e.out.firstChild);host.dataset.done="1";
    {const a=res.querySelector("audio");if(a)a.play().catch(()=>{})}
- }catch(e){console.error(e);note.textContent="অডিও তৈরি করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"}
+ }catch(e){console.error(e);note.textContent=/empty/.test(String(e&&e.message))?"এখানে এখনো কিছু যোগ করা হয়নি":"অডিও তৈরি করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"}
  finally{host.dataset.busy="0"}
 };
 async function run(topic){window.__bq="";GEN++;CURT=null;{const gp=document.getElementById("drGit");if(gp)gp.remove()}if(topic&&!topic.terms)topic=null;const raw=topic?topic.name:$("rsQ").value;window.__sq=(topic&&topic.fname)||raw;const q=nz(raw),out=$("rsOut"),info=$("rsInfo");out.innerHTML="";if(!R)info.textContent="⏳ ডেটা লোড হচ্ছে… (প্রথমবার ইন্টারনেট ধীর হলে সময় লাগে, পরে দ্রুত হবে)";
