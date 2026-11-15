@@ -323,7 +323,7 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=(s,
  if(!ok){console.error("merge failed");note("একটা ফাইলে জোড়া লাগানো যায়নি (অডিও সার্ভার ফাইল দিতে দেয়নি), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");out.textContent="";playList(ST()>1?Array.from({length:ST()},()=>list).flat():list,out);return}
  if(!pool){const f=enc.flush();if(f.length)mp3.push(new Uint8Array(f))}if(opt&&opt.grp&&marks.length){/* জোড়া-পুনরাবৃত্তি: প্রতি opt.grp টি আয়াতের দল (যেমন বদনজরের ১টি + অঙ্গের ১টি) পরপর opt.grpRep বার */marks[marks.length-1]=mp3.length;const nm=[],g=opt.grp,gr=opt.grpRep||11;for(let s=0;s<marks.length;s+=g){const from=s?marks[s-1]:0,to=marks[Math.min(s+g,marks.length)-1],seg=mp3.slice(from,to);for(let q=0;q<gr;q++)for(const c of seg)nm.push(c)}mp3.length=0;for(const c of nm)mp3.push(c)}
  if(opt&&opt.onmarks){try{const pb=[0];for(const c of mp3)pb.push(pb[pb.length-1]+c.length);opt.onmarks(marks.map((m,k)=>({i:oi[k],t:pb[Math.min(m,mp3.length)]*8/64000})).filter(x=>x.i!=null))}catch(e){console.error(e)}}
- const SR=ST(),parts=[];for(let q=0;q<SR;q++)for(const c of mp3)parts.push(c);const blob=new Blob(parts,{type:"audio/mpeg"}),ext="mp3";
+ if(opt&&opt.stat){opt.stat.ok=ok;opt.stat.bad=bad}const SR=ST(),parts=[];for(let q=0;q<SR;q++)for(const c of mp3)parts.push(c);const blob=new Blob(parts,{type:"audio/mpeg"}),ext="mp3";
  const url=URL.createObjectURL(blob),au=document.createElement("audio");au.controls=true;au.src=url;au.style.cssText="display:block;width:100%;margin-top:8px";
  const FN=(String((opt&&opt.name)||window.__sq||"").trim().replace(/\s*[,،，、]\s*/g,"-").replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g,"_").replace(/^[-_.]+|[-_.]+$/g,"").slice(0,60)||"quran-audio")+"."+ext;window.__lastFN=FN;const dl=els("a","display:none;pointer-events:none;flex-direction:column;align-items:center;gap:1px;flex:none;margin:0;padding:6px 12px;border-radius:12px;font-size:13px;background:var(--primary);color:#fff;text-decoration:none;font-weight:600;line-height:1.3","");dl.href=url;{const t1=document.createElement("span"),t2=document.createElement("span");t1.textContent="⬇ Download";t2.textContent=(Math.round(blob.size/1048576*10)/10)+" MB";t2.style.cssText="font-size:12px;font-weight:400;opacity:.9";dl.append(t1,t2)}dl.download=FN;dl.setAttribute("aria-hidden","true");dl.tabIndex=-1;dl.onclick=e=>{e.preventDefault();e.stopPropagation()};{const row=els("div","display:flex;align-items:center;gap:8px;margin-top:8px"),sh=document.createElement("button");au.style.cssText="flex:1 1 0;min-width:0;width:100%;margin:0";sh.type="button";sh.title="শেয়ার";sh.setAttribute("aria-label","শেয়ার");sh.style.cssText="flex:none;width:42px;height:42px;border-radius:50%;border:0;background:var(--primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0";
   sh.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 16.1c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>';
@@ -815,15 +815,35 @@ const homeTitle=(kind,cat)=>kind==="x"?(/^(শারীরিক রোগ|ম�
 /* পুনরাবৃত্তি: রেসপন্স ডায়াগনোসিস — প্রতিটি আয়াত ১১ বার, পুরো সেট ৩ বার; ট্রিটমেন্ট — প্রতিটি আয়াত ৩ বার, সেট ১ বার */
 const homeRep=kind=>kind==="resp"?{rep:11,set:3}:{rep:3,set:1};
 /* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */
+/* ===== স্থায়ী ভাণ্ডার: একবার বানানো অডিও/PDF ফোনের ভেতরে (Cache Storage) জমা থাকে। অ্যাপ বন্ধ করে আবার খুললেও আর নতুন করে বানাতে হয় না — বোতাম চাপলেই সাথে সাথে। কোড/তালিকা বদলালে PREV বাড়ালে পুরনোগুলো মুছে নতুন করে বানায়। ===== */
+const PREV="p1",PREC="dr-pre-"+PREV;
+const preUrl=(t,k)=>"https://dr.local/pre/"+t+"/"+encodeURIComponent(k);
+const PRE={
+ async get(t,k){try{const c=await caches.open(PREC),r=await c.match(preUrl(t,k));if(!r)return null;const m=await c.match(preUrl(t,k)+"/meta");let meta={};try{meta=m?await m.json():{}}catch(e){}return{blob:await r.blob(),meta}}catch(e){return null}},
+ async put(t,k,blob,meta){try{const c=await caches.open(PREC);await c.put(preUrl(t,k)+"/meta",new Response(JSON.stringify(meta||{}),{headers:{"Content-Type":"application/json"}}));await c.put(preUrl(t,k),new Response(blob,{headers:{"Content-Type":blob.type||"application/octet-stream"}}))}catch(e){console.error("pre-put",e)}},
+ async gc(){try{for(const n of await caches.keys())if(n.indexOf("dr-pre-")===0&&n!==PREC)await caches.delete(n)}catch(e){}}
+};
+PRE.gc();try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+window.__drPre=PRE;
+const audKey=k=>k+"|"+spdOf();
+/* ভাণ্ডার থেকে ফেরত আসা অডিও-ফাইল একটি <audio>-তে বসিয়ে দেয় (mergeAudio-র ফলের মতোই, যাতে বাকি কোড একই থাকে) */
+const preAudioInto=(out,blob)=>{out.textContent="";const au=document.createElement("audio");au.controls=true;au.src=URL.createObjectURL(blob);au.style.cssText="display:block;width:100%;margin-top:8px";out.append(au);return au};
 const HPDF=new Map();
+async function prePdfGet(k){const h=await PRE.get("pdf",k);if(!h||!h.blob)return null;const m=h.meta||{},lens=m.lens||[];
+ const r={pdf:h.blob,nm:m.nm||"file.pdf",N:m.N||lens.length,cached:true};
+ if(lens.length)r.imgsP=async()=>{const g=await PRE.get("img",k);if(!g||!g.blob)return[];const ab=await g.blob.arrayBuffer(),out=[];let o=0;for(const n of lens){out.push(new Uint8Array(ab,o,n));o+=n}return out};
+ return r}
+async function prePdfPut(k,r){if(!r||!r.pdf)return;try{const lens=(r.imgs||[]).map(u=>u.length);if(lens.length)await PRE.put("img",k,new Blob(r.imgs,{type:"application/octet-stream"}),{});await PRE.put("pdf",k,r.pdf,{nm:r.nm,N:r.N,lens})}catch(e){console.error(e)}}
 function homePdf(kind,cat,say){const k=kind+"|"+cat;let e=HPDF.get(k);
- if(!e){e={say:()=>{}};e.p=(async()=>{if(kind==="sym")return symPdfBuild(cat,t=>e.say(t));const list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty");return ayatPdfBuild(list,homeTitle(kind,cat),t=>e.say(t))})().catch(err=>{HPDF.delete(k);throw err});HPDF.set(k,e)}
+ if(!e){e={say:()=>{}};e.p=(async()=>{const hit=await prePdfGet(k);if(hit){e.cached=true;return hit}let r;if(kind==="sym")r=await symPdfBuild(cat,t=>e.say(t));else{const list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty");r=await ayatPdfBuild(list,homeTitle(kind,cat),t=>e.say(t))}prePdfPut(k,r);return r})().catch(err=>{HPDF.delete(k);throw err});HPDF.set(k,e)}
  if(say)e.say=say;return e.p}
 /* জোড়া অডিওও আগে থেকে বানানো থাকে: ফোনে অফলাইন অডিও নামানো থাকলে (সব আয়াত) ব্যাকগ্রাউন্ডে প্রতিটি ক্যাটাগরির ফাইল জোড়া হয়ে বসে; বোতাম চাপলে সাথে সাথে বাজে ও ডাউনলোড/শেয়ার করা যায় */
 const HAUD=new Map();
 function homeAudio(kind,cat,say){const k=kind+"|"+cat;let e=HAUD.get(k);
- if(!e){e={say:()=>{},out:el("div")};e.p=(async()=>{const list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty");const{rep,set}=homeRep(kind);e.n=list.length;e.rep=rep;e.set=set;
-   await mergeAudio(list,e.out,t=>e.say(t),{rep,set,noplay:true,name:homeTitle(kind,cat)});e.done=true;return e})().catch(err=>{HAUD.delete(k);throw err});HAUD.set(k,e)}
+ if(!e){e={say:()=>{},out:el("div")};e.p=(async()=>{const{rep,set}=homeRep(kind);e.rep=rep;e.set=set;const hit=await PRE.get("aud",audKey(k));if(hit&&hit.blob&&hit.blob.size>2048){e.n=(hit.meta&&hit.meta.n)||0;preAudioInto(e.out,hit.blob);e.cached=true;e.done=true;return e}
+   const list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty");e.n=list.length;const st={};
+   await mergeAudio(list,e.out,t=>e.say(t),{rep,set,noplay:true,name:homeTitle(kind,cat),stat:st});e.done=true;
+   try{const a=e.out.querySelector("audio");if(a&&st.ok&&!st.bad){const b=await(await fetch(a.src)).blob();if(b.size>2048)PRE.put("aud",audKey(k),b,{n:list.length})}}catch(x){console.error(x)}return e})().catch(err=>{HAUD.delete(k);throw err});HAUD.set(k,e)}
  if(say)e.say=say;return e}
 let HPRE=false;
 window.__drHomePrebuild=async()=>{if(HPRE)return;HPRE=true;
@@ -835,15 +855,17 @@ window.__drHomePrebuild=async()=>{if(HPRE)return;HPRE=true;
  /* বদনজর/জাদু/জিন চার্টের হেডিং-অডিও (সব ঘর এক ফাইলে) সবার আগে ব্যাকগ্রাউন্ডে তৈরি */
  try{window.__drAxPre&&await window.__drAxPre()}catch(e){console.error(e)}
  for(const cat of["বদনজর","জাদু","জিন","সব"])for(const kind of["sym","resp","treat"]){
-  try{await homePdf(kind,cat)}catch(e){console.error(e)}
-  if(kind!=="sym"){try{await homeAudio(kind,cat).p}catch(e){console.error(e)}}
-  await new Promise(r=>setTimeout(r,300))}
+  let hot=false;
+  try{const r=await homePdf(kind,cat);hot=!!(r&&r.cached)}catch(e){console.error(e)}
+  if(kind!=="sym"){try{const ae=await homeAudio(kind,cat).p;if(!ae.cached)hot=false}catch(e){console.error(e);hot=false}}
+  if(!hot)await new Promise(r=>setTimeout(r,300))}
  /* শারীরিক/মানসিক পাতার প্রতিটি অঙ্গ ও রোগের PDF ও জোড়া অডিওও একইভাবে আগে থেকে বানানো থাকে */
  let xs=[];try{xs=window.__drXReg?await window.__drXReg():[]}catch(e){console.error(e)}
  for(const cat of xs){
-  try{await homePdf("x",cat)}catch(e){console.error(e)}
-  try{await homeAudio("x",cat).p}catch(e){console.error(e)}
-  await new Promise(r=>setTimeout(r,300))}
+  let hot=false;
+  try{const r=await homePdf("x",cat);hot=!!(r&&r.cached)}catch(e){console.error(e)}
+  try{const ae=await homeAudio("x",cat).p;if(!ae.cached)hot=false}catch(e){console.error(e);hot=false}
+  if(!hot)await new Promise(r=>setTimeout(r,300))}
  for(const k of["বদনজর","জাদু","জিন"]){const n=window.__drGitCount?window.__drGitCount(k):1;for(let i=0;i<n;i++){try{await window.__drGitAudio(k,i?String(i-1):"").p}catch(e){console.error(e)}await new Promise(r=>setTimeout(r,300))}}};
 /* ===== অডিও/PDF বাটন: পাতার সাজ একটুও বদলায় না। তৈরির অগ্রগতি নিচে ভাসমান একটি বক্সে (dock) দেখায়; তৈরি হলে নিজে ডাউনলোড হয়, বক্সে শেয়ার/প্লেয়ার/(PDF-এ) দেখার বোতাম থাকে ===== */
 const dockEl=()=>{let d=document.getElementById("drDock");if(!d){d=els("div","position:fixed;left:8px;right:8px;bottom:calc(68px + env(safe-area-inset-bottom,0px));z-index:9999;background:var(--card-bg,#fff);border:1.5px solid var(--primary);border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.28);padding:10px 12px;max-height:68vh;overflow:auto");d.id="drDock";document.body.appendChild(d)}return d};
@@ -854,14 +876,17 @@ window.__drDockSave=async(kind,cat,job)=>{const title=String(cat||"").split("|")
  const {blob,name}=r;ctx.n.textContent="✅ তৈরি হয়েছে, ডাউনলোড হচ্ছে…";
  try{await saveBlob(blob,name);ctx.n.textContent="✅ ডাউনলোড হয়েছে — "+name}catch(e){console.error(e);ctx.n.textContent="⚠ নিজে ডাউনলোড হয়নি, নিচের বোতাম চাপুন"}
  const row=els("div","display:flex;gap:6px;margin-top:6px"),dl=mkBtn("⬇ আবার ডাউনলোড",()=>saveBlob(blob,name)),sh=mkBtn("📤 শেয়ার",()=>shareBlob(blob,name));dl.style.margin=sh.style.margin="0";row.append(dl,sh);
- if(r.imgs){const pg=els("div","max-height:45vh;overflow:auto;border:1px solid var(--border-light);border-radius:10px;background:#fff;margin-top:6px");pg.hidden=true;r.imgs.forEach(u8=>{const im=document.createElement("img");im.loading="lazy";im.style.cssText="display:block;width:100%;height:auto";im.src=URL.createObjectURL(new Blob([u8],{type:"image/jpeg"}));pg.appendChild(im)});const vw=mkBtn("👁 দেখুন",()=>{pg.hidden=!pg.hidden});vw.style.margin="0";row.append(vw);ctx.body.append(row,pg)}
+ if(r.imgs||r.imgsP){const pg=els("div","max-height:45vh;overflow:auto;border:1px solid var(--border-light);border-radius:10px;background:#fff;margin-top:6px");pg.hidden=true;let drawn=false;const draw=async()=>{if(drawn)return;drawn=true;const arr=r.imgs||(await r.imgsP());arr.forEach(u8=>{const im=document.createElement("img");im.loading="lazy";im.style.cssText="display:block;width:100%;height:auto";im.src=URL.createObjectURL(new Blob([u8],{type:"image/jpeg"}));pg.appendChild(im)})};const vw=mkBtn("👁 দেখুন",async()=>{if(pg.hidden)await draw();pg.hidden=!pg.hidden});vw.style.margin="0";row.append(vw);ctx.body.append(row,pg)}
  else{const au=document.createElement("audio");au.controls=true;au.src=URL.createObjectURL(blob);au.style.cssText="display:block;width:100%;margin-top:8px";ctx.body.append(row,au)}};
 const PDFC=new Map();
-window.__drHomePdf=(kind,cat,host)=>{const key=kind+"|"+cat;return window.__drDockSave("pdf",cat,async note=>{let r=PDFC.get(key);if(!r){r=await homePdf(kind,cat,t=>note(t));PDFC.set(key,r)}return{blob:r.pdf,name:r.nm,imgs:r.imgs}})};
+window.__drHomePdf=(kind,cat,host)=>{const key=kind+"|"+cat;return window.__drDockSave("pdf",cat,async note=>{let r=PDFC.get(key);if(!r){r=await homePdf(kind,cat,t=>note(t));PDFC.set(key,r)}return{blob:r.pdf,name:r.nm,imgs:r.imgs,imgsP:r.imgsP}})};
 /* অডিও: চাপলেই সাথে সাথে বাজে (আয়াত একটার পর একটা, নির্ধারিত পুনরাবৃত্তিসহ); পাশাপাশি পেছনে একটি ফাইল জোড়া হয় — তৈরি হলে নিচে প্লেয়ার, শেয়ার ও ডাউনলোড আসে */
 /* একটি হেডিংয়ের সব ঘরের আয়াত একটাই অডিও ফাইলে (প্রতিটি ঘরের আয়াত পরপর, প্রতিটি ৩ বার); cb তে প্রতিটি আয়াতের শেষ-সময় (সেকেন্ড) আসে, যাতে বাজার সময় কোন ঘর চলছে বোঝা যায় */
 const AXM=new Map(); /* আয়াত→এনকোড-করা MP3 টুকরো: ঘর, সারি ও হেডিংয়ের অডিও একই আয়াত বারবার এনকোড করে না */
-window.__drGroupAudio=(list,out,note,name,cb)=>mergeAudio(list,out,note,{rep:3,set:1,noplay:true,name,onmarks:cb,memo:true,memoMap:AXM});
+window.__drGroupAudio=async(list,out,note,name,cb)=>{const k=audKey("g|"+name),hit=await PRE.get("aud",k);
+ if(hit&&hit.blob&&hit.blob.size>2048&&hit.meta&&hit.meta.marks){preAudioInto(out,hit.blob);try{cb&&cb(hit.meta.marks)}catch(e){}return}
+ let marks=null;const st={};await mergeAudio(list,out,note,{rep:3,set:1,noplay:true,name,onmarks:m=>{marks=m;if(cb)cb(m)},memo:true,memoMap:AXM,stat:st});
+ try{const a=out.querySelector("audio");if(a&&marks&&st.ok&&!st.bad){const b=await(await fetch(a.src)).blob();if(b.size>2048)PRE.put("aud",k,b,{marks})}}catch(e){console.error(e)}};
 window.__drHomePdfPre=cat=>homePdf("x",cat);
 const AUB=new Map();
 window.__drHomeAudio=(kind,cat,host)=>{const key=kind+"|"+cat,name=dockName(cat,kind)+".mp3";return window.__drDockSave("audio",cat,async note=>{let b=AUB.get(key);if(!b){const e=homeAudio(kind,cat,t=>note("⬇ "+t));if(!e.done)note("⏳ অডিও জোড়া লাগছে — হলেই ডাউনলোড হবে…");await e.p;const a=e.out.querySelector("audio");if(!a)throw new Error("empty");b=await(await fetch(a.src)).blob();AUB.set(key,b)}return{blob:b,name}})};
@@ -1096,12 +1121,13 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
  const GAUD=new Map();
  const gitGroups=C=>{const tp=C.types?TOPICS.find(x=>x.name===C.types):null,G=[],ix=new Map();if(tp)tp.terms.forEach(x=>{const n=String(x[0]).split(" — ")[0];if(!ix.has(n)){ix.set(n,G.length);G.push({name:n,terms:[]})}G[ix.get(n)].terms.push(x)});return G};
  function gitAudio(kind,sv,say){const C=GITN[kind],k=kind+"|"+sv;let e=GAUD.get(k);
-  if(!e){e={say:()=>{},out:el("div")};e.p=(async()=>{await loadRoots();const B=[],seen=new Set(),add=l=>l.forEach(x=>{const id=x[0]+":"+x[1];if(!seen.has(id)){seen.add(id);B.push(x)}});
+  if(!e){e={say:()=>{},out:el("div")};e.p=(async()=>{{const hit=await PRE.get("aud",audKey("git|"+k));if(hit&&hit.blob&&hit.blob.size>2048){preAudioInto(e.out,hit.blob);e.cached=true;e.done=true;return e}}await loadRoots();const B=[],seen=new Set(),add=l=>l.forEach(x=>{const id=x[0]+":"+x[1];if(!seen.has(id)){seen.add(id);B.push(x)}});
     if(sv!==""){const tp=TOPICS.find(x=>x.name===C.types);add(await topicKeys({terms:gitGroups(C)[+sv].terms}))}else for(const n of C.src){const tt=TOPICS.find(x=>x.name===n);if(tt)add(await topicKeys(tt))}
     const O=[],s2=new Set();for(const o of ORG)for(const x of await topicKeys({terms:o[2]}))if(!s2.has(x[0]+":"+x[1])){s2.add(x[0]+":"+x[1]);O.push(x)}
     if(!B.length||!O.length)throw new Error("empty");
     const list=[];/* প্রতিটি অঙ্গের আয়াত স্থির; তার সাথে ১১টি আলাদা আয়াত (বদনজর/জাদু/জিনের) পরপর: আয়াত-১, অঙ্গ, আয়াত-২, অঙ্গ … ; পরের অঙ্গে ওই তালিকার পরের ১১টি */for(let j=0;j<O.length;j++)for(let k=0;k<11;k++)list.push(B[(11*j+k)%B.length],O[j]);
-    await mergeAudio(list,e.out,t=>e.say(t),{rep:1,set:1,memo:true,noplay:true,name:"শরীরের গিঁট ধ্বংসের রুকইয়াহ "+kind+(sv!==""?" "+String(tp0(C,sv)):"")});e.done=true;return e})().catch(err=>{GAUD.delete(k);throw err});GAUD.set(k,e)}
+    const st={};await mergeAudio(list,e.out,t=>e.say(t),{rep:1,set:1,memo:true,noplay:true,name:"শরীরের গিঁট ধ্বংসের রুকইয়াহ "+kind+(sv!==""?" "+String(tp0(C,sv)):""),stat:st});e.done=true;
+    try{const a=e.out.querySelector("audio");if(a&&st.ok&&!st.bad){const b=await(await fetch(a.src)).blob();if(b.size>2048)PRE.put("aud",audKey("git|"+k),b,{})}}catch(x){console.error(x)}return e})().catch(err=>{GAUD.delete(k);throw err});GAUD.set(k,e)}
   if(say)e.say=say;return e}
  const tp0=(C,sv)=>{const g=gitGroups(C)[+sv];return g?g.name:""};
  /* মৌলিক নীতি ৫: অডিও শোনার সময় টিক করা অঙ্গগুলো দিয়েই একই প্যাটার্নে (আয়াত-১, অঙ্গ, আয়াত-২, অঙ্গ … ১১ বার) নতুন অডিও। আয়াতের জোড়া পুরো অডিওর সাথে হুবহু মেলে (যে জোড়া শুনে প্রতিক্রিয়া হয়েছিল সেটাই থাকে) */
