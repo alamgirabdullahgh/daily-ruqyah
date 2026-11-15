@@ -900,7 +900,7 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{position:relative;overf
 .drq-tab-all:active{transform:none;box-shadow:none}
 
 /* v223: হোম ব্যানার — উচ্চতা বাকি জায়গা অনুযায়ী (সব কার্ড স্ক্রিনে, নেভিগেশন বারের সামান্য ওপরে); হাদিয়ার লেখা দুই লাইন, বড়, বোল্ড; আইকন দুই পাশে */
-body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:auto 0 32px;flex:1 1 0;height:auto;min-height:74px;max-height:134px;justify-content:center}
+body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:auto 0 3px;flex:1 1 0;height:auto;min-height:74px;max-height:134px;justify-content:center}
 .drq-hero-bg{height:100%;width:100%}
 .drq-hero-tx{padding:3px 50px 2px;background:radial-gradient(ellipse at 50% 55%,rgba(3,16,22,.62),rgba(3,16,22,0) 78%);text-align:center}
 .drq-hero .drq-st{display:block;height:auto;line-height:1.25;margin:0 0 2px;padding:0;white-space:normal;overflow:visible;font-size:clamp(15.5px,4.9vw,19.5px);font-weight:800;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.75)}
@@ -924,8 +924,9 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:auto 0 32px;flex
 .drq-hero .drq-st::before{left:-5px}
 .drq-hero .drq-st::after{right:-5px}
 .drq-hero .drq-st-t>span{background:linear-gradient(180deg,#fffbe8 0%,#f9dd8f 48%,#d49a35 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.85));font-weight:800}
-.drq-hero .drq-tk{height:26px;margin:0 -2px;border-radius:13px;background:linear-gradient(to right,rgba(3,16,22,0),rgba(3,16,22,.42) 14%,rgba(3,16,22,.42) 86%,rgba(3,16,22,0))}
-.drq-hero .drq-tk span{line-height:26px;font-size:clamp(16px,4.6vw,18.5px);font-weight:800;text-shadow:0 1px 3px rgba(0,0,0,.9)}
+/* v101: স্লাইডিং লেখা ব্যানারের বাইরে, নিচে আলাদা সরু স্ট্রিপে */
+.drq-tk.drq-tkbar{height:26px;margin:0;border-radius:10px;background:var(--accent-light);border:1px solid var(--border-light);box-shadow:none}
+.drq-tk.drq-tkbar span{line-height:24px;font-size:15px;font-weight:800;text-shadow:none}
 
 /* হোয়াটসঅ্যাপ: ওপরে বাম কোনা · কল: নিচে ডান কোনা */
 .drq-hero-act a{transform:none;width:36px;height:36px}
@@ -992,3 +993,5 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:auto 0 32px;flex
 
 /* বাটনের নিচের হালকা সবুজ প্যানেল (PDF/অডিও/লেখার বাটন যে ব্যাকগ্রাউন্ডে বসে) সরানো: বাটন ও তার দাগ আগের মতোই, কার্ডের সাদা জমিন থাকে */
 #drLanding .drq-air,.dr-physhost .drq-air,.drq-air{background:transparent!important}
+
+body.is-home .drq-tk.drq-tkbar{margin:0 0 3px}
