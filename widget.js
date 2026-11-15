@@ -230,7 +230,7 @@
 
   // ───────── রূপ ─────────
   var CSS =
-    ".drw{box-sizing:border-box;max-width:660px;margin:12px auto 0;padding:3px 14px 3px;border-radius:24px;border-top:3px solid #0a5240;background:#F2F5F8;color:#14212B;font-family:inherit;user-select:none;-webkit-user-select:none}" +
+    ".drw{box-sizing:border-box;max-width:660px;margin:0 auto;padding:3px 14px 3px;border-radius:24px;border-top:3px solid #0a5240;background:#F2F5F8;color:#14212B;font-family:inherit;user-select:none;-webkit-user-select:none}" +
     ".drw *{box-sizing:border-box}" +
     ".drw-r{display:flex;align-items:center;justify-content:space-between;gap:8px}.drw-top{align-items:flex-end;gap:4px}.drw-mid{position:relative;flex:1;height:38px;min-width:0;color:#3B4A55}.drw-arc{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}" +
     ".drw-sun{display:flex;align-items:center;gap:5px;font-size:11px;color:#3B4A55;white-space:nowrap}" +
