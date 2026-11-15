@@ -1033,3 +1033,6 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{max-height:90px;min-hei
 /* ব্যানার ওপরে লেগে থাকে; বাকি ফাঁকা জায়গা নিচে (নেভিগেশন বারের ওপরে) যায় */
 body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:6px 0 3px}
 #drLanding .drq-grid{margin-bottom:auto}
+
+/* v105: ব্যানারের নিচের দিকের গাঢ় ছায়া-পর্দা (লেখার ব্যাকগ্রাউন্ড গ্রেডিয়েন্ট) সরানো; মসজিদ আগের মতো */
+.drq-hero-tx{background:none!important}
