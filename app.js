@@ -102,7 +102,7 @@ async function copyTxt(x){try{await navigator.clipboard.writeText(x);return true
 function copyBtn(label,get,sh){const b=el("button","rs-wb",label);b.type="button";b.onclick=async()=>{b.disabled=true;const o=b.textContent;b.textContent=sh?"⏳":"কপি হচ্ছে…";let ok=false;try{ok=await copyTxt(await get())}catch(e){}b.textContent=sh?(ok?"✅":"⚠️"):(ok?"✅ কপি হয়েছে":"কপি করা যায়নি");setTimeout(()=>{b.textContent=o;b.disabled=false},1500)};return b}
 function legend(info){}
 function allCopy(info,forms,ord){legend(info);const set=new Set();WORDS.clear();forms.forEach(f=>f.refs.forEach(r=>{const p=r.split(":");if(p.length>2&&+p[2]){const k=p[0]+":"+p[1];let st=WORDS.get(k);if(!st){st=new Set();WORDS.set(k,st)}st.add(+p[2])}}));forms.forEach(f=>f.refs.forEach(r=>set.add(r.split(":").slice(0,2).join(":"))));const all=ord&&ord.length?ord:[...set].map(r=>r.split(":").map(Number)).sort((x,y)=>x[0]-y[0]||x[1]-y[1]);if(!all.length)return;
- const b=copyBtn("📋 সব আয়াত কপি ("+bn2(all.length)+")",async()=>{await Promise.all([...new Set(all.map(x=>x[0]))].map(z=>Promise.all([chunk("a",z),chunk(TR,z)])));const o=[];for(const [z,y] of all)o.push(await vtext(z,y));return o.join("\n\n")});
+ const b=copyBtn("📋 কপি\n("+bn2(all.length)+")",async()=>{await Promise.all([...new Set(all.map(x=>x[0]))].map(z=>Promise.all([chunk("a",z),chunk(TR,z)])));const o=[];for(const [z,y] of all)o.push(await vtext(z,y));return o.join("\n\n")});
  b.className="rs-wb rs-act";audioBar(info,all,b)}
 const AYN=[7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
 const RECS=[["ar.alafasy","মিশারি আলাফাসি","Alafasy_128kbps"],["ar.mahermuaiqly","মাহের আল-মুআইকলি","MaherAlMuaiqly128kbps"],["ar.abdurrahmaansudais","আব্দুর রহমান আস-সুদাইস","Abdurrahmaan_As-Sudais_192kbps"],["ar.saoodshuraym","সাউদ আশ-শুরাইম","Saood_ash-Shuraym_128kbps"]];
@@ -533,19 +533,19 @@ async function symPdfBuild(cat,say){
 async function ayatPdf(list,title,say){const r=await ayatPdfBuild(list,title,say);await saveBlob(r.pdf,r.nm);return r.N}
 function audioBar(info,all,cb,title){if(!all.length)return;const box=els("div","margin-top:8px"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),out=el("div"),row=els("div","display:flex;flex-wrap:wrap;gap:6px;align-items:center");
  const sel=el("select","rs-sel");RECS.forEach(r=>{const o=document.createElement("option");o.value=r[0];o.textContent=r[1];sel.appendChild(o)});sel.value=recId();sel.onchange=()=>{try{localStorage.setItem("rsRec",sel.value)}catch(e){}};
- const b1=el("button","rs-wb","🔊 সব আয়াত মার্জ অডিও ("+bn2(all.length)+")"),b2=el("button","rs-wb","🔊 বাছাই করা আয়াত মার্জ (০)");b1.type=b2.type="button";b1.className="rs-wb rs-act pri";b2.className="rs-wb rs-act";
+ const b1=el("button","rs-wb","🔊 অডিও\n("+bn2(all.length)+")"),b2=el("button","rs-wb","🔊 অডিও\n(০)");b1.type=b2.type="button";b1.className="rs-wb rs-act pri";b2.className="rs-wb rs-act";
  const pdfB=(label,get,empty)=>{const b=el("button","rs-wb rs-act",label);b.type="button";b.onclick=async()=>{const l=get();if(!l.length)return alert("আগে আয়াতের নিচের “বাছাই” বক্সে টিক দিন");if(l.length>300&&!confirm("আয়াত অনেক ("+bn2(l.length)+"টি) — PDF বানাতে সময় লাগবে ও ফাইল বড় হবে। চালিয়ে যাবেন?"))return;b.disabled=true;const ttl=title||window.__sq||"কুরআনের আয়াত";try{await window.__drDockSave("pdf",ttl,async note=>{const r=await ayatPdfBuild(l,ttl,note);return{blob:r.pdf,name:r.nm,imgs:r.imgs}})}catch(e){console.error(e)}b.disabled=false};return b};
- const b5=pdfB("📄 সব আয়াত PDF ("+bn2(all.length)+")",()=>all),b6=pdfB("📄 বাছাই করা আয়াত PDF (০)",()=>selList());
- selUp.push(()=>{b6.textContent="📄 বাছাই করা আয়াত PDF ("+bn2(SELV.size)+")"});
+ const b5=pdfB("📄 PDF\n("+bn2(all.length)+")",()=>all),b6=pdfB("📄 PDF\n(০)",()=>selList());
+ selUp.push(()=>{b6.textContent="📄 PDF\n("+bn2(SELV.size)+")"});
  const mkRes=()=>[els("div","font-size:12px;color:var(--text-muted);margin-top:10px"),el("div")],[n1,o1]=mkRes(),[n2,o2]=mkRes(),clr=(o,n)=>{o.querySelectorAll("audio").forEach(a=>{try{a.pause()}catch(e){}});o.textContent="";n.textContent=""};
  b1.onclick=()=>{clr(o2,n2);mergeAudio(all,o1,t=>n1.textContent=t)};
  b2.onclick=()=>{const l=[...SELV].map(k=>k.split(":").map(Number)).sort((x,y)=>x[0]-y[0]||x[1]-y[1]);if(!l.length)return alert("আগে আয়াতের নিচের “বাছাই” বক্সে টিক দিন");clr(o1,n1);mergeAudio(l,o2,t=>n2.textContent=t)};
- selUp.push(()=>{b2.textContent="🔊 বাছাই করা আয়াত মার্জ ("+bn2(SELV.size)+")"});
+ selUp.push(()=>{b2.textContent="🔊 অডিও\n("+bn2(SELV.size)+")"});
  
   
-  const b3=el("button","rs-wb","📚 বাছাই করা আয়াত বিষয়ে যোগ ("+bn2(SELV.size)+")"),pn=el("div"),ed=el("div");b3.type="button";b3.className="rs-wb rs-act";
+  const b3=el("button","rs-wb","📚 যোগ\n("+bn2(SELV.size)+")"),pn=el("div"),ed=el("div");b3.type="button";b3.className="rs-wb rs-act";
   b3.onclick=()=>topicAddPanel(pn);
-  selUp.push(()=>{b3.textContent="📚 বাছাই করা আয়াত বিষয়ে যোগ ("+bn2(SELV.size)+")"});
+  selUp.push(()=>{b3.textContent="📚 যোগ\n("+bn2(SELV.size)+")"});
     const grp=(t,cls,ex,...k)=>{const g=el("div","rs-grp"),r=el("div","rs-gr"+(cls?" "+cls:""));g.append(el("div","rs-gh",t));r.append(...k);g.appendChild(r);if(ex)g.append(...ex);return g};
   const panel=el("div","rs-panel");const ag=grp("অডিও সেটিং","one",null,sel,repCtl());
   {const outs=el("div","rs-outs");outs.append(n1,o1,n2,o2);panel.append(grp("সব আয়াত","",null,...(cb?[cb]:[]),b1,b5),grp("বাছাই করা আয়াত","",null,b2,b6,b3),ag,outs)}
@@ -1082,7 +1082,7 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
     let tb=null;if(c.treat)bt.appendChild(tb=mkBtn("📚 চিকিৎসা",()=>{const terms=resolve(c.treat);if(!terms.length)return alert("এই রোগের জন্য আয়াতের তালিকা পাওয়া যায়নি");gt({name:c.name,fname:cnm,terms,intro:"“"+c.name+"” — সংশ্লিষ্ট সব আয়াত",ordered:false});window.scrollTo({top:0,behavior:"smooth"})}));
     const cnm=(g.section&&g.section!==c.name?secName(g.section)+" ":CF.sq+" ")+c.name,au=audio([c],"অডিও",cnm);if(KV&&c.keys.length===1){KV.va.className="rs-va rs-va1";KV.va.replaceChildren(...[tb,KV.cpb,au.btn,KV.wb].filter(Boolean));box.append(au)}else{/* চিকিৎসা ও অডিও বোতাম এক লাইনে; জায়গা কম হলে লেখার সাইজ নিজে ছোট হয় */const pr=el("div","rs-pair");pr.append(...[tb,au.btn].filter(Boolean));box.append(pr,au)}out.appendChild(box)}if(CATS.includes(g.section))for(let i=st0;i<out.children.length;i++)out.children[i].dataset.cat=g.section}
   if(!CF.host)window.scrollTo({top:rs.getBoundingClientRect().top+scrollY-60,behavior:"smooth"})};
- const DISEASE={file:"quran-disease.json?v="+DV+"x5",title:"💊 শারীরিক রোগ ও আরোগ্যের আয়াত",sq:"শারীরিক রোগ",nm:"আয়াত",badge:["সরাসরি আছে","অঙ্গ অনুযায়ী কাছের আয়াত"],intro:"প্রথমে ঠিক করা হয়েছে রোগটি শরীরের কোন কোন অঙ্গ বা বিষয়ের সাথে সম্পর্কিত; তারপর প্রতিটির জন্য সবচেয়ে কাছের একটি আয়াত (শুধু প্রাসঙ্গিক অংশ)। প্রতিটির নিচে “মিল” লেখা আছে — আয়াতে সরাসরি রোগ/অঙ্গের শব্দ আছে, নাকি শুধু অর্থ বা শব্দের মিল। কুরআনে রোগের নাম (যেমন অর্শ/বাওয়াসির) নেই, তাই অঙ্গ ও লক্ষণের শব্দ ধরে কাছের আয়াত নেওয়া হয়েছে; কোনোটি আয়াতে সরাসরি রোগের কথা নয়। প্রতিটি অঙ্গের নিচে ‘চিকিৎসা: এই রোগের সব আয়াত’ বোতামে ওই অঙ্গের সব আয়াত ও মার্জ অডিও। খসড়া তালিকা: ব্যবহারের আগে আলেম বা অভিজ্ঞদের পর্যালোচনা প্রয়োজন।"};
+ const DISEASE={file:"quran-disease.json?v="+DV+"x6",title:"💊 শারীরিক রোগ ও আরোগ্যের আয়াত",sq:"শারীরিক রোগ",nm:"আয়াত",badge:["সরাসরি আছে","অঙ্গ অনুযায়ী কাছের আয়াত"],intro:"প্রথমে ঠিক করা হয়েছে রোগটি শরীরের কোন কোন অঙ্গ বা বিষয়ের সাথে সম্পর্কিত; তারপর প্রতিটির জন্য সবচেয়ে কাছের একটি আয়াত (শুধু প্রাসঙ্গিক অংশ)। প্রতিটির নিচে “মিল” লেখা আছে — আয়াতে সরাসরি রোগ/অঙ্গের শব্দ আছে, নাকি শুধু অর্থ বা শব্দের মিল। কুরআনে রোগের নাম (যেমন অর্শ/বাওয়াসির) নেই, তাই অঙ্গ ও লক্ষণের শব্দ ধরে কাছের আয়াত নেওয়া হয়েছে; কোনোটি আয়াতে সরাসরি রোগের কথা নয়। প্রতিটি অঙ্গের নিচে ‘চিকিৎসা: এই রোগের সব আয়াত’ বোতামে ওই অঙ্গের সব আয়াত ও মার্জ অডিও। খসড়া তালিকা: ব্যবহারের আগে আলেম বা অভিজ্ঞদের পর্যালোচনা প্রয়োজন।"};
  const MENTAL={file:"quran-mental.json?v="+DV+"m1",title:"🧠 মানসিক সমস্যা ও সান্ত্বনার আয়াত",sq:"মানসিক সমস্যা",nm:"আয়াত",badge:["সরাসরি আছে","অর্থের মিল"],intro:null};
 
  /* ───── হোম: রোগীর তথ্য + পুরো রোগ নির্ণয় একসাথে; প্রতিটি আয়াতের পাশে টিক; নিচে WhatsApp-এ পাঠানো ───── */
@@ -1199,7 +1199,7 @@ const renderOrganTreat=(n,list)=>{GEN++;CURT=null;window.__bq="";window.__sq=n;r
   out.appendChild(wrap);window.scrollTo(0,0);
    /* মৌলিক নীতি: চিকিৎসার আয়াতের নিচে ওই অঙ্গ সম্পর্কিত বাকি সব আয়াতও থাকবে */
    {const tp=TOPICS.find(x=>x.name===n);if(tp&&tp.terms){const hd=els("div","margin:18px 2px 10px;padding:9px 12px;border-radius:12px;background:var(--primary-light,#e6efe9);border-right:5px solid var(--accent);border-left:5px solid var(--accent);font-weight:800;font-size:16px;color:var(--accent);text-align:center","📖 "+n+" সম্পর্কিত অন্যান্য আয়াত");const sub=el("div"),sinfo=el("div");out.append(hd,sinfo,sub);runMulti(tp.terms,sub,sinfo,tp.intro,tp.ordered).catch(e=>console.error(e))}}};
- window.__drOpenOrgan=async n=>{const d=await loadOT(),list=d&&d[String(n).normalize("NFC")];if(list&&list.length)renderOrganTreat(n,list);else window.__drOpenTopic(n)};
+ window.__drOpenOrgan=async n=>{window.__drOpenTopic(n)}; /* অঙ্গের পাতায় আলাদা চিকিৎসা-কার্ড নেই; চিকিৎসা শুধু রোগভিত্তিক তালিকায় */
  const organList=(names,title,sub,up)=>showNames(title,names.map(n=>({name:n,fn:()=>window.__drOpenOrgan(n)})),sub,up);
  /* অঙ্গ ও রোগের PDF/অডিওর আয়াত-তালিকা: নাম → [[সূরা,আয়াত]…] (অঙ্গের তালিকা ব্যবহারের সময় গণনা হয়) */
  const XS={p:null};

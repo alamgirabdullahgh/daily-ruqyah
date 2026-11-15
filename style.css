@@ -1149,3 +1149,10 @@ body.is-home{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
 .drq-sys .dsy-pp{width:44px;height:44px;border-radius:50%;border:0;background:var(--primary-light);color:var(--primary);display:inline-flex;align-items:center;justify-content:center;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .drq-sys .dsy-pp svg{width:18px;height:18px}
 .drq-sys .dsy-pp:active{background:var(--primary);color:#fff}
+
+/* v125: সার্চ-ফল প্যানেল — দুই পাশে দুই বক্স (বাছাই বাঁয়ে, সব ডানে), প্রতিটিতে হেডিং + এক সারিতে তিন বাটন (হোমের PDF/অডিও বাটনের মতো সবুজ) */
+.rs-panel .rs-wb{white-space:pre-line}
+.rs-panel>.rs-grp:nth-child(-n+2) .rs-gr{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+.rs-panel>.rs-grp:nth-child(-n+2) .rs-wb{min-height:0;height:auto;padding:8px 1px;font-size:11px;font-weight:700;line-height:1.3;border:0;border-radius:10px;background:var(--primary);color:#fff;box-shadow:none;background-image:none}
+.rs-panel>.rs-grp:nth-child(-n+2) .rs-wb:active{background:var(--primary-dark,var(--primary))}
+.rs-panel>.rs-grp:nth-child(-n+2) .rs-gr>:last-child:nth-child(odd){grid-column:auto}
