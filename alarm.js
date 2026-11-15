@@ -457,7 +457,7 @@
   function sysAudio0(g) {
     var A = aud(), d = SYS.filter(function (x) { return x.g === g; })[0];
     var au = document.createElement("audio");
-    au.controls = false; au.preload = "none"; au.className = "dsy-au";
+    au.controls = true; au.preload = "none"; au.className = "dsy-au";
     au.setAttribute("controlsList", "nodownload noplaybackrate nofullscreen");
     au.setAttribute("aria-label", g === "baq" ? "সূরা বাকারা — চালান/থামান" : "জাদু রিনিউ বন্ধের অডিও — চালান/থামান");
     if (!A || !d) return au;
@@ -493,7 +493,10 @@
   }
   /* প্লে/পজ: নিজস্ব গোল বাটন (ব্রাউজারের প্লেয়ার নয়) — সব ব্রাউজারে (অপেরা, ক্রোম, ওয়েবভিউ) একই দেখায়; পেছনে লুকানো <audio> */
   function sysAudio(g) {
-    var au = sysAudio0(g), w = document.createElement("span"), b = document.createElement("button");
+    var au = sysAudio0(g);
+    if (NATIVE) return au;   // অ্যাপ: আগের মতো অ্যান্ড্রয়েডের নিজস্ব প্লেয়ার, বদলায়নি
+    au.controls = false;     // শুধু ব্রাউজারে: নিজস্ব বাটন (ব্রাউজারের প্লেয়ার চওড়া হয়ে পেজ ছাপিয়ে যেত)
+    var w = document.createElement("span"), b = document.createElement("button");
     b.type = "button"; b.className = "dsy-pp";
     function paint() { var on = !au.paused; b.innerHTML = on ? ICON_STOP : ICON_PLAY; b.setAttribute("aria-label", on ? "অডিও থামান" : "অডিও চালান"); }
     b.onclick = function () { if (au.paused) { var r = au.play(); if (r && r.catch) r.catch(function () { }); } else au.pause(); };
@@ -527,7 +530,7 @@
         };
         sw.appendChild(cb); sw.appendChild(el("i"));
         /* অডিও: ব্রাউজারের নিজস্ব প্লেয়ারের প্লে/পজ (sysAudio) */
-        var stp = el("span", "dsy-aw"); stp.appendChild(sysAudio(x[0]));   // জানালা: প্লেয়ারের বাম প্রান্তের প্লে/পজ অংশটুকুই দেখা যায়
+        var stp = el("span", "dsy-aw" + (NATIVE ? "" : " dsy-web")); stp.appendChild(sysAudio(x[0]));   // জানালা: প্লেয়ারের বাম প্রান্তের প্লে/পজ অংশটুকুই দেখা যায়
         if (x[0] === "baq") { row.appendChild(stp); row.appendChild(tx); row.appendChild(sw); }
         else { row.appendChild(sw); row.appendChild(tx); row.appendChild(stp); }
         two.appendChild(row);

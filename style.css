@@ -1143,9 +1143,9 @@ body.is-home{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
 .drq-sys .dsy-aw{flex:none;position:relative;width:40px;height:36px;overflow:hidden;border-radius:18px;display:block}
 .drq-sys .dsy-aw .dsy-au{position:absolute;left:-7px;top:0;width:112px;min-width:112px;max-width:none;height:36px;margin:0;padding:0;border:0;display:block}
 
-/* v123: অ্যালার্ম কার্ডের প্লে/পজ — নিজস্ব গোল বাটন, <audio> লুকানো */
-.drq-sys .dsy-aw{width:44px;height:44px;overflow:visible;border-radius:0;display:flex;align-items:center;justify-content:center}
-.drq-sys .dsy-aw .dsy-au{display:none}
+/* v124: শুধু ওয়েব ব্রাউজারে (অ্যাপে নয়) প্লে/পজ — নিজস্ব গোল বাটন */
+.drq-sys .dsy-aw.dsy-web{width:44px;height:44px;overflow:visible;border-radius:0;display:flex;align-items:center;justify-content:center}
+.drq-sys .dsy-aw.dsy-web .dsy-au{display:none}
 .drq-sys .dsy-pp{width:44px;height:44px;border-radius:50%;border:0;background:var(--primary-light);color:var(--primary);display:inline-flex;align-items:center;justify-content:center;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .drq-sys .dsy-pp svg{width:18px;height:18px}
 .drq-sys .dsy-pp:active{background:var(--primary);color:#fff}
