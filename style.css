@@ -991,5 +991,3 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:auto 0 18px;flex
 
 /* বাটনের নিচের হালকা সবুজ প্যানেল (PDF/অডিও/লেখার বাটন যে ব্যাকগ্রাউন্ডে বসে) সরানো: বাটন ও তার দাগ আগের মতোই, কার্ডের সাদা জমিন থাকে */
 #drLanding .drq-air,.dr-physhost .drq-air,.drq-air{background:transparent!important}
-/* বাটনের নিজের অংশের ভেতরে হালকা সবুজ রং থাকে (আগে প্যানেল থেকে আসত); বাইরের প্যানেল সরানোই থাকে */
-:is(#drLanding,.dr-physhost) .drq-air>a,:is(#drLanding,.dr-physhost) .drq-opts .drq-air>a:active{background:var(--primary-light)!important}
