@@ -83,7 +83,7 @@ async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").m
 
 /* লক্ষণ ভিত্তিক রোগ নির্ণয় পাতার চার্টের একই ছক (সাতটি হেডিং, প্রতিটির নিচে অপশন) */
 function buildGroup(gi,g){const sec=el("section","ax-g zs");sec.dataset.slug=g.slug;{const h=el("h3","ax-h3"),ga=el("button","ax-ga","🔊");ga.type="button";ga.setAttribute("aria-label",g.name+" — অডিও");h.append(el("span",null,g.name),ga);sec.appendChild(h)}
- const tb=el("div","ax-tb");g.cols.forEach((c,ci)=>{const r=el("div","ax-r"),o=el("div","ax-ro");c.opts.forEach((n,oi)=>{const b=el("button","ax-c",n);b.type="button";b.dataset.k=gi+"."+ci+"."+oi;o.appendChild(b)});r.append(el("div","ax-rh",c.name),o);tb.appendChild(r)});
+ const tb=el("div","ax-tb");g.cols.forEach((c,ci)=>{const r=el("div","ax-r"),o=el("div","ax-ro");c.opts.forEach((n,oi)=>{if(n==="উভয়")return;const b=el("button","ax-c",n);b.type="button";b.dataset.k=gi+"."+ci+"."+oi;o.appendChild(b)});r.append(el("div","ax-rh",c.name),o);tb.appendChild(r)});
  sec.appendChild(tb);return sec}
 
 /* সব ঘরের লেখা একই মাপে: পুরো চার্টের সবচেয়ে চাপা ঘরটা যে মাপে আঁটে, সব বাটনে সেই এক মাপ (দৃশ্যমান অবস্থায় মাপা যায়) */
@@ -102,7 +102,7 @@ function stopPlay(R){const st=R&&R.__pl;if(!st)return;st.stop=true;R.__pl=null;t
  R.querySelectorAll(".ax-ga.on").forEach(b=>{b.classList.remove("on");b.textContent="🔊"})}
 async function playGroup(R,sec,gi,btn){const same=R.__pl&&R.__pl.gi===gi;stopPlay(R);if(same)return;
  const G=DATA.axes[gi],list=[];
- G.cols.forEach((c,ci)=>c.opts.forEach((n,oi)=>{const cat=regCell(gi,ci,oi);if(cat)list.push({cat,name:c.name+" › "+n,b:sec.querySelector('.ax-c[data-k="'+gi+"."+ci+"."+oi+'"]')})}));
+ G.cols.forEach((c,ci)=>c.opts.forEach((n,oi)=>{if(n==="উভয়")return;const cat=regCell(gi,ci,oi);if(cat)list.push({cat,name:c.name+" › "+n,b:sec.querySelector('.ax-c[data-k="'+gi+"."+ci+"."+oi+'"]')})}));
  if(!list.length)return;
  const st={gi,stop:false,a:null,res:null};R.__pl=st;btn.classList.add("on");btn.textContent="⏹";
  const bar=el("div","ax-live"),tx=el("div","ax-lt"),hostBox=el("div");bar.append(tx,hostBox);const h3=sec.querySelector("h3");h3.after(bar);
