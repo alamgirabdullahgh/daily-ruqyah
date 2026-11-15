@@ -998,38 +998,35 @@ body.is-home .drq-tk.drq-tkbar{margin:0 0 3px}
 
 /* সাতটি অক্ষের চার্ট (#axes, axes.js) — চার্টে চাপলে নিচে মৌলিক আয়াত (মৌলিক অংশ সোনালি) + বাকি আয়াত */
 #drAxes{padding:6px 0 20px!important}
-#drAxes .ax-t{text-align:center;margin:0}
-#drAxes .ax-intro,#drAxes .ax-info{box-sizing:border-box;padding:8px 14px 10px;font-size:13.5px;line-height:1.7;color:var(--text-sub);text-align:center;background:var(--card-bg);border:1px solid var(--border-light);border-top:0;border-radius:0 0 14px 14px;margin:0 0 14px}
-#drAxes .ax-g{margin:0 0 16px}
-#drAxes .ax-g[hidden]{display:none}
-#drAxes .ax-g>h3{box-sizing:border-box;margin:0;padding:9px 16px;text-align:center;font-size:17px;line-height:1.35;color:var(--primary);font-family:var(--font-head);background:var(--card-bg);border:1px solid var(--border-light);border-top:4px solid var(--primary);border-radius:14px 14px 0 0;box-shadow:var(--shadow-card)}
-#drAxes .ax-grid{display:flex;gap:3px;padding:6px 4px 8px;background:var(--card-bg);border:1px solid var(--border-light);border-top:0;border-radius:0 0 14px 14px}
-#drAxes .ax-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:3px}
-#drAxes .ax-h{font-size:10.5px;font-weight:800;text-align:center;color:var(--accent);padding:3px 0 4px;margin-bottom:2px;border-bottom:1px solid var(--border-light);white-space:nowrap;overflow:hidden}
-#drAxes .ax-c{display:block;width:100%;box-sizing:border-box;margin:0;padding:8px 1px;border:1px solid var(--border-light);border-radius:8px;background:var(--primary-light);color:var(--text-main);font:inherit;font-size:12px;font-weight:600;line-height:1.25;text-align:center;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
-#drAxes .ax-c.on{background:var(--primary);border-color:var(--primary);color:#fff}
-#drAxes .ax-p{margin:10px 0 0;padding:8px 6px 12px;border:1.5px solid var(--primary);border-radius:16px;background:var(--card-bg)}
-#drAxes .ax-ph{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 6px 4px;font-weight:800;font-size:15px;color:var(--primary)}
-#drAxes .ax-x{flex:none;border:0;background:transparent;color:var(--text-muted);font-size:18px;line-height:1;padding:4px 6px;cursor:pointer}
-#drAxes .ax-lg{padding:0 6px 8px;font-size:12.5px;color:var(--text-muted)}
-#drAxes .ax-sh{margin:14px 6px 6px;font-weight:800;font-size:14px;color:var(--accent)}
-#drAxes .ax-n{padding:8px 8px;font-size:13px;color:var(--text-muted)}
-#drAxes .ax-bd{display:inline-block;margin:10px 14px 0;padding:1px 11px;border-radius:10px;background:var(--accent);color:#fff;font-size:11.5px;font-weight:700}
-#drAxes .ax-base{background:var(--accent-light)}
-#drAxes .ax-base .rs-vf{background:transparent}
-#drAxes .rs-v{margin:4px 0 8px}
+.ax-root .ax-t{text-align:center;margin:0}
+.ax-root .ax-intro,#drAxes .ax-info{box-sizing:border-box;padding:8px 14px 10px;font-size:13.5px;line-height:1.7;color:var(--text-sub);text-align:center;background:var(--card-bg);border:1px solid var(--border-light);border-top:0;border-radius:0 0 14px 14px;margin:0 0 14px}
+.ax-root .ax-g{margin:0 0 16px}
+.ax-root .ax-g[hidden]{display:none}
+.ax-root .ax-g>h3{box-sizing:border-box;margin:0;padding:9px 16px;text-align:center;font-size:17px;line-height:1.35;color:var(--primary);font-family:var(--font-head);background:var(--card-bg);border:1px solid var(--border-light);border-top:4px solid var(--primary);border-radius:14px 14px 0 0;box-shadow:var(--shadow-card)}
+.ax-root .ax-grid{display:flex;gap:3px;padding:6px 4px 8px;background:var(--card-bg);border:1px solid var(--border-light);border-top:0;border-radius:0 0 14px 14px}
+.ax-root .ax-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:3px}
+.ax-root .ax-h{font-size:10.5px;font-weight:800;text-align:center;color:var(--accent);padding:3px 0 4px;margin-bottom:2px;border-bottom:1px solid var(--border-light);white-space:nowrap;overflow:hidden}
+.ax-root .ax-c{display:block;width:100%;box-sizing:border-box;margin:0;padding:8px 1px;border:1px solid var(--border-light);border-radius:8px;background:var(--primary-light);color:var(--text-main);font:inherit;font-size:12px;font-weight:600;line-height:1.25;text-align:center;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.ax-root .ax-c.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.ax-root .ax-p{margin:10px 0 0;padding:8px 6px 12px;border:1.5px solid var(--primary);border-radius:16px;background:var(--card-bg)}
+.ax-root .ax-ph{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 6px 4px;font-weight:800;font-size:15px;color:var(--primary)}
+.ax-root .ax-x{flex:none;border:0;background:transparent;color:var(--text-muted);font-size:18px;line-height:1;padding:4px 6px;cursor:pointer}
+.ax-root .ax-lg{padding:0 6px 8px;font-size:12.5px;color:var(--text-muted)}
+.ax-root .ax-sh{margin:14px 6px 6px;font-weight:800;font-size:14px;color:var(--accent)}
+.ax-root .ax-n{padding:8px 8px;font-size:13px;color:var(--text-muted)}
+.ax-root .ax-bd{display:inline-block;margin:10px 14px 0;padding:1px 11px;border-radius:10px;background:var(--accent);color:#fff;font-size:11.5px;font-weight:700}
+.ax-root .ax-base{background:var(--accent-light)}
+.ax-root .ax-base .rs-vf{background:transparent}
+.ax-root .rs-v{margin:4px 0 8px}
 
 /* v102: ব্যানার আরেকটু ছোট (গম্বুজের পর্দা সরানো হয়েছে); স্লাইডিং লেখার স্ট্রিপ উঁচু ও লেখা বড় */
 body.is-home .drq-support.drq-hero,.drq-support.drq-hero{max-height:90px;min-height:72px}
 .drq-tk.drq-tkbar{height:38px}
 .drq-tk.drq-tkbar span{line-height:36px;font-size:19px}
 
-/* হোম: প্রতিটি বিষয়ের চার্ট; আগের তিন অপশনের কার্ড (.drq-amalcard) শুধু "আমল" পাতায় (#amal) */
-#drLanding .drq-amalcard{display:none}
-#drLanding.am-mode .drq-amalcard{display:block}
-#drLanding.am-mode>*:not(.drq-grid),#drLanding.am-mode .drq-grid>:not(.drq-amalcard){display:none!important}
-#drLanding .drq-amh{text-align:center;font-size:17px;color:var(--primary)}
-#drLanding .drq-chartcard .drq-opts a{justify-content:center;font-size:16px;font-weight:800;padding:13px 14px}
+/* হোম: প্রতিটি ট্যাবে (বদনজর/জাদু/জিন/৩টি একসাথে) আগের অপশনের নিচে ওই বিষয়ের চার্ট */
+.ax-home{margin:12px 0 2px}
+.ax-home .ax-g:last-child{margin-bottom:6px}
 /* ব্যানার ওপরে লেগে থাকে; বাকি ফাঁকা জায়গা নিচে (নেভিগেশন বারের ওপরে) যায় */
 body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:6px 0 3px}
 #drLanding .drq-grid{margin-bottom:auto}

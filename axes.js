@@ -43,22 +43,22 @@ async function verseCard(ref,isBase){const{s,a,f,t,w}=ref;
  const ft=el("div","rs-vf"),rf=el("div","rs-vr");rf.append("সূরা ",el("span","rs-ar",SN[s-1])," — "+bn2(s)+":"+bn2(a));ft.append(rf);
  box.append(tx,tb,ft);return box}
 
-let DATA=null,ROOT=null,GEN=0;
+let DATA=null;
 const load=async()=>DATA||(DATA=await rsFetch(BASE+"axis-ayat.json?v=1").catch(e=>{DATA=null;throw e}));
 
-function closePanel(){GEN++;ROOT.querySelectorAll(".ax-p").forEach(x=>x.remove());ROOT.querySelectorAll(".ax-c.on").forEach(x=>x.classList.remove("on"))}
+function closePanel(R){R.__g=(R.__g||0)+1;R.querySelectorAll(".ax-p").forEach(x=>x.remove());R.querySelectorAll(".ax-c.on").forEach(x=>x.classList.remove("on"))}
 
 async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").map(Number),G=DATA.axes[gi],C=DATA.cells[key];
- closePanel();const my=GEN;btn.classList.add("on");
+ const R=btn.closest(".ax-root");closePanel(R);const my=R.__g;btn.classList.add("on");
  const sec=btn.closest(".ax-g"),pn=el("div","ax-p");
- const hd=el("div","ax-ph"),x=el("button","ax-x","✕");x.type="button";x.setAttribute("aria-label","বন্ধ করুন");x.onclick=closePanel;
+ const hd=el("div","ax-ph"),x=el("button","ax-x","✕");x.type="button";x.setAttribute("aria-label","বন্ধ করুন");x.onclick=()=>closePanel(R);
  hd.append(el("span",null,G.name+" › "+G.cols[ci].name+" › "+G.cols[ci].opts[oi]),x);
  pn.append(hd);
  const lg=el("div","ax-lg");lg.append(el("span","rs-gold","সোনালি অংশ")," = মৌলিক অংশ");pn.appendChild(lg);
  sec.appendChild(pn);
  if(!C){pn.appendChild(el("div","ax-n","এই ঘরের আয়াত এখনো যোগ হয়নি।"));return}
  const b=el("div","rs-v");pn.appendChild(b);
- for(const r of C.b){const c=await verseCard({s:r[0],a:r[1],f:r[2],t:r[3]},true).catch(()=>null);if(my!==GEN)return;if(c)b.appendChild(c)}
+ for(const r of C.b){const c=await verseCard({s:r[0],a:r[1],f:r[2],t:r[3]},true).catch(()=>null);if(my!==R.__g)return;if(c)b.appendChild(c)}
  const more=C.m.map(v=>{const p=v.split(":").map(Number);return{s:p[0],a:p[1],w:p[2]||0}});
  pn.appendChild(el("div","ax-sh","বাকি আয়াত"+(more.length?" ("+bn2(more.length)+"টি)":"")));
  if(!more.length){pn.appendChild(el("div","ax-n","এই ঘরে মৌলিক আয়াতের বাইরে আর কোনো আয়াত নেই।"));return}
@@ -66,13 +66,13 @@ async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").m
  let shown=0,busy=false,io=null;
  const add=async()=>{if(busy)return;busy=true;btnMore.disabled=true;btnMore.textContent="আয়াত লোড হচ্ছে…";
   const end=Math.min(more.length,shown+STEP);
-  for(;shown<end;shown++){const c=await verseCard(more[shown],false).catch(()=>null);if(my!==GEN){io&&io.disconnect();return}if(c)lst.appendChild(c)}
+  for(;shown<end;shown++){const c=await verseCard(more[shown],false).catch(()=>null);if(my!==R.__g){io&&io.disconnect();return}if(c)lst.appendChild(c)}
   busy=false;btnMore.disabled=false;
   if(shown<more.length)btnMore.textContent="আরও আয়াত দেখান ("+bn2(more.length-shown)+" বাকি)";
   else{btnMore.style.display="none";io&&io.disconnect()}};
  btnMore.onclick=add;
  await add();
- if(my===GEN&&"IntersectionObserver"in window&&shown<more.length){io=new IntersectionObserver(es=>{if(my!==GEN){io.disconnect();return}if(es[es.length-1].isIntersecting&&!busy&&shown<more.length)add()},{rootMargin:"600px 0px"});io.observe(btnMore)}}
+ if(my===GEN&&"IntersectionObserver"in window&&shown<more.length){io=new IntersectionObserver(es=>{if(my!==R.__g){io.disconnect();return}if(es[es.length-1].isIntersecting&&!busy&&shown<more.length)add()},{rootMargin:"600px 0px"});io.observe(btnMore)}}
 
 function buildGroup(gi,g){const sec=el("section","ax-g");sec.dataset.slug=g.slug;sec.appendChild(el("h3",null,g.name));
  const grid=el("div","ax-grid");
@@ -81,20 +81,24 @@ function buildGroup(gi,g){const sec=el("section","ax-g");sec.dataset.slug=g.slug
  sec.appendChild(grid);return sec}
 
 /* ঘরের লেখা ঘরে আঁটাতে ফন্ট ছোট করা (দৃশ্যমান অবস্থায় মাপা যায়) */
-function fit(){ROOT.querySelectorAll(".ax-c").forEach(x=>{if(x.dataset.f||!x.clientWidth)return;x.dataset.f="1";x.style.whiteSpace="nowrap";let s=12;x.style.fontSize=s+"px";while(x.scrollWidth>x.clientWidth&&s>5.5){s-=.5;x.style.fontSize=s+"px"}})}
+function fit(R){R.querySelectorAll(".ax-c").forEach(x=>{if(x.dataset.f||!x.clientWidth)return;x.dataset.f="1";x.style.whiteSpace="nowrap";let s=12;x.style.fontSize=s+"px";while(x.scrollWidth>x.clientWidth&&s>5.5){s-=.5;x.style.fontSize=s+"px"}})}
 
 const SLUG={nazar:1,jadu:1,jin:1};
-window.__drAxes=async slug=>{ROOT=ROOT||$("axBody");if(!ROOT)return;
- if(!ROOT.dataset.ready){ROOT.textContent="";ROOT.appendChild(el("div","ax-info","লোড হচ্ছে…"));
-  try{await load()}catch(e){ROOT.textContent="";const m=el("div","ax-info","চার্ট লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"),r=el("button","rs-more","আবার চেষ্টা");r.type="button";r.onclick=()=>window.__drAxes(slug);ROOT.append(m,r);return}
-  ROOT.textContent="";
-  ROOT.appendChild(el("h2","ax-t","সাতটি অক্ষ"));
-  ROOT.appendChild(el("div","ax-intro","যেকোনো ঘরে চাপুন — সেই ঘরের মৌলিক আয়াত (মৌলিক অংশ মার্ক করা) এবং তার নিচে বাকি সব আয়াত দেখা যাবে।"));
-  DATA.axes.forEach((g,gi)=>ROOT.appendChild(buildGroup(gi,g)));
-  ROOT.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".ax-c");if(!b)return;if(b.classList.contains("on")){closePanel();return}
+/* R = চার্ট বসানোর ঘর: #axBody (পুরো পাতা, শিরোনামসহ) অথবা হোমের ট্যাবের ভেতরের .ax-home (শুধু চার্ট) */
+async function mount(R,slug,full){if(!R)return;
+ if(!R.dataset.ready){if(R.__ld)return;R.__ld=1;R.textContent="";R.appendChild(el("div","ax-info","লোড হচ্ছে…"));
+  try{await load()}catch(e){R.__ld=0;R.textContent="";const m=el("div","ax-info","চার্ট লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"),r=el("button","rs-more","আবার চেষ্টা");r.type="button";r.onclick=()=>mount(R,slug,full);R.append(m,r);return}
+  R.textContent="";
+  if(full){R.appendChild(el("h2","ax-t","সাতটি অক্ষ"));
+   R.appendChild(el("div","ax-intro","যেকোনো ঘরে চাপুন — সেই ঘরের মৌলিক আয়াত (মৌলিক অংশ মার্ক করা) এবং তার নিচে বাকি সব আয়াত দেখা যাবে।"))}
+  DATA.axes.forEach((g,gi)=>R.appendChild(buildGroup(gi,g)));
+  R.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".ax-c");if(!b)return;if(b.classList.contains("on")){closePanel(R);return}
    openCell(b).then(()=>{const p=b.closest(".ax-g").querySelector(".ax-p");if(p&&p.getBoundingClientRect().top>innerHeight*.7)p.scrollIntoView({behavior:"smooth",block:"start"})}).catch(()=>{})});
-  ROOT.dataset.ready="1"}
- closePanel();
- const sl=SLUG[slug]?slug:"";ROOT.querySelectorAll(".ax-g").forEach(g=>{g.hidden=!!sl&&g.dataset.slug!==sl});
- requestAnimationFrame(()=>requestAnimationFrame(fit))};
+  R.dataset.ready="1";R.__ld=0}
+ closePanel(R);
+ const sl=SLUG[slug]?slug:"";R.querySelectorAll(".ax-g").forEach(g=>{g.hidden=!!sl&&g.dataset.slug!==sl});
+ requestAnimationFrame(()=>requestAnimationFrame(()=>fit(R)))}
+window.__drAxes=slug=>mount($("axBody"),slug,true);
+window.__drAxesMount=(R,slug)=>mount(R,slug,false);
+window.__drAxesFit=R=>fit(R);
 })();
