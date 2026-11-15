@@ -548,7 +548,7 @@ function audioBar(info,all,cb,title){if(!all.length)return;const box=els("div","
   selUp.push(()=>{b3.textContent="📚 বাছাই করা আয়াত বিষয়ে যোগ ("+bn2(SELV.size)+")"});
     const grp=(t,cls,ex,...k)=>{const g=el("div","rs-grp"),r=el("div","rs-gr"+(cls?" "+cls:""));g.append(el("div","rs-gh",t));r.append(...k);g.appendChild(r);if(ex)g.append(...ex);return g};
   const panel=el("div","rs-panel");const ag=grp("অডিও সেটিং","one",null,sel,repCtl());
-  panel.append(grp("সব আয়াত","",[n1,o1],...(cb?[cb]:[]),b1,b5),grp("বাছাই করা আয়াত","",[n2,o2],b2,b6,b3),ag);
+  {const outs=el("div","rs-outs");outs.append(n1,o1,n2,o2);panel.append(grp("সব আয়াত","",null,...(cb?[cb]:[]),b1,b5),grp("বাছাই করা আয়াত","",null,b2,b6,b3),ag,outs)}
   box.append(panel,pn,ed);info.appendChild(box)}
 const SB={n:0,t:0,m:new Map,set(u){this.t=u.size;this.m=new Map([...u].map((k,i)=>[k,i+1]))}};
 function verses(host,refs,fgl,off){let shown=0,fail=[];const step=15,g=GEN;
@@ -970,7 +970,12 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
  GUIDES["মাসিক বন্ধ"]=[{k:"info",h:"📌 এই অংশ",p:"মাসিক বন্ধ থাকার জন্য আলাদা আমল-পদ্ধতি এখনো যোগ করা হয়নি। "+MCNOTE}];
  const GSECS=["সাদা স্রাব","অনিয়মিত মাসিক","অনবরত মাসিক","মাসিক বন্ধ","দাঁত লেগে যাওয়া"];
  const secNote=x=>x.note||(GUIDES[x.name]?"দোয়া ও পদ্ধতি + ":"")+bn2(x.ids.size)+"টি আয়াত";
- const addGSecs=(secs,CFG)=>{if(CFG===DISEASE)GSECS.forEach(n=>{if(!secs.find(y=>y.name===n))secs.push({name:n,ids:new Set(),note:"ধাপে ধাপে পদ্ধতি"})})};
+ const guideIds=(x,blocks)=>(blocks||[]).forEach(b=>{if(b.k==="v"&&b.s&&b.f)for(let a=b.f;a<=(b.t||b.f);a++)x.ids.add(b.s+":"+a)});
+ /* অঙ্গের পাতার আলাদা চিকিৎসা (data/organ-treat.json, যেমন মাথা → মাথাব্যথা) রোগভিত্তিক তালিকায়ও যুক্ত হয়: একই নামের রোগ থাকলে তাতে পদ্ধতি বসে, না থাকলে নতুন নামে */
+ const otGuide=it=>{const b=[];(it.ayah||[]).forEach(a=>b.push({k:"v",h:"📖 "+(a.ref||"আয়াত"),s:a.s,f:a.a,t:a.a}));if((it.steps||[]).length)b.push({k:"steps",h:"🧾 পদ্ধতি — ধাপে ধাপে",st:it.steps.map((t,i)=>["ধাপ "+bn2(i+1),t])});if(it.result)b.push({k:"info",h:"✅ ফল",p:it.result});if(it.ifNot)b.push({k:"info",h:"⚠ না কমলে",p:it.ifNot});return b};
+ const addGSecs=(secs,CFG)=>{if(CFG!==DISEASE)return;
+  Object.values(OT.d||{}).forEach(list=>(list||[]).forEach(it=>{if(!it||!it.title)return;let x=secs.find(y=>y.name===it.title);if(!x){x={name:it.title,ids:new Set(),note:"ধাপে ধাপে পদ্ধতি"};secs.push(x)}(it.ayah||[]).forEach(a=>x.ids.add(a.s+":"+a.a));if(!GUIDES[x.name])GUIDES[x.name]=otGuide(it)}));
+  GSECS.forEach(n=>{let x=secs.find(y=>y.name===n);if(!x){x={name:n,ids:new Set(),note:"ধাপে ধাপে পদ্ধতি"};secs.push(x)}guideIds(x,GUIDES[n])})};
  const guideNode=blocks=>{const root=els("div","margin:8px 0 14px");
   const card=(h,warn)=>{const c=els("div","border:1px solid var(--border-light);border-radius:12px;padding:12px;margin:10px 0;background:var(--card-bg);"+(warn?"border-inline-start:4px solid #c0392b":""));if(h)c.appendChild(els("div","font-weight:800;font-size:15px;color:var(--primary);margin-bottom:8px",h));return c};
   const para=t=>els("div","line-height:1.75;font-size:14.5px;white-space:pre-line;margin-top:4px",t);
@@ -1110,7 +1115,7 @@ window.__drOpenDisease=()=>showDiag(DISEASE);window.__drOpenMental=()=>showDiag(
   out.appendChild(w);window.scrollTo({top:rs.getBoundingClientRect().top+scrollY-60,behavior:"smooth"})};
  const nameList=async(CFG,title,sub,up)=>{GEN++;$("rsInfo").textContent="লোড হচ্ছে…";$("rsOut").innerHTML="";let D;try{D=await rsFetch(BASE+CFG.file)}catch(e){$("rsInfo").textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
   const secs=[];D.groups.forEach(g=>{let x=secs.find(y=>y.name===g.section);if(!x)secs.push(x={name:g.section,ids:new Set()});g.cats.forEach(c=>c.keys.forEach(k=>x.ids.add(k.s+":"+k.a)))});
-  {const f=keepDis(secs,CFG);secs.length=0;f.forEach(x=>secs.push(x))}addGSecs(secs,CFG);const back=()=>nameList(CFG,title,sub,up);
+  {const f=keepDis(secs,CFG);secs.length=0;f.forEach(x=>secs.push(x))}await loadOT();addGSecs(secs,CFG);const back=()=>nameList(CFG,title,sub,up);
   showNames(title,secs.map(x=>({name:x.name,note:secNote(x),fn:()=>{$("rsBox").classList.add("dr-tonly");showDiag(Object.assign({},CFG,{only:x.name,back}));}})),sub,up)};
  const OT={d:null};
  const loadOT=async()=>{if(OT.d)return OT.d;try{OT.d=await rsFetch(BASE+"organ-treat.json?v=3")}catch(e){OT.d={}}return OT.d};
@@ -1131,7 +1136,7 @@ window.__drOpenDisease=()=>showDiag(DISEASE);window.__drOpenMental=()=>showDiag(
  /* অঙ্গ ও রোগের PDF/অডিওর আয়াত-তালিকা: নাম → [[সূরা,আয়াত]…] (অঙ্গের তালিকা ব্যবহারের সময় গণনা হয়) */
  const XS={p:null};
  const regX=()=>XS.p||(XS.p=(async()=>{const cats=[];
-  const mk=async CFG=>{const D=await rsFetch(BASE+CFG.file),secs=[];D.groups.forEach(g=>{let x=secs.find(y=>y.name===g.section);if(!x)secs.push(x={name:g.section,ids:new Set()});g.cats.forEach(c=>c.keys.forEach(k=>x.ids.add(k.s+":"+k.a)))});{const f=keepDis(secs,CFG);secs.length=0;f.forEach(x=>secs.push(x))}addGSecs(secs,CFG);return secs};
+  const mk=async CFG=>{const D=await rsFetch(BASE+CFG.file),secs=[];D.groups.forEach(g=>{let x=secs.find(y=>y.name===g.section);if(!x)secs.push(x={name:g.section,ids:new Set()});g.cats.forEach(c=>c.keys.forEach(k=>x.ids.add(k.s+":"+k.a)))});{const f=keepDis(secs,CFG);secs.length=0;f.forEach(x=>secs.push(x))}await loadOT();addGSecs(secs,CFG);return secs};
   const org=(pre,names)=>names.forEach(n=>{const t=TOPICS.find(x=>x.name===n);if(!t)return;XKEYS.set(pre+"|"+n,()=>topicKeys(t));cats.push(pre+"|"+n)});
   const dis=(pre,secs)=>secs.forEach(x=>{if(!x.ids.size)return;XKEYS.set(pre+"|"+x.name,[...x.ids].map(i=>i.split(":").map(Number)).sort((a,b)=>a[0]-b[0]||a[1]-b[1]));cats.push(pre+"|"+x.name)});
   const[sd,sm]=await Promise.all([mk(DISEASE),mk(MENTAL)]);
@@ -1141,7 +1146,7 @@ window.__drOpenDisease=()=>showDiag(DISEASE);window.__drOpenMental=()=>showDiag(
  window.__drXReg=regX;
  const combo=async kind=>{const mental=kind==="mental",CFG=mental?MENTAL:DISEASE,title=mental?"🧠 মানসিক":"🩺 শারীরিক";GEN++;$("rsInfo").textContent="লোড হচ্ছে…";$("rsOut").innerHTML="";let D;try{D=await rsFetch(BASE+CFG.file)}catch(e){$("rsInfo").textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
   const secs=[];D.groups.forEach(g=>{let x=secs.find(y=>y.name===g.section);if(!x)secs.push(x={name:g.section,ids:new Set()});g.cats.forEach(c=>c.keys.forEach(k=>x.ids.add(k.s+":"+k.a)))});
-  {const f=keepDis(secs,CFG);secs.length=0;f.forEach(x=>secs.push(x))}addGSecs(secs,CFG);const back=()=>combo(kind),organs=mental?["অন্তর (হৃদয়)","বুক ও বক্ষ"]:ORG.map(o=>o[0]);
+  {const f=keepDis(secs,CFG);secs.length=0;f.forEach(x=>secs.push(x))}await loadOT();addGSecs(secs,CFG);const back=()=>combo(kind),organs=mental?["অন্তর (হৃদয়)","বুক ও বক্ষ"]:ORG.map(o=>o[0]);
   /* উপরে "অঙ্গভিত্তিক" হেডিং, নিচে "রোগভিত্তিক" হেডিং; প্রতিটি নাম হোমের "দৈনন্দিন রুকইয়াহ"-র মতো দুই কলামে — নাম + 📄 PDF + 🔊 অডিও */
   const HS="display:flex;align-items:center;gap:8px;margin:16px 2px 10px;padding:9px 12px;border-radius:12px;background:var(--primary-light,#e6efe9);border-right:5px solid var(--accent);border-left:5px solid var(--accent);font-weight:800;font-size:17px;color:var(--accent);justify-content:center";
   const SHORT={"কণ্ঠনালী ও কণ্ঠার হাড়":"কণ্ঠনালী","বুক ও বক্ষ":"বুক","অন্ত্র ও নাড়িভুঁড়ি":"অন্ত্র"};
