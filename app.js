@@ -109,7 +109,7 @@ const RECS=[["ar.alafasy","মিশারি আলাফাসি","Alafasy_12
 const gNum=(s,a)=>AYN.slice(0,s-1).reduce((x,y)=>x+y,0)+a;
 const recId=()=>{try{const v=localStorage.getItem("rsRec");if(RECS.some(r=>r[0]===v))return v}catch(e){}return RECS[0][0]};
 const audUrls=(s,a)=>{const r=RECS.find(x=>x[0]===recId())||RECS[0],p3=n=>String(n).padStart(3,"0");return[...[128,64,192].map(b=>"https://cdn.islamic.network/quran/audio/"+b+"/"+r[0]+"/"+gNum(s,a)+".mp3"),"https://everyayah.com/data/"+r[2]+"/"+p3(s)+p3(a)+".mp3"]};
-window.__drAud={urls:audUrls,AYN:AYN}; // alarm.js (রুকইয়াহ অডিও অ্যালার্ম) ব্যবহার করে
+window.__drAud={urls:audUrls,AYN:AYN,local:localUrl}; // alarm.js (রুকইয়াহ অডিও অ্যালার্ম) ব্যবহার করে
 const els=(t,css,x)=>{const e=el(t,null,x);e.style.cssText=css;return e};
 const SELV=new Set(),selUp=[];
 const selChange=()=>selUp.forEach(f=>{try{f()}catch(e){}});

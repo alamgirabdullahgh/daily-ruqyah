@@ -1,7 +1,7 @@
-const V="dr-shell-v294";
+const V="dr-shell-v296";
 // ডেইলি রুকিয়া — অফলাইনে অ্যাপ খোলার জন্য। আয়াতের বড় ডেটা অ্যাপ নিজেই (Cache API "rs-…") জমা রাখে, তাই এখানে শুধু অ্যাপের কাঠামো।
 
-const SHELL=["./","index.html","style.css?v=120","app.js?v=92","home.js?v=36","alarm.js?v=12","amol.js?v=19","data/amol-guide.json?v=8","data/amol-struct.json?v=2","data/sunnah.json?v=1","data/sunnah.js?v=1","data/principles.js?v=7","data/response-signs.js?v=1","symptom.js?v=14","axes.js?v=15","data/axis-ayat.json?v=1","widget.js?v=33","boot.js?v=6","reveal.js?v=1","manifest.webmanifest","icons/icon-192.png","icons/icon-512.png","fonts/indopak-waqf-lazim.woff2","fonts/noto-sans-bengali-bengali-wght.woff2","fonts/noto-sans-bengali-latin-wght.woff2","data/lame.min.js?v=1","data/hadith-norm.js?v=2","data/hadith.js?v=15"];
+const SHELL=["./","index.html","style.css?v=122","app.js?v=93","home.js?v=36","alarm.js?v=16","amol.js?v=19","data/amol-guide.json?v=8","data/amol-struct.json?v=2","data/sunnah.json?v=1","data/sunnah.js?v=1","data/principles.js?v=7","data/response-signs.js?v=1","symptom.js?v=14","axes.js?v=15","data/axis-ayat.json?v=1","widget.js?v=33","boot.js?v=7","reveal.js?v=1","manifest.webmanifest","icons/icon-192.png","icons/icon-512.png","fonts/indopak-waqf-lazim.woff2","fonts/noto-sans-bengali-bengali-wght.woff2","fonts/noto-sans-bengali-latin-wght.woff2","data/lame.min.js?v=1","data/hadith-norm.js?v=2","data/hadith.js?v=15"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith("dr-shell-")&&k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener("fetch",e=>{
@@ -9,7 +9,17 @@ self.addEventListener("fetch",e=>{
  if(r.method!=="GET"||u.origin!==location.origin)return;
  if(u.pathname.indexOf("/_capacitor_file_/")===0)return;                  // ফোনের ভেতরের অডিও ফাইল: সরাসরি, ক্যাশে নকল নয়
  if(/\/data\/(quran-|hadith-chunks)/.test(u.pathname))return;                 // বড় ডেটা: অ্যাপের নিজস্ব ক্যাশ
+ /* ওয়েবসাইট (ব্লগের iframe) ও অ্যাপ সবসময় সর্বশেষ সংস্করণ দেখাবে: পাতা ও যেসব ফাইলের ঠিকানায় ?v= নেই সেগুলো আগে নেট থেকে (ব্রাউজারের HTTP ক্যাশ এড়িয়ে) আনে; নেট না থাকলে বা ৪ সেকেন্ডে সাড়া না এলে ক্যাশ থেকে (অফলাইন কাজ করে) */
+ const fresh=r.mode==="navigate"||(!/[?&]v=/.test(u.search)&&/\.(html|js|css|json|webmanifest)$/.test(u.pathname));
  e.respondWith(caches.open(V).then(async c=>{
-  const hit=await c.match(r,{ignoreSearch:r.mode==="navigate"});
+  if(fresh){
+   const key=r.mode==="navigate"?r:r;
+   try{
+    const res=await Promise.race([fetch(r,{cache:"no-cache"}),new Promise((_,j)=>setTimeout(()=>j(0),4000))]);
+    if(res&&res.ok){c.put(r,res.clone());return res}
+   }catch(_){}
+   return (await c.match(key,{ignoreSearch:r.mode==="navigate"}))||(r.mode==="navigate"?await c.match("index.html"):Response.error());
+  }
+  const hit=await c.match(r);
   const net=fetch(r).then(res=>{if(res.ok)c.put(r,res.clone());return res}).catch(()=>null);
-  return hit||await net||(r.mode==="navigate"?c.match("index.html"):Response.error())}))});
+  return hit||await net||Response.error()}))});

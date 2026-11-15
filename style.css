@@ -1131,3 +1131,14 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:6px 0 3px}
 .rs-rep .rs-rt{font-size:10.5px;line-height:1.15}
 .rs-rep .rs-num,.rs-num{min-height:24px;height:24px;font-size:13px;border-radius:7px;max-width:44px}
 .rs-gr.one .rs-rb{min-height:0}
+
+/* v121: ব্যানার (স্লাইডিং লাইনসহ) আরেকটু ওপরে; বাকি ফাঁকা জায়গা ব্যানার ও কার্ডের মাঝে। দৈনন্দিন · বদনজর/জাদু/জিন · এলার্ম তিনটি কার্ড (মাঝের ফাঁক আগের মতোই) একসাথে নিচে, নেভিগেশন বারের সাথে লাগানো */
+body.is-home .dr-main{padding-top:0}
+body.is-home .drq-support.drq-hero{margin:2px 0 3px}
+body.is-home #drLanding .drq-grid{margin-top:auto;margin-bottom:0}
+body.is-home .drq-cards{padding-bottom:0}
+body.is-home{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
+
+/* v122: অ্যালার্ম কার্ডের দুই পাশে ব্রাউজারের নিজস্ব অডিও প্লেয়ারের প্লে/পজ অংশ। ক্রোমের প্লেয়ার খুব সরু হলে প্লে বাটনই লুকায়, তাই প্লেয়ার স্বাভাবিক চওড়ায় থাকে আর ছোট জানালায় শুধু বাম প্রান্তের প্লে/পজ অংশ দেখা যায় */
+.drq-sys .dsy-aw{flex:none;position:relative;width:40px;height:36px;overflow:hidden;border-radius:18px;display:block}
+.drq-sys .dsy-aw .dsy-au{position:absolute;left:-7px;top:0;width:112px;min-width:112px;max-width:none;height:36px;margin:0;padding:0;border:0;display:block}

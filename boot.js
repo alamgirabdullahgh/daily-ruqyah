@@ -1,6 +1,13 @@
 // সার্ভিস ওয়ার্কার (অফলাইনে অ্যাপ খোলা) + "হোম স্ক্রিনে যোগ করুন" বোতাম
 (function(){
- if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});
+ if("serviceWorker" in navigator){
+  var hadSW=!!navigator.serviceWorker.controller,rl=false;
+  /* নতুন সংস্করণ এলে (সার্ভিস ওয়ার্কার বদলালে) পাতা একবার নিজে রিলোড হয়, ফলে ওয়েবসাইট ও অ্যাপ সবসময় সর্বশেষ */
+  navigator.serviceWorker.addEventListener("controllerchange",function(){if(!hadSW||rl)return;rl=true;location.reload()});
+  window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(function(g){
+   document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")g.update().catch(function(){})});
+   setInterval(function(){g.update().catch(function(){})},600000)}).catch(function(){})});
+ }
  /* কীবোর্ড খুললে নিচের বার ও ভাসমান বোতাম লুকায় (না হলে ওগুলো কীবোর্ডের ওপরে উঠে আসে) */
  var de=document.documentElement,base=0,txt=function(e){var t=e&&e.tagName;return t==="TEXTAREA"||(t==="INPUT"&&!/^(checkbox|radio|button|submit|range|file|color)$/.test(e.type))};
  function chk(){var h=window.visualViewport?visualViewport.height:innerHeight;base=Math.max(base,h,innerHeight);if(h<base-140)de.classList.add("kb");else if(!txt(document.activeElement))de.classList.remove("kb")}

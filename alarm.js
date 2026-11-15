@@ -452,6 +452,45 @@
     df.onclick = function () { fields.forEach(function (f) { cfgSet(f.d.id, null); }); host.removeAttribute("data-open"); host.hidden = true; apply(); };
     cl.onclick = function () { host.removeAttribute("data-open"); host.hidden = true; };
   }
+  /* অডিও প্লে/পজ: ব্রাউজারের নিজস্ব <audio controls> প্লেয়ার (শুধু প্লে/পজ অংশ দেখা যায়, CSS-এ ছোট করা)। চাপলে সঙ্গে সঙ্গে চলে/থামে, ফোনের মিডিয়া ভলিউম বাড়ানো-কমানো নিজে নিজে মানে — আলাদা কোড লাগে না।
+     আয়াত একটার পর একটা চলে (ফোনে ফাইল থাকলে সেটা, না থাকলে নেট থেকে); একটা চালালে অন্যটা থামে এবং বাজতে থাকা অ্যালার্মও বন্ধ হয়। */
+  function sysAudio(g) {
+    var A = aud(), d = SYS.filter(function (x) { return x.g === g; })[0];
+    var au = document.createElement("audio");
+    au.controls = true; au.preload = "none"; au.className = "dsy-au";
+    au.setAttribute("controlsList", "nodownload noplaybackrate nofullscreen");
+    au.setAttribute("aria-label", g === "baq" ? "সূরা বাকারা — চালান/থামান" : "জাদু রিনিউ বন্ধের অডিও — চালান/থামান");
+    if (!A || !d) return au;
+    var items = []; d.ranges.forEach(function (r) { for (var a = r[1]; a <= r[2]; a++) items.push([r[0], a]); });
+    var idx = 0, cand = [], ci = 0, fails = 0, want = false;
+    async function load(i) {
+      idx = i; ci = 0; cand = [];
+      var s = items[i][0], a = items[i][1];
+      try { var lu = A.local && await A.local(s, a); if (lu) cand.push(lu); } catch (e) { }
+      cand.push.apply(cand, A.urls(s, a));
+      au.src = cand[0];
+    }
+    au.src = A.urls(items[0][0], items[0][1])[0];   // শুরুতেই একটা ঠিকানা, নইলে প্লে বাটন অচল থাকে (preload=none, তাই নামে না)
+    setTimeout(function () { if (!want && idx === 0) load(0).catch(function () { }); }, 300);
+    au.addEventListener("play", function () {
+      want = true;
+      document.querySelectorAll("audio").forEach(function (o) { if (o !== au) { try { o.pause(); } catch (e) { } } });
+      if (NATIVE && P) { try { P.stop({ nonag: false }); } catch (e) { } }
+    });
+    au.addEventListener("pause", function () { if (!au.ended) want = false; });
+    au.addEventListener("playing", function () { fails = 0; });
+    au.addEventListener("ended", function () {
+      if (idx + 1 < items.length) load(idx + 1).then(function () { return au.play(); }).catch(function () { });
+      else { want = false; load(0).catch(function () { }); }
+    });
+    au.addEventListener("error", function () {
+      if (!want) return;
+      if (++ci < cand.length) { au.src = cand[ci]; au.play().catch(function () { }); return; }
+      if (++fails >= 3 || idx + 1 >= items.length) { want = false; fails = 0; return; }   // নেট/ফাইল নেই: তিন আয়াত পরপর ব্যর্থ হলে থামে
+      load(idx + 1).then(function () { return au.play(); }).catch(function () { });
+    });
+    return au;
+  }
   /* হোম পাতার নিচের কার্ড: নিচের কার্ডের পরে, নেভিগেশন বারের উপরে */
   window.__drSysCard = function (H) {
     try {
@@ -478,27 +517,8 @@
           sysRefresh();
         };
         sw.appendChild(cb); sw.appendChild(el("i"));
-        /* অডিও অন/অফ বাটন (প্লেয়ারের মতো): বাজছে না → ▶ চাপলে এখনই চালু; বাজছে → ⏹ চাপলে বন্ধ। সবসময় চাপা যায় */
-        var stp = el("button", "dsy-stop"); stp.type = "button";
-        stp.onclick = async function (ev) {
-          ev.stopPropagation();
-          var playingNow = row.classList.contains("play");
-          if (playingNow || !(NATIVE && P)) {
-            try { document.querySelectorAll("audio").forEach(function (au) { try { au.pause(); } catch (e) { } }); } catch (e) { }
-            try { if (P) await P.stop({ nonag: false }); } catch (e) { }
-          } else {
-            if (row.classList.contains("off")) { var sb = row.querySelector(".dsy-s"); if (sb) sb.textContent = "আগে টগল চালু করুন"; return; }
-            try {
-              if (!sysDone) await sysEnsure();
-              await reload();
-              var mine = ids(x[0]);
-              var al = list.filter(function (q) { return mine.indexOf(q.id) >= 0; })[0];
-              if (al) await P.testPlay({ alarm: al });
-            } catch (e) { }
-          }
-          setTimeout(sysRefresh, 500);
-        };
-        paintStop(stp, false);
+        /* অডিও: ব্রাউজারের নিজস্ব প্লেয়ারের প্লে/পজ (sysAudio) */
+        var stp = el("span", "dsy-aw"); stp.appendChild(sysAudio(x[0]));   // জানালা: প্লেয়ারের বাম প্রান্তের প্লে/পজ অংশটুকুই দেখা যায়
         if (x[0] === "baq") { row.appendChild(stp); row.appendChild(tx); row.appendChild(sw); }
         else { row.appendChild(sw); row.appendChild(tx); row.appendChild(stp); }
         two.appendChild(row);
