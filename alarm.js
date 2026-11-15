@@ -454,10 +454,10 @@
   }
   /* অডিও প্লে/পজ: ব্রাউজারের নিজস্ব <audio controls> প্লেয়ার (শুধু প্লে/পজ অংশ দেখা যায়, CSS-এ ছোট করা)। চাপলে সঙ্গে সঙ্গে চলে/থামে, ফোনের মিডিয়া ভলিউম বাড়ানো-কমানো নিজে নিজে মানে — আলাদা কোড লাগে না।
      আয়াত একটার পর একটা চলে (ফোনে ফাইল থাকলে সেটা, না থাকলে নেট থেকে); একটা চালালে অন্যটা থামে এবং বাজতে থাকা অ্যালার্মও বন্ধ হয়। */
-  function sysAudio(g) {
+  function sysAudio0(g) {
     var A = aud(), d = SYS.filter(function (x) { return x.g === g; })[0];
     var au = document.createElement("audio");
-    au.controls = true; au.preload = "none"; au.className = "dsy-au";
+    au.controls = false; au.preload = "none"; au.className = "dsy-au";
     au.setAttribute("controlsList", "nodownload noplaybackrate nofullscreen");
     au.setAttribute("aria-label", g === "baq" ? "সূরা বাকারা — চালান/থামান" : "জাদু রিনিউ বন্ধের অডিও — চালান/থামান");
     if (!A || !d) return au;
@@ -490,6 +490,15 @@
       load(idx + 1).then(function () { return au.play(); }).catch(function () { });
     });
     return au;
+  }
+  /* প্লে/পজ: নিজস্ব গোল বাটন (ব্রাউজারের প্লেয়ার নয়) — সব ব্রাউজারে (অপেরা, ক্রোম, ওয়েবভিউ) একই দেখায়; পেছনে লুকানো <audio> */
+  function sysAudio(g) {
+    var au = sysAudio0(g), w = document.createElement("span"), b = document.createElement("button");
+    b.type = "button"; b.className = "dsy-pp";
+    function paint() { var on = !au.paused; b.innerHTML = on ? ICON_STOP : ICON_PLAY; b.setAttribute("aria-label", on ? "অডিও থামান" : "অডিও চালান"); }
+    b.onclick = function () { if (au.paused) { var r = au.play(); if (r && r.catch) r.catch(function () { }); } else au.pause(); };
+    ["play", "pause", "playing", "ended", "emptied"].forEach(function (ev) { au.addEventListener(ev, paint); });
+    paint(); w.appendChild(b); w.appendChild(au); return w;
   }
   /* হোম পাতার নিচের কার্ড: নিচের কার্ডের পরে, নেভিগেশন বারের উপরে */
   window.__drSysCard = function (H) {
