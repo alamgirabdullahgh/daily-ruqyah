@@ -1103,3 +1103,7 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:6px 0 3px}
 .ax-root .ax-rb .ax-mb::first-line{font-size:12px}
 .ax-root .ax-cw .ax-c{min-height:42px}
 .ax-root .ax-mb,.ax-root .ax-ga{min-height:42px}
+.ax-root .ax-ro:has(>.ax-cw:nth-child(3))>.ax-cw{flex-direction:column;gap:2px}
+.ax-root .ax-ro:has(>.ax-cw:nth-child(3)) .ax-cb{width:100%}
+.ax-root .ax-ro:has(>.ax-cw:nth-child(3)) .ax-cb .ax-mb{flex:1 1 0;width:auto;min-height:24px;height:24px;flex-direction:row;gap:2px;font-size:9px;white-space:nowrap;border-radius:8px}
+.ax-root .ax-ro:has(>.ax-cw:nth-child(3)) .ax-cb .ax-mb::first-line{font-size:9px}
