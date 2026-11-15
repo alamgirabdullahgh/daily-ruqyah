@@ -503,15 +503,121 @@
     ["play", "pause", "playing", "ended", "emptied"].forEach(function (ev) { au.addEventListener(ev, paint); });
     paint(); w.appendChild(b); w.appendChild(au); return w;
   }
+
+  /* ===== কিবলা কম্পাস (অটোমেটিক এলার্ম কার্ডের দ্বিতীয় ট্যাব) =====
+     কিবলার দিক = আপনার অবস্থান থেকে কাবার (২১.৪২২৫°উ, ৩৯.৮২৬২°পূ) বেয়ারিং। অবস্থান: উইজেটের জমানো লোকেশন, নইলে ফোনের GPS, নইলে ঢাকা।
+     কম্পাস: ফোনের সেন্সর (deviceorientationabsolute / webkitCompassHeading)। সেন্সর না পেলে শুধু দিকের কোণ দেখায়। */
+  function kiblaPane() {
+    var root = el("div", "dsy-kb"), KA = [21.4225, 39.8262];
+    root.innerHTML = '<svg viewBox="0 0 200 200" class="dsy-cmp" role="img" aria-label="কিবলা কম্পাস"><g class="dsy-dial"><circle cx="100" cy="100" r="92" class="dsy-ring"/>' +
+      (function () { var t = ""; for (var i = 0; i < 36; i++) { var big = i % 9 === 0; t += '<line x1="100" y1="' + (big ? 10 : 12) + '" x2="100" y2="' + (big ? 20 : 17) + '" transform="rotate(' + (i * 10) + ' 100 100)" class="dsy-tk"/>'; } return t; })() +
+      '<text x="100" y="36" class="dsy-dn" text-anchor="middle">উ</text><text x="166" y="106" class="dsy-dc" text-anchor="middle">পূ</text><text x="100" y="176" class="dsy-dc" text-anchor="middle">দ</text><text x="34" y="106" class="dsy-dc" text-anchor="middle">প</text>' +
+      '<g class="dsy-q"><line x1="100" y1="100" x2="100" y2="40" class="dsy-ql"/><text x="100" y="38" text-anchor="middle" class="dsy-qk">🕋</text></g></g>' +
+      '<path d="M100 2l-8 13h16z" class="dsy-fix"/><circle cx="100" cy="100" r="5" class="dsy-hub"/></svg>';
+    var info = el("div", "dsy-kt", "অবস্থান খোঁজা হচ্ছে…"), sub = el("small", "dsy-ks", ""), btn = el("button", "dsy-kbtn", "কম্পাস চালু করুন"); btn.type = "button";
+    root.appendChild(info); root.appendChild(sub); root.appendChild(btn);
+    var dial = root.querySelector(".dsy-dial"), q = root.querySelector(".dsy-q");
+    var bearing = null, locName = "", heading = null, hs = null, on = false, raf = 0, gotSensor = false, chk = 0, locTried = false;
+    function rad(d) { return d * Math.PI / 180; }
+    function calc(la, ln) {
+      var f1 = rad(la), f2 = rad(KA[0]), dl = rad(KA[1] - ln);
+      var y = Math.sin(dl) * Math.cos(f2), x = Math.cos(f1) * Math.sin(f2) - Math.sin(f1) * Math.cos(f2) * Math.cos(dl);
+      bearing = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+      q.setAttribute("transform", "rotate(" + bearing.toFixed(1) + " 100 100)");
+      paint();
+    }
+    function paint() {
+      if (bearing == null) return;
+      var base = "কিবলা: উত্তর থেকে " + bn(Math.round(bearing)) + "° (ঘড়ির কাঁটার দিকে)";
+      if (heading == null) { info.textContent = base; sub.textContent = (locName ? locName + " · " : "") + (on ? "কম্পাস সেন্সরের সাড়া খোঁজা হচ্ছে…" : "ফোনের মাথা উত্তরে রেখে 🕋 তীরের দিকে ঘুরুন, বা কম্পাস চালু করুন"); root.classList.remove("ok"); return; }
+      var d = ((bearing - hs + 540) % 360) - 180, ok = Math.abs(d) <= 4;
+      info.textContent = ok ? "✔ আপনি কিবলার দিকে মুখ করে আছেন" : base;
+      sub.textContent = (locName ? locName + " · " : "") + (ok ? "" : "ফোন সমতলে ধরে 🕋 তীর ওপরে আনুন");
+      root.classList.toggle("ok", ok);
+    }
+    function frame() { raf = 0; if (heading == null) return; if (hs == null) hs = heading; else hs = (hs + ((((heading - hs) + 540) % 360) - 180) * 0.25 + 360) % 360; dial.setAttribute("transform", "rotate(" + (-hs).toFixed(1) + " 100 100)"); paint(); }
+    function onO(e) {
+      if (!root.isConnected) { stop(); return; }
+      var h = null;
+      if (e.webkitCompassHeading != null) h = e.webkitCompassHeading;
+      else if ((e.absolute || e.type === "deviceorientationabsolute") && e.alpha != null) h = (360 - e.alpha) % 360;
+      if (h == null || !isFinite(h)) return;
+      gotSensor = true; heading = h; if (!raf) raf = requestAnimationFrame(frame);
+    }
+    function loc() {
+      if (locTried) return; locTried = true;
+      var have = false;
+      try { var j = JSON.parse(localStorage.getItem("drw_loc")); if (j && isFinite(j.lat) && isFinite(j.lng)) { have = true; locName = "আপনার অবস্থান"; calc(+j.lat, +j.lng); } } catch (e) { }
+      var fb = function () { if (!have) { have = true; locName = "ঢাকা ধরে (অবস্থান পাওয়া যায়নি)"; calc(23.8103, 90.4125); } };
+      if (navigator.geolocation) navigator.geolocation.getCurrentPosition(function (p) { have = true; locName = "আপনার অবস্থান"; calc(p.coords.latitude, p.coords.longitude); }, fb, { timeout: 10000, maximumAge: 600000 }); else fb();
+    }
+    function listen() {
+      window.addEventListener("deviceorientationabsolute", onO, true); window.addEventListener("deviceorientation", onO, true);
+      clearTimeout(chk); chk = setTimeout(function () { if (!gotSensor && on) { sub.textContent = (locName ? locName + " · " : "") + "এই ফোনে কম্পাস সেন্সর পাওয়া যায়নি; উপরের কোণ দেখে দিক ঠিক করুন"; } }, 3500);
+    }
+    function start() {
+      loc();
+      if (on) return; on = true; btn.textContent = "কম্পাস বন্ধ করুন"; paint();
+      var DOE = window.DeviceOrientationEvent;
+      if (DOE && typeof DOE.requestPermission === "function") { DOE.requestPermission().then(function () { listen(); }).catch(function () { listen(); }); }
+      else listen();
+    }
+    function stop() {
+      on = false; btn.textContent = "কম্পাস চালু করুন"; clearTimeout(chk);
+      window.removeEventListener("deviceorientationabsolute", onO, true); window.removeEventListener("deviceorientation", onO, true);
+      heading = hs = null; gotSensor = false; dial.setAttribute("transform", "rotate(0 100 100)"); root.classList.remove("ok"); paint();
+    }
+    btn.onclick = function () { if (on) stop(); else start(); };
+    return { root: root, start: function () { loc(); start(); }, stop: stop };
+  }
+
+  /* ===== আজান (অটোমেটিক এলার্ম কার্ডের তৃতীয় ট্যাব): অনলাইন থেকে চলে (GitHub-এ রাখা অডিও); ফজরের আজানে "আস-সালাতু খাইরুম মিনান নাউম" থাকে ===== */
+  var AZ = [
+    { k: "fajr", n: "ফজরের আজান", s: "আস-সালাতু খাইরুম মিনান নাউমসহ", u: "https://raw.githubusercontent.com/AalianKhan/adhans/master/adhan_fajr.mp3" },
+    { k: "norm", n: "সাধারণ আজান", s: "যোহর · আসর · মাগরিব · ইশা", u: "https://raw.githubusercontent.com/AalianKhan/adhans/master/adhan.mp3" }
+  ];
+  function adhanPane() {
+    var root = el("div", "dsy-az"), au = new Audio(), cur = null, rows = {};
+    au.preload = "none";
+    AZ.forEach(function (x) {
+      var r = el("div", "dsy-azr"), t = el("div", "dsy-azt"), b = el("button", "dsy-azb"); b.type = "button";
+      t.appendChild(el("b", "", x.n)); var st = el("small", "", x.s); t.appendChild(st);
+      b.innerHTML = ICON_PLAY; b.setAttribute("aria-label", x.n + " চালান");
+      r.appendChild(t); r.appendChild(b); root.appendChild(r); rows[x.k] = { r: r, b: b, st: st, s0: x.s };
+      b.onclick = function () {
+        if (cur === x.k) { stop(); return; }
+        stop(); cur = x.k; rows[x.k].r.classList.add("on"); rows[x.k].b.innerHTML = ICON_STOP; rows[x.k].st.textContent = "লোড হচ্ছে…";
+        au.src = x.u; var p = au.play(); if (p && p.catch) p.catch(function () { if (cur === x.k) { rows[x.k].st.textContent = "চালানো যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"; reset(true); } });
+      };
+    });
+    function reset(keepMsg) { if (cur && rows[cur]) { var o = rows[cur]; o.r.classList.remove("on"); o.b.innerHTML = ICON_PLAY; if (!keepMsg) o.st.textContent = o.s0; } cur = null; }
+    function stop() { try { au.pause(); } catch (e) { } try { au.removeAttribute("src"); au.load(); } catch (e) { } reset(false); }
+    au.addEventListener("playing", function () { if (cur && rows[cur]) rows[cur].st.textContent = "চলছে…"; });
+    au.addEventListener("ended", function () { reset(false); });
+    au.addEventListener("error", function () { if (cur && rows[cur] && au.getAttribute("src")) { rows[cur].st.textContent = "অডিও লোড হয়নি — ইন্টারনেট দেখুন"; reset(true); } });
+    window.addEventListener("hashchange", function () { var h = location.hash; if (h && h !== "#" && h !== "#home" && h !== "#/home") stop(); });
+    return { root: root, stop: stop };
+  }
   /* হোম পাতার নিচের কার্ড: নিচের কার্ডের পরে, নেভিগেশন বারের উপরে */
   window.__drSysCard = function (H) {
     try {
       var grid = H.querySelector(".drq-grid") || H;
       if (grid.querySelector(".drq-sys")) return;
-      var sec = el("section", "drq-card drq-sys");
-      sec.appendChild(el("b", "dsy-h dsy-fit", "অটোমেটিক এলার্ম"));
-      var two = el("div", "dsy-two"); sec.appendChild(two);
-      var edHost = el("div", "dsy-edit"); edHost.hidden = true; sec.appendChild(edHost);
+      var sec = el("section", "drq-card drq-sys drq-tabcard");
+      /* ট্যাব: অটোমেটিক এলার্ম | কিবলা | আজান — বদনজর·জাদু·জিন কার্ডের মতোই (ট্যাব বদলানোর কাজ home.js-এর সাধারণ হ্যান্ডলারে) */
+      var tabs = el("h3", "drq-tabs dsy-tabs"); tabs.setAttribute("role", "tablist");
+      ["অটোমেটিক এলার্ম", "কিবলা", "আজান"].forEach(function (n, i) { var tb = el("button", "drq-tab" + (i ? "" : " on"), n); tb.type = "button"; tb.setAttribute("role", "tab"); tb.setAttribute("data-t", String(i)); tb.setAttribute("aria-selected", i ? "false" : "true"); tabs.appendChild(tb); });
+      sec.appendChild(tabs);
+      var p0 = el("div", "dsy-pane"); p0.setAttribute("data-pane", "0"); sec.appendChild(p0);
+      var two = el("div", "dsy-two"); p0.appendChild(two);
+      var edHost = el("div", "dsy-edit"); edHost.hidden = true; p0.appendChild(edHost);
+      var kb = kiblaPane(), az = adhanPane();
+      kb.root.setAttribute("data-pane", "1"); kb.root.hidden = true; sec.appendChild(kb.root);
+      az.root.setAttribute("data-pane", "2"); az.root.hidden = true; sec.appendChild(az.root);
+      tabs.addEventListener("click", function (e) {
+        var tb = e.target.closest && e.target.closest(".drq-tab"); if (!tb) return;
+        var k = tb.getAttribute("data-t"); if (k !== "2") az.stop(); if (k === "1") kb.start(); else kb.stop();
+      });
       [["baq", "সূরা বাকারা"], ["jadu", "জাদু রিনিউ বন্ধ"]].forEach(function (x) {
         var row = el("div", "dsy-row"); row.setAttribute("data-g", x[0]);
         var tx = el("div", "dsy-t"); tx.setAttribute("role", "button"); tx.tabIndex = 0;
