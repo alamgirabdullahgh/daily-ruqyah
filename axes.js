@@ -89,13 +89,13 @@ async function mount(R,slug,full,title){if(!R)return;
  if(!R.dataset.ready){if(R.__ld)return;R.__ld=1;R.textContent="";R.appendChild(el("div","ax-info","লোড হচ্ছে…"));
   try{await load()}catch(e){R.__ld=0;R.textContent="";const m=el("div","ax-info","চার্ট লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"),r=el("button","rs-more","আবার চেষ্টা");r.type="button";r.onclick=()=>mount(R,slug,full,title);R.append(m,r);return}
   R.textContent="";
-  if(full){R.appendChild(el("h2","ax-t",title||"সাতটি অক্ষ"));
-   R.appendChild(el("div","ax-intro","যেকোনো ঘরে চাপুন — সেই ঘরের মৌলিক আয়াত (মৌলিক অংশ মার্ক করা) এবং তার নিচে বাকি সব আয়াত দেখা যাবে।"))}
+  if(full){R.appendChild(el("h2","ax-t",title||"সাতটি অক্ষ"));}
   DATA.axes.forEach((g,gi)=>R.appendChild(buildGroup(gi,g)));
   R.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".ax-c");if(!b)return;if(b.classList.contains("on")){closePanel(R);return}
    openCell(b).then(()=>{const p=b.closest(".ax-g").querySelector(".ax-p");if(p&&p.getBoundingClientRect().top>innerHeight*.7)p.scrollIntoView({behavior:"smooth",block:"start"})}).catch(()=>{})});
   R.dataset.ready="1";R.__ld=0}
  closePanel(R);
+ if(full){const tt=R.querySelector(".ax-t");if(tt)tt.textContent=title||"সাতটি অক্ষ"}
  const sl=SLUG[slug]?slug:"";R.querySelectorAll(".ax-g").forEach(g=>{g.hidden=!!sl&&g.dataset.slug!==sl});
  requestAnimationFrame(()=>requestAnimationFrame(()=>fit(R)))}
 window.__drAxes=(slug,title)=>mount($("axBody"),slug,true,title);

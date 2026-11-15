@@ -1032,3 +1032,7 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:6px 0 3px}
 
 /* v105: ব্যানারের নিচের দিকের গাঢ় ছায়া-পর্দা (লেখার ব্যাকগ্রাউন্ড গ্রেডিয়েন্ট) সরানো; মসজিদ আগের মতো */
 .drq-hero-tx{background:none!important}
+
+/* v109: লক্ষণ ভিত্তিক / প্রতিক্রিয়া ভিত্তিক / চিকিৎসা পাতা — হেডিংয়ের মাথার সরু দাগ ও ব্যাকগ্রাউন্ড নেই, হেডিং একটু উপরে */
+#drSym #za>h2,#drSym #za .zs>h3,#drAxes .ax-t,#drAxes .zs>h3{background:transparent;border:0;border-top:0;border-radius:0;box-shadow:none;padding:0 10px 6px;margin:-8px 0 0}
+#drSym #za{padding-top:0}

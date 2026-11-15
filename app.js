@@ -1037,11 +1037,13 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
  const MENTAL={file:"quran-mental.json?v="+DV+"m1",title:"🧠 মানসিক সমস্যা ও সান্ত্বনার আয়াত",sq:"মানসিক সমস্যা",nm:"আয়াত",badge:["সরাসরি আছে","অর্থের মিল"],intro:null};
 
  /* ───── হোম: রোগীর তথ্য + পুরো রোগ নির্ণয় একসাথে; প্রতিটি আয়াতের পাশে টিক; নিচে WhatsApp-এ পাঠানো ───── */
- window.__drHomeF=f=>{const H=$("drHome"),M={nazar:"বদনজর",jadu:"জাদু",jin:"জিন"},c=M[f];if(!H)return;if(c)H.dataset.f=c;else delete H.dataset.f;const t=$("drHomeT");if(t)t.textContent=c?"🩺 রেসপন্স ডায়াগনোসিস":"🩺 রোগ নির্ণয় (ডায়াগনোসিস)"};
+ window.__drHomeF=f=>{const H=$("drHome"),M={nazar:"বদনজর",jadu:"জাদু",jin:"জিন"},c=M[f];if(!H)return;if(c)H.dataset.f=c;else delete H.dataset.f;const t=$("drHomeT");if(t)t.textContent=c?"🩺 প্রতিক্রিয়া ভিত্তিক রোগ নির্ণয়":"🩺 রোগ নির্ণয় (ডায়াগনোসিস)"};
  {let built=false;const SEL=new Map();
   window.__drHome=()=>{if(built)return;built=true;const H=$("drHome");if(!H)return;
    H.innerHTML="";const lg=k=>lsGet(k,"");
    {const t0=els("div","font-weight:800;font-size:18px;color:var(--primary);margin:4px 2px 10px","🩺 রোগ নির্ণয় (ডায়াগনোসিস)");t0.id="drHomeT";H.appendChild(t0)}
+   /* আগের "চিকিৎসা" অপশনে যা আসত (বদনজর·জাদু·জিনের চিকিৎসা ও আমল) এখন আমলের ভেতরে */
+   {const tr=els("div","display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px");[["বদনজরের চিকিৎসা","nazar"],["জাদুর চিকিৎসা","#amol/b2b"],["জিনের চিকিৎসা","#amol/b1a"],["সব চিকিৎসা ও আমল","#amol/all"]].forEach(([l,h])=>{const a=els("a","flex:1 1 45%;text-align:center;padding:10px 8px;border:1px solid var(--border-light);border-radius:14px;background:var(--card-bg);color:var(--primary);font-weight:800;text-decoration:none;font-size:15px",l);if(h==="nazar"){a.href="#search";a.onclick=e=>{e.preventDefault();location.hash="#search";setTimeout(()=>window.__drOpenTopic&&window.__drOpenTopic("বদনজর"),90)}}else a.href=h;tr.appendChild(a)});H.appendChild(tr)}
    const card=els("div","display:flex;gap:8px;padding:10px;border:1px solid var(--border-light);border-radius:16px;background:var(--card-bg);margin:0 0 12px");
    
    const nm=document.createElement("input"),ph=document.createElement("input");
@@ -1307,7 +1309,8 @@ function drShell(){
   if(p[0]==="timewidget"){window.DRALARM&&DRALARM.openWidget();location.hash="#"+lastH;return}
   let key="search";
   if(p[0]==="home"&&ln){key="home";box.hidden=true;rd.hidden=true;ln.hidden=false;window.__drLanding&&window.__drLanding();window.scrollTo(0,0)}
-  else if(p[0]==="resp"&&ax){key="resp";box.hidden=true;rd.hidden=true;ax.hidden=false;window.__drAxes&&window.__drAxes(p[1]||"","রেসপন্স ডায়াগনোসিস");window.scrollTo(0,0)}
+  else if(p[0]==="resp"&&ax){key="resp";box.hidden=true;rd.hidden=true;ax.hidden=false;window.__drAxes&&window.__drAxes(p[1]||"","প্রতিক্রিয়া ভিত্তিক রোগ নির্ণয়");window.scrollTo(0,0)}
+  else if(p[0]==="treat"&&ax){key="treat";box.hidden=true;rd.hidden=true;ax.hidden=false;window.__drAxes&&window.__drAxes(p[1]||"","চিকিৎসা");window.scrollTo(0,0)}
   else if(p[0]==="amal"&&hm){key="amal";box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.__drHomeF&&window.__drHomeF("");window.scrollTo(0,0)}
   else if((p[0]==="resp"||p[0]==="home")&&hm){key=p[0];box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.__drHomeF&&window.__drHomeF(p[0]==="resp"?p[1]:"");window.scrollTo(0,0)}
   else if(p[0]==="diag"&&sy){key="diag";box.hidden=true;rd.hidden=true;sy.hidden=false;if(window.__drSymInit&&!window.__drSymDone){window.__drSymDone=1;window.__drSymInit()}window.__drSymF&&window.__drSymF(p[1]||"");window.scrollTo(0,0)}

@@ -9,7 +9,7 @@ window.__drSymDoc=g=>{const out=[];T.forEach((t,i)=>{if(g>=0&&i!==g)return;const
 if(docOnly)return;
 $("zd").innerHTML="";
 $("zt").innerHTML=T.map((t,i)=>`<section class="zs" data-g="${i}"><h3>${t[0]}</h3><table><tr>${cols.map(c=>`<th>${c}</th>`).join("")}</tr><tr>${t[1].map((l,c)=>`<td>${l.map((n,o)=>`<span class="zo" data-i="${i}.${c}.${o}">${n}</span>`).join("")}</td>`).join("")}</tr></table><div class="zg" id="zg${i}"></div></section>`).join("");
-const SLUG={nazar:0,jadu:1,jin:2};window.__drSymF=f=>{const g=f in SLUG?SLUG[f]:-1,h=document.querySelector("#za>h2");document.querySelectorAll(".zs").forEach(x=>{x.hidden=g>=0&&+x.dataset.g!==g});if(h)h.textContent=g>=0?"সিমটম ডায়াগনোসিস":"Symptom Diagnosis (গবেষণা সংস্করণ)"};
+const SLUG={nazar:0,jadu:1,jin:2};window.__drSymF=f=>{const g=f in SLUG?SLUG[f]:-1,h=document.querySelector("#za>h2");document.querySelectorAll(".zs").forEach(x=>{x.hidden=g>=0&&+x.dataset.g!==g});if(h)h.textContent="লক্ষণ ভিত্তিক রোগ নির্ণয়"};
 function X(k){let a=R[k];if(!a)return"";a=a.map(q);return`<div class="zx"><b>${a[0]}</b><ul>${a.slice(1).map(t=>t[0]=="#"?`</ul><b>${t.slice(1)}</b><ul>`:`<li>${t.replace(/^([^:]{1,25}):/,"<u>$1:</u>")}</li>`).join("")}</ul></div>`}
 function B(i,c,o){const d=q(D[i][c][o]),f=d[0],k=ch[i+"."+c],u=k&&k[0]==o?k[1]:-1,a=`data-i="${i}.${c}.${o}"`;
 let h=`<div style="font-size:11px;font-weight:700;margin-bottom:3px">${cols[c]} → ${T[i][1][c][o]} <span class="zk">(একটি সারিতে ক্লিক করে বেছে নিন)</span></div>`;
@@ -22,5 +22,4 @@ if(n.dataset.l!=null){const l=+n.dataset.l;if(ch[k]&&ch[k][0]==o&&ch[k][1]==l)de
 const w=n.classList.contains("zn");document.querySelectorAll(".zn").forEach(x=>x.classList.remove("zn"));document.querySelectorAll(".zg").forEach(x=>{x.style.display="none";x.innerHTML=""});
 if(!w){n.classList.add("zn");b.innerHTML=B(i,c,o);b.style.display="block"}});
 document.querySelectorAll(".zo").forEach(x=>{x.style.whiteSpace="nowrap";let s=10;while(x.scrollWidth>x.clientWidth&&s>4){s-=.5;x.style.fontSize=s+"px"}x.style.whiteSpace=""});
-const ta=$("zi"),st=$("zu");try{ta.value=localStorage.getItem(K)||""}catch(_){}
-$("zb").onclick=()=>{try{localStorage.setItem(K,ta.value);st.textContent="সংরক্ষিত ✓ (এই ব্রাউজারে)"}catch(_){st.textContent="সংরক্ষণ ব্যর্থ"}}};
+};
