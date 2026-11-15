@@ -93,32 +93,41 @@ function fit(R){const rows=[...R.querySelectorAll(".ax-g:not([hidden]) .ax-ro")]
  if(hs.length){let s=15;hs.forEach(h=>h.style.fontSize=s+"px");while(s>6&&hs.some(h=>h.scrollWidth>h.clientWidth)){s-=.25;hs.forEach(h=>h.style.fontSize=s+"px")}}}
 
 /* ===== হেডিংয়ের পাশের অডিও: ওই বিষয়ের ঘরগুলো ক্রমানুসারে (ধরন → মুগ্ধতা, হিংসা → উৎস …) এই পাতাতেই বাজে; যে ঘর বাজছে সেখানে জ্বলজ্বলে ফোঁটা ===== */
-function regCell(gi,ci,oi){const key=gi+"."+ci+"."+oi,C=DATA.cells[key],G=DATA.axes[gi];if(!C||!window.__drXKeys)return null;
- const cat="অক্ষ "+G.name+" "+G.cols[ci].name+" "+G.cols[ci].opts[oi],seen=new Set(),ks=[];
+function regCell(gi,ci,oi){const key=gi+"."+ci+"."+oi,C=DATA.cells[key],G=DATA.axes[gi];if(!C)return null;
+ const seen=new Set(),ks=[];
  [...C.b.map(r=>[r[0],r[1]]),...C.m.map(v=>{const p=v.split(":").map(Number);return[p[0],p[1]]})].forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);ks.push(k)}});
- if(!ks.length)return null;window.__drXKeys(cat,ks);return cat}
-function stopPlay(R){const st=R&&R.__pl;if(!st)return;st.stop=true;R.__pl=null;try{st.a&&st.a.pause()}catch(e){}st.res&&st.res();
+ return ks.length?{ks}:null}
+function stopPlay(R){const st=R&&R.__pl;if(!st)return;st.stop=true;R.__pl=null;try{if(st.a){st.a.pause();st.a.ontimeupdate=st.a.onended=st.a.onplay=null}}catch(e){}
  R.querySelectorAll(".ax-now").forEach(x=>x.classList.remove("ax-now"));R.querySelectorAll(".ax-live").forEach(x=>x.remove());
  R.querySelectorAll(".ax-ga.on").forEach(b=>{b.classList.remove("on");b.textContent="🔊"})}
+/* একটি হেডিংয়ের সব ঘরের আয়াত একটাই অডিওতে জোড়া (একবার হলে মনে থাকে, দ্বিতীয়বার সাথে সাথে বাজে) */
+function gMerge(R,gi,G,list){R.__gm=R.__gm||{};if(R.__gm[gi])return R.__gm[gi];
+ const ent={out:el("div"),marks:null,note:()=>{}};
+ ent.p=(async()=>{await window.__drGroupAudio(list,ent.out,t=>ent.note(t),G.name+" সব",m=>{ent.marks=m});if(!ent.out.querySelector("audio"))throw new Error("noaudio");return ent})().catch(e=>{delete R.__gm[gi];throw e});
+ R.__gm[gi]=ent;return ent}
 async function playGroup(R,sec,gi,btn){const same=R.__pl&&R.__pl.gi===gi;stopPlay(R);if(same)return;
- const G=DATA.axes[gi],list=[];
- G.cols.forEach((c,ci)=>c.opts.forEach((n,oi)=>{if(n==="উভয়")return;const cat=regCell(gi,ci,oi);if(cat)list.push({cat,name:c.name+" › "+n,b:sec.querySelector('.ax-c[data-k="'+gi+"."+ci+"."+oi+'"]')})}));
+ if(!window.__drGroupAudio)return;
+ const G=DATA.axes[gi],list=[],cells=[];
+ G.cols.forEach((c,ci)=>c.opts.forEach((n,oi)=>{if(n==="উভয়")return;const r=regCell(gi,ci,oi);if(!r)return;const from=list.length;r.ks.forEach(k=>list.push(k));cells.push({b:sec.querySelector('.ax-c[data-k="'+gi+"."+ci+"."+oi+'"]'),name:c.name+" › "+n,from,to:list.length})}));
  if(!list.length)return;
- const st={gi,stop:false,a:null,res:null};R.__pl=st;btn.classList.add("on");btn.textContent="⏹";
- const bar=el("div","ax-live"),tx=el("div","ax-lt"),hostBox=el("div");bar.append(tx,hostBox);const h3=sec.querySelector("h3");h3.after(bar);
- R.__hosts=R.__hosts||{};
- for(let i=0;i<list.length&&!st.stop;i++){const it=list[i];
-  R.querySelectorAll(".ax-now").forEach(x=>x.classList.remove("ax-now"));if(it.b){it.b.classList.add("ax-now");const r=it.b.getBoundingClientRect();if(r.top<60||r.bottom>innerHeight-60)it.b.scrollIntoView({behavior:"smooth",block:"center"})}
-  tx.textContent="▶ "+G.name+" › "+it.name+"  ("+bn2(i+1)+"/"+bn2(list.length)+")";
-  let host=R.__hosts[it.cat];if(!host)host=R.__hosts[it.cat]=el("div");
-  hostBox.textContent="";hostBox.appendChild(host);
-  let a=null;
-  try{if(host.dataset.done==="1"){a=host.querySelector("audio");if(a){a.currentTime=0;await a.play().catch(()=>{})}}
-   else{await window.__drHomeAudio("x",it.cat,host);a=host.querySelector("audio")}}catch(e){a=null}
-  if(st.stop)return;
-  if(!a)continue;
-  st.a=a;await new Promise(res=>{st.res=res;a.onended=res;a.onerror=res});a.onended=a.onerror=null;st.res=null}
- if(!st.stop)stopPlay(R)}
+ const st={gi,stop:false,a:null};R.__pl=st;btn.classList.add("on");btn.textContent="⏹";
+ const bar=el("div","ax-live"),tx=el("div","ax-lt"),nt=el("div","ax-ln"),hb=el("div");bar.append(tx,nt,hb);sec.querySelector("h3").after(bar);
+ tx.textContent="▶ "+G.name+" — সব "+bn2(cells.length)+"টি ঘর একসাথে";nt.textContent="⏳ অডিও প্রস্তুত হচ্ছে…";
+ const ent=gMerge(R,gi,G,list);ent.note=t=>{if(R.__pl===st)nt.textContent="⏳ "+t};
+ try{await ent.p}catch(e){console.error(e);if(R.__pl===st){nt.textContent="অডিও তৈরি করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";btn.classList.remove("on");btn.textContent="🔊";R.__pl=null}return}
+ if(st.stop||R.__pl!==st)return;
+ nt.remove();hb.appendChild(ent.out);
+ const a=ent.out.querySelector("audio");let mk=ent.marks||[];st.a=a;
+ const cellOf=i=>{for(let k=0;k<cells.length;k++)if(i>=cells[k].from&&i<cells[k].to)return k;return -1};
+ let cur=-2;
+ const upd=()=>{if(!mk.length&&a.duration)mk=list.map((_,i)=>({i,t:(i+1)/list.length*a.duration}));if(!mk.length)return;
+  const t=a.currentTime+.03;let k=mk.findIndex(m=>m.t>t);if(k<0)k=mk.length-1;const c=cellOf(mk[k].i);if(c<0||c===cur)return;cur=c;
+  R.querySelectorAll(".ax-now").forEach(x=>x.classList.remove("ax-now"));const C=cells[c];
+  if(C.b){C.b.classList.add("ax-now");const r=C.b.getBoundingClientRect();if(r.top<60||r.bottom>innerHeight-60)C.b.scrollIntoView({behavior:"smooth",block:"center"})}
+  tx.textContent="▶ "+G.name+" › "+C.name+"  ("+bn2(c+1)+"/"+bn2(cells.length)+")"};
+ a.ontimeupdate=upd;a.onplay=upd;a.onended=()=>{if(R.__pl===st)stopPlay(R)};
+ try{a.currentTime=0;await a.play()}catch(e){}
+ upd()}
 
 const SLUG={nazar:1,jadu:1,jin:1};
 /* R = চার্ট বসানোর ঘর: #axBody (পুরো পাতা, শিরোনামসহ) অথবা হোমের ট্যাবের ভেতরের .ax-home (শুধু চার্ট) */

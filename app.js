@@ -305,23 +305,24 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=(s,
  // কোনো সীমা নেই: প্রতিটি আয়াত নামিয়েই সাথে সাথে MP3-তে এনকোড হয়, মেমোরিতে শুধু ছোট MP3 টুকরো জমে — তাই হাজারো আয়াতেও একটাই ফাইল
  out.textContent="";let L=null;try{L=await loadLame()}catch(e){console.error(e)}
  if(!L){note("MP3 বানানোর লাইব্রেরি পাওয়া যায়নি (ইন্টারনেট দেখুন), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");playList(ST()>1?Array.from({length:ST()},()=>list).flat():list,out);return}
- const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));AS.loc=AS.net=0;let pool=null;try{pool=await mkEncPool()}catch(e){console.error(e);pool=null}const jobs=[],marks=[],memo=new Map(),MK=x=>x[0]+":"+x[1];
+ const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));AS.loc=AS.net=0;let pool=null;try{pool=await mkEncPool()}catch(e){console.error(e);pool=null}const jobs=[],marks=[],oi=[],memo=new Map(),MK=x=>x[0]+":"+x[1];
  let wl=null;try{wl=await navigator.wakeLock.request("screen")}catch(e){}
  const push=pcm=>{for(let i=0;i<pcm.length;i+=B){const m=enc.encodeBuffer(pcm.subarray(i,i+B));if(m.length)mp3.push(new Uint8Array(m))}};
  const W=14,pf=[],get=i=>pf[i]||(pf[i]=fetchAud(list[i][0],list[i][1]).then(ab=>ab?ctx.decodeAudioData(ab).then(d=>({d}),()=>({err:1})):null).catch(()=>null));/* সামনের ১৪টি আয়াত একসাথে আনা ও ডিকোড হয় (আগে ৪টি, ডিকোড ক্রমে); এনকোডার ওয়ার্কারগুলো তাই বসে থাকে না */let ok=0,bad=0,cutN=0;
  for(let i=0;i<list.length;i++){for(let j=i;j<Math.min(i+W,list.length);j++)if(!(opt&&opt.memo&&memo.has(MK(list[j]))))get(j);
-  if(opt&&opt.memo&&pool&&memo.has(MK(list[i]))){jobs.push(memo.get(MK(list[i])));ok++;if(i%200===0){note("অডিও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+"…");await new Promise(r=>setTimeout(r))}continue}
+  if(opt&&opt.memo&&pool&&memo.has(MK(list[i]))){jobs.push(memo.get(MK(list[i])));oi.push(i);ok++;if(i%200===0){note("অডিও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+"…");await new Promise(r=>setTimeout(r))}continue}
   note("অডিও প্রস্তুত ও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+(bad?" (বাদ: "+bn2(bad)+")":"")+"…");
   const dr=await get(i);pf[i]=null;
   if(!dr){bad++;if(!ok&&bad>=5)break;continue}
   try{if(dr.err)throw 0;const d=dr.d,ch=d.getChannelData(0),pcm=smoothAyah(tsm(ch,sr,spdOf()),sr),rp=RP(list[i][0],list[i][1]);
     if(pool){const fl=new Int16Array(pcm.length+gap.length);fl.set(pcm);fl.set(gap,pcm.length);await pool.room();{const jb={p:pool.run(fl,sr),pcm:fl,rp};jobs.push(jb);if(opt&&opt.memo)memo.set(MK(list[i]),jb)}}else{for(let q=0;q<rp;q++){push(pcm);push(gap)}marks.push(mp3.length)}
-    ok++}catch(e){bad++;if(!ok&&bad>=5)break}
+    oi.push(i);ok++}catch(e){bad++;if(!ok&&bad>=5)break}
   if(i%10===0)await new Promise(r=>setTimeout(r))}
  try{ctx.close()}catch(x){}try{wl&&wl.release()}catch(x){}
  if(pool){note("MP3 ফাইল শেষ করা হচ্ছে…");for(const j of jobs){let c=await j.p;if(!c)c=encMain(L,j.pcm,sr);for(let q=0;q<j.rp;q++)mp3.push(c);marks.push(mp3.length)}pool.close()}
  if(!ok){console.error("merge failed");note("একটা ফাইলে জোড়া লাগানো যায়নি (অডিও সার্ভার ফাইল দিতে দেয়নি), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");out.textContent="";playList(ST()>1?Array.from({length:ST()},()=>list).flat():list,out);return}
  if(!pool){const f=enc.flush();if(f.length)mp3.push(new Uint8Array(f))}if(opt&&opt.grp&&marks.length){/* জোড়া-পুনরাবৃত্তি: প্রতি opt.grp টি আয়াতের দল (যেমন বদনজরের ১টি + অঙ্গের ১টি) পরপর opt.grpRep বার */marks[marks.length-1]=mp3.length;const nm=[],g=opt.grp,gr=opt.grpRep||11;for(let s=0;s<marks.length;s+=g){const from=s?marks[s-1]:0,to=marks[Math.min(s+g,marks.length)-1],seg=mp3.slice(from,to);for(let q=0;q<gr;q++)for(const c of seg)nm.push(c)}mp3.length=0;for(const c of nm)mp3.push(c)}
+ if(opt&&opt.onmarks){try{const pb=[0];for(const c of mp3)pb.push(pb[pb.length-1]+c.length);opt.onmarks(marks.map((m,k)=>({i:oi[k],t:pb[Math.min(m,mp3.length)]*8/64000})).filter(x=>x.i!=null))}catch(e){console.error(e)}}
  const SR=ST(),parts=[];for(let q=0;q<SR;q++)for(const c of mp3)parts.push(c);const blob=new Blob(parts,{type:"audio/mpeg"}),ext="mp3";
  const url=URL.createObjectURL(blob),au=document.createElement("audio");au.controls=true;au.src=url;au.style.cssText="display:block;width:100%;margin-top:8px";
  const FN=(String((opt&&opt.name)||window.__sq||"").trim().replace(/\s*[,،，、]\s*/g,"-").replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g,"_").replace(/^[-_.]+|[-_.]+$/g,"").slice(0,60)||"quran-audio")+"."+ext;window.__lastFN=FN;const dl=els("a","display:none;pointer-events:none;flex-direction:column;align-items:center;gap:1px;flex:none;margin:0;padding:6px 12px;border-radius:12px;font-size:13px;background:var(--primary);color:#fff;text-decoration:none;font-weight:600;line-height:1.3","");dl.href=url;{const t1=document.createElement("span"),t2=document.createElement("span");t1.textContent="⬇ Download";t2.textContent=(Math.round(blob.size/1048576*10)/10)+" MB";t2.style.cssText="font-size:12px;font-weight:400;opacity:.9";dl.append(t1,t2)}dl.download=FN;dl.setAttribute("aria-hidden","true");dl.tabIndex=-1;dl.onclick=e=>{e.preventDefault();e.stopPropagation()};{const row=els("div","display:flex;align-items:center;gap:8px;margin-top:8px"),sh=document.createElement("button");au.style.cssText="flex:1 1 0;min-width:0;width:100%;margin:0";sh.type="button";sh.title="শেয়ার";sh.setAttribute("aria-label","শেয়ার");sh.style.cssText="flex:none;width:42px;height:42px;border-radius:50%;border:0;background:var(--primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0";
@@ -859,6 +860,8 @@ window.__drHomePdf=async(kind,cat,host)=>{
  finally{host.dataset.busy="0"}
 };
 /* অডিও: চাপলেই সাথে সাথে বাজে (আয়াত একটার পর একটা, নির্ধারিত পুনরাবৃত্তিসহ); পাশাপাশি পেছনে একটি ফাইল জোড়া হয় — তৈরি হলে নিচে প্লেয়ার, শেয়ার ও ডাউনলোড আসে */
+/* একটি হেডিংয়ের সব ঘরের আয়াত একটাই অডিও ফাইলে (প্রতিটি ঘরের আয়াত পরপর, প্রতিটি ৩ বার); cb তে প্রতিটি আয়াতের শেষ-সময় (সেকেন্ড) আসে, যাতে বাজার সময় কোন ঘর চলছে বোঝা যায় */
+window.__drGroupAudio=(list,out,note,name,cb)=>mergeAudio(list,out,note,{rep:3,set:1,noplay:true,name,onmarks:cb});
 window.__drHomeAudio=async(kind,cat,host)=>{
  if(!host)return;
  if(host.dataset.done==="1"){host.hidden=!host.hidden;return}
