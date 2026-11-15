@@ -305,7 +305,7 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=(s,
  // কোনো সীমা নেই: প্রতিটি আয়াত নামিয়েই সাথে সাথে MP3-তে এনকোড হয়, মেমোরিতে শুধু ছোট MP3 টুকরো জমে — তাই হাজারো আয়াতেও একটাই ফাইল
  out.textContent="";let L=null;try{L=await loadLame()}catch(e){console.error(e)}
  if(!L){note("MP3 বানানোর লাইব্রেরি পাওয়া যায়নি (ইন্টারনেট দেখুন), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");playList(ST()>1?Array.from({length:ST()},()=>list).flat():list,out);return}
- const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));AS.loc=AS.net=0;let pool=null;try{pool=await mkEncPool()}catch(e){console.error(e);pool=null}const jobs=[],marks=[],oi=[],memo=new Map(),MK=x=>x[0]+":"+x[1];
+ const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));AS.loc=AS.net=0;let pool=null;try{pool=await mkEncPool()}catch(e){console.error(e);pool=null}const jobs=[],marks=[],oi=[],memo=(opt&&opt.memoMap)||new Map(),MK=x=>x[0]+":"+x[1];
  let wl=null;try{wl=await navigator.wakeLock.request("screen")}catch(e){}
  const push=pcm=>{for(let i=0;i<pcm.length;i+=B){const m=enc.encodeBuffer(pcm.subarray(i,i+B));if(m.length)mp3.push(new Uint8Array(m))}};
  const W=14,pf=[],get=i=>pf[i]||(pf[i]=fetchAud(list[i][0],list[i][1]).then(ab=>ab?ctx.decodeAudioData(ab).then(d=>({d}),()=>({err:1})):null).catch(()=>null));/* সামনের ১৪টি আয়াত একসাথে আনা ও ডিকোড হয় (আগে ৪টি, ডিকোড ক্রমে); এনকোডার ওয়ার্কারগুলো তাই বসে থাকে না */let ok=0,bad=0,cutN=0;
@@ -319,7 +319,7 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=(s,
     oi.push(i);ok++}catch(e){bad++;if(!ok&&bad>=5)break}
   if(i%10===0)await new Promise(r=>setTimeout(r))}
  try{ctx.close()}catch(x){}try{wl&&wl.release()}catch(x){}
- if(pool){note("MP3 ফাইল শেষ করা হচ্ছে…");for(const j of jobs){let c=await j.p;if(!c)c=encMain(L,j.pcm,sr);for(let q=0;q<j.rp;q++)mp3.push(c);marks.push(mp3.length)}pool.close()}
+ if(pool){note("MP3 ফাইল শেষ করা হচ্ছে…");for(const j of jobs){let c=await j.p;if(!c)c=encMain(L,j.pcm,sr);else if(opt&&opt.memoMap)j.pcm=null;for(let q=0;q<j.rp;q++)mp3.push(c);marks.push(mp3.length)}pool.close()}
  if(!ok){console.error("merge failed");note("একটা ফাইলে জোড়া লাগানো যায়নি (অডিও সার্ভার ফাইল দিতে দেয়নি), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");out.textContent="";playList(ST()>1?Array.from({length:ST()},()=>list).flat():list,out);return}
  if(!pool){const f=enc.flush();if(f.length)mp3.push(new Uint8Array(f))}if(opt&&opt.grp&&marks.length){/* জোড়া-পুনরাবৃত্তি: প্রতি opt.grp টি আয়াতের দল (যেমন বদনজরের ১টি + অঙ্গের ১টি) পরপর opt.grpRep বার */marks[marks.length-1]=mp3.length;const nm=[],g=opt.grp,gr=opt.grpRep||11;for(let s=0;s<marks.length;s+=g){const from=s?marks[s-1]:0,to=marks[Math.min(s+g,marks.length)-1],seg=mp3.slice(from,to);for(let q=0;q<gr;q++)for(const c of seg)nm.push(c)}mp3.length=0;for(const c of nm)mp3.push(c)}
  if(opt&&opt.onmarks){try{const pb=[0];for(const c of mp3)pb.push(pb[pb.length-1]+c.length);opt.onmarks(marks.map((m,k)=>({i:oi[k],t:pb[Math.min(m,mp3.length)]*8/64000})).filter(x=>x.i!=null))}catch(e){console.error(e)}}
@@ -863,7 +863,9 @@ window.__drHomePdf=async(kind,cat,host)=>{
 };
 /* অডিও: চাপলেই সাথে সাথে বাজে (আয়াত একটার পর একটা, নির্ধারিত পুনরাবৃত্তিসহ); পাশাপাশি পেছনে একটি ফাইল জোড়া হয় — তৈরি হলে নিচে প্লেয়ার, শেয়ার ও ডাউনলোড আসে */
 /* একটি হেডিংয়ের সব ঘরের আয়াত একটাই অডিও ফাইলে (প্রতিটি ঘরের আয়াত পরপর, প্রতিটি ৩ বার); cb তে প্রতিটি আয়াতের শেষ-সময় (সেকেন্ড) আসে, যাতে বাজার সময় কোন ঘর চলছে বোঝা যায় */
-window.__drGroupAudio=(list,out,note,name,cb)=>mergeAudio(list,out,note,{rep:3,set:1,noplay:true,name,onmarks:cb});
+const AXM=new Map(); /* আয়াত→এনকোড-করা MP3 টুকরো: ঘর, সারি ও হেডিংয়ের অডিও একই আয়াত বারবার এনকোড করে না */
+window.__drGroupAudio=(list,out,note,name,cb)=>mergeAudio(list,out,note,{rep:3,set:1,noplay:true,name,onmarks:cb,memo:true,memoMap:AXM});
+window.__drHomePdfPre=cat=>homePdf("x",cat);
 window.__drHomeAudio=async(kind,cat,host)=>{
  if(!host)return;
  if(host.dataset.done==="1"){host.hidden=!host.hidden;return}
