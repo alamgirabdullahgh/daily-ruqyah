@@ -1107,3 +1107,6 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:6px 0 3px}
 .ax-root .ax-ro:has(>.ax-cw:nth-child(3)) .ax-cb{width:100%}
 .ax-root .ax-ro:has(>.ax-cw:nth-child(3)) .ax-cb .ax-mb{flex:1 1 0;width:auto;min-height:24px;height:24px;flex-direction:row;gap:2px;font-size:9px;white-space:nowrap;border-radius:8px}
 .ax-root .ax-ro:has(>.ax-cw:nth-child(3)) .ax-cb .ax-mb::first-line{font-size:9px}
+/* v119: দুই ঘরের সারি — হুবহু দৈনন্দিন রুকইয়াহ কার্ডের মতো: [PDF][অডিও][নাম১]  [নাম২][PDF][অডিও] */
+.ax-root .ax-ro:not(.ax-3)>.ax-cw:first-child .ax-cb{order:-1}
+.ax-root .ax-ro:has(>.ax-cw:nth-child(3))>.ax-cw:first-child .ax-cb{order:0}

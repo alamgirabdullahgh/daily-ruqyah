@@ -845,50 +845,26 @@ window.__drHomePrebuild=async()=>{if(HPRE)return;HPRE=true;
   try{await homeAudio("x",cat).p}catch(e){console.error(e)}
   await new Promise(r=>setTimeout(r,300))}
  for(const k of["বদনজর","জাদু","জিন"]){const n=window.__drGitCount?window.__drGitCount(k):1;for(let i=0;i<n;i++){try{await window.__drGitAudio(k,i?String(i-1):"").p}catch(e){console.error(e)}await new Promise(r=>setTimeout(r,300))}}};
-window.__drHomePdf=async(kind,cat,host)=>{
- if(!host)return;
- if(host.dataset.done==="1"){host.hidden=!host.hidden;return}
- if(host.dataset.busy==="1")return;
- host.hidden=false;host.textContent="";host.dataset.busy="1";
- const note=els("div","font-size:12.5px;color:var(--text-muted);margin:2px 0");host.append(note);note.textContent="⏳ PDF প্রস্তুত হচ্ছে…";
- try{
-  const r=await homePdf(kind,cat,t=>note.textContent=t);
-  note.textContent="✅ "+bn2(r.N)+" পৃষ্ঠার PDF";
-  const row=els("div","display:flex;gap:6px;margin:4px 0"),dl=mkBtn("⬇ PDF ডাউনলোড",()=>saveBlob(r.pdf,r.nm)),shp=mkBtn("📤 শেয়ার",()=>shareBlob(r.pdf,r.nm));dl.style.margin="0";shp.style.margin="0";row.append(dl,shp);
-  const pg=els("div","max-height:62vh;overflow:auto;border:1px solid var(--border-light);border-radius:10px;background:#fff");
-  r.imgs.forEach(u8=>{const im=document.createElement("img");im.loading="lazy";im.style.cssText="display:block;width:100%;height:auto";im.src=URL.createObjectURL(new Blob([u8],{type:"image/jpeg"}));pg.appendChild(im)});
-  host.append(row,pg);host.dataset.done="1";
- }catch(e){console.error(e);note.textContent=/empty/.test(String(e&&e.message))?"এখানে এখনো কিছু যোগ করা হয়নি":"PDF বানানো যায়নি — ইন্টারনেট দেখে আবার চাপুন"}
- finally{host.dataset.busy="0"}
-};
+/* ===== অডিও/PDF বাটন: পাতার সাজ একটুও বদলায় না। তৈরির অগ্রগতি নিচে ভাসমান একটি বক্সে (dock) দেখায়; তৈরি হলে নিজে ডাউনলোড হয়, বক্সে শেয়ার/প্লেয়ার/(PDF-এ) দেখার বোতাম থাকে ===== */
+const dockEl=()=>{let d=document.getElementById("drDock");if(!d){d=els("div","position:fixed;left:8px;right:8px;bottom:calc(68px + env(safe-area-inset-bottom,0px));z-index:9999;background:var(--card-bg,#fff);border:1.5px solid var(--primary);border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.28);padding:10px 12px;max-height:68vh;overflow:auto");d.id="drDock";document.body.appendChild(d)}return d};
+const dockOpen=title=>{const d=dockEl();d.hidden=false;d.textContent="";const hd=els("div","display:flex;align-items:center;gap:8px;margin-bottom:4px"),t=els("div","flex:1;min-width:0;font-weight:800;color:var(--primary);font-size:14px",title||""),x=mkBtn("✕",()=>{d.hidden=true;d.textContent=""});x.style.cssText+=";flex:none;margin:0;padding:2px 10px;width:auto";hd.append(t,x);const n=els("div","font-size:13px;color:var(--text-muted);margin:2px 0"),body=el("div");d.append(hd,n,body);return{n,body}};
+const dockName=(cat,kind)=>String(cat||kind||"file").split("|").pop().trim().replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g,"_").slice(0,60)||"file";
+window.__drDockSave=async(kind,cat,job)=>{const title=String(cat||"").split("|").pop().trim(),ctx=dockOpen(title),isP=kind==="pdf";ctx.n.textContent="⏳ প্রস্তুত হচ্ছে…";
+ let r;try{r=await job(t=>{ctx.n.textContent=t})}catch(e){console.error(e);ctx.n.textContent=/empty/.test(String(e&&e.message))?"এখানে এখনো কিছু যোগ করা হয়নি":(isP?"PDF বানানো যায়নি":"অডিও তৈরি করা যায়নি")+" — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
+ const {blob,name}=r;ctx.n.textContent="✅ তৈরি হয়েছে, ডাউনলোড হচ্ছে…";
+ try{await saveBlob(blob,name);ctx.n.textContent="✅ ডাউনলোড হয়েছে — "+name}catch(e){console.error(e);ctx.n.textContent="⚠ নিজে ডাউনলোড হয়নি, নিচের বোতাম চাপুন"}
+ const row=els("div","display:flex;gap:6px;margin-top:6px"),dl=mkBtn("⬇ আবার ডাউনলোড",()=>saveBlob(blob,name)),sh=mkBtn("📤 শেয়ার",()=>shareBlob(blob,name));dl.style.margin=sh.style.margin="0";row.append(dl,sh);
+ if(r.imgs){const pg=els("div","max-height:45vh;overflow:auto;border:1px solid var(--border-light);border-radius:10px;background:#fff;margin-top:6px");pg.hidden=true;r.imgs.forEach(u8=>{const im=document.createElement("img");im.loading="lazy";im.style.cssText="display:block;width:100%;height:auto";im.src=URL.createObjectURL(new Blob([u8],{type:"image/jpeg"}));pg.appendChild(im)});const vw=mkBtn("👁 দেখুন",()=>{pg.hidden=!pg.hidden});vw.style.margin="0";row.append(vw);ctx.body.append(row,pg)}
+ else{const au=document.createElement("audio");au.controls=true;au.src=URL.createObjectURL(blob);au.style.cssText="display:block;width:100%;margin-top:8px";ctx.body.append(row,au)}};
+const PDFC=new Map();
+window.__drHomePdf=(kind,cat,host)=>{const key=kind+"|"+cat;return window.__drDockSave("pdf",cat,async note=>{let r=PDFC.get(key);if(!r){r=await homePdf(kind,cat,t=>note(t));PDFC.set(key,r)}return{blob:r.pdf,name:r.nm,imgs:r.imgs}})};
 /* অডিও: চাপলেই সাথে সাথে বাজে (আয়াত একটার পর একটা, নির্ধারিত পুনরাবৃত্তিসহ); পাশাপাশি পেছনে একটি ফাইল জোড়া হয় — তৈরি হলে নিচে প্লেয়ার, শেয়ার ও ডাউনলোড আসে */
 /* একটি হেডিংয়ের সব ঘরের আয়াত একটাই অডিও ফাইলে (প্রতিটি ঘরের আয়াত পরপর, প্রতিটি ৩ বার); cb তে প্রতিটি আয়াতের শেষ-সময় (সেকেন্ড) আসে, যাতে বাজার সময় কোন ঘর চলছে বোঝা যায় */
 const AXM=new Map(); /* আয়াত→এনকোড-করা MP3 টুকরো: ঘর, সারি ও হেডিংয়ের অডিও একই আয়াত বারবার এনকোড করে না */
 window.__drGroupAudio=(list,out,note,name,cb)=>mergeAudio(list,out,note,{rep:3,set:1,noplay:true,name,onmarks:cb,memo:true,memoMap:AXM});
 window.__drHomePdfPre=cat=>homePdf("x",cat);
-window.__drHomeAudio=async(kind,cat,host)=>{
- if(!host)return;
- if(host.dataset.done==="1"){host.hidden=!host.hidden;return}
- if(host.dataset.busy==="1")return;
- host.hidden=false;host.textContent="";host.dataset.busy="1";
- const live=el("div"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:6px"),res=el("div");host.append(live,note,res);
- note.textContent="⏳ প্রস্তুত হচ্ছে…";
- try{
-  const e=homeAudio(kind,cat,t=>note.textContent="⬇ "+t);
-  if(e.done){ /* আগে থেকেই তৈরি: সাথে সাথে বাজে */
-   note.textContent="✅ "+bn2(e.n)+"টি আয়াত × "+bn2(e.rep)+" বার"+(e.set>1?" × "+bn2(e.set)+" সেট":"")+" — তৈরি আছে";
-   while(e.out.firstChild)res.appendChild(e.out.firstChild);host.dataset.done="1";
-   const a=res.querySelector("audio");if(a)a.play().catch(()=>{});
-   return}
-   /* এখনো তৈরি হয়নি: আধা-আয়াত বাজিয়ে আবার শুরু না করে, জোড়া ফাইল তৈরি হওয়ার পর একবারেই সম্পূর্ণটা বাজে */
-   note.textContent="⏳ অডিও জোড়া লাগছে — হলেই নিজে থেকে বাজবে…";
-   await e.p;
-   note.textContent="✅ "+bn2(e.n)+"টি আয়াত × "+bn2(e.rep)+" বার"+(e.set>1?" × "+bn2(e.set)+" সেট":"");
-   while(e.out.firstChild)res.appendChild(e.out.firstChild);host.dataset.done="1";
-   {const a=res.querySelector("audio");if(a)a.play().catch(()=>{})}
- }catch(e){console.error(e);note.textContent=/empty/.test(String(e&&e.message))?"এখানে এখনো কিছু যোগ করা হয়নি":"অডিও তৈরি করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"}
- finally{host.dataset.busy="0"}
-};
+const AUB=new Map();
+window.__drHomeAudio=(kind,cat,host)=>{const key=kind+"|"+cat,name=dockName(cat,kind)+".mp3";return window.__drDockSave("audio",cat,async note=>{let b=AUB.get(key);if(!b){const e=homeAudio(kind,cat,t=>note("⬇ "+t));if(!e.done)note("⏳ অডিও জোড়া লাগছে — হলেই ডাউনলোড হবে…");await e.p;const a=e.out.querySelector("audio");if(!a)throw new Error("empty");b=await(await fetch(a.src)).blob();AUB.set(key,b)}return{blob:b,name}})};
 async function run(topic){window.__bq="";GEN++;CURT=null;{const gp=document.getElementById("drGit");if(gp)gp.remove()}if(topic&&!topic.terms)topic=null;const raw=topic?topic.name:$("rsQ").value;window.__sq=(topic&&topic.fname)||raw;const q=nz(raw),out=$("rsOut"),info=$("rsInfo");out.innerHTML="";if(!R)info.textContent="⏳ ডেটা লোড হচ্ছে… (প্রথমবার ইন্টারনেট ধীর হলে সময় লাগে, পরে দ্রুত হবে)";
  if(topic)return runMulti(topic.terms,out,info,topic.intro,topic.ordered);
  {const parts=raw.split(/[,،，、]/).map(x=>x.trim()).filter(Boolean);if(parts.length>1)return runMulti(parts,out,info)}
