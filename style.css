@@ -1027,6 +1027,12 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{max-height:90px;min-hei
 /* হোম: প্রতিটি ট্যাবে (বদনজর/জাদু/জিন/৩টি একসাথে) আগের অপশনের নিচে ওই বিষয়ের চার্ট */
 .ax-home{margin:12px 0 2px}
 .ax-home .ax-g:last-child{margin-bottom:6px}
+/* সাইডবারের "আমল" পাতা: হোমের শুধু অপশনের কার্ডটি (.drq-amalcard) দেখায়, বাকি সব লুকায় */
+#drLanding .drq-amalcard{display:none}
+#drLanding.am-mode .drq-amalcard{display:block}
+#drLanding.am-mode>*:not(.drq-grid),#drLanding.am-mode .drq-grid>:not(.drq-amalcard){display:none!important}
+#drLanding .drq-amh{text-align:center;font-size:17px;color:var(--primary)}
+
 /* ব্যানার ওপরে লেগে থাকে; বাকি ফাঁকা জায়গা নিচে (নেভিগেশন বারের ওপরে) যায় */
 body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:6px 0 3px}
 #drLanding .drq-grid{margin-bottom:auto}

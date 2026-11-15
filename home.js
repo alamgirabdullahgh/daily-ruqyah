@@ -36,9 +36,14 @@
     var SLG=["nazar","jadu","jin",""];
     var chartBox=function(k,hid){return '<div class="ax-root ax-home" data-ax="'+SLG[k]+'" data-pane="'+k+'"'+(hid?' hidden':'')+'></div>'};
     var names=G.slice(TS,TE+1).map(function(x){return esc(x[0])}).concat(['<svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>৩টি একসাথে</span>']);
-    h+='<section class="drq-card drq-tabcard"><h3 class="drq-tabs" role="tablist">'+names.map(function(n,i){return '<button type="button" role="tab" class="drq-tab'+(i?'':' on')+(i===3?' drq-tab-all':'')+'" data-t="'+i+'" aria-selected="'+(i?'false':'true')+'"'+(i===3?' aria-label="তিনটি একসাথে"':'')+'>'+n+'</button>'}).join('')+'</h3>';
-    for(var k=TS;k<=TE;k++)h+=ulOf(G[k],' data-pane="'+(k-TS)+'"'+(k>TS?' hidden':''),'drq-two drq-three',G[k][0])+chartBox(k-TS,k>TS);
-    h+=ulOf(["সব",[["সিমটম ডায়াগনোসিস","#diag"],["রেসপন্স ডায়াগনোসিস","#resp"],["ট্রিটমেন্ট","#amol/all"]]],' data-pane="'+(TE-TS+1)+'" hidden','drq-two drq-three','সব')+chartBox(3,true)+'</section>';
+    /* withChart=true: হোমের কার্ড (প্রতিটি ট্যাবে অপশনের নিচে ওই বিষয়ের চার্ট); false: সাইডবারের "আমল" পাতার কার্ড (শুধু অপশন) */
+    var mkCard=function(withChart,extra,head){
+     var r='<section class="drq-card drq-tabcard'+(extra?' '+extra:'')+'">'+(head?'<h3 class="drq-amh">'+esc(head)+'</h3>':'')+'<h3 class="drq-tabs" role="tablist">'+names.map(function(n,i){return '<button type="button" role="tab" class="drq-tab'+(i?'':' on')+(i===3?' drq-tab-all':'')+'" data-t="'+i+'" aria-selected="'+(i?'false':'true')+'"'+(i===3?' aria-label="তিনটি একসাথে"':'')+'>'+n+'</button>'}).join('')+'</h3>';
+     for(var k=TS;k<=TE;k++)r+=ulOf(G[k],' data-pane="'+(k-TS)+'"'+(k>TS?' hidden':''),'drq-two drq-three',G[k][0])+(withChart?chartBox(k-TS,k>TS):'');
+     r+=ulOf(["সব",[["সিমটম ডায়াগনোসিস","#diag"],["রেসপন্স ডায়াগনোসিস","#resp"],["ট্রিটমেন্ট","#amol/all"]]],' data-pane="'+(TE-TS+1)+'" hidden','drq-two drq-three','সব')+(withChart?chartBox(3,true):'');
+     return r+'</section>'};
+    h+=mkCard(true,'','');
+    h+=mkCard(false,'drq-amalcard','আমল');
     return;
    }
    h+='<section class="drq-card"><h3>'+esc(g[0])+'</h3>'+ulOf(g,'',gi===0?'drq-two':'',gi===0?'দৈনন্দিন':'')+'</section>';
