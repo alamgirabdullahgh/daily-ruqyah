@@ -16,10 +16,10 @@ async function loadRoots(){if(R)return R;const j=await rsFetch(BASE+"quran-roots
 j.roots=j.roots.concat(EXTRA);
 R=j.roots.map(([r,fs])=>{const forms=fs.map(([t,l,refs,m,p])=>({t,l,m:m||"",p:p||"",refs:refs.split(","),k1:nz(t,1),k2:nz(t),k3:lk(t),kl:nz(l)}));return{r,rn:nz(r),r3:lk(r),forms,n:forms.reduce((a,f)=>a+f.refs.length,0)}});return R}
 const jf=n=>fetch(BASE+n+"?v="+DV).then(r=>r.json());
-const CH={c:{},a:{},b:{},w:{},m:{}};
+const CH={a:{},b:{},w:{},m:{}};
 let actN=0;const qN=[],qL=[];const lim=(f,low)=>new Promise((ok,no)=>{const run=()=>{actN++;f().then(ok,no).finally(()=>{actN--;const n=qN.shift()||qL.shift();n&&n()})};if(actN<5&&(!low||!qN.length))run();else(low?qL:qN).push(run)});
-const CS=new Set([6,11,15,17,21,24,29,31,44,48,114]);const TR="c";
-const chunk=(k,s,low)=>k==="c"&&!CS.has(s)?chunk("b",s,low):CH[k][s]||(CH[k][s]=lim(async()=>{for(let i=0;;i++){try{return await rsFetch(BASE+"quran-chunks/"+k+"/"+s+".json?v="+DV)}catch(e){if(i>=3)throw e;await new Promise(z=>setTimeout(z,500*(i+1)))}}},low).catch(e=>{delete CH[k][s];throw e}));window.__drChunk=chunk;
+const TR="b";
+const chunk=(k,s,low)=>CH[k][s]||(CH[k][s]=lim(async()=>{for(let i=0;;i++){try{return await rsFetch(BASE+"quran-chunks/"+k+"/"+s+".json?v="+DV)}catch(e){if(i>=3)throw e;await new Promise(z=>setTimeout(z,500*(i+1)))}}},low).catch(e=>{delete CH[k][s];throw e}));window.__drChunk=chunk;
 function search(q){const out=[];for(const r of R){let sc=0,mf=null;
  if(r.rn===q)sc=100;
  else{const ex=r.forms.filter(f=>f.k1===q||f.k2===q||lessAl(f.k1)===q||lessAl(f.k2)===q);
@@ -1202,7 +1202,7 @@ loadRoots().catch(()=>{});
 let dlDone=false,dlLast="";try{dlDone=localStorage.getItem("rsAll")===DV}catch(e){}
 const dlNote=t=>{const i=$("rsInfo");if(!i)return;if(t){if(!i.textContent||i.textContent===dlLast){i.textContent=t;dlLast=t}}else if(i.textContent===dlLast){i.textContent="";dlLast=""}};
 if(!dlDone)setTimeout(async()=>{try{if(navigator.connection&&navigator.connection.saveData)return;
- const ks=["a","c","w"],tot=114*ks.length;let done=0,bad=0;
+ const ks=["a","b","w"],tot=114*ks.length;let done=0,bad=0;
  for(let z=1;z<=114;z+=3){await Promise.all([0,1,2].filter(d=>z+d<=114).flatMap(d=>ks.map(k=>chunk(k,z+d,1).then(()=>{done++},()=>{done++;bad++}))));dlNote("⬇ ডেটা সেভ হচ্ছে "+bn2(Math.round(done/tot*100))+"%…")}
  dlNote("");if(!bad)try{localStorage.setItem("rsAll",DV)}catch(e){}}catch(e){}},1200);
 // ---------- সাইডবার, পেজ-রুট ও সম্পূর্ণ কুরআন রিডার ----------
