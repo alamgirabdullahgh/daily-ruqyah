@@ -1018,3 +1018,8 @@ body.is-home .drq-tk.drq-tkbar{margin:0 0 3px}
 #drAxes .ax-base{background:var(--accent-light)}
 #drAxes .ax-base .rs-vf{background:transparent}
 #drAxes .rs-v{margin:4px 0 8px}
+
+/* v102: ব্যানার আরেকটু ছোট (গম্বুজের পর্দা সরানো হয়েছে); স্লাইডিং লেখার স্ট্রিপ উঁচু ও লেখা বড় */
+body.is-home .drq-support.drq-hero,.drq-support.drq-hero{max-height:90px;min-height:72px}
+.drq-tk.drq-tkbar{height:38px}
+.drq-tk.drq-tkbar span{line-height:36px;font-size:19px}
