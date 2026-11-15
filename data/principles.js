@@ -6,7 +6,7 @@ window.__drPrinData=[
   "সেখান থেকে মৌলিক আয়াত বের করা",
   "সেটা থেকে মৌলিক অংশ বের করা"
  ]},
- {n:"২",t:"",pre:"আয়াতগুলো ",btn:{label:"সাতটি অক্ষে",hash:"#diag"},post:" ভাগ করা থাকবে।"}
+ {n:"২",t:"",pre:"আয়াতগুলো ",btn:{label:"সাতটি অক্ষে",hash:"#axes"},post:" ভাগ করা থাকবে।"}
 ];
 (function(){
  var box=document.getElementById("drPrin"),D=window.__drPrinData;if(!box||!D)return;
@@ -20,7 +20,7 @@ window.__drPrinData=[
   if(P.btn){var r=mk("div","font-size:15px;line-height:2.1;color:var(--text-main);margin:4px 0 0");
    r.appendChild(document.createTextNode(P.pre||""));
    var b=mk("button","display:inline-block;margin:0 2px;padding:0 9px;border:1.5px solid #b9cdc2;border-radius:10px;background:var(--card-bg,#fff);color:var(--primary);font:inherit;font-weight:800;font-size:15px;line-height:1.7;box-shadow:0 2px 0 rgba(30,127,88,.28);cursor:pointer",P.btn.label);
-   b.type="button";b.onclick=function(){location.hash=P.btn.hash;setTimeout(function(){var z=document.getElementById("za");if(z)z.scrollIntoView()},400)};
+   b.type="button";b.onclick=function(){location.hash=P.btn.hash};
    r.appendChild(b);r.appendChild(document.createTextNode(P.post||""));d.appendChild(r)}
   box.appendChild(d)});
 })();

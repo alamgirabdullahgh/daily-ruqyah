@@ -1303,12 +1303,13 @@ function drShell(){
  let lastH="home";
  const route=()=>{open(false);const h=(location.hash||"#home").replace(/^#/,""),p=h.split("/");{const rb=$("rsBox"),hd=window.__drHold;window.__drHold=false;if(rb){if(hd)rb.classList.add("dr-tonly");else{if(rb.classList.contains("dr-tonly")){const ro=$("rsOut"),ri=$("rsInfo");if(ro)ro.innerHTML="";if(ri)ri.textContent=""}rb.classList.remove("dr-tonly","dr-topic")}}}
   document.querySelectorAll("audio").forEach(a=>{try{a.pause()}catch(e){}});
-  const al=$("drAlarm");if(al)al.hidden=true;const hm=$("drHome");if(hm)hm.hidden=true;const ln=$("drLanding");if(ln)ln.hidden=true;const am=$("drAmol");if(am)am.hidden=true;const sy=$("drSym");if(sy)sy.hidden=true;
+  const al=$("drAlarm");if(al)al.hidden=true;const hm=$("drHome");if(hm)hm.hidden=true;const ln=$("drLanding");if(ln)ln.hidden=true;const am=$("drAmol");if(am)am.hidden=true;const sy=$("drSym");if(sy)sy.hidden=true;const ax=$("drAxes");if(ax)ax.hidden=true;
   if(p[0]==="timewidget"){window.DRALARM&&DRALARM.openWidget();location.hash="#"+lastH;return}
   let key="search";
   if(p[0]==="home"&&ln){key="home";box.hidden=true;rd.hidden=true;ln.hidden=false;window.__drLanding&&window.__drLanding();window.scrollTo(0,0)}
   else if((p[0]==="resp"||p[0]==="home")&&hm){key=p[0];box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.__drHomeF&&window.__drHomeF(p[0]==="resp"?p[1]:"");window.scrollTo(0,0)}
   else if(p[0]==="diag"&&sy){key="diag";box.hidden=true;rd.hidden=true;sy.hidden=false;if(window.__drSymInit&&!window.__drSymDone){window.__drSymDone=1;window.__drSymInit()}window.__drSymF&&window.__drSymF(p[1]||"");window.scrollTo(0,0)}
+  else if(p[0]==="axes"&&ax){key="axes";box.hidden=true;rd.hidden=true;ax.hidden=false;window.__drAxes&&window.__drAxes(p[1]||"");window.scrollTo(0,0)}
   else if(p[0]==="amol"&&am){key="amol";box.hidden=true;rd.hidden=true;am.hidden=false;window.__drAmol&&window.__drAmol(p[1]);window.scrollTo(0,0)}
   else if(p[0]==="alarm"&&al){key="alarm";box.hidden=true;rd.hidden=true;al.hidden=false;window.DRALARM&&DRALARM.show();window.scrollTo(0,0)}
   else if(p[0]==="read"&&RMODES.some(m=>m[0]===p[1])){key="read/"+p[1];const s=+p[2]||0;box.hidden=true;rd.hidden=false;renderReader(p[1],s>=1&&s<=114?s:0);window.scrollTo(0,0)}

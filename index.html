@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Daily Ruqyah">
 <style>html.dr-boot body{visibility:hidden}</style>
 <script>document.documentElement.classList.add("dr-boot");setTimeout(function(){document.documentElement.classList.remove("dr-boot")},3500)</script>
-<link rel="stylesheet" href="style.css?v=101">
+<link rel="stylesheet" href="style.css?v=102">
 </head>
 <body class="is-home">
 <header class="dr-top" id="drHero">
@@ -44,6 +44,7 @@
 <div class="rs-box" id="drSym" hidden>
 <div id="za"><h2>Symptom Diagnosis (গবেষণা সংস্করণ)</h2><div id="zd"></div><div id="zt"></div><div style="margin-top:10px"><h3>প্রতিটি কেসের জন্য মেডিক্যাল স্ক্রিনিং রেকর্ড</h3><div class="zf">মেডিক্যাল টেস্ট করানো হয়েছে কি? ফলাফল কী?<br><textarea id="zi" rows="3" placeholder="যেমন: গাইনি পরীক্ষা করানো হয়েছে, রিপোর্ট নরমাল / থাইরয়েড টেস্ট বাকি আছে ইত্যাদি"></textarea><br><button id="zb">সংরক্ষণ করুন</button> <span id="zu" class="zk"></span></div></div></div>
 </div>
+<div class="rs-box" id="drAxes" hidden><div id="axBody"></div></div>
 <div class="rs-box" id="rsBox" hidden>
  <div class="dr-prin" id="drPrin" style="margin:0 0 12px;padding:12px 14px;border-radius:14px;background:var(--primary-light,#e6efe9);border-right:5px solid var(--accent);border-left:5px solid var(--accent);text-align:center"><div style="font-weight:800;font-size:17px;color:var(--accent);margin-bottom:6px">গবেষণার মৌলিক নীতিমালা</div><div style="font-size:15px;line-height:1.8;color:var(--text-main);text-align:left"><b style="color:var(--primary)">মৌলিক নীতি ১:</b> সমস্যা সম্পর্কিত সবগুলো আয়াত বের করা → সেখান থেকে মৌলিক আয়াত বের করা → সেটা থেকে মৌলিক অংশ বের করা।<br><b style="color:var(--primary)">মৌলিক নীতি ২:</b> আয়াতগুলো সাতটি অক্ষে ভাগ করা থাকবে।</div></div>
  <div class="dr-inst" id="drInst"></div>
@@ -58,13 +59,14 @@
 </main>
 <script>(function(){var h=location.hash;if(!h||h==="#"||h==="#home"||h==="#/home"){var l=document.getElementById("drLanding");if(l)l.hidden=false}})();</script>
 <script src="data/sunnah.js?v=1"></script>
-<script src="data/principles.js?v=6"></script>
+<script src="data/principles.js?v=7"></script>
 <script src="data/response-signs.js?v=1"></script>
 <script src="home.js?v=29"></script>
 <script src="widget.js?v=33"></script>
 <script>try{window.__drLanding&&window.__drLanding()}catch(e){}document.documentElement.classList.remove("dr-boot")</script>
 <script defer src="symptom.js?v=9"></script>
-<script defer src="app.js?v=78"></script>
+<script defer src="axes.js?v=1"></script>
+<script defer src="app.js?v=79"></script>
 <script defer src="alarm.js?v=14"></script>
 <script defer src="amol.js?v=18"></script>
 <script defer src="reveal.js?v=1"></script>
