@@ -101,19 +101,25 @@ function stopPlay(R){const st=R&&R.__pl;if(!st)return;st.stop=true;R.__pl=null;t
  R.querySelectorAll(".ax-now").forEach(x=>x.classList.remove("ax-now"));R.querySelectorAll(".ax-live").forEach(x=>x.remove());
  R.querySelectorAll(".ax-ga.on").forEach(b=>{b.classList.remove("on");b.textContent="🔊"})}
 /* একটি হেডিংয়ের সব ঘরের আয়াত একটাই অডিওতে জোড়া (একবার হলে মনে থাকে, দ্বিতীয়বার সাথে সাথে বাজে) */
-function gMerge(R,gi,G,list){R.__gm=R.__gm||{};if(R.__gm[gi])return R.__gm[gi];
+const GM={};
+function gMerge(gi,G,list){if(GM[gi])return GM[gi];
  const ent={out:el("div"),marks:null,note:()=>{}};
- ent.p=(async()=>{await window.__drGroupAudio(list,ent.out,t=>ent.note(t),G.name+" সব",m=>{ent.marks=m});if(!ent.out.querySelector("audio"))throw new Error("noaudio");return ent})().catch(e=>{delete R.__gm[gi];throw e});
- R.__gm[gi]=ent;return ent}
+ ent.p=(async()=>{await window.__drGroupAudio(list,ent.out,t=>ent.note(t),G.name+" সব",m=>{ent.marks=m});if(!ent.out.querySelector("audio"))throw new Error("noaudio");return ent})().catch(e=>{delete GM[gi];throw e});
+ GM[gi]=ent;return ent}
+/* একটি হেডিংয়ের ঘরগুলোর আয়াত-তালিকা (ক্রমানুসারে, "উভয়" বাদ); sec থাকলে প্রতিটি ঘরের বাটনও */
+function glist(gi,sec){const G=DATA.axes[gi],list=[],cells=[];
+ G.cols.forEach((c,ci)=>c.opts.forEach((n,oi)=>{if(n==="উভয়")return;const r=regCell(gi,ci,oi);if(!r)return;const from=list.length;r.ks.forEach(k=>list.push(k));cells.push({b:sec?sec.querySelector('.ax-c[data-k="'+gi+"."+ci+"."+oi+'"]'):null,name:c.name+" › "+n,from,to:list.length})}));
+ return{G,list,cells}}
+/* অ্যাপ চালু হলে ব্যাকগ্রাউন্ডে তিনটি হেডিংয়ের অডিওই আগে থেকে জোড়া হয়ে থাকে (app.js-এর prebuild ডাকে) */
+window.__drAxPre=async()=>{await load();for(let gi=0;gi<DATA.axes.length;gi++){const{G,list}=glist(gi,null);if(!list.length||!window.__drGroupAudio)continue;try{await gMerge(gi,G,list).p}catch(e){console.error(e)}await new Promise(r=>setTimeout(r,300))}};
 async function playGroup(R,sec,gi,btn){const same=R.__pl&&R.__pl.gi===gi;stopPlay(R);if(same)return;
  if(!window.__drGroupAudio)return;
- const G=DATA.axes[gi],list=[],cells=[];
- G.cols.forEach((c,ci)=>c.opts.forEach((n,oi)=>{if(n==="উভয়")return;const r=regCell(gi,ci,oi);if(!r)return;const from=list.length;r.ks.forEach(k=>list.push(k));cells.push({b:sec.querySelector('.ax-c[data-k="'+gi+"."+ci+"."+oi+'"]'),name:c.name+" › "+n,from,to:list.length})}));
+ const{G,list,cells}=glist(gi,sec);
  if(!list.length)return;
  const st={gi,stop:false,a:null};R.__pl=st;btn.classList.add("on");btn.textContent="⏹";
  const bar=el("div","ax-live"),tx=el("div","ax-lt"),nt=el("div","ax-ln"),hb=el("div");bar.append(tx,nt,hb);sec.querySelector("h3").after(bar);
  tx.textContent="▶ "+G.name+" — সব "+bn2(cells.length)+"টি ঘর একসাথে";nt.textContent="⏳ অডিও প্রস্তুত হচ্ছে…";
- const ent=gMerge(R,gi,G,list);ent.note=t=>{if(R.__pl===st)nt.textContent="⏳ "+t};
+ const ent=gMerge(gi,G,list);ent.note=t=>{if(R.__pl===st)nt.textContent="⏳ "+t};
  try{await ent.p}catch(e){console.error(e);if(R.__pl===st){nt.textContent="অডিও তৈরি করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";btn.classList.remove("on");btn.textContent="🔊";R.__pl=null}return}
  if(st.stop||R.__pl!==st)return;
  nt.remove();hb.appendChild(ent.out);

@@ -832,6 +832,8 @@ window.__drHomePrebuild=async()=>{if(HPRE)return;HPRE=true;
  for(let t=0;t<40&&!offReady;t++){
   try{const np=NAO();if(np){const r=await np.status();offReady=r.done>=r.total}else offReady=offOn()&&(await offCount())>=OFFN}catch(e){}
   if(!offReady)break}
+ /* বদনজর/জাদু/জিন চার্টের হেডিং-অডিও (সব ঘর এক ফাইলে) সবার আগে ব্যাকগ্রাউন্ডে তৈরি */
+ try{window.__drAxPre&&await window.__drAxPre()}catch(e){console.error(e)}
  for(const cat of["বদনজর","জাদু","জিন","সব"])for(const kind of["sym","resp","treat"]){
   try{await homePdf(kind,cat)}catch(e){console.error(e)}
   if(kind!=="sym"){try{await homeAudio(kind,cat).p}catch(e){console.error(e)}}
