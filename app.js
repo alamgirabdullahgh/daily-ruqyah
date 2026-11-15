@@ -810,6 +810,8 @@ async function treatKeys(cat){
  parts.forEach(l=>l.forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);out.push(k)}}));return out}
 async function bodyKeys(file){const D=await rsFetch(BASE+file),seen=new Set(),out=[];D.groups.forEach(g=>g.cats.forEach(c=>c.keys.forEach(k=>{const id=k.s+":"+k.a;if(!seen.has(id)){seen.add(id);out.push([k.s,k.a])}})));return out}
 const XKEYS=new Map();window.__drXKeys=(c,l)=>XKEYS.set(c,l);
+/* সাতটি অক্ষের চার্টে "অবস্থান → শরীরে" ঘরের অডিওর জন্য: দৈনন্দিন রুকইয়াহর "শারীরিক → অঙ্গভিত্তিক" তালিকার ক্রমে প্রতিটি অঙ্গ ও তার আয়াত ([{name,keys}]) */
+let ORGP=null;window.__drOrgans=()=>ORGP||(ORGP=(async()=>{const out=[];for(const o of ORG){const t=TOPICS.find(x=>x.name===o[0]);if(!t)continue;out.push({name:o[0],keys:await topicKeys(t)})}return out})().catch(e=>{ORGP=null;throw e}));
 const homeKeys=(kind,cat)=>kind==="x"?Promise.resolve().then(()=>{const v=XKEYS.get(cat);return typeof v==="function"?v():(v||[])}):kind==="resp"?respKeys(cat):kind==="phys"?bodyKeys(DISEASE.file):kind==="ment"?bodyKeys(MENTAL.file):treatKeys(cat);
 const homeTitle=(kind,cat)=>kind==="x"?(/^(শারীরিক রোগ|মানসিক সমস্যা)\|/.test(String(cat))?String(cat).split("|").slice(1).join(" "):String(cat).replace("|"," ")):kind==="sym"?"সিমটম ডায়াগনোসিস "+(cat==="সব"?"বদনজর জাদু জিন":cat):kind==="phys"||kind==="ment"?"দৈনন্দিন রুকইয়াহ "+cat:(kind==="resp"?"রেসপন্স ডায়াগনোসিস":"ট্রিটমেন্ট")+" "+(cat==="সব"?"বদনজর জাদু জিন":cat);
 /* পুনরাবৃত্তি: রেসপন্স ডায়াগনোসিস — প্রতিটি আয়াত ১১ বার, পুরো সেট ৩ বার; ট্রিটমেন্ট — প্রতিটি আয়াত ৩ বার, সেট ১ বার */

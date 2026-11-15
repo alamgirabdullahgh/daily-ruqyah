@@ -45,6 +45,11 @@ async function verseCard(ref,isBase){const{s,a,f,t,w}=ref;
 
 let DATA=null;
 const load=async()=>DATA||(DATA=await rsFetch(BASE+"axis-ayat.json?v=1").catch(e=>{DATA=null;throw e}));
+/* "অবস্থান → শরীরে" ঘরের অডিওতে অঙ্গ ধরে ধরে আয়াত বাজে; অঙ্গের নাম ও আয়াত দৈনন্দিন রুকইয়াহর "শারীরিক → অঙ্গভিত্তিক" তালিকা (app.js এর ORG) থেকে আসে। শুধু দরকারের সময় লোড হয় */
+let ORGS=[],ORGP=null;
+const loadOrg=()=>ORGP||(ORGP=(async()=>{for(let i=0;i<40&&!window.__drOrgans;i++)await new Promise(r=>setTimeout(r,250));if(!window.__drOrgans)throw new Error("noorg");ORGS=(await window.__drOrgans()).filter(o=>o.keys.length)})().catch(e=>{console.error(e);ORGP=null}));
+const isBodyCell=(c,n)=>c.name==="অবস্থান"&&n==="শরীরে";
+const hasBody=id=>{const t=id[0];if(t==="g")return true;const p=id.slice(1).split(".").map(Number);return t==="r"?DATA.axes[p[0]].cols[p[1]].name==="অবস্থান":isBodyCell(DATA.axes[p[0]].cols[p[1]],DATA.axes[p[0]].cols[p[1]].opts[p[2]])};
 
 function closePanel(R){R.__g=(R.__g||0)+1;R.querySelectorAll(".ax-p").forEach(x=>x.remove());R.querySelectorAll(".ax-c.on").forEach(x=>x.classList.remove("on"))}
 
@@ -108,28 +113,32 @@ function regCell(gi,ci,oi){const key=gi+"."+ci+"."+oi,C=DATA.cells[key];if(!C)re
  [...C.b.map(r=>[r[0],r[1]]),...C.m.map(v=>{const p=v.split(":").map(Number);return[p[0],p[1]]})].forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);ks.push(k)}});
  return ks.length?{ks}:null}
 /* স্কোপ: "g0" = পুরো হেডিং · "r0.1" = একটি সারি (যেমন ধরন) · "c0.1.0" = একটি ঘর (যেমন মুগ্ধতা)। আয়াত-তালিকা ক্রমানুসারে, "উভয়" বাদ */
-function scope(id,sec){const t=id[0],p=id.slice(1).split(".").map(Number),gi=p[0],G=DATA.axes[gi],list=[],cells=[];
+function scope(id,sec){const t=id[0],p=id.slice(1).split(".").map(Number),gi=p[0],G=DATA.axes[gi],plist=[],list=[],cells=[];let hasOrg=false;
  G.cols.forEach((c,ci)=>c.opts.forEach((n,oi)=>{if(n==="উভয়")return;if(t==="r"&&ci!==p[1])return;if(t==="c"&&(ci!==p[1]||oi!==p[2]))return;
-  const r=regCell(gi,ci,oi);if(!r)return;const from=list.length;r.ks.forEach(k=>list.push(k));
-  cells.push({b:sec?sec.querySelector('.ax-c[data-k="'+gi+"."+ci+"."+oi+'"]'):null,name:c.name+" › "+n,from,to:list.length})}));
+  const r=regCell(gi,ci,oi);if(!r)return;const from=list.length;r.ks.forEach(k=>{plist.push(k);list.push(k)});
+  /* শরীরে ঘর: ঘরের নিজের আয়াতের পর অঙ্গের ক্রমে প্রতিটি অঙ্গের আয়াত (ঘরে আগেই থাকা আয়াত বা আগের অঙ্গে এসে গেলে আবার নয়); og = প্রতিটি অঙ্গের আয়াত-সীমা */
+  let og=null;if(ORGS.length&&isBodyCell(c,n)){og=[];hasOrg=true;const sn=new Set(r.ks.map(k=>k[0]+":"+k[1]));
+   ORGS.forEach((o,k)=>{const f=list.length;o.keys.forEach(x=>{const i=x[0]+":"+x[1];if(!sn.has(i)){sn.add(i);list.push(x)}});if(list.length>f)og.push({k,from:f,to:list.length})})}
+  cells.push({b:sec?sec.querySelector('.ax-c[data-k="'+gi+"."+ci+"."+oi+'"]'):null,name:c.name+" › "+n,from,to:list.length,og})}));
  const cat="অক্ষ "+G.name+(t!=="g"?" "+G.cols[p[1]].name:"")+(t==="c"?" "+G.cols[p[1]].opts[p[2]]:"");
- const seen=new Set(),ks=[];list.forEach(k=>{const i=k[0]+":"+k[1];if(!seen.has(i)){seen.add(i);ks.push(k)}});
- if(window.__drXKeys)window.__drXKeys(cat,ks);
- return{G,list,cells,cat,gi}}
+ const seen=new Set(),ks=[];plist.forEach(k=>{const i=k[0]+":"+k[1];if(!seen.has(i)){seen.add(i);ks.push(k)}});
+ if(window.__drXKeys)window.__drXKeys(cat,ks);/* PDF-এর আয়াত আগের মতোই (অঙ্গ ছাড়া); শুধু অডিওতে অঙ্গ যোগ হয়, তাই অডিওর নাম আলাদা */
+ return{G,list,cells,cat,acat:cat+(hasOrg?" +অঙ্গ":""),hasOrg,gi}}
 function stopPlay(R){const st=R&&R.__pl;if(!st)return;st.stop=true;R.__pl=null;try{if(st.a){st.a.pause();st.a.ontimeupdate=st.a.onended=st.a.onplay=null}}catch(e){}
- R.querySelectorAll(".ax-now").forEach(x=>x.classList.remove("ax-now"));R.querySelectorAll(".ax-live").forEach(x=>x.remove());
+ R.querySelectorAll(".ax-now").forEach(x=>x.classList.remove("ax-now"));R.querySelectorAll(".ax-live,.ax-orgs").forEach(x=>x.remove());
  R.querySelectorAll(".ax-au.on").forEach(b=>{b.classList.remove("on");b.textContent=AUL})}
 /* একবার জোড়া হলে মনে থাকে: দ্বিতীয়বার সাথে সাথে বাজে */
 const GM={};
-function gMerge(id,sc){if(GM[id])return GM[id];
+function gMerge(id,sc){const gk=id+"|"+sc.acat;if(GM[gk])return GM[gk];
  const ent={out:el("div"),marks:null,note:()=>{}};
- ent.p=(async()=>{await window.__drGroupAudio(sc.list,ent.out,t=>ent.note(t),sc.cat,m=>{ent.marks=m});if(!ent.out.querySelector("audio"))throw new Error("noaudio");return ent})().catch(e=>{delete GM[id];throw e});
- GM[id]=ent;return ent}
+ ent.p=(async()=>{await window.__drGroupAudio(sc.list,ent.out,t=>ent.note(t),sc.acat,m=>{ent.marks=m});if(!ent.out.querySelector("audio"))throw new Error("noaudio");return ent})().catch(e=>{delete GM[gk];throw e});
+ GM[gk]=ent;return ent}
 const rowEl=(sec,id)=>sec.querySelector('.ax-r[data-r="'+id.slice(1).split(".").slice(0,2).join(".")+'"]');
 const anchorOf=(sec,id)=>id[0]==="g"?sec.querySelector("h3"):rowEl(sec,id);
 /* অডিও: চাপলে সাথে সাথে এই পাতাতেই বাজে (নিজে ডাউনলোড হয় না); কোন ঘর বাজছে জ্বলজ্বলে ফোঁটায় দেখায়; প্লেয়ারের পাশে ⬇ ও শেয়ার */
 async function playSeq(R,id,sec,btn){const same=R.__pl&&R.__pl.id===id;stopPlay(R);if(same)return;
  if(!window.__drGroupAudio)return;
+ if(hasBody(id)&&!ORGS.length){const m={id,stop:false,a:null};R.__pl=m;btn.classList.add("on");btn.textContent="⏳\nঅঙ্গ";await loadOrg();btn.classList.remove("on");btn.textContent=AUL;if(R.__pl!==m)return;R.__pl=null}
  const sc=scope(id,sec),{G,list,cells}=sc;
  if(!list.length)return;
  const st={id,stop:false,a:null};R.__pl=st;btn.classList.add("on");btn.textContent="⏹\nথামান";
@@ -142,12 +151,20 @@ async function playSeq(R,id,sec,btn){const same=R.__pl&&R.__pl.id===id;stopPlay(
  nt.remove();hb.appendChild(ent.out);
  const a=ent.out.querySelector("audio");let mk=ent.marks||[];st.a=a;
  const cellOf=i=>{for(let k=0;k<cells.length;k++)if(i>=cells[k].from&&i<cells[k].to)return k;return -1};
- let cur=-2;
+ const orgOf=(c,i)=>{const og=cells[c].og;if(og)for(const x of og)if(i>=x.from&&i<x.to)return x.k;return -1};
+ /* শরীরে ঘরে এলে একেবারে নিচে অঙ্গের নাম আটটি কলামে (যত সারি লাগে); যে অঙ্গের আয়াত চলছে সেটি জ্বলে, সাথে "শরীরে" বাটনও */
+ let pn=null;const dropPn=()=>{if(pn){pn.remove();pn=null}};
+ const mkPn=()=>{pn=el("div","ax-orgs");pn.appendChild(el("div","ax-oh","🫀 অঙ্গ — যে অঙ্গের আয়াত চলছে সেটি জ্বলছে"));const gd=el("div","ax-og");
+  pn.__b=ORGS.map(o=>{const b=el("div","ax-ob",o.name.split(" (")[0]);b.title=o.name;gd.appendChild(b);return b});pn.appendChild(gd);sec.appendChild(pn)};
+ const seeIf=b=>{const r=b.getBoundingClientRect();if(r.top<60||r.bottom>innerHeight-60)b.scrollIntoView({behavior:"smooth",block:"center"})};
+ let cur=-2,curO=-2;
  const upd=()=>{if(!mk.length&&a.duration)mk=list.map((_,i)=>({i,t:(i+1)/list.length*a.duration}));if(!mk.length)return;
-  const t=a.currentTime+.03;let k=mk.findIndex(m=>m.t>t);if(k<0)k=mk.length-1;const c=cellOf(mk[k].i);if(c<0||c===cur)return;cur=c;
+  const t=a.currentTime+.03;let k=mk.findIndex(m=>m.t>t);if(k<0)k=mk.length-1;const i=mk[k].i,c=cellOf(i);if(c<0)return;const o=orgOf(c,i);if(c===cur&&o===curO)return;
+  const newCell=c!==cur;cur=c;curO=o;
   R.querySelectorAll(".ax-now").forEach(x=>x.classList.remove("ax-now"));const C=cells[c];
-  if(C.b){C.b.classList.add("ax-now");const r=C.b.getBoundingClientRect();if(r.top<60||r.bottom>innerHeight-60)C.b.scrollIntoView({behavior:"smooth",block:"center"})}
-  if(id[0]!=="c")tx.textContent="▶ "+G.name+" › "+C.name+"  ("+bn2(c+1)+"/"+bn2(cells.length)+")"};
+  if(C.b){C.b.classList.add("ax-now");if(newCell)seeIf(C.b)}
+  if(C.og){if(!pn)mkPn();if(o>=0&&pn.__b[o]){pn.__b[o].classList.add("ax-now");seeIf(pn.__b[o])}}else dropPn();
+  tx.textContent="▶ "+G.name+" › "+C.name+(o>=0?" › "+ORGS[o].name:"")+(id[0]!=="c"?"  ("+bn2(c+1)+"/"+bn2(cells.length)+")":"")};
  a.ontimeupdate=upd;a.onplay=upd;a.onended=()=>{if(R.__pl===st)stopPlay(R)};
  try{a.currentTime=0;await a.play()}catch(e){}
  upd()}
@@ -156,7 +173,8 @@ function openPdf(R,id,sec){const sc=scope(id,sec);window.__drHomePdf&&window.__d
 window.__drAxPre=async()=>{await load();const sl=()=>new Promise(r=>setTimeout(r,300)),ids=[];
  DATA.axes.forEach((g,gi)=>{g.cols.forEach((c,ci)=>c.opts.forEach((n,oi)=>{if(n!=="উভয়")ids.push("c"+gi+"."+ci+"."+oi)}));g.cols.forEach((c,ci)=>ids.push("r"+gi+"."+ci));ids.push("g"+gi)});
  const all=ids.map(id=>({id,sc:scope(id,null)})).filter(x=>x.sc.list.length);
- if(window.__drGroupAudio)for(const x of all){const t0=Date.now();try{await gMerge(x.id,x.sc).p}catch(e){console.error(e)}if(Date.now()-t0>80)await sl()}
+ /* "শরীরে" ঘর-যুক্ত অডিও (অঙ্গসহ, অনেক লম্বা) আগে থেকে তৈরি হয় না — চাপলে তখনই তৈরি হয় (একবার হলে মনে থাকে) */
+ if(window.__drGroupAudio)for(const x of all){if(hasBody(x.id))continue;const t0=Date.now();try{await gMerge(x.id,x.sc).p}catch(e){console.error(e)}if(Date.now()-t0>80)await sl()}
  if(window.__drHomePdfPre)for(const x of all){const t0=Date.now();try{await window.__drHomePdfPre(x.sc.cat)}catch(e){console.error(e)}if(Date.now()-t0>80)await sl()}};
 
 const SLUG={nazar:1,jadu:1,jin:1};
