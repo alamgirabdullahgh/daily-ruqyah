@@ -108,6 +108,18 @@
   if(g==="")h.hidden=m[2]==="nazar";else h.hidden=false;
   window.__drAmolSec(kind,h,g);
  }
+ /* প্রতিক্রিয়ার আলামত (data/response-signs.js): শুধু রেসপন্স পাতায়; বদনজরে নেই */
+ function signsMount(){
+  var m=/^#resp(?:\/([a-z]+))?/.exec(location.hash||"");var old=document.getElementById("amSigns");if(old)old.remove();if(!m||m[1]==="nazar")return;
+  var g=m[1]==="jadu"||m[1]==="jin"?m[1]:"",D=window.__drRespSigns,page=document.getElementById("drHome");if(!page||!D)return;
+  var h=document.createElement("div");h.id="amSigns";h.className="am-sec2";
+  var mk=function(tag,css,txt){var e=document.createElement(tag);if(css)e.style.cssText=css;if(txt!=null)e.textContent=txt;return e};
+  var hd=mk("h3","","রুকইয়াহ শোনা/করার সময় প্রতিক্রিয়ার আলামত");hd.className="am-sh";h.appendChild(hd);
+  D.forEach(function(G){if(g&&G.g!==g)return;var d=document.createElement("details");d.className="am-sd";d.open=!!g;d.appendChild(mk("summary","",G.title));
+   G.rows.forEach(function(r){var p=mk("div","line-height:1.8;margin:6px 0");p.appendChild(mk("span","font-size:12.5px;margin-right:6px",r.f==="G"?"🟢 গাইডে আছে":"🟡 আন্দাজ, গাইডে পাইনি"));p.appendChild(document.createTextNode(r.t));d.appendChild(p)});h.appendChild(d)});
+  var t=page.querySelector("#drHomeT,h2"),ex=document.getElementById("amSec_resp");
+  if(ex&&ex.parentNode===page)ex.insertAdjacentElement("beforebegin",h);else if(t&&t.parentNode===page)t.insertAdjacentElement("afterend",h);else page.insertBefore(h,page.firstChild)}
+ window.addEventListener("hashchange",function(){setTimeout(signsMount,300)});setTimeout(signsMount,700);
  window.addEventListener("hashchange",function(){setTimeout(secMount,250)});setTimeout(secMount,600);
  function init(){
   box=document.getElementById("drAmol");if(!box||box.__w)return;box.__w=1;

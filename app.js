@@ -1085,6 +1085,15 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
     await mergeAudio(list,e.out,t=>e.say(t),{rep:1,set:1,memo:true,noplay:true,name:"শরীরের গিঁট ধ্বংসের রুকইয়াহ "+kind+(sv!==""?" "+String(tp0(C,sv)):"")});e.done=true;return e})().catch(err=>{GAUD.delete(k);throw err});GAUD.set(k,e)}
   if(say)e.say=say;return e}
  const tp0=(C,sv)=>{const g=gitGroups(C)[+sv];return g?g.name:""};
+ /* মৌলিক নীতি ৫: অডিও শোনার সময় টিক করা অঙ্গগুলো দিয়েই একই প্যাটার্নে (আয়াত-১, অঙ্গ, আয়াত-২, অঙ্গ … ১১ বার) নতুন অডিও। আয়াতের জোড়া পুরো অডিওর সাথে হুবহু মেলে (যে জোড়া শুনে প্রতিক্রিয়া হয়েছিল সেটাই থাকে) */
+ function gitTickAudio(kind,marks,say){const C=GITN[kind],e={say:say||(()=>{}),out:el("div")};
+  e.p=(async()=>{await loadRoots();const B=[],seen=new Set(),add=l=>l.forEach(x=>{const id=x[0]+":"+x[1];if(!seen.has(id)){seen.add(id);B.push(x)}});
+   for(const n of C.src){const tt=TOPICS.find(x=>x.name===n);if(tt)add(await topicKeys(tt))}
+   const idx=new Map(),s2=new Set();let j0=0;for(const o of ORG)for(const x of await topicKeys({terms:o[2]})){const id=x[0]+":"+x[1];if(!s2.has(id)){s2.add(id);idx.set(id,j0++)}}
+   const T=[],s3=new Set();let fb=j0;for(const o of ORG){const nm=o[0].split(" (")[0];if(!marks.has(nm))continue;for(const x of await topicKeys({terms:o[2]})){const id=x[0]+":"+x[1];if(s3.has(id))continue;s3.add(id);T.push([idx.has(id)?idx.get(id):fb++,x])}}
+   if(!B.length||!T.length)throw new Error("empty");T.sort((a,b)=>a[0]-b[0]);
+   const list=[];for(const [j,x] of T)for(let k=0;k<11;k++)list.push(B[(11*j+k)%B.length],x);
+   await mergeAudio(list,e.out,t=>e.say(t),{rep:1,set:1,memo:true,noplay:true,name:"শরীরের গিঁট ধ্বংসের রুকইয়াহ "+kind+" (টিক করা অঙ্গ)"});e.done=true;return e})();return e}
  window.__drGitAudio=gitAudio;window.__drGitCount=k=>{const C=GITN[k],tp=C.types?TOPICS.find(x=>x.name===C.types):null;return 1+gitGroups(C).length};
  window.__drGit=(host,kind,before)=>{const C=GITN[kind];if(!C||!host)return;const old=document.getElementById("drGit");if(old)old.remove();
   const box=els("div","margin:14px 0 16px;padding:12px 12px 14px;border-radius:14px;background:var(--primary-light,#e6efe9);border:1.5px solid var(--accent)");box.id="drGit";
@@ -1100,7 +1109,10 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
   const mk=gitMarks(kind),grid=els("div","display:grid;grid-template-columns:1fr 1fr;gap:6px");
   ORG.forEach(o=>{const nm=o[0].split(" (")[0],lb=els("label","display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:var(--card-bg);border:1px solid var(--border-light);font-size:14.5px;cursor:pointer"),cb=document.createElement("input");cb.type="checkbox";cb.checked=mk.has(nm);cb.style.cssText="width:20px;height:20px;accent-color:var(--primary);flex:none";cb.onchange=()=>{if(cb.checked)mk.add(nm);else mk.delete(nm);gitSave(kind,mk)};lb.append(cb,els("span",null,nm));grid.append(lb)});
   box.append(grid);const clr=mkBtn("✖ সব টিক মুছুন",()=>{mk.clear();gitSave(kind,mk);grid.querySelectorAll("input").forEach(c=>c.checked=false)});clr.style.margin="10px 0 0";box.append(clr);
-  if(before&&before.parentNode)before.parentNode.insertBefore(box,before);else host.prepend(box)};
+   {const stt2=els("div","font-size:12.5px;color:var(--text-muted);margin-top:8px"),h2=els("div","margin-top:6px");
+   const gb=mkBtn("🔊 টিক করা অঙ্গের অডিও তৈরি করুন",async()=>{h2.textContent="";if(!mk.size){stt2.textContent="আগে অন্তত একটি অঙ্গে টিক দিন";return}stt2.textContent="⏳ টিক করা "+mk.size+"টি অঙ্গের অডিও তৈরি হচ্ছে…";const g=gitTickAudio(kind,new Set(mk),t=>stt2.textContent=t);try{await g.p;stt2.textContent="";h2.append(g.out)}catch(x){console.error(x);stt2.textContent="অডিও তৈরি করা যায়নি"}});
+   gb.style.margin="10px 0 0";gb.style.display="block";box.append(gb,stt2,h2)}
+ if(before&&before.parentNode)before.parentNode.insertBefore(box,before);else host.prepend(box)};
 window.__drOpenDisease=()=>showDiag(DISEASE);window.__drOpenMental=()=>showDiag(MENTAL);
  /* নামের তালিকা: প্রতিটি রোগ/অঙ্গের নাম আলাদা; নামে চাপলে শুধু সেটার আয়াত */
  const DIS_KEEP=new Set(["পাইলস (অর্শ/বাওয়াসির)","জ্বর","ক্যান্সার","পাতলা পায়খানা","আমাশয়","কোষ্ঠকাঠিন্য (পায়খানা কষা)","যৌন দুর্বলতা","চর্মরোগ (শ্বেতী/কুষ্ঠ)","জন্ডিস"].map(x=>x.normalize("NFC")));
