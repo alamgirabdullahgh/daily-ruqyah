@@ -82,13 +82,43 @@ async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").m
  if(my===GEN&&"IntersectionObserver"in window&&shown<more.length){io=new IntersectionObserver(es=>{if(my!==R.__g){io.disconnect();return}if(es[es.length-1].isIntersecting&&!busy&&shown<more.length)add()},{rootMargin:"600px 0px"});io.observe(btnMore)}}
 
 /* লক্ষণ ভিত্তিক রোগ নির্ণয় পাতার চার্টের একই ছক (সাতটি হেডিং, প্রতিটির নিচে অপশন) */
-function buildGroup(gi,g){const sec=el("section","ax-g zs");sec.dataset.slug=g.slug;sec.appendChild(el("h3",null,g.name));
+function buildGroup(gi,g){const sec=el("section","ax-g zs");sec.dataset.slug=g.slug;{const h=el("h3","ax-h3"),ga=el("button","ax-ga","🔊");ga.type="button";ga.setAttribute("aria-label",g.name+" — অডিও");h.append(el("span",null,g.name),ga);sec.appendChild(h)}
  const tb=el("div","ax-tb");g.cols.forEach((c,ci)=>{const r=el("div","ax-r"),o=el("div","ax-ro");c.opts.forEach((n,oi)=>{const b=el("button","ax-c",n);b.type="button";b.dataset.k=gi+"."+ci+"."+oi;o.appendChild(b)});r.append(el("div","ax-rh",c.name),o);tb.appendChild(r)});
  sec.appendChild(tb);return sec}
 
-/* ঘরের লেখা ঘরে আঁটাতে ফন্ট ছোট করা (দৃশ্যমান অবস্থায় মাপা যায়) */
-function fit(R){R.querySelectorAll(".ax-ro").forEach(o=>{const bs=[...o.children];if(o.dataset.f||!bs[0]||!bs[0].clientWidth)return;o.dataset.f="1";let s=18;bs.forEach(b=>b.style.fontSize=s+"px");while(s>5&&bs.some(b=>b.scrollWidth>b.clientWidth)){s-=.25;bs.forEach(b=>b.style.fontSize=s+"px")}});
- R.querySelectorAll(".zs").forEach(g=>{const hs=[...g.querySelectorAll(".ax-rh")];if(g.dataset.fh||!hs[0]||!hs[0].clientWidth)return;g.dataset.fh="1";let s=15;hs.forEach(h=>h.style.fontSize=s+"px");while(s>6&&hs.some(h=>h.scrollWidth>h.clientWidth)){s-=.25;hs.forEach(h=>h.style.fontSize=s+"px")}})}
+/* সব ঘরের লেখা একই মাপে: পুরো চার্টের সবচেয়ে চাপা ঘরটা যে মাপে আঁটে, সব বাটনে সেই এক মাপ (দৃশ্যমান অবস্থায় মাপা যায়) */
+function fit(R){const rows=[...R.querySelectorAll(".ax-g:not([hidden]) .ax-ro")].filter(o=>o.children[0]&&o.children[0].clientWidth);
+ if(rows.length){const all=rows.flatMap(o=>[...o.children]);let s=17;all.forEach(b=>b.style.fontSize=s+"px");while(s>5&&all.some(b=>b.scrollWidth>b.clientWidth)){s-=.25;all.forEach(b=>b.style.fontSize=s+"px")}}
+ const hs=[...R.querySelectorAll(".ax-g:not([hidden]) .ax-rh")].filter(h=>h.clientWidth);
+ if(hs.length){let s=15;hs.forEach(h=>h.style.fontSize=s+"px");while(s>6&&hs.some(h=>h.scrollWidth>h.clientWidth)){s-=.25;hs.forEach(h=>h.style.fontSize=s+"px")}}}
+
+/* ===== হেডিংয়ের পাশের অডিও: ওই বিষয়ের ঘরগুলো ক্রমানুসারে (ধরন → মুগ্ধতা, হিংসা → উৎস …) এই পাতাতেই বাজে; যে ঘর বাজছে সেখানে জ্বলজ্বলে ফোঁটা ===== */
+function regCell(gi,ci,oi){const key=gi+"."+ci+"."+oi,C=DATA.cells[key],G=DATA.axes[gi];if(!C||!window.__drXKeys)return null;
+ const cat="অক্ষ "+G.name+" "+G.cols[ci].name+" "+G.cols[ci].opts[oi],seen=new Set(),ks=[];
+ [...C.b.map(r=>[r[0],r[1]]),...C.m.map(v=>{const p=v.split(":").map(Number);return[p[0],p[1]]})].forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);ks.push(k)}});
+ if(!ks.length)return null;window.__drXKeys(cat,ks);return cat}
+function stopPlay(R){const st=R&&R.__pl;if(!st)return;st.stop=true;R.__pl=null;try{st.a&&st.a.pause()}catch(e){}st.res&&st.res();
+ R.querySelectorAll(".ax-now").forEach(x=>x.classList.remove("ax-now"));R.querySelectorAll(".ax-live").forEach(x=>x.remove());
+ R.querySelectorAll(".ax-ga.on").forEach(b=>{b.classList.remove("on");b.textContent="🔊"})}
+async function playGroup(R,sec,gi,btn){const same=R.__pl&&R.__pl.gi===gi;stopPlay(R);if(same)return;
+ const G=DATA.axes[gi],list=[];
+ G.cols.forEach((c,ci)=>c.opts.forEach((n,oi)=>{const cat=regCell(gi,ci,oi);if(cat)list.push({cat,name:c.name+" › "+n,b:sec.querySelector('.ax-c[data-k="'+gi+"."+ci+"."+oi+'"]')})}));
+ if(!list.length)return;
+ const st={gi,stop:false,a:null,res:null};R.__pl=st;btn.classList.add("on");btn.textContent="⏹";
+ const bar=el("div","ax-live"),tx=el("div","ax-lt"),hostBox=el("div");bar.append(tx,hostBox);const h3=sec.querySelector("h3");h3.after(bar);
+ R.__hosts=R.__hosts||{};
+ for(let i=0;i<list.length&&!st.stop;i++){const it=list[i];
+  R.querySelectorAll(".ax-now").forEach(x=>x.classList.remove("ax-now"));if(it.b){it.b.classList.add("ax-now");const r=it.b.getBoundingClientRect();if(r.top<60||r.bottom>innerHeight-60)it.b.scrollIntoView({behavior:"smooth",block:"center"})}
+  tx.textContent="▶ "+G.name+" › "+it.name+"  ("+bn2(i+1)+"/"+bn2(list.length)+")";
+  let host=R.__hosts[it.cat];if(!host)host=R.__hosts[it.cat]=el("div");
+  hostBox.textContent="";hostBox.appendChild(host);
+  let a=null;
+  try{if(host.dataset.done==="1"){a=host.querySelector("audio");if(a){a.currentTime=0;await a.play().catch(()=>{})}}
+   else{await window.__drHomeAudio("x",it.cat,host);a=host.querySelector("audio")}}catch(e){a=null}
+  if(st.stop)return;
+  if(!a)continue;
+  st.a=a;await new Promise(res=>{st.res=res;a.onended=res;a.onerror=res});a.onended=a.onerror=null;st.res=null}
+ if(!st.stop)stopPlay(R)}
 
 const SLUG={nazar:1,jadu:1,jin:1};
 /* R = চার্ট বসানোর ঘর: #axBody (পুরো পাতা, শিরোনামসহ) অথবা হোমের ট্যাবের ভেতরের .ax-home (শুধু চার্ট) */
@@ -98,13 +128,16 @@ async function mount(R,slug,full,title){if(!R)return;
   R.textContent="";
   if(full){R.appendChild(el("h2","ax-t",title||"সাতটি অক্ষ"));}
   DATA.axes.forEach((g,gi)=>R.appendChild(buildGroup(gi,g)));
-  R.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".ax-c");if(!b)return;if(b.classList.contains("on")){closePanel(R);return}
+  R.addEventListener("click",e=>{const ga=e.target.closest&&e.target.closest(".ax-ga");if(ga){const sec=ga.closest(".ax-g");playGroup(R,sec,+DATA.axes.findIndex(g=>g.slug===sec.dataset.slug),ga);return}
+   const b=e.target.closest&&e.target.closest(".ax-c");if(!b)return;if(b.classList.contains("on")){closePanel(R);return}
    openCell(b).then(()=>{const p=b.closest(".ax-g").querySelector(".ax-p");if(p&&p.getBoundingClientRect().top>innerHeight*.7)p.scrollIntoView({behavior:"smooth",block:"start"})}).catch(()=>{})});
   R.dataset.ready="1";R.__ld=0}
- closePanel(R);
+ stopPlay(R);closePanel(R);
  if(full){const tt=R.querySelector(".ax-t");if(tt)tt.textContent=title||"সাতটি অক্ষ"}
  const sl=SLUG[slug]?slug:"";R.querySelectorAll(".ax-g").forEach(g=>{g.hidden=!!sl&&g.dataset.slug!==sl});
  requestAnimationFrame(()=>requestAnimationFrame(()=>fit(R)))}
+window.addEventListener("resize",()=>{const R=$("axBody");if(R&&R.dataset.ready&&R.offsetParent)fit(R)});
+window.addEventListener("hashchange",()=>{if(!/^#(resp|treat|axes)/.test(location.hash))stopPlay($("axBody"))});
 window.__drAxes=(slug,title)=>mount($("axBody"),slug,true,title);
 window.__drAxesMount=(R,slug)=>mount(R,slug,false);
 window.__drAxesFit=R=>fit(R);

@@ -21,6 +21,8 @@ $("za").addEventListener("click",v=>{const n=v.target.closest("[data-i]");if(!n)
 if(n.dataset.l!=null){const l=+n.dataset.l;if(ch[k]&&ch[k][0]==o&&ch[k][1]==l)delete ch[k];else ch[k]=[o,l];U();b.innerHTML=B(i,c,o);return}
 const w=n.classList.contains("zn");document.querySelectorAll(".zn").forEach(x=>x.classList.remove("zn"));document.querySelectorAll(".zg").forEach(x=>{x.style.display="none";x.innerHTML=""});
 if(!w){n.classList.add("zn");b.innerHTML=B(i,c,o);b.style.display="block"}});
-const fitZ=R=>{R.querySelectorAll(".ax-ro").forEach(o=>{const bs=[...o.children];if(o.dataset.f||!bs[0]||!bs[0].clientWidth)return;o.dataset.f="1";let s=18;bs.forEach(b=>b.style.fontSize=s+"px");while(s>5&&bs.some(b=>b.scrollWidth>b.clientWidth)){s-=.25;bs.forEach(b=>b.style.fontSize=s+"px")}});
- R.querySelectorAll(".zs").forEach(g=>{const hs=[...g.querySelectorAll(".ax-rh")];if(g.dataset.fh||!hs[0]||!hs[0].clientWidth)return;g.dataset.fh="1";let s=15;hs.forEach(h=>h.style.fontSize=s+"px");while(s>6&&hs.some(h=>h.scrollWidth>h.clientWidth)){s-=.25;hs.forEach(h=>h.style.fontSize=s+"px")}})};fitZ($("za"));
+const fitZ=R=>{const rows=[...R.querySelectorAll(".zs:not([hidden]) .ax-ro")].filter(o=>o.children[0]&&o.children[0].clientWidth);
+ if(rows.length){const all=rows.flatMap(o=>[...o.children]);let s=17;all.forEach(b=>b.style.fontSize=s+"px");while(s>5&&all.some(b=>b.scrollWidth>b.clientWidth)){s-=.25;all.forEach(b=>b.style.fontSize=s+"px")}}
+ const hs=[...R.querySelectorAll(".zs:not([hidden]) .ax-rh")].filter(h=>h.clientWidth);
+ if(hs.length){let s=15;hs.forEach(h=>h.style.fontSize=s+"px");while(s>6&&hs.some(h=>h.scrollWidth>h.clientWidth)){s-=.25;hs.forEach(h=>h.style.fontSize=s+"px")}}};window.addEventListener("resize",()=>{const z=$("za");if(z&&z.offsetParent)fitZ(z)});fitZ($("za"));
 };
