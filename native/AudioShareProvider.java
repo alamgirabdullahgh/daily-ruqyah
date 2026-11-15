@@ -11,10 +11,16 @@ import android.provider.OpenableColumns;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 // অডিও শেয়ারের জন্য: ফাইলটা WhatsApp-কে "সাধারণ ফাইল" (application/octet-stream) হিসেবে দেখায়, অডিও/মিডিয়া হিসেবে নয়।
 // তাই WhatsApp এটাকে ডকুমেন্ট হিসেবে পাঠায় (হাতে "ডকুমেন্ট" বেছে ফাইল পাঠানোর মতো), ১৬MB মিডিয়া-সীমা লাগে না।
 public class AudioShareProvider extends ContentProvider {
+    // ফাইলের আসল (বাংলা) নাম: লিংকে থাকে শুধু ইংরেজি নাম (share123.mp3), যাতে WhatsApp লিংক থেকেই .mp3 ধরতে পারে;
+    // বাংলা নাম লিংকে থাকলে এক্সটেনশন চেনা যায় না আর ফাইল "BIN" হয়ে যায়। দেখানোর নাম এখান থেকে যায়।
+    public static final Map<String, String> NAMES = new ConcurrentHashMap<>();
+
     public static File dir(Context c) {
         File d = new File(c.getCacheDir(), "share");
         d.mkdirs();
@@ -42,7 +48,7 @@ public class AudioShareProvider extends ContentProvider {
         MatrixCursor cur = new MatrixCursor(cols);
         Object[] row = new Object[cols.length];
         for (int i = 0; i < cols.length; i++) {
-            if (OpenableColumns.DISPLAY_NAME.equals(cols[i])) row[i] = uri.getLastPathSegment();
+            if (OpenableColumns.DISPLAY_NAME.equals(cols[i])) { String n = uri.getLastPathSegment(); String real = n == null ? null : NAMES.get(n); row[i] = real != null ? real : n; }
             else if (OpenableColumns.SIZE.equals(cols[i])) row[i] = f != null ? f.length() : 0L;
         }
         cur.addRow(row);

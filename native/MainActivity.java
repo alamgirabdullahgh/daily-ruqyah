@@ -109,8 +109,15 @@ public class MainActivity extends BridgeActivity {
                     File[] old = d.listFiles();
                     if (old != null) for (File x : old) x.delete();
                     String safe = name.replace("/", "-");
-                    o = new FileOutputStream(new File(d, safe));
-                    shareNames.put(id, safe);
+                    int dot = safe.lastIndexOf('.');
+                    String ext = dot >= 0 ? safe.substring(dot + 1).toLowerCase() : "";
+                    if (!ext.matches("[a-z0-9]{1,5}")) ext = "mp3";
+                    // লিংকে শুধু ইংরেজি নাম (WhatsApp যাতে .mp3 চেনে); পাঠানোর সময় দেখানোর নাম আসল বাংলা নামই থাকে
+                    String fileName = "share" + System.currentTimeMillis() + "." + ext;
+                    o = new FileOutputStream(new File(d, fileName));
+                    AudioShareProvider.NAMES.clear();
+                    AudioShareProvider.NAMES.put(fileName, safe);
+                    shareNames.put(id, fileName);
                 } else if (Build.VERSION.SDK_INT >= 29) {
                     ContentValues v = new ContentValues();
                     v.put(MediaStore.Downloads.DISPLAY_NAME, name);
