@@ -2,12 +2,17 @@ package com.dailyruqyah.app;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowInsetsController;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -48,7 +53,31 @@ public class MainActivity extends BridgeActivity {
                 } catch (Exception e) { finish(); }
             }
         });
+        applyStatusBar();
         BgUpdater.schedule(this, 60 * 1000L); // অ্যাপ খোলার ১ মিনিট পর থেকে ব্যাকগ্রাউন্ড আপডেট-পাহারা চালু
+    }
+
+    // স্ট্যাটাস বার (সময়/নেটওয়ার্ক/ব্যাটারি): নিচের নেভিগেশন বারের ব্যাকগ্রাউন্ডের একই রং (দিনে #fffdf9, ডার্ক মোডে #101b16); আইকন রংও সেই অনুযায়ী
+    private void applyStatusBar() {
+        try {
+            boolean night = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+            Window w = getWindow();
+            w.setStatusBarColor(Color.parseColor(night ? "#101b16" : "#fffdf9"));
+            if (Build.VERSION.SDK_INT >= 30) {
+                WindowInsetsController c = w.getInsetsController();
+                if (c != null) c.setSystemBarsAppearance(night ? 0 : WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
+            } else if (Build.VERSION.SDK_INT >= 23) {
+                View d = w.getDecorView();
+                int f = d.getSystemUiVisibility();
+                d.setSystemUiVisibility(night ? (f & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (f | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
+            }
+        } catch (Exception ignored) {}
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        applyStatusBar();
     }
 
     @Override
