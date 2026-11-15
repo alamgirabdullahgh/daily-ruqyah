@@ -1095,8 +1095,8 @@ function init(){const q=$("rsQ"),pad=$("rsPad");let mode="ar",BW=null,kb=false;
    const list=[];for(const [j,x] of T)for(let k=0;k<11;k++)list.push(B[(11*j+k)%B.length],x);
    await mergeAudio(list,e.out,t=>e.say(t),{rep:1,set:1,memo:true,noplay:true,name:"শরীরের গিঁট ধ্বংসের রুকইয়াহ "+kind+" (টিক করা অঙ্গ)"});e.done=true;return e})();return e}
  window.__drGitAudio=gitAudio;window.__drGitCount=k=>{const C=GITN[k],tp=C.types?TOPICS.find(x=>x.name===C.types):null;return 1+gitGroups(C).length};
- window.__drGit=(host,kind,before)=>{const C=GITN[kind];if(!C||!host)return;const old=document.getElementById("drGit");if(old)old.remove();
-  const box=els("div","margin:14px 0 16px;padding:12px 12px 14px;border-radius:14px;background:var(--primary-light,#e6efe9);border:1.5px solid var(--accent)");box.id="drGit";
+ window.__drGit=(host,kind,before,uid)=>{const C=GITN[kind];if(!C||!host)return;const gid=uid?"drGit-"+uid:"drGit",old=document.getElementById(gid);if(old)old.remove();
+  const box=els("div","margin:14px 0 16px;padding:12px 12px 14px;border-radius:14px;background:var(--primary-light,#e6efe9);border:1.5px solid var(--accent)");box.id=gid;
   box.append(els("div","font-weight:800;font-size:17px;line-height:1.6;color:var(--accent);text-align:center;margin:0 0 8px","শরীরের প্রতিটি পয়েন্টে থাকা "+C.noun+" গিঁট ধ্বংসের রুকইয়াহ"));
   box.append(els("div","font-size:13.5px;line-height:1.7;color:var(--text-main);margin:0 0 10px","অডিও তৈরি হবে এভাবে: শরীরের একটি অঙ্গের আয়াত স্থির থাকে; তার সাথে "+C.noun.replace(/র$/,"")+"র ১১টি আলাদা আয়াত একটার পর একটা আঘাত করে — আয়াত-১, অঙ্গ, আয়াত-২, অঙ্গ, আয়াত-৩, অঙ্গ… ১১ বার। এরপর পরের অঙ্গে একইভাবে। এভাবে অঙ্গে থাকা গিঁটগুলো ভাঙা হয়।"));
   const tpD=C.types?TOPICS.find(x=>x.name===C.types):null,names=[C.types?"সব "+C.noun.replace(/র$/,""):C.noun.replace(/র$/,"")].concat(gitGroups(C).map(g=>g.name));
