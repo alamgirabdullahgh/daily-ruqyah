@@ -1,35 +1,23 @@
 /* গবেষণার মৌলিক নীতিমালা — অ্যাপের একমাত্র উৎস। সার্চের ওপরের বক্স এখান থেকেই আঁকা হয়।
-   নতুন কিছু যোগ করার আগে নীতি ৮-এর প্রশ্নটা করতে হবে; নীতি বদলাতে হলে আগে এই ফাইল, তারপর কোড। */
+   দুটি নীতিই সম্পূর্ণ অ্যাপে প্রযোজ্য। নীতি বদলাতে হলে আগে এই ফাইল, তারপর কোড। */
 window.__drPrinData=[
- {g:"আয়াত",open:true,items:[
-  {n:"১",t:"আয়াত নির্বাচন",b:"সমস্যার সাথে সম্পর্কিত সব আয়াত বের করা → সবচেয়ে কাছাকাছি ও মৌলিক আয়াত নির্বাচন → তা থেকে মৌলিক অংশ বের করা।"}
+ {n:"১",t:"আয়াত নির্বাচনের তিন ধাপ",steps:[
+  "সমস্যা সম্পর্কিত সবগুলো আয়াত বের করা",
+  "সেখান থেকে মৌলিক আয়াত বের করা",
+  "সেটা থেকে মৌলিক অংশ বের করা"
  ]},
- {g:"লক্ষণ ভিত্তিক রোগ নির্ণয়",items:[
-  {n:"২",t:"লক্ষণের সীমা",b:"এখানে শুধু রোগীর রোজকার অভিজ্ঞতা থাকবে: শরীরের উপসর্গ, মানসিক অবস্থা, স্বপ্ন, সময় বা তারিখের ধরন, জীবনের ঘটনা। রুকইয়াহ, আয়াত বা অডিও শোনা-করার সময় যা ঘটে, তা লক্ষণ নয়; তার জায়গা প্রতিক্রিয়া ভিত্তিক রোগ নির্ণয়।"},
-  {n:"৩",t:"সূত্রের সততা",b:"লক্ষণের প্রতিটি ঘরে তিনটির একটি চিহ্ন থাকবে: 🟢 আমল-গাইডের সরাসরি আলামত, 🟡 গাইডের উপকরণ থেকে সাজানো আন্দাজ, 🔴 তথ্য অপ্রতুল। আন্দাজ কখনো 🟢 দেখানো যাবে না। গাইডে না পেলে ঘর বানিয়ে ভরা হবে না; \"তথ্য অপ্রতুল\" লেখা হবে।"}
- ]},
- {g:"প্রতিক্রিয়া ভিত্তিক রোগ নির্ণয়",items:[
-  {n:"৪",t:"প্রতিক্রিয়ার সীমা",b:"এখানে শুধু রুকইয়াহ শোনা বা করার সময় এবং ঠিক পরের প্রতিক্রিয়া থাকবে: চুপ থাকা, কাঁদা, কাঁপা, খিঁচুনি, অজ্ঞান হওয়া, হাজির হওয়া বা কথা বলা, কোনো অঙ্গে ব্যথা বা ভারী ভাব। রোজকার লক্ষণ এখানে আসবে না।"},
-  {n:"৫",t:"অঙ্গে টিক ও পুনরায় অডিও",b:"অডিও শোনার সময় যে অঙ্গে সমস্যা বা প্রতিক্রিয়া হয়, তালিকায় সেই অঙ্গে টিক দিতে হবে। এরপর টিক করা অঙ্গগুলো দিয়ে একই প্যাটার্নে নতুন অডিও তৈরি হবে: আয়াত-১, অঙ্গ, আয়াত-২, অঙ্গ… ১১ বার, তারপর পরের অঙ্গ। আয়াতের জোড়া মূল অডিওর সাথে হুবহু থাকবে, যেন যে জোড়া শুনে প্রতিক্রিয়া হয়েছিল সেটাই ফিরে আসে। এই নিয়ম বদনজর, জাদু ও জিন তিন ক্ষেত্রেই একই।"}
- ]},
- {g:"চিকিৎসা",items:[
-  {n:"৬",t:"চিকিৎসার ভিত্তি",b:"চিকিৎসা দাঁড়াবে লক্ষণ ও প্রতিক্রিয়া মিলিয়ে পাওয়া ফলাফলের ওপর। আয়াত বাছাই হবে নীতি ১ মেনে, আর চিকিৎসার আয়াতের নিচে ওই অঙ্গ বা সমস্যা সম্পর্কিত বাকি সব আয়াত থাকবে। নির্ণয় না মিললে রোগীকে আগে রোগ নির্ণয়ে পাঠানো হবে, আন্দাজে চিকিৎসা দেওয়া হবে না।"}
- ]},
- {g:"সবার জন্য",items:[
-  {n:"৭",t:"এক তথ্য, এক জায়গা",b:"একটি তথ্য থাকবে শুধু একটি ভাগে (লক্ষণ, প্রতিক্রিয়া বা চিকিৎসা)। ভুল ভাগে পাওয়া তথ্য মুছে ফেলা হবে না; কেটে সঠিক ভাগে সরানো হবে, যাতে কিছু হারায় না। একই তথ্যের দ্বিতীয় কপি রাখা যাবে না; অন্য ভাগে দরকার হলে সেখান থেকে দেখানো হবে।"},
-  {n:"৮",t:"যোগ করার আগে যাচাই",b:"নতুন যেকোনো লাইন, ঘর বা ফিচার যোগ করার আগে তিনটি প্রশ্ন: এটা কোন ভাগের (লক্ষণ, প্রতিক্রিয়া, চিকিৎসা)? এর সূত্র কী (নীতি ৩-এর চিহ্ন)? এটা তিনটি রুকইয়াহ ক্ষেত্রেই (বদনজর, জাদু, জিন) একই নিয়মে চলে কি? কোনো ভাগেই না মিললে আগে এই নীতিমালা বদলানো হবে, তারপর কোড।"}
- ]}
+ {n:"২",t:"সাতটি অক্ষে ভাগ",b:"আয়াতগুলো সাতটি অক্ষে ভাগ করা থাকবে।",btn:{label:"সাতটি অক্ষ",hash:"#diag"}}
 ];
 (function(){
  var box=document.getElementById("drPrin"),D=window.__drPrinData;if(!box||!D)return;
  var mk=function(tag,css,txt){var e=document.createElement(tag);if(css)e.style.cssText=css;if(txt!=null)e.textContent=txt;return e};
  box.textContent="";
  box.appendChild(mk("div","font-weight:800;font-size:17px;color:var(--accent);margin-bottom:8px","গবেষণার মৌলিক নীতিমালা"));
- D.forEach(function(G){
-  var d=document.createElement("details");d.style.cssText="text-align:left;margin:0 0 6px;border-top:1px solid var(--border-light,#cfdcd3);padding-top:6px";if(G.open)d.open=true;
-  d.appendChild(mk("summary","cursor:pointer;font-weight:800;font-size:15.5px;color:var(--primary);padding:4px 0",G.g));
-  G.items.forEach(function(it){
-   var p=mk("div","font-size:15px;line-height:1.8;color:var(--text-main);margin:6px 0 4px");
-   p.appendChild(mk("b","color:var(--primary)",it.n+". "+it.t+": "));p.appendChild(document.createTextNode(it.b));d.appendChild(p)});
+ D.forEach(function(P,i){
+  var d=mk("div","text-align:left;margin:0 0 6px;padding-top:6px"+(i?";border-top:1px solid var(--border-light,#cfdcd3)":""));
+  d.appendChild(mk("div","font-weight:800;font-size:15.5px;color:var(--primary);padding:2px 0","মৌলিক নীতি "+P.n+": "+P.t));
+  if(P.steps)P.steps.forEach(function(s,k){d.appendChild(mk("div","font-size:15px;line-height:1.8;color:var(--text-main);margin:4px 0 0","ধাপ "+["১","২","৩"][k]+": "+s))});
+  if(P.b)d.appendChild(mk("div","font-size:15px;line-height:1.8;color:var(--text-main);margin:4px 0 0",P.b));
+  if(P.btn){var b=mk("button","margin:6px 0 2px;padding:8px 16px;border:1.5px solid var(--primary);border-radius:12px;background:var(--card-bg,#fff);color:var(--primary);font:inherit;font-weight:800;font-size:15.5px;cursor:pointer",P.btn.label+" ›");b.type="button";b.onclick=function(){location.hash=P.btn.hash;setTimeout(function(){var z=document.getElementById("za");if(z)z.scrollIntoView()},400)};d.appendChild(b)}
   box.appendChild(d)});
 })();
