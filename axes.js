@@ -82,13 +82,14 @@ async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").m
  if(my===GEN&&"IntersectionObserver"in window&&shown<more.length){io=new IntersectionObserver(es=>{if(my!==R.__g){io.disconnect();return}if(es[es.length-1].isIntersecting&&!busy&&shown<more.length)add()},{rootMargin:"600px 0px"});io.observe(btnMore)}}
 
 /* লক্ষণ ভিত্তিক রোগ নির্ণয় পাতার চার্টের একই ছক (সাতটি হেডিং, প্রতিটির নিচে অপশন) */
-const mkb=(cls,id,txt,lab)=>{const b=el("button",cls,txt);b.type="button";b.dataset.s=id;b.setAttribute("aria-label",lab);return b};
+const AUL="🔊 অডিও",PDL="📄 PDF";
+const mkb=(cls,id,txt,lab)=>{const b=el("button",cls,txt==="🔊"?AUL:txt==="📄"?PDL:txt);b.type="button";b.dataset.s=id;b.setAttribute("aria-label",lab);return b};
 function buildGroup(gi,g){const sec=el("section","ax-g zs");sec.dataset.slug=g.slug;
- {const h=el("h3","ax-h3");h.append(el("span",null,g.name),mkb("ax-au ax-ga","g"+gi,"🔊",g.name+" — অডিও"),mkb("ax-pd ax-ga","g"+gi,"📄",g.name+" — PDF"));sec.appendChild(h)}
+ {const h=el("h3","ax-h3");h.append(el("span",null,g.name),mkb("ax-pd ax-ga","g"+gi,"📄",g.name+" — PDF"),mkb("ax-au ax-ga","g"+gi,"🔊",g.name+" — অডিও"));sec.appendChild(h)}
  const tb=el("div","ax-tb");
  g.cols.forEach((c,ci)=>{const r=el("div","ax-r"),o=el("div","ax-ro");r.dataset.r=gi+"."+ci;
-  c.opts.forEach((n,oi)=>{if(n==="উভয়")return;const k=gi+"."+ci+"."+oi,w=el("div","ax-cw"),b=el("button","ax-c",n);b.type="button";b.dataset.k=k;const cb=el("div","ax-cb");cb.append(mkb("ax-au ax-mb","c"+k,"🔊",n+" — অডিও"),mkb("ax-pd ax-mb","c"+k,"📄",n+" — PDF"));w.append(b,cb);o.appendChild(w)});
-  const rh=el("div","ax-rh"),rb=el("div","ax-rb");rb.append(mkb("ax-au ax-mb","r"+gi+"."+ci,"🔊",c.name+" — অডিও"),mkb("ax-pd ax-mb","r"+gi+"."+ci,"📄",c.name+" — PDF"));rh.append(el("span","ax-rl",c.name),rb);r.append(rh,o);tb.appendChild(r)});
+  c.opts.forEach((n,oi)=>{if(n==="উভয়")return;const k=gi+"."+ci+"."+oi,w=el("div","ax-cw"),b=el("button","ax-c",n);b.type="button";b.dataset.k=k;const cb=el("div","ax-cb");cb.append(mkb("ax-pd ax-mb","c"+k,"📄",n+" — PDF"),mkb("ax-au ax-mb","c"+k,"🔊",n+" — অডিও"));w.append(b,cb);o.appendChild(w)});
+  const rh=el("div","ax-rh"),rb=el("div","ax-rb");rb.append(mkb("ax-pd ax-mb","r"+gi+"."+ci,"📄",c.name+" — PDF"),mkb("ax-au ax-mb","r"+gi+"."+ci,"🔊",c.name+" — অডিও"));rh.append(el("span","ax-rl",c.name),rb);r.append(rh,o);tb.appendChild(r)});
  sec.appendChild(tb);return sec}
 
 /* সব ঘরের লেখা একই মাপে: পুরো চার্টের সবচেয়ে চাপা ঘরটা যে মাপে আঁটে, সব বাটনে সেই এক মাপ (দৃশ্যমান অবস্থায় মাপা যায়) */
@@ -113,7 +114,7 @@ function scope(id,sec){const t=id[0],p=id.slice(1).split(".").map(Number),gi=p[0
  return{G,list,cells,cat,gi}}
 function stopPlay(R){const st=R&&R.__pl;if(!st)return;st.stop=true;R.__pl=null;try{if(st.a){st.a.pause();st.a.ontimeupdate=st.a.onended=st.a.onplay=null}}catch(e){}
  R.querySelectorAll(".ax-now").forEach(x=>x.classList.remove("ax-now"));R.querySelectorAll(".ax-live").forEach(x=>x.remove());
- R.querySelectorAll(".ax-au.on").forEach(b=>{b.classList.remove("on");b.textContent="🔊"})}
+ R.querySelectorAll(".ax-au.on").forEach(b=>{b.classList.remove("on");b.textContent=AUL})}
 /* একবার জোড়া হলে মনে থাকে: দ্বিতীয়বার সাথে সাথে বাজে */
 const GM={};
 function gMerge(id,sc){if(GM[id])return GM[id];
@@ -126,12 +127,12 @@ async function playSeq(R,id,sec,btn){const same=R.__pl&&R.__pl.id===id;stopPlay(
  if(!window.__drGroupAudio)return;
  const sc=scope(id,sec),{G,list,cells}=sc;
  if(!list.length)return;
- const st={id,stop:false,a:null};R.__pl=st;btn.classList.add("on");btn.textContent="⏹";
+ const st={id,stop:false,a:null};R.__pl=st;btn.classList.add("on");btn.textContent="⏹ থামান";
  const bar=el("div","ax-live"),tx=el("div","ax-lt"),nt=el("div","ax-ln"),hb=el("div");bar.append(tx,nt,hb);anchorOf(sec,id).after(bar);
  const ttl=id[0]==="c"?cells[0].name:id[0]==="r"?G.cols[+id.slice(1).split(".")[1]].name+" — "+bn2(cells.length)+"টি ঘর একসাথে":"সব "+bn2(cells.length)+"টি ঘর একসাথে";
  tx.textContent="▶ "+G.name+" › "+ttl;nt.textContent="⏳ অডিও প্রস্তুত হচ্ছে…";
  const ent=gMerge(id,sc);ent.note=t=>{if(R.__pl===st)nt.textContent="⏳ "+t};
- try{await ent.p}catch(e){console.error(e);if(R.__pl===st){nt.textContent="অডিও তৈরি করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";btn.classList.remove("on");btn.textContent="🔊";R.__pl=null}return}
+ try{await ent.p}catch(e){console.error(e);if(R.__pl===st){nt.textContent="অডিও তৈরি করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";btn.classList.remove("on");btn.textContent=AUL;R.__pl=null}return}
  if(st.stop||R.__pl!==st)return;
  nt.remove();hb.appendChild(ent.out);
  const a=ent.out.querySelector("audio");let mk=ent.marks||[];st.a=a;
