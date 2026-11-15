@@ -1249,13 +1249,13 @@ const renderOrganTreat=(n,list)=>{GEN++;CURT=null;window.__bq="";window.__sq=n;r
   {const h1=els("div",HS.replace("margin:16px 2px 10px","margin:0 2px 10px")+";position:relative","🫀 অঙ্গভিত্তিক");h1.className="dr-combo-h";const b0=$("drBack");if(b0){const cb=b0.cloneNode(true);cb.removeAttribute("id");cb.className="dr-backbtn dr-combo-back";cb.onclick=()=>b0.click();h1.appendChild(cb)}host.appendChild(h1)}
   const prO=mental?"মানসিক অঙ্গ":"শারীরিক অঙ্গ",prD=mental?"মানসিক সমস্যা":"শারীরিক রোগ";
   host.appendChild(mkList(organs.map(n=>({name:n,has:true,fn:()=>window.__drOpenOrgan(n)})),prO));
-  host.appendChild(els("div",HS,mental?"💊 সমস্যাভিত্তিক":"💊 রোগভিত্তিক"));
+  {const h2=els("div",HS,mental?"💊 সমস্যাভিত্তিক":"💊 রোগভিত্তিক");h2.className="dr-combo-h2";host.appendChild(h2)}
   host.appendChild(mkList(secs.map(x=>({name:x.name,has:x.ids.size>0,fn:()=>{$("rsBox").classList.add("dr-tonly");showDiag(Object.assign({},CFG,{only:x.name,back}))}})),prD));
   host.addEventListener("click",e=>{const au=e.target.closest&&e.target.closest(".drq-au,.drq-pd");if(!au)return;e.preventDefault();const li=au.closest("li"),isP=au.classList.contains("drq-pd"),hp=li&&li.querySelector('.drq-aup[data-k="'+(isP?"pdf":"au")+'"]');const fn=isP?window.__drHomePdf:window.__drHomeAudio;fn&&fn("x",au.getAttribute("data-c"),hp)});
   $("rsOut").appendChild(host);
   regX().catch(()=>{});setTimeout(()=>window.__drHomePrebuild&&window.__drHomePrebuild(),800);
-  fitX();setTimeout(fitX,250)};
- window.__drOpenList=k=>{
+  fitX();setTimeout(fitX,250);{const sec=window.__drSec;window.__drSec="";if(sec==="disease")setTimeout(()=>{const t=host.querySelector(".dr-combo-h2");if(t)t.scrollIntoView({block:"start"})},350)}};
+ window.__drOpenList=k0=>{const sp=String(k0).split("@"),k=sp[0];window.__drSec=sp[1]||"";
   const phys=()=>showNames("🩺 শারীরিক",[{name:"অঙ্গভিত্তিক",fn:()=>window.__drOpenList("organ")},{name:"রোগভিত্তিক",fn:()=>window.__drOpenList("disease")}],"একটি বেছে নিন");
   const ment=()=>showNames("🧠 মানসিক",[{name:"অঙ্গভিত্তিক",fn:()=>window.__drOpenList("mentalorgan")},{name:"রোগভিত্তিক",fn:()=>window.__drOpenList("mental")}],"একটি বেছে নিন");
   if(k==="physical")combo("physical");

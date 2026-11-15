@@ -1168,10 +1168,10 @@ body.is-home{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
 /* দৈনন্দিন রুকইয়াহ কার্ড: "● দৈনন্দিন রুকইয়াহ  শারীরিক  মানসিক" এক লাইনে; ট্যাবে শুধু ভেতরের তথ্য বদলায় (বদনজর·জাদু·জিন কার্ডের মতো) */
 #drLanding .drq-grid>.drq-card>.drq-tabs.drq-dtabs{display:flex!important;align-items:center;gap:clamp(8px,3vw,16px)!important;grid-template-columns:none!important;padding:4px 6px 4px 10px}
 .drq-dtabs .drq-ttl{display:inline-flex;align-items:center;gap:8px;flex:none;white-space:nowrap;color:var(--primary);font-weight:700;font-size:clamp(15px,4.9vw,19px);font-family:var(--font-head)}
-.drq-dtabs .drq-ttl::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--accent)}
-#drLanding .drq-grid>.drq-card>.drq-tabs.drq-dtabs .drq-tab{width:auto;flex:none;padding:5px 3px;gap:0;font-size:clamp(14px,4.4vw,18px);justify-content:center;border-radius:0}
-#drLanding .drq-grid>.drq-card>.drq-tabs.drq-dtabs .drq-tab::before{display:none}
-.drq-dtabs .drq-tab.on{color:var(--primary);opacity:1;box-shadow:inset 0 -2.5px 0 var(--accent)}
+.drq-dtabs .drq-ttl::before{display:none}
+#drLanding .drq-grid>.drq-card>.drq-tabs.drq-dtabs .drq-tab{width:auto;flex:none;padding:5px 3px;gap:5px;font-size:clamp(14px,4.4vw,18px);justify-content:center;border-radius:0}
+#drLanding .drq-grid>.drq-card>.drq-tabs.drq-dtabs .drq-tab::before{display:inline-block}
+.drq-dtabs .drq-tab.on{color:var(--primary);opacity:1;box-shadow:none}
 /* "সব একসাথে" সারি: পুরো প্রস্থে, PDF/অডিও বাম পাশে */
 #drLanding .drq-opts.drq-two>li.drq-whole .drq-air{flex:1 1 100%}
 #drLanding .drq-opts.drq-two>li.drq-whole .drq-air>.drq-bt{order:-1}
