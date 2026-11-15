@@ -988,3 +988,6 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:auto 0 18px;flex
 /* বোতামে ছুঁয়ে ধরে রাখলে লেখা-নির্বাচন/মেনু যেন না আসে; চাপা অবস্থায় লেখা যেন সাদা হয়ে মিশে না যায় */
 .drq-opts a,.drq-opts button,.drq-bt button,.dr-nav,.dr-bn,.rs-wb,.rs-ib{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 :is(#drLanding,.dr-physhost) .drq-opts .drq-air>a:active{background:transparent;color:var(--primary)}
+
+/* বাটনের নিচের হালকা সবুজ প্যানেল (PDF/অডিও/লেখার বাটন যে ব্যাকগ্রাউন্ডে বসে) সরানো: বাটন ও তার দাগ আগের মতোই, কার্ডের সাদা জমিন থাকে */
+#drLanding .drq-air,.dr-physhost .drq-air,.drq-air{background:transparent!important}
