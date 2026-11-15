@@ -1023,3 +1023,13 @@ body.is-home .drq-tk.drq-tkbar{margin:0 0 3px}
 body.is-home .drq-support.drq-hero,.drq-support.drq-hero{max-height:90px;min-height:72px}
 .drq-tk.drq-tkbar{height:38px}
 .drq-tk.drq-tkbar span{line-height:36px;font-size:19px}
+
+/* হোম: প্রতিটি বিষয়ের চার্ট; আগের তিন অপশনের কার্ড (.drq-amalcard) শুধু "আমল" পাতায় (#amal) */
+#drLanding .drq-amalcard{display:none}
+#drLanding.am-mode .drq-amalcard{display:block}
+#drLanding.am-mode>*:not(.drq-grid),#drLanding.am-mode .drq-grid>:not(.drq-amalcard){display:none!important}
+#drLanding .drq-amh{text-align:center;font-size:17px;color:var(--primary)}
+#drLanding .drq-chartcard .drq-opts a{justify-content:center;font-size:16px;font-weight:800;padding:13px 14px}
+/* ব্যানার ওপরে লেগে থাকে; বাকি ফাঁকা জায়গা নিচে (নেভিগেশন বারের ওপরে) যায় */
+body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:6px 0 3px}
+#drLanding .drq-grid{margin-bottom:auto}
