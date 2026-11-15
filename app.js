@@ -308,14 +308,14 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=(s,
  const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));AS.loc=AS.net=0;let pool=null;try{pool=await mkEncPool()}catch(e){console.error(e);pool=null}const jobs=[],marks=[],oi=[],memo=(opt&&opt.memoMap)||new Map(),MK=x=>x[0]+":"+x[1];
  let wl=null;try{wl=await navigator.wakeLock.request("screen")}catch(e){}
  const push=pcm=>{for(let i=0;i<pcm.length;i+=B){const m=enc.encodeBuffer(pcm.subarray(i,i+B));if(m.length)mp3.push(new Uint8Array(m))}};
- const W=14,pf=[],get=i=>pf[i]||(pf[i]=fetchAud(list[i][0],list[i][1]).then(ab=>ab?ctx.decodeAudioData(ab).then(d=>({d}),()=>({err:1})):null).catch(()=>null));/* সামনের ১৪টি আয়াত একসাথে আনা ও ডিকোড হয় (আগে ৪টি, ডিকোড ক্রমে); এনকোডার ওয়ার্কারগুলো তাই বসে থাকে না */let ok=0,bad=0,cutN=0;
+ const W=6,pf=[],get=i=>pf[i]||(pf[i]=fetchAud(list[i][0],list[i][1]).then(ab=>ab?ctx.decodeAudioData(ab).then(d=>({d}),()=>({err:1})):null).catch(()=>null));/* সামনের ১৪টি আয়াত একসাথে আনা ও ডিকোড হয় (আগে ৪টি, ডিকোড ক্রমে); এনকোডার ওয়ার্কারগুলো তাই বসে থাকে না */let ok=0,bad=0,cutN=0;
  for(let i=0;i<list.length;i++){for(let j=i;j<Math.min(i+W,list.length);j++)if(!(opt&&opt.memo&&memo.has(MK(list[j]))))get(j);
   if(opt&&opt.memo&&pool&&memo.has(MK(list[i]))){jobs.push(memo.get(MK(list[i])));oi.push(i);ok++;if(i%200===0){note("অডিও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+"…");await new Promise(r=>setTimeout(r))}continue}
   note("অডিও প্রস্তুত ও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+(bad?" (বাদ: "+bn2(bad)+")":"")+"…");
   const dr=await get(i);pf[i]=null;
   if(!dr){bad++;if(!ok&&bad>=5)break;continue}
   try{if(dr.err)throw 0;const d=dr.d,ch=d.getChannelData(0),pcm=smoothAyah(tsm(ch,sr,spdOf()),sr),rp=RP(list[i][0],list[i][1]);
-    if(pool){const fl=new Int16Array(pcm.length+gap.length);fl.set(pcm);fl.set(gap,pcm.length);await pool.room();{const jb={p:pool.run(fl,sr),pcm:fl,rp};jobs.push(jb);if(opt&&opt.memo)memo.set(MK(list[i]),jb)}}else{for(let q=0;q<rp;q++){push(pcm);push(gap)}marks.push(mp3.length)}
+    if(pool){const fl=new Int16Array(pcm.length+gap.length);fl.set(pcm);fl.set(gap,pcm.length);await pool.room();{const jb={p:null,pcm:fl,rp};jb.p=pool.run(fl,sr).then(c=>{if(c)jb.pcm=null;return c});/* এনকোড হলেই কাঁচা PCM ছেড়ে দেওয়া হয়: আগে হাজারো আয়াতের PCM শেষ পর্যন্ত মেমোরিতে জমে ফোনে অ্যাপ সাদা হয়ে বেরিয়ে যেত */jobs.push(jb);if(opt&&opt.memo)memo.set(MK(list[i]),jb)}}else{for(let q=0;q<rp;q++){push(pcm);push(gap)}marks.push(mp3.length)}
     oi.push(i);ok++}catch(e){bad++;if(!ok&&bad>=5)break}
   if(i%10===0)await new Promise(r=>setTimeout(r))}
  try{ctx.close()}catch(x){}try{wl&&wl.release()}catch(x){}
