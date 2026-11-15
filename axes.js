@@ -127,17 +127,30 @@ function gMerge(id,sc){if(GM[id])return GM[id];
  GM[id]=ent;return ent}
 const rowEl=(sec,id)=>sec.querySelector('.ax-r[data-r="'+id.slice(1).split(".").slice(0,2).join(".")+'"]');
 const anchorOf=(sec,id)=>id[0]==="g"?sec.querySelector("h3"):rowEl(sec,id);
-/* অডিও: চাপলে পাতার সাজ বদলায় না; তৈরির অগ্রগতি ও ফল নিচের ভাসমান বক্সে, তৈরি হলে নিজে ডাউনলোড হয় */
-const ABLOB={};
-async function playSeq(R,id,sec,btn){
- if(!window.__drGroupAudio||!window.__drDockSave)return;
- const sc=scope(id,sec);if(!sc.list.length)return;
- const nm=sc.cat.replace(/^অক্ষ\s+/,"").replace(/\s+/g," ").trim(),title=nm.replace(/ /g," › ");
- window.__drDockSave("audio","|"+title,async note=>{
-  if(ABLOB[id])return{blob:ABLOB[id],name:nm.replace(/\s+/g,"_")+".mp3"};
-  const ent=gMerge(id,sc);ent.note=t=>note("⏳ "+t);note("⏳ অডিও প্রস্তুত হচ্ছে…");
-  await ent.p;const a=ent.out.querySelector("audio");if(!a)throw new Error("noaudio");
-  const blob=await(await fetch(a.src)).blob();ABLOB[id]=blob;return{blob,name:nm.replace(/\s+/g,"_")+".mp3"}})}
+/* অডিও: চাপলে সাথে সাথে এই পাতাতেই বাজে (নিজে ডাউনলোড হয় না); কোন ঘর বাজছে জ্বলজ্বলে ফোঁটায় দেখায়; প্লেয়ারের পাশে ⬇ ও শেয়ার */
+async function playSeq(R,id,sec,btn){const same=R.__pl&&R.__pl.id===id;stopPlay(R);if(same)return;
+ if(!window.__drGroupAudio)return;
+ const sc=scope(id,sec),{G,list,cells}=sc;
+ if(!list.length)return;
+ const st={id,stop:false,a:null};R.__pl=st;btn.classList.add("on");btn.textContent="⏹\nথামান";
+ const bar=el("div","ax-live"),tx=el("div","ax-lt"),nt=el("div","ax-ln"),hb=el("div");bar.append(tx,nt,hb);anchorOf(sec,id).after(bar);
+ const ttl=id[0]==="c"?cells[0].name:id[0]==="r"?G.cols[+id.slice(1).split(".")[1]].name+" — "+bn2(cells.length)+"টি ঘর একসাথে":"সব "+bn2(cells.length)+"টি ঘর একসাথে";
+ tx.textContent="▶ "+G.name+" › "+ttl;nt.textContent="⏳ অডিও প্রস্তুত হচ্ছে…";
+ const ent=gMerge(id,sc);ent.note=t=>{if(R.__pl===st)nt.textContent="⏳ "+t};
+ try{await ent.p}catch(e){console.error(e);if(R.__pl===st){nt.textContent="অডিও তৈরি করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";btn.classList.remove("on");btn.textContent=AUL;R.__pl=null}return}
+ if(st.stop||R.__pl!==st)return;
+ nt.remove();hb.appendChild(ent.out);
+ const a=ent.out.querySelector("audio");let mk=ent.marks||[];st.a=a;
+ const cellOf=i=>{for(let k=0;k<cells.length;k++)if(i>=cells[k].from&&i<cells[k].to)return k;return -1};
+ let cur=-2;
+ const upd=()=>{if(!mk.length&&a.duration)mk=list.map((_,i)=>({i,t:(i+1)/list.length*a.duration}));if(!mk.length)return;
+  const t=a.currentTime+.03;let k=mk.findIndex(m=>m.t>t);if(k<0)k=mk.length-1;const c=cellOf(mk[k].i);if(c<0||c===cur)return;cur=c;
+  R.querySelectorAll(".ax-now").forEach(x=>x.classList.remove("ax-now"));const C=cells[c];
+  if(C.b){C.b.classList.add("ax-now");const r=C.b.getBoundingClientRect();if(r.top<60||r.bottom>innerHeight-60)C.b.scrollIntoView({behavior:"smooth",block:"center"})}
+  if(id[0]!=="c")tx.textContent="▶ "+G.name+" › "+C.name+"  ("+bn2(c+1)+"/"+bn2(cells.length)+")"};
+ a.ontimeupdate=upd;a.onplay=upd;a.onended=()=>{if(R.__pl===st)stopPlay(R)};
+ try{a.currentTime=0;await a.play()}catch(e){}
+ upd()}
 function openPdf(R,id,sec){const sc=scope(id,sec);window.__drHomePdf&&window.__drHomePdf("x",sc.cat,null)}
 /* অ্যাপ চালু হলে ব্যাকগ্রাউন্ডে সবকিছুর অডিও ও PDF আগে থেকে তৈরি: আগে প্রতিটি ঘর, তারপর সারি, শেষে পুরো হেডিং (আয়াতের এনকোড ভাগ হয়, তাই পরের দুটো দ্রুত) */
 window.__drAxPre=async()=>{await load();const sl=()=>new Promise(r=>setTimeout(r,300)),ids=[];

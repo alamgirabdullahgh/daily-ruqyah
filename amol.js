@@ -126,6 +126,14 @@
  window.addEventListener("hashchange",function(){setTimeout(secMount,250)});setTimeout(secMount,600);
  function init(){
   box=document.getElementById("drAmol");if(!box||box.__w)return;box.__w=1;
+   var addBars=function(){if(!window.__drAmolBar)return;box.querySelectorAll("article.am-it").forEach(function(ar){if(ar.__ab)return;ar.__ab=1;
+    var get=function(){var c=ar.cloneNode(true);c.querySelectorAll(".dr-ab,.am-v").forEach(function(x){x.remove()});
+     /* খোলা আয়াত-রেফারেন্সের লেখা সহ */
+     var vs=[];ar.querySelectorAll(".am-v").forEach(function(v){var t=(v.innerText||"").trim();if(t&&t.indexOf("লোড")!==0)vs.push(t)});
+     var t=(c.innerText||"").replace(/\n{3,}/g,"\n\n").trim();if(vs.length)t+="\n\n"+vs.join("\n\n");return t+"\n\n— ডেইলি রুকইয়াহ অ্যাপ"};
+    var h3=ar.querySelector("h3");window.__drAmolBar(ar,get,h3?h3.textContent:"আমল")})};
+   try{new MutationObserver(addBars).observe(box,{childList:true,subtree:true})}catch(e){}addBars();
+
   box.addEventListener("click",function(e){var nz=e.target.closest&&e.target.closest(".am-nazar");if(nz){e.preventDefault();location.hash="#search";setTimeout(function(){window.__drOpenTopic&&window.__drOpenTopic("বদনজর")},90);return}var cb=e.target.closest&&e.target.closest(".am-cond");if(cb){if(cb.dataset.k){COND=cb.dataset.k;ITEM=-1}else ITEM=+cb.dataset.i;draw();window.scrollTo(0,0);return}var bk=e.target.closest&&e.target.closest(".am-back");if(bk){if(bk.dataset.to==="a")COND="";ITEM=-1;draw();window.scrollTo(0,0)}});
   box.addEventListener("toggle",function(e){var d=e.target;if(d.classList&&d.classList.contains("am-ref")&&d.open)fillRef(d)},true);
   box.addEventListener("input",function(e){if(e.target.id==="amQ"){Q=e.target.value;filter()}});
