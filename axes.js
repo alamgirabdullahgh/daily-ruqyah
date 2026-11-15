@@ -74,22 +74,22 @@ async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").m
  await add();
  if(my===GEN&&"IntersectionObserver"in window&&shown<more.length){io=new IntersectionObserver(es=>{if(my!==R.__g){io.disconnect();return}if(es[es.length-1].isIntersecting&&!busy&&shown<more.length)add()},{rootMargin:"600px 0px"});io.observe(btnMore)}}
 
-function buildGroup(gi,g){const sec=el("section","ax-g");sec.dataset.slug=g.slug;sec.appendChild(el("h3",null,g.name));
- const grid=el("div","ax-grid");
- g.cols.forEach((c,ci)=>{const col=el("div","ax-col");col.appendChild(el("div","ax-h",c.name));
-  c.opts.forEach((o,oi)=>{const b=el("button","ax-c",o);b.type="button";b.dataset.k=gi+"."+ci+"."+oi;col.appendChild(b)});grid.appendChild(col)});
- sec.appendChild(grid);return sec}
+/* লক্ষণ ভিত্তিক রোগ নির্ণয় পাতার চার্টের একই ছক (সাতটি হেডিং, প্রতিটির নিচে অপশন) */
+function buildGroup(gi,g){const sec=el("section","ax-g zs");sec.dataset.slug=g.slug;sec.appendChild(el("h3",null,g.name));
+ const t=document.createElement("table"),hr=t.insertRow();g.cols.forEach(c=>{const th=document.createElement("th");th.textContent=c.name;hr.appendChild(th)});
+ const br=t.insertRow();g.cols.forEach((c,ci)=>{const td=br.insertCell();c.opts.forEach((o,oi)=>{const b=el("span","zo ax-c",o);b.dataset.k=gi+"."+ci+"."+oi;td.appendChild(b)})});
+ sec.appendChild(t);return sec}
 
 /* ঘরের লেখা ঘরে আঁটাতে ফন্ট ছোট করা (দৃশ্যমান অবস্থায় মাপা যায়) */
-function fit(R){R.querySelectorAll(".ax-c").forEach(x=>{if(x.dataset.f||!x.clientWidth)return;x.dataset.f="1";x.style.whiteSpace="nowrap";let s=12;x.style.fontSize=s+"px";while(x.scrollWidth>x.clientWidth&&s>5.5){s-=.5;x.style.fontSize=s+"px"}})}
+function fit(R){R.querySelectorAll(".ax-c").forEach(x=>{if(x.dataset.f||!x.clientWidth)return;x.dataset.f="1";x.style.whiteSpace="nowrap";let s=10;x.style.fontSize=s+"px";while(x.scrollWidth>x.clientWidth&&s>4){s-=.5;x.style.fontSize=s+"px"}x.style.whiteSpace=""})}
 
 const SLUG={nazar:1,jadu:1,jin:1};
 /* R = চার্ট বসানোর ঘর: #axBody (পুরো পাতা, শিরোনামসহ) অথবা হোমের ট্যাবের ভেতরের .ax-home (শুধু চার্ট) */
-async function mount(R,slug,full){if(!R)return;
+async function mount(R,slug,full,title){if(!R)return;
  if(!R.dataset.ready){if(R.__ld)return;R.__ld=1;R.textContent="";R.appendChild(el("div","ax-info","লোড হচ্ছে…"));
-  try{await load()}catch(e){R.__ld=0;R.textContent="";const m=el("div","ax-info","চার্ট লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"),r=el("button","rs-more","আবার চেষ্টা");r.type="button";r.onclick=()=>mount(R,slug,full);R.append(m,r);return}
+  try{await load()}catch(e){R.__ld=0;R.textContent="";const m=el("div","ax-info","চার্ট লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"),r=el("button","rs-more","আবার চেষ্টা");r.type="button";r.onclick=()=>mount(R,slug,full,title);R.append(m,r);return}
   R.textContent="";
-  if(full){R.appendChild(el("h2","ax-t","সাতটি অক্ষ"));
+  if(full){R.appendChild(el("h2","ax-t",title||"সাতটি অক্ষ"));
    R.appendChild(el("div","ax-intro","যেকোনো ঘরে চাপুন — সেই ঘরের মৌলিক আয়াত (মৌলিক অংশ মার্ক করা) এবং তার নিচে বাকি সব আয়াত দেখা যাবে।"))}
   DATA.axes.forEach((g,gi)=>R.appendChild(buildGroup(gi,g)));
   R.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".ax-c");if(!b)return;if(b.classList.contains("on")){closePanel(R);return}
@@ -98,7 +98,7 @@ async function mount(R,slug,full){if(!R)return;
  closePanel(R);
  const sl=SLUG[slug]?slug:"";R.querySelectorAll(".ax-g").forEach(g=>{g.hidden=!!sl&&g.dataset.slug!==sl});
  requestAnimationFrame(()=>requestAnimationFrame(()=>fit(R)))}
-window.__drAxes=slug=>mount($("axBody"),slug,true);
+window.__drAxes=(slug,title)=>mount($("axBody"),slug,true,title);
 window.__drAxesMount=(R,slug)=>mount(R,slug,false);
 window.__drAxesFit=R=>fit(R);
 })();

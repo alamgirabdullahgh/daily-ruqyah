@@ -756,8 +756,8 @@ body.is-home #drLanding .drq-grid{gap:4px}
 /* ===== সব পাতা: বড় সাদা কার্ড নেই; কার্ড বলতে শুধু হেডিং (সবুজ মাথার দাগসহ), হেডিংয়ের নিচের অংশ ব্যাকগ্রাউন্ডের ওপর ভাসে ===== */
 .dr-main>.rs-box{background:transparent!important;border:0!important;box-shadow:none!important;padding:6px 0 20px!important}
 .dr-main>.rs-box>.dr-backrow{margin:0 0 8px 0}
-.dr-main>.rs-box h2,.dr-main>.rs-box>h3,#drSym #za>h2,#drSym .zs>h3,.dr-main .am-h,.dr-main .am-sh,.dr-reader>h2,.dr-reader>h3{box-sizing:border-box;background:var(--card-bg);border:1px solid var(--border-light);border-top:4px solid var(--primary);border-radius:14px;box-shadow:var(--shadow-card);padding:9px 16px;margin:0 0 8px;line-height:1.35}
-#drSym #za h2,#drSym .zs>h3{text-align:center}
+.dr-main>.rs-box h2,.dr-main>.rs-box>h3,#drSym #za>h2,#drSym .zs>h3,.ax-root .zs>h3,.dr-main .am-h,.dr-main .am-sh,.dr-reader>h2,.dr-reader>h3{box-sizing:border-box;background:var(--card-bg);border:1px solid var(--border-light);border-top:4px solid var(--primary);border-radius:14px;box-shadow:var(--shadow-card);padding:9px 16px;margin:0 0 8px;line-height:1.35}
+#drSym #za h2,#drSym .zs>h3,.ax-root .zs>h3{text-align:center}
 .dr-main .am-h i{font-style:normal}
 
 /* ===== পুরো প্রস্থ: flex-কলামে margin:auto থাকায় পাত্রটা লেখার মাপে সরু হয়ে যেত; এখন সবসময় পুরো প্রস্থ, পাশে শুধু ৬px ===== */
@@ -771,7 +771,7 @@ body.is-home #drLanding:not([hidden]){width:100%;align-self:stretch;box-sizing:b
 #drLanding .drq-grid>.drq-card>.drq-opts>li:first-child>a,#drLanding .drq-grid>.drq-card>.drq-opts>li:first-child,#drLanding .drq-grid>.drq-card>.drq-opts>li:first-child .drq-air{border-top-left-radius:0;border-top-right-radius:0}
 #drLanding .drq-sys .dsy-two{padding:0}
 #drLanding .drq-sys .dsy-row{padding-left:0;padding-right:0}
-.dr-main>.rs-box h2,.dr-main>.rs-box>h3,#drSym #za>h2,#drSym .zs>h3,.dr-main .am-h,.dr-main .am-sh,.dr-reader>h2,.dr-reader>h3{margin-bottom:0;border-bottom-left-radius:0;border-bottom-right-radius:0}
+.dr-main>.rs-box h2,.dr-main>.rs-box>h3,#drSym #za>h2,#drSym .zs>h3,.ax-root .zs>h3,.dr-main .am-h,.dr-main .am-sh,.dr-reader>h2,.dr-reader>h3{margin-bottom:0;border-bottom-left-radius:0;border-bottom-right-radius:0}
 
 /* ===== হোম: প্রতিটি কার্ডে হেডিং + আইটেম দুটোর পেছনেই সাদা কার্ড (আগের মতো); পাশের ফাঁকা ৬px ও পুরো প্রস্থ আগের মতোই ===== */
 #drLanding .drq-grid>.drq-card{background:var(--card-bg);border:1px solid var(--border-light);border-top:4px solid var(--primary);border-radius:14px;box-shadow:var(--shadow-card);padding:0 6px 8px}
@@ -1002,12 +1002,6 @@ body.is-home .drq-tk.drq-tkbar{margin:0 0 3px}
 .ax-root .ax-intro,#drAxes .ax-info{box-sizing:border-box;padding:8px 14px 10px;font-size:13.5px;line-height:1.7;color:var(--text-sub);text-align:center;background:var(--card-bg);border:1px solid var(--border-light);border-top:0;border-radius:0 0 14px 14px;margin:0 0 14px}
 .ax-root .ax-g{margin:0 0 16px}
 .ax-root .ax-g[hidden]{display:none}
-.ax-root .ax-g>h3{box-sizing:border-box;margin:0;padding:9px 16px;text-align:center;font-size:17px;line-height:1.35;color:var(--primary);font-family:var(--font-head);background:var(--card-bg);border:1px solid var(--border-light);border-top:4px solid var(--primary);border-radius:14px 14px 0 0;box-shadow:var(--shadow-card)}
-.ax-root .ax-grid{display:flex;gap:3px;padding:6px 4px 8px;background:var(--card-bg);border:1px solid var(--border-light);border-top:0;border-radius:0 0 14px 14px}
-.ax-root .ax-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:3px}
-.ax-root .ax-h{font-size:10.5px;font-weight:800;text-align:center;color:var(--accent);padding:3px 0 4px;margin-bottom:2px;border-bottom:1px solid var(--border-light);white-space:nowrap;overflow:hidden}
-.ax-root .ax-c{display:block;width:100%;box-sizing:border-box;margin:0;padding:8px 1px;border:1px solid var(--border-light);border-radius:8px;background:var(--primary-light);color:var(--text-main);font:inherit;font-size:12px;font-weight:600;line-height:1.25;text-align:center;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
-.ax-root .ax-c.on{background:var(--primary);border-color:var(--primary);color:#fff}
 .ax-root .ax-p{margin:10px 0 0;padding:8px 6px 12px;border:1.5px solid var(--primary);border-radius:16px;background:var(--card-bg)}
 .ax-root .ax-ph{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 6px 4px;font-weight:800;font-size:15px;color:var(--primary)}
 .ax-root .ax-x{flex:none;border:0;background:transparent;color:var(--text-muted);font-size:18px;line-height:1;padding:4px 6px;cursor:pointer}
@@ -1025,13 +1019,12 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{max-height:90px;min-hei
 .drq-tk.drq-tkbar span{line-height:36px;font-size:19px}
 
 /* হোম: প্রতিটি ট্যাবে (বদনজর/জাদু/জিন/৩টি একসাথে) আগের অপশনের নিচে ওই বিষয়ের চার্ট */
-.ax-home{margin:12px 0 2px}
-.ax-home .ax-g:last-child{margin-bottom:6px}
-/* সাইডবারের "আমল" পাতা: হোমের শুধু অপশনের কার্ডটি (.drq-amalcard) দেখায়, বাকি সব লুকায় */
-#drLanding .drq-amalcard{display:none}
-#drLanding.am-mode .drq-amalcard{display:block}
-#drLanding.am-mode>*:not(.drq-grid),#drLanding.am-mode .drq-grid>:not(.drq-amalcard){display:none!important}
-#drLanding .drq-amh{text-align:center;font-size:17px;color:var(--primary)}
+/* রেসপন্স ডায়াগনোসিস পাতার চার্ট: লক্ষণ ভিত্তিক পাতার (#za) একই ছক */
+.ax-root table{width:100%;table-layout:fixed;border-collapse:collapse;background:var(--card-bg)}
+.ax-root td,.ax-root th{border:1px solid #bbb;padding:2px;vertical-align:top}
+.ax-root th{font-size:11px;background:#444;color:#fff}
+.ax-root .zo.on{background:#2e7d32;color:#fff}
+.ax-root .zs{margin:0 0 16px}
 
 /* ব্যানার ওপরে লেগে থাকে; বাকি ফাঁকা জায়গা নিচে (নেভিগেশন বারের ওপরে) যায় */
 body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:6px 0 3px}

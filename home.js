@@ -33,17 +33,10 @@
    if(tab){
     if(gi!==TS)return;
     /* এক কার্ডে ট্যাব: বদনজর · জাদু · জিন · ৩টি একসাথে। প্রতিটি ট্যাবে আগের তিন অপশনই থাকে, তার নিচে সেই বিষয়ের সাতটি অক্ষের চার্ট (৩টি একসাথে = তিনটি চার্টই) */
-    var SLG=["nazar","jadu","jin",""];
-    var chartBox=function(k,hid){return '<div class="ax-root ax-home" data-ax="'+SLG[k]+'" data-pane="'+k+'"'+(hid?' hidden':'')+'></div>'};
     var names=G.slice(TS,TE+1).map(function(x){return esc(x[0])}).concat(['<svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>৩টি একসাথে</span>']);
-    /* withChart=true: হোমের কার্ড (প্রতিটি ট্যাবে অপশনের নিচে ওই বিষয়ের চার্ট); false: সাইডবারের "আমল" পাতার কার্ড (শুধু অপশন) */
-    var mkCard=function(withChart,extra,head){
-     var r='<section class="drq-card drq-tabcard'+(extra?' '+extra:'')+'">'+(head?'<h3 class="drq-amh">'+esc(head)+'</h3>':'')+'<h3 class="drq-tabs" role="tablist">'+names.map(function(n,i){return '<button type="button" role="tab" class="drq-tab'+(i?'':' on')+(i===3?' drq-tab-all':'')+'" data-t="'+i+'" aria-selected="'+(i?'false':'true')+'"'+(i===3?' aria-label="তিনটি একসাথে"':'')+'>'+n+'</button>'}).join('')+'</h3>';
-     for(var k=TS;k<=TE;k++)r+=ulOf(G[k],' data-pane="'+(k-TS)+'"'+(k>TS?' hidden':''),'drq-two drq-three',G[k][0])+(withChart?chartBox(k-TS,k>TS):'');
-     r+=ulOf(["সব",[["সিমটম ডায়াগনোসিস","#diag"],["রেসপন্স ডায়াগনোসিস","#resp"],["ট্রিটমেন্ট","#amol/all"]]],' data-pane="'+(TE-TS+1)+'" hidden','drq-two drq-three','সব')+(withChart?chartBox(3,true):'');
-     return r+'</section>'};
-    h+=mkCard(true,'','');
-    h+=mkCard(false,'drq-amalcard','আমল');
+    h+='<section class="drq-card drq-tabcard"><h3 class="drq-tabs" role="tablist">'+names.map(function(n,i){return '<button type="button" role="tab" class="drq-tab'+(i?'':' on')+(i===3?' drq-tab-all':'')+'" data-t="'+i+'" aria-selected="'+(i?'false':'true')+'"'+(i===3?' aria-label="তিনটি একসাথে"':'')+'>'+n+'</button>'}).join('')+'</h3>';
+    for(var k=TS;k<=TE;k++)h+=ulOf(G[k],' data-pane="'+(k-TS)+'"'+(k>TS?' hidden':''),'drq-two drq-three',G[k][0]);
+    h+=ulOf(["সব",[["সিমটম ডায়াগনোসিস","#diag"],["রেসপন্স ডায়াগনোসিস","#resp"],["ট্রিটমেন্ট","#amol/all"]]],' data-pane="'+(TE-TS+1)+'" hidden','drq-two drq-three','সব')+'</section>';
     return;
    }
    h+='<section class="drq-card"><h3>'+esc(g[0])+'</h3>'+ulOf(g,'',gi===0?'drq-two':'',gi===0?'দৈনন্দিন':'')+'</section>';
@@ -58,16 +51,13 @@
   startTk();
   window.__drLandingFit=function(){fitT()};
   fitT();setTimeout(fitT,400);
-  /* দৃশ্যমান ট্যাবের চার্ট বসানো (আয়াতের ডেটা তখনই নামে); axes.js পরে লোড হয় বলে একটু অপেক্ষা */
-  var axHome=function(n){n=n||0;var M=window.__drAxesMount;if(!M){if(n<60)setTimeout(function(){axHome(n+1)},250);return}H.querySelectorAll('.ax-home').forEach(function(r){if(r.hidden)return;if(r.dataset.ready)window.__drAxesFit&&window.__drAxesFit(r);else M(r,r.getAttribute('data-ax'))})};
-  axHome();
   setTimeout(function(){window.__drHomePrebuild&&window.__drHomePrebuild()},1500); /* PDF আগে থেকে ব্যাকগ্রাউন্ডে বানানো থাকে */
   H.addEventListener("click",function(e){
    
    var au=e.target.closest&&e.target.closest(".drq-au,.drq-pd");
    if(au){e.preventDefault();var li=au.closest("li"),isP=au.classList.contains("drq-pd"),hp=li&&li.querySelector('.drq-aup[data-k="'+(isP?"pdf":"au")+'"]');var fn=isP?window.__drHomePdf:window.__drHomeAudio;fn&&fn(au.getAttribute("data-au"),au.getAttribute("data-c"),hp);return}
    var tb=e.target.closest&&e.target.closest(".drq-tab");
-   if(tb){var k=tb.getAttribute("data-t"),cd=tb.closest(".drq-tabcard")||H;cd.querySelectorAll(".drq-tab").forEach(function(x){var on=x===tb;x.classList.toggle("on",on);x.setAttribute("aria-selected",on?"true":"false")});cd.querySelectorAll("[data-pane]").forEach(function(u){u.hidden=u.getAttribute("data-pane")!==k});fitT();axHome();return}
+   if(tb){var k=tb.getAttribute("data-t"),cd=tb.closest(".drq-tabcard")||H;cd.querySelectorAll(".drq-tab").forEach(function(x){var on=x===tb;x.classList.toggle("on",on);x.setAttribute("aria-selected",on?"true":"false")});cd.querySelectorAll("[data-pane]").forEach(function(u){u.hidden=u.getAttribute("data-pane")!==k});fitT();return}
    var tg=e.target.closest&&e.target.closest(".drq-tg");
    if(tg){var u=tg.nextElementSibling,on=u.hidden;u.hidden=!on;tg.setAttribute("aria-expanded",on?"true":"false");tg.classList.toggle("on",on);return}
    var a=e.target.closest&&e.target.closest("a[data-list],a[data-topic],a[data-disease],a[data-mental]");if(!a)return;
