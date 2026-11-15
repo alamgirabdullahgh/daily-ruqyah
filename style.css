@@ -1164,3 +1164,27 @@ body.is-home{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
 .ax-root .ax-ob{position:relative;box-sizing:border-box;min-height:34px;padding:3px 1px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:9.5px;font-weight:700;line-height:1.2;overflow-wrap:anywhere;color:#fff;background:var(--primary);border:1.5px solid transparent;border-radius:8px}
 .ax-root .ax-ob.ax-now{background:var(--accent-light);color:var(--text-main);border-color:var(--accent)}
 .ax-root .ax-ob.ax-now::before{content:"";position:absolute;left:2px;top:2px;width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px 2px var(--accent);animation:axDot 1s ease-in-out infinite}
+
+/* দৈনন্দিন রুকইয়াহ কার্ড: "● দৈনন্দিন রুকইয়াহ  শারীরিক  মানসিক" এক লাইনে; ট্যাবে শুধু ভেতরের তথ্য বদলায় (বদনজর·জাদু·জিন কার্ডের মতো) */
+#drLanding .drq-grid>.drq-card>.drq-tabs.drq-dtabs{display:flex!important;align-items:center;gap:clamp(8px,3vw,16px)!important;grid-template-columns:none!important;padding:4px 6px 4px 10px}
+.drq-dtabs .drq-ttl{display:inline-flex;align-items:center;gap:8px;flex:none;white-space:nowrap;color:var(--primary);font-weight:700;font-size:clamp(15px,4.9vw,19px);font-family:var(--font-head)}
+.drq-dtabs .drq-ttl::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+#drLanding .drq-grid>.drq-card>.drq-tabs.drq-dtabs .drq-tab{width:auto;flex:none;padding:5px 3px;gap:0;font-size:clamp(14px,4.4vw,18px);justify-content:center;border-radius:0}
+#drLanding .drq-grid>.drq-card>.drq-tabs.drq-dtabs .drq-tab::before{display:none}
+.drq-dtabs .drq-tab.on{color:var(--primary);opacity:1;box-shadow:inset 0 -2.5px 0 var(--accent)}
+/* "সব একসাথে" সারি: পুরো প্রস্থে, PDF/অডিও বাম পাশে */
+#drLanding .drq-opts.drq-two>li.drq-whole .drq-air{flex:1 1 100%}
+#drLanding .drq-opts.drq-two>li.drq-whole .drq-air>.drq-bt{order:-1}
+/* লাইভ প্যানেল: অঙ্গ/রোগের নাম, চলমানটি জ্বলে */
+.drq-live{margin:8px 2px 2px;padding:8px 6px;border:1px solid var(--border-light);border-radius:12px;background:var(--card-bg)}
+.drq-live[hidden]{display:none}
+.drq-lt{font-size:13px;font-weight:700;color:var(--primary);margin:0 4px 4px}
+.drq-ln{font-size:12.5px;color:var(--text-muted);margin:2px 4px}
+.drq-lp audio{width:100%}
+.drq-lg{display:grid;gap:3px;margin-top:8px}
+.drq-lg8{grid-template-columns:repeat(8,minmax(0,1fr))}
+.drq-lg4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.drq-lb{position:relative;box-sizing:border-box;min-height:34px;padding:3px 1px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:9.5px;font-weight:700;line-height:1.2;overflow-wrap:anywhere;color:#fff;background:var(--primary);border:1.5px solid transparent;border-radius:8px}
+.drq-lg4 .drq-lb{font-size:11.5px;min-height:38px;padding:3px 3px}
+.drq-lb.now{background:var(--accent-light);color:var(--text-main);border-color:var(--accent)}
+.drq-lb.now::before{content:"";position:absolute;left:2px;top:2px;width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px 2px var(--accent);animation:axDot 1s ease-in-out infinite}

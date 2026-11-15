@@ -811,8 +811,14 @@ async function treatKeys(cat){
 async function bodyKeys(file){const D=await rsFetch(BASE+file),seen=new Set(),out=[];D.groups.forEach(g=>g.cats.forEach(c=>c.keys.forEach(k=>{const id=k.s+":"+k.a;if(!seen.has(id)){seen.add(id);out.push([k.s,k.a])}})));return out}
 const XKEYS=new Map();window.__drXKeys=(c,l)=>XKEYS.set(c,l);
 /* সাতটি অক্ষের চার্টে "অবস্থান → শরীরে" ঘরের অডিওর জন্য: দৈনন্দিন রুকইয়াহর "শারীরিক → অঙ্গভিত্তিক" তালিকার ক্রমে প্রতিটি অঙ্গ ও তার আয়াত ([{name,keys}]) */
+/* দৈনন্দিন রুকইয়াহ কার্ড: শারীরিক/মানসিক × অঙ্গভিত্তিক/রোগভিত্তিক — প্রতিটি গ্রুপের আইটেম (অঙ্গ বা রোগ) ক্রমানুসারে [{name,keys}]; PDF ও লাইভ অডিও একই ক্রমে */
+const GRPN={"শারীরিক অঙ্গভিত্তিক":"শারীরিক অঙ্গ","শারীরিক রোগভিত্তিক":"শারীরিক রোগ","মানসিক অঙ্গভিত্তিক":"মানসিক অঙ্গ","মানসিক রোগভিত্তিক":"মানসিক সমস্যা"},GRPP={};
+window.__drGroupItems=cat=>{const pre=GRPN[cat];if(!pre)return Promise.resolve([]);
+ return GRPP[cat]||(GRPP[cat]=(async()=>{if(!window.__drXReg)throw new Error("noreg");const cats=await window.__drXReg(),out=[];
+  for(const c of cats){if(c.indexOf(pre+"|")!==0)continue;const v=XKEYS.get(c),keys=typeof v==="function"?await v():(v||[]);if(keys.length)out.push({name:c.slice(pre.length+1),keys})}return out})().catch(e=>{delete GRPP[cat];throw e}))};
+const groupKeys=cat=>window.__drGroupItems(cat).then(items=>{const seen=new Set(),out=[];items.forEach(it=>it.keys.forEach(k=>{const i=k[0]+":"+k[1];if(!seen.has(i)){seen.add(i);out.push(k)}}));return out});
 let ORGP=null;window.__drOrgans=()=>ORGP||(ORGP=(async()=>{const out=[];for(const o of ORG){const t=TOPICS.find(x=>x.name===o[0]);if(!t)continue;out.push({name:o[0],keys:await topicKeys(t)})}return out})().catch(e=>{ORGP=null;throw e}));
-const homeKeys=(kind,cat)=>kind==="x"?Promise.resolve().then(()=>{const v=XKEYS.get(cat);return typeof v==="function"?v():(v||[])}):kind==="resp"?respKeys(cat):kind==="phys"?bodyKeys(DISEASE.file):kind==="ment"?bodyKeys(MENTAL.file):treatKeys(cat);
+const homeKeys=(kind,cat)=>kind==="x"&&GRPN[cat]?groupKeys(cat):kind==="x"?Promise.resolve().then(()=>{const v=XKEYS.get(cat);return typeof v==="function"?v():(v||[])}):kind==="resp"?respKeys(cat):kind==="phys"?bodyKeys(DISEASE.file):kind==="ment"?bodyKeys(MENTAL.file):treatKeys(cat);
 const homeTitle=(kind,cat)=>kind==="x"?(/^(শারীরিক রোগ|মানসিক সমস্যা)\|/.test(String(cat))?String(cat).split("|").slice(1).join(" "):String(cat).replace("|"," ")):kind==="sym"?"সিমটম ডায়াগনোসিস "+(cat==="সব"?"বদনজর জাদু জিন":cat):kind==="phys"||kind==="ment"?"দৈনন্দিন রুকইয়াহ "+cat:(kind==="resp"?"রেসপন্স ডায়াগনোসিস":"ট্রিটমেন্ট")+" "+(cat==="সব"?"বদনজর জাদু জিন":cat);
 /* পুনরাবৃত্তি: রেসপন্স ডায়াগনোসিস — প্রতিটি আয়াত ১১ বার, পুরো সেট ৩ বার; ট্রিটমেন্ট — প্রতিটি আয়াত ৩ বার, সেট ১ বার */
 const homeRep=kind=>kind==="resp"?{rep:11,set:3}:{rep:3,set:1};

@@ -28,6 +28,49 @@
    return audioLi('<a href="#search" data-'+(t.topic?'topic="'+esc(t.topic)+'"':t.mental?'mental="1"':'disease="1"')+'>'+lab(o[0])+'</a>',o,cat);
   };
   var ulOf=function(g,attr,cls,cat){var r='<ul class="drq-opts'+(cls?' '+cls:'')+'"'+(attr||'')+'>';g[1].forEach(function(o){r+=item(o,cat)});return r+'</ul>'};
+  /* দৈনন্দিন রুকইয়াহ: বদনজর·জাদু·জিন কার্ডের মতোই ট্যাব (শারীরিক | মানসিক); ট্যাবে শুধু ভেতরের তথ্য বদলায়, বাটনের নাম একই (অঙ্গভিত্তিক · রোগভিত্তিক), প্রতিটির নিজের PDF ও অডিও; নিচে সব একসাথের PDF/অডিও। অঙ্গভিত্তিক/রোগভিত্তিকের অডিও এই কার্ডেই বাজে, কোন অঙ্গ/রোগের আয়াত চলছে জ্বলে। */
+  var DL=[["শারীরিক",[["অঙ্গভিত্তিক","organ","শারীরিক অঙ্গভিত্তিক"],["রোগভিত্তিক","disease","শারীরিক রোগভিত্তিক"]],["physical","phys"]],["মানসিক",[["অঙ্গভিত্তিক","mentalorgan","মানসিক অঙ্গভিত্তিক"],["রোগভিত্তিক","mental","মানসিক রোগভিত্তিক"]],["mentalmain","ment"]]];
+  var dli=function(label,list,kind,cat,live,cls){var c=esc(cat),l=esc(label),al=esc(cat==="দৈনন্দিন"?label:cat);return '<li class="drq-ai'+(cls?' '+cls:'')+'"><div class="drq-air"><a href="#search" data-list="'+list+'">'+l+'</a><span class="drq-bt"><button type="button" class="drq-pd" data-au="'+kind+'" data-c="'+c+'" aria-label="'+al+' — PDF"><span class="drq-bi">📄</span><span class="drq-bl"> PDF</span></button><button type="button" class="drq-au'+(live?' drq-lv':'')+'" data-au="'+kind+'" data-c="'+c+'" aria-label="'+al+' — অডিও">🔊<span class="drq-bl"> অডিও</span></button></span></div><div class="drq-aup" data-k="pdf" hidden></div>'+(live?'':'<div class="drq-aup" data-k="au" hidden></div>')+'</li>'};
+  var dailyCard=function(title){var r='<section class="drq-card drq-tabcard drq-daily"><h3 class="drq-tabs drq-dtabs" role="tablist"><span class="drq-ttl">'+esc(title)+'</span>'+DL.map(function(d,i){return '<button type="button" role="tab" class="drq-tab'+(i?'':' on')+'" data-t="'+i+'" aria-selected="'+(i?'false':'true')+'">'+esc(d[0])+'</button>'}).join('')+'</h3>';
+   DL.forEach(function(d,i){r+='<ul class="drq-opts drq-two" data-pane="'+i+'"'+(i?' hidden':'')+'>'+dli(d[1][0][0],d[1][0][1],'x',d[1][0][2],true)+dli(d[1][1][0],d[1][1][1],'x',d[1][1][2],true)+dli('সব একসাথে',d[2][0],d[2][1],'দৈনন্দিন',false,'drq-whole')+'</ul>'});
+   return r+'<div class="drq-live" hidden></div></section>'};
+  /* ===== লাইভ অডিও: অঙ্গভিত্তিক/রোগভিত্তিক বাটনে চাপলে এই কার্ডেই বাজে; নিচে নামের তালিকা, যে অঙ্গ/রোগের আয়াত চলছে সেটি জ্বলে ===== */
+  var AUH='🔊<span class="drq-bl"> অডিও</span>',LV=null;
+  var bn=function(n){return String(n).replace(/\d/g,function(d){return "০১২৩৪৫৬৭৮৯"[d]})};
+  var shortN=function(n){n=String(n).normalize("NFC");var S={"কণ্ঠনালী ও কণ্ঠার হাড়":"কণ্ঠনালী","বুক ও বক্ষ":"বুক","অন্ত্র ও নাড়িভুঁড়ি":"অন্ত্র"};return S[n]||(n.replace(/\s*\([^)]*\)/g,"").trim()||n)};
+  var mk=function(c,x){var e=document.createElement("div");if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+  var stopLive=function(){if(!LV)return;var s=LV;LV=null;s.stop=true;try{if(s.a){s.a.pause();s.a.ontimeupdate=s.a.onended=s.a.onplay=null}}catch(e){}
+   if(s.host){s.host.hidden=true;s.host.textContent=""}if(s.btn){s.btn.classList.remove("on");s.btn.innerHTML=AUH}};
+  window.addEventListener("hashchange",function(){var h=location.hash;if(h&&h!=="#"&&h!=="#home"&&h!=="#/home")stopLive()});
+  var playLive=async function(btn){
+   var cat=btn.getAttribute("data-c"),same=LV&&LV.btn===btn;stopLive();if(same)return;
+   var card=btn.closest(".drq-daily"),host=card&&card.querySelector(".drq-live");if(!host||!window.__drGroupAudio||!window.__drGroupItems)return;
+   var st={btn:btn,a:null,stop:false,host:host};LV=st;btn.classList.add("on");btn.innerHTML='⏹<span class="drq-bl"> থামান</span>';
+   host.hidden=false;host.textContent="";var tx=mk("drq-lt","▶ "+cat),nt=mk("drq-ln","⏳ তালিকা তৈরি হচ্ছে…"),hb=mk("drq-lp"),bar=mk("drq-lbar");bar.append(tx,nt,hb);host.appendChild(bar);
+   var fail=function(e){console.error(e);if(LV===st){nt.textContent="অডিও তৈরি করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";btn.classList.remove("on");btn.innerHTML=AUH;LV=null}};
+   var items,list=[],segs=[],seen={},out=mk();
+   try{items=await window.__drGroupItems(cat)}catch(e){return fail(e)}
+   if(st.stop||LV!==st)return;
+   /* আইটেমের ক্রমে আয়াত; আগের আইটেমে এসে গেলে আবার নয় */
+   items.forEach(function(it,k){var f=list.length;it.keys.forEach(function(x){var id=x[0]+":"+x[1];if(!seen[id]){seen[id]=1;list.push(x)}});if(list.length>f)segs.push({k:k,from:f,to:list.length})});
+   if(!list.length)return fail(new Error("empty"));
+   var grid=mk("drq-lg "+(cat.indexOf("অঙ্গ")>-1?"drq-lg8":"drq-lg4"));var lb=items.map(function(it){var b=mk("drq-lb",shortN(it.name));b.title=it.name;grid.appendChild(b);return b});host.appendChild(grid);
+   nt.textContent="⏳ অডিও প্রস্তুত হচ্ছে…";
+   var marks=null;
+   try{await window.__drGroupAudio(list,out,function(t){if(LV===st)nt.textContent="⏳ "+t},cat+" +লাইভ",function(m){marks=m});if(!out.querySelector("audio"))throw new Error("noaudio")}catch(e){return fail(e)}
+   if(st.stop||LV!==st)return;
+   nt.remove();hb.appendChild(out);var a=out.querySelector("audio");st.a=a;
+   var segOf=function(i){for(var q=0;q<segs.length;q++)if(i>=segs[q].from&&i<segs[q].to)return segs[q];return null};
+   var cur=-2;
+   var upd=function(){var m=marks||[];if(!m.length&&a.duration)m=list.map(function(_,i){return{i:i,t:(i+1)/list.length*a.duration}});if(!m.length)return;
+    var t=a.currentTime+.03,k=-1;for(var q=0;q<m.length;q++){if(m[q].t>t){k=q;break}}if(k<0)k=m.length-1;
+    var sg=segOf(m[k].i);if(!sg||sg.k===cur)return;cur=sg.k;
+    grid.querySelectorAll(".drq-lb.now").forEach(function(x){x.classList.remove("now")});var b=lb[sg.k];b.classList.add("now");
+    tx.textContent="▶ "+cat+" › "+items[sg.k].name+"  ("+bn(sg.k+1)+"/"+bn(items.length)+")";
+    var r=b.getBoundingClientRect();if(r.top<60||r.bottom>innerHeight-60)b.scrollIntoView({behavior:"smooth",block:"center"})};
+   a.ontimeupdate=upd;a.onplay=upd;a.onended=function(){if(LV===st)stopLive()};
+   try{a.currentTime=0;await a.play()}catch(e){}
+   upd()};
   G.forEach(function(g,gi){
    var tab=gi>=TS&&gi<=TE;
    if(tab){
@@ -39,6 +82,7 @@
     h+=ulOf(["সব",[["সিমটম ডায়াগনোসিস","#diag"],["রেসপন্স ডায়াগনোসিস","#resp"],["ট্রিটমেন্ট","#treat"]]],' data-pane="'+(TE-TS+1)+'" hidden','drq-two drq-three','সব')+'</section>';
     return;
    }
+   if(gi===0){h+=dailyCard(g[0]);return}
    h+='<section class="drq-card"><h3>'+esc(g[0])+'</h3>'+ulOf(g,'',gi===0?'drq-two':'',gi===0?'দৈনন্দিন':'')+'</section>';
   });
   H.innerHTML=h+'</div>';
@@ -55,9 +99,10 @@
   H.addEventListener("click",function(e){
    
    var au=e.target.closest&&e.target.closest(".drq-au,.drq-pd");
+   if(au&&au.classList.contains("drq-lv")){e.preventDefault();playLive(au);return}
    if(au){e.preventDefault();var li=au.closest("li"),isP=au.classList.contains("drq-pd"),hp=li&&li.querySelector('.drq-aup[data-k="'+(isP?"pdf":"au")+'"]');var fn=isP?window.__drHomePdf:window.__drHomeAudio;fn&&fn(au.getAttribute("data-au"),au.getAttribute("data-c"),hp);return}
    var tb=e.target.closest&&e.target.closest(".drq-tab");
-   if(tb){var k=tb.getAttribute("data-t"),cd=tb.closest(".drq-tabcard")||H;cd.querySelectorAll(".drq-tab").forEach(function(x){var on=x===tb;x.classList.toggle("on",on);x.setAttribute("aria-selected",on?"true":"false")});cd.querySelectorAll("[data-pane]").forEach(function(u){u.hidden=u.getAttribute("data-pane")!==k});fitT();return}
+   if(tb){var k=tb.getAttribute("data-t"),cd=tb.closest(".drq-tabcard")||H;if(cd.classList.contains("drq-daily"))stopLive();cd.querySelectorAll(".drq-tab").forEach(function(x){var on=x===tb;x.classList.toggle("on",on);x.setAttribute("aria-selected",on?"true":"false")});cd.querySelectorAll("[data-pane]").forEach(function(u){u.hidden=u.getAttribute("data-pane")!==k});fitT();return}
    var tg=e.target.closest&&e.target.closest(".drq-tg");
    if(tg){var u=tg.nextElementSibling,on=u.hidden;u.hidden=!on;tg.setAttribute("aria-expanded",on?"true":"false");tg.classList.toggle("on",on);return}
    var a=e.target.closest&&e.target.closest("a[data-list],a[data-topic],a[data-disease],a[data-mental]");if(!a)return;
