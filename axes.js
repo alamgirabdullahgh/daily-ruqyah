@@ -56,6 +56,13 @@ async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").m
  pn.append(hd);
  const lg=el("div","ax-lg");lg.append(el("span","rs-gold","সোনালি অংশ")," = মৌলিক অংশ");pn.appendChild(lg);
  sec.appendChild(pn);
+ if(C&&window.__drXKeys){const cat="অক্ষ "+G.name+" "+G.cols[ci].name+" "+G.cols[ci].opts[oi],seen=new Set(),ks=[];
+  [...C.b.map(r=>[r[0],r[1]]),...C.m.map(v=>{const p=v.split(":").map(Number);return[p[0],p[1]]})].forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);ks.push(k)}});
+  window.__drXKeys(cat,ks);
+  const act=el("div","ax-act"),hp=el("div","ax-hp"),ha=el("div","ax-hp");hp.hidden=ha.hidden=true;
+  const bp=el("button","ax-ab","📄 PDF"),ba=el("button","ax-ab","🔊 অডিও");bp.type=ba.type="button";
+  bp.onclick=()=>window.__drHomePdf&&window.__drHomePdf("x",cat,hp);ba.onclick=()=>window.__drHomeAudio&&window.__drHomeAudio("x",cat,ha);
+  act.append(bp,ba);pn.append(act,hp,ha)}
  if(!C){pn.appendChild(el("div","ax-n","এই ঘরের আয়াত এখনো যোগ হয়নি।"));return}
  const b=el("div","rs-v");pn.appendChild(b);
  for(const r of C.b){const c=await verseCard({s:r[0],a:r[1],f:r[2],t:r[3]},true).catch(()=>null);if(my!==R.__g)return;if(c)b.appendChild(c)}
@@ -76,12 +83,12 @@ async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").m
 
 /* লক্ষণ ভিত্তিক রোগ নির্ণয় পাতার চার্টের একই ছক (সাতটি হেডিং, প্রতিটির নিচে অপশন) */
 function buildGroup(gi,g){const sec=el("section","ax-g zs");sec.dataset.slug=g.slug;sec.appendChild(el("h3",null,g.name));
- const t=document.createElement("table"),hr=t.insertRow();g.cols.forEach(c=>{const th=document.createElement("th");th.textContent=c.name;hr.appendChild(th)});
- const br=t.insertRow();g.cols.forEach((c,ci)=>{const td=br.insertCell();c.opts.forEach((o,oi)=>{const b=el("span","zo ax-c",o);b.dataset.k=gi+"."+ci+"."+oi;td.appendChild(b)})});
- sec.appendChild(t);return sec}
+ const tb=el("div","ax-tb");g.cols.forEach((c,ci)=>{const r=el("div","ax-r"),o=el("div","ax-ro");c.opts.forEach((n,oi)=>{const b=el("button","ax-c",n);b.type="button";b.dataset.k=gi+"."+ci+"."+oi;o.appendChild(b)});r.append(el("div","ax-rh",c.name),o);tb.appendChild(r)});
+ sec.appendChild(tb);return sec}
 
 /* ঘরের লেখা ঘরে আঁটাতে ফন্ট ছোট করা (দৃশ্যমান অবস্থায় মাপা যায়) */
-function fit(R){R.querySelectorAll(".ax-c").forEach(x=>{if(x.dataset.f||!x.clientWidth)return;x.dataset.f="1";x.style.whiteSpace="nowrap";let s=10;x.style.fontSize=s+"px";while(x.scrollWidth>x.clientWidth&&s>4){s-=.5;x.style.fontSize=s+"px"}x.style.whiteSpace=""})}
+function fit(R){R.querySelectorAll(".ax-ro").forEach(o=>{const bs=[...o.children];if(o.dataset.f||!bs[0]||!bs[0].clientWidth)return;o.dataset.f="1";let s=18;bs.forEach(b=>b.style.fontSize=s+"px");while(s>5&&bs.some(b=>b.scrollWidth>b.clientWidth)){s-=.25;bs.forEach(b=>b.style.fontSize=s+"px")}});
+ R.querySelectorAll(".zs").forEach(g=>{const hs=[...g.querySelectorAll(".ax-rh")];if(g.dataset.fh||!hs[0]||!hs[0].clientWidth)return;g.dataset.fh="1";let s=15;hs.forEach(h=>h.style.fontSize=s+"px");while(s>6&&hs.some(h=>h.scrollWidth>h.clientWidth)){s-=.25;hs.forEach(h=>h.style.fontSize=s+"px")}})}
 
 const SLUG={nazar:1,jadu:1,jin:1};
 /* R = চার্ট বসানোর ঘর: #axBody (পুরো পাতা, শিরোনামসহ) অথবা হোমের ট্যাবের ভেতরের .ax-home (শুধু চার্ট) */

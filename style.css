@@ -1039,3 +1039,15 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:6px 0 3px}
 
 /* v110: মসজিদ ব্যানারের লেখার বক্সের ঝাপসা/গাঢ় ব্যাকগ্রাউন্ড সরানো; সোনালি বর্ডার ও লেখা থাকল */
 .drq-hero .drq-st{background:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:inset 0 0 0 3px rgba(242,210,138,.35)!important}
+
+/* v111: চার্ট — সাতটি অক্ষ বাঁ পাশে একটার নিচে আরেকটা (এক লাইনে), ডানে অপশন-বাটন (হোমের বাটন-স্টাইল); ফন্ট যতটা আঁটে ততটা বড়, শব্দ ভাঙে না, স্ক্রিনের বাইরে যায় না */
+.ax-tb{margin:6px 0 0}
+.ax-r{display:flex;align-items:stretch;gap:6px;margin:0 0 8px}
+.ax-rh{flex:none;width:24%;box-sizing:border-box;display:flex;align-items:center;justify-content:center;text-align:center;padding:6px 2px;background:#444;color:#fff;font-weight:800;border-radius:9px;white-space:nowrap;overflow:hidden}
+.ax-ro{flex:1;min-width:0;display:flex;gap:6px}
+#za .ax-c,.ax-root .ax-c{flex:1 1 0;min-width:0;box-sizing:border-box;min-height:50px;padding:6px 2px;margin:0;display:flex;align-items:center;justify-content:center;text-align:center;white-space:nowrap;overflow:hidden;letter-spacing:0;font-family:inherit;font-weight:700;color:var(--primary);background:var(--primary-light);border:1.5px solid color-mix(in srgb,var(--primary) 38%,transparent);border-radius:10px;box-shadow:0 2px 0 color-mix(in srgb,var(--primary) 30%,transparent);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .08s,box-shadow .08s}
+#za .ax-c:active,.ax-root .ax-c:active{transform:translateY(2px);box-shadow:0 0 0 transparent}
+#za .ax-c.zc,.ax-root .ax-c.on{background:#2e7d32;color:#fff}
+.ax-act{display:flex;gap:6px;margin:0 6px 8px}
+.ax-ab{flex:1 1 0;border:0;border-radius:10px;padding:11px 4px;background:var(--primary);color:#fff;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.ax-hp{margin:0 6px 8px}

@@ -8,7 +8,7 @@ q=s=>s.replace(/~(.)/g,(m,c)=>W[parseInt(c,36)]);
 window.__drSymDoc=g=>{const out=[];T.forEach((t,i)=>{if(g>=0&&i!==g)return;const sec={title:t[0],items:[]};t[1].forEach((l,c)=>l.forEach((n,o)=>{const d=q(D[i][c][o]),f=d[0],rows=[];if(f=="R")rows.push([-1,E]);else d.slice(1).split("|").forEach((tx,j)=>rows.push([j,tx||E]));const a=R[i+"."+c+"."+o];sec.items.push({head:cols[c]+" → "+n,rows,fl:FL[f],x:a?a.map(q):null})}));out.push(sec)});return out};
 if(docOnly)return;
 $("zd").innerHTML="";
-$("zt").innerHTML=T.map((t,i)=>`<section class="zs" data-g="${i}"><h3>${t[0]}</h3><table><tr>${cols.map(c=>`<th>${c}</th>`).join("")}</tr><tr>${t[1].map((l,c)=>`<td>${l.map((n,o)=>`<span class="zo" data-i="${i}.${c}.${o}">${n}</span>`).join("")}</td>`).join("")}</tr></table><div class="zg" id="zg${i}"></div></section>`).join("");
+$("zt").innerHTML=T.map((t,i)=>`<section class="zs" data-g="${i}"><h3>${t[0]}</h3><div class="ax-tb">${t[1].map((l,c)=>`<div class="ax-r"><div class="ax-rh">${cols[c]}</div><div class="ax-ro">${l.map((n,o)=>`<button type="button" class="zo ax-c" data-i="${i}.${c}.${o}">${n}</button>`).join("")}</div></div>`).join("")}</div><div class="zg" id="zg${i}"></div></section>`).join("");
 const SLUG={nazar:0,jadu:1,jin:2};window.__drSymF=f=>{const g=f in SLUG?SLUG[f]:-1,h=document.querySelector("#za>h2");document.querySelectorAll(".zs").forEach(x=>{x.hidden=g>=0&&+x.dataset.g!==g});if(h)h.textContent="লক্ষণ ভিত্তিক রোগ নির্ণয়"};
 function X(k){let a=R[k];if(!a)return"";a=a.map(q);return`<div class="zx"><b>${a[0]}</b><ul>${a.slice(1).map(t=>t[0]=="#"?`</ul><b>${t.slice(1)}</b><ul>`:`<li>${t.replace(/^([^:]{1,25}):/,"<u>$1:</u>")}</li>`).join("")}</ul></div>`}
 function B(i,c,o){const d=q(D[i][c][o]),f=d[0],k=ch[i+"."+c],u=k&&k[0]==o?k[1]:-1,a=`data-i="${i}.${c}.${o}"`;
@@ -21,5 +21,6 @@ $("za").addEventListener("click",v=>{const n=v.target.closest("[data-i]");if(!n)
 if(n.dataset.l!=null){const l=+n.dataset.l;if(ch[k]&&ch[k][0]==o&&ch[k][1]==l)delete ch[k];else ch[k]=[o,l];U();b.innerHTML=B(i,c,o);return}
 const w=n.classList.contains("zn");document.querySelectorAll(".zn").forEach(x=>x.classList.remove("zn"));document.querySelectorAll(".zg").forEach(x=>{x.style.display="none";x.innerHTML=""});
 if(!w){n.classList.add("zn");b.innerHTML=B(i,c,o);b.style.display="block"}});
-document.querySelectorAll(".zo").forEach(x=>{x.style.whiteSpace="nowrap";let s=10;while(x.scrollWidth>x.clientWidth&&s>4){s-=.5;x.style.fontSize=s+"px"}x.style.whiteSpace=""});
+const fitZ=R=>{R.querySelectorAll(".ax-ro").forEach(o=>{const bs=[...o.children];if(o.dataset.f||!bs[0]||!bs[0].clientWidth)return;o.dataset.f="1";let s=18;bs.forEach(b=>b.style.fontSize=s+"px");while(s>5&&bs.some(b=>b.scrollWidth>b.clientWidth)){s-=.25;bs.forEach(b=>b.style.fontSize=s+"px")}});
+ R.querySelectorAll(".zs").forEach(g=>{const hs=[...g.querySelectorAll(".ax-rh")];if(g.dataset.fh||!hs[0]||!hs[0].clientWidth)return;g.dataset.fh="1";let s=15;hs.forEach(h=>h.style.fontSize=s+"px");while(s>6&&hs.some(h=>h.scrollWidth>h.clientWidth)){s-=.25;hs.forEach(h=>h.style.fontSize=s+"px")}})};fitZ($("za"));
 };
