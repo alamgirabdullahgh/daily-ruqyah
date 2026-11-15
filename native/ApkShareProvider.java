@@ -12,12 +12,22 @@ import android.provider.OpenableColumns;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-// অ্যাপের নিজের APK "Daily Ruqyah.apk" নামে শেয়ার করতে দেয়: শেয়ার-শিটে ও যাকে পাঠানো হয় তার ফোনে এই নামই দেখায়
+// অ্যাপের নিজের APK "Daily Ruqyah 18.4MB.apk" নামে শেয়ার করতে দেয় (সাইজ APK থেকে প্রতিবার হিসাব হয়):
+// শেয়ার-শিটে ও যাকে পাঠানো হয় তার ফোনে এই নামই দেখায়
 public class ApkShareProvider extends ContentProvider {
     public static final String NAME = "Daily Ruqyah.apk";
 
+    // নামের সাথে সাইজ: "Daily Ruqyah 18.4MB.apk" (ব্রাকেট নেই, সংখ্যা ও MB লাগানো)
+    static String displayName(Context c) {
+        long len = new File(c.getApplicationInfo().sourceDir).length();
+        if (len <= 0) return NAME;
+        double mb = len / 1048576.0;
+        String size = mb >= 100 ? String.valueOf(Math.round(mb)) : String.format(java.util.Locale.US, "%.1f", mb);
+        return "Daily Ruqyah " + size + "MB.apk";
+    }
+
     public static Uri uri(Context c) {
-        return new Uri.Builder().scheme("content").authority(c.getPackageName() + ".apkshare").appendPath(NAME).build();
+        return new Uri.Builder().scheme("content").authority(c.getPackageName() + ".apkshare").appendPath(displayName(c)).build();
     }
 
     private File apk() {
@@ -34,7 +44,7 @@ public class ApkShareProvider extends ContentProvider {
         MatrixCursor cur = new MatrixCursor(cols);
         Object[] row = new Object[cols.length];
         for (int i = 0; i < cols.length; i++) {
-            if (OpenableColumns.DISPLAY_NAME.equals(cols[i])) row[i] = NAME;
+            if (OpenableColumns.DISPLAY_NAME.equals(cols[i])) row[i] = displayName(getContext());
             else if (OpenableColumns.SIZE.equals(cols[i])) row[i] = apk().length();
         }
         cur.addRow(row);
