@@ -101,24 +101,26 @@
    host.innerHTML='<h3 class="am-sh">রোগ/সমস্যা অনুযায়ী '+(kind==="sym"?"লক্ষণ":"রেসপন্স")+'</h3>'+cs.map(function(c){return'<details class="am-sd"><summary><i>'+c.icon+'</i> '+esc(c.title)+'</summary>'+stepsHtml(ST[c.id][kind])+'<a class="am-go" href="#amol/'+c.id+'">এই রোগের ট্রিটমেন্ট →</a></details>'}).join("");
   }).catch(function(){});
  };
+ /* রোগ/সমস্যা অনুযায়ী লক্ষণ ও রেসপন্স এবং প্রতিক্রিয়ার আলামত: এখন শুধু সাইডবারের আমল পাতায় (#amal); লক্ষণ/প্রতিক্রিয়া ভিত্তিক পাতায় শুধু চার্ট */
+ function anchorOf(page){return page.querySelector("#drAmalTr")||page.querySelector("#drHomeT")}
  function secMount(){
-  var m=/^#(diag|resp)(?:\/([a-z]+))?/.exec(location.hash||"");if(!m)return;
-  var kind=m[1]==="diag"?"sym":"resp",g=m[2]==="jadu"||m[2]==="jin"?m[2]:"",page=document.getElementById(kind==="sym"?"drSym":"drHome");if(!page)return;
-  var id="amSec_"+kind,h=document.getElementById(id);
-  if(!h){h=document.createElement("div");h.id=id;h.className="am-sec2";var t=page.querySelector("#drHomeT,h2");if(t&&t.parentNode===page)t.insertAdjacentElement("afterend",h);else page.insertBefore(h,page.firstChild)}
-  if(g==="")h.hidden=m[2]==="nazar";else h.hidden=false;
-  window.__drAmolSec(kind,h,g);
+  if(!/^#amal/.test(location.hash||""))return;
+  var page=document.getElementById("drHome");if(!page)return;
+  ["resp","sym"].forEach(function(kind){
+   var id="amSec_"+kind,h=document.getElementById(id);
+   if(!h){h=document.createElement("div");h.id=id;h.className="am-sec2";var t=anchorOf(page);if(t&&t.parentNode===page)t.insertAdjacentElement("afterend",h);else page.insertBefore(h,page.firstChild)}
+   h.hidden=false;window.__drAmolSec(kind,h,"");
+  });
  }
- /* প্রতিক্রিয়ার আলামত (data/response-signs.js): শুধু রেসপন্স পাতায়; বদনজরে নেই */
  function signsMount(){
-  var m=/^#resp(?:\/([a-z]+))?/.exec(location.hash||"");var old=document.getElementById("amSigns");if(old)old.remove();if(!m||m[1]==="nazar")return;
-  var g=m[1]==="jadu"||m[1]==="jin"?m[1]:"",D=window.__drRespSigns,page=document.getElementById("drHome");if(!page||!D)return;
+  var old=document.getElementById("amSigns");if(old)old.remove();if(!/^#amal/.test(location.hash||""))return;
+  var D=window.__drRespSigns,page=document.getElementById("drHome");if(!page||!D)return;
   var h=document.createElement("div");h.id="amSigns";h.className="am-sec2";
   var mk=function(tag,css,txt){var e=document.createElement(tag);if(css)e.style.cssText=css;if(txt!=null)e.textContent=txt;return e};
   var hd=mk("h3","","রুকইয়াহ শোনা/করার সময় প্রতিক্রিয়ার আলামত");hd.className="am-sh";h.appendChild(hd);
-  D.forEach(function(G){if(g&&G.g!==g)return;var d=document.createElement("details");d.className="am-sd";d.open=!!g;d.appendChild(mk("summary","",G.title));
+  D.forEach(function(G){var d=document.createElement("details");d.className="am-sd";d.appendChild(mk("summary","",G.title));
    G.rows.forEach(function(r){var p=mk("div","line-height:1.8;margin:6px 0");p.appendChild(mk("span","font-size:12.5px;margin-right:6px",r.f==="G"?"🟢 গাইডে আছে":"🟡 আন্দাজ, গাইডে পাইনি"));p.appendChild(document.createTextNode(r.t));d.appendChild(p)});h.appendChild(d)});
-  var t=page.querySelector("#drHomeT,h2"),ex=document.getElementById("amSec_resp");
+  var t=anchorOf(page),ex=document.getElementById("amSec_resp");
   if(ex&&ex.parentNode===page)ex.insertAdjacentElement("beforebegin",h);else if(t&&t.parentNode===page)t.insertAdjacentElement("afterend",h);else page.insertBefore(h,page.firstChild)}
  window.addEventListener("hashchange",function(){setTimeout(signsMount,300)});setTimeout(signsMount,700);
  window.addEventListener("hashchange",function(){setTimeout(secMount,250)});setTimeout(secMount,600);
