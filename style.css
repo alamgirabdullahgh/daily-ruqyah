@@ -1077,16 +1077,29 @@ body.is-home .drq-support.drq-hero,.drq-support.drq-hero{margin:6px 0 3px}
 .ax-pp{margin:2px 6px 10px}
 .ax-pp[hidden]{display:none}
 
-/* v116: চার্টের বাটন হুবহু "দৈনন্দিন রুকইয়াহ" কার্ডের মতো — মূল বাটনের পাশে সরু লম্বা গাঢ় সবুজ বাটন (ওপরে আইকন, নিচে লেখা) */
+/* v117: চার্ট পুরোটা এক স্ক্রিনে। দুই ঘরের সারি: মূল বাটনের পাশে সরু লম্বা সবুজ বাটন (দৈনন্দিন কার্ডের মতো); তিন ঘরের সারি: হোমের বদনজর কার্ডের মতো মূল বাটনের নিচে PDF/অডিও */
+.ax-root .ax-g{margin:0 0 4px}
+.ax-root .ax-r{gap:4px;margin:0 0 5px}
+.ax-root .ax-rh{width:21%;padding:3px 1px;gap:4px}
+.ax-root .ax-ro{gap:4px}
 .ax-root .ax-ro>.ax-cw{flex:1 1 0;min-width:0;display:flex;flex-direction:row;align-items:stretch;gap:3px}
-.ax-root .ax-cw .ax-c{flex:1 1 0;width:auto;min-width:0}
-.ax-root .ax-cb,.ax-root .ax-rb{display:flex;flex-direction:row;gap:3px;flex:none;width:auto;margin:0;align-self:stretch}
-.ax-root .ax-mb,.ax-root .ax-ga{flex:none;box-sizing:border-box;width:31px;height:auto;min-height:50px;padding:2px 0;border:0;border-radius:11px;background:var(--primary);color:#fff;font:inherit;font-size:9.5px;font-weight:700;line-height:1.25;white-space:pre-line;text-align:center;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 0 rgba(0,0,0,.18);cursor:pointer;-webkit-tap-highlight-color:transparent}
-.ax-root .ax-mb::first-line,.ax-root .ax-ga::first-line{font-size:15px}
+.ax-root .ax-cw .ax-c{flex:1 1 0;width:auto;min-width:0;min-height:44px;padding:2px 1px}
+.ax-root .ax-cb,.ax-root .ax-rb{display:flex;flex-direction:row;gap:3px;flex:none;width:auto;margin:0}
+.ax-root .ax-mb,.ax-root .ax-ga{flex:none;box-sizing:border-box;width:28px;height:auto;min-height:44px;padding:1px 0;border:0;border-radius:10px;background:var(--primary);color:#fff;font:inherit;font-size:8.5px;font-weight:700;line-height:1.2;white-space:pre-line;text-align:center;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 0 rgba(0,0,0,.18);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ax-root .ax-mb::first-line,.ax-root .ax-ga::first-line{font-size:14px}
 .ax-root .ax-mb.on,.ax-root .ax-ga.on{background:#2e7d32}
-.ax-root .ax-rh{flex-direction:column;gap:6px}
+.ax-root .ax-rh{flex-direction:column}
 .ax-root .ax-rb{align-self:center}
-.ax-root .ax-rb .ax-mb{width:32px;min-height:46px;border:1px solid rgba(255,255,255,.5)}
-.ax-root .zs>h3.ax-h3{display:flex;align-items:stretch;justify-content:center;gap:6px}
-.ax-root .ax-h3>span{align-self:center}
-.ax-root .ax-h3 .ax-ga{width:42px;min-height:46px;font-size:10.5px}
+.ax-root .ax-rb .ax-mb{width:27px;min-height:38px;border:1px solid rgba(255,255,255,.5)}
+.ax-root .ax-ro.ax-3>.ax-cw{flex-direction:column;gap:2px}
+.ax-root .ax-ro.ax-3 .ax-cb{width:100%}
+.ax-root .ax-ro.ax-3 .ax-cb .ax-mb{flex:1 1 0;width:auto;min-height:24px;height:24px;flex-direction:row;gap:2px;font-size:9px;white-space:nowrap;border-radius:8px}
+.ax-root .ax-ro.ax-3 .ax-cb .ax-mb::first-line{font-size:9px}
+.ax-root .zs>h3.ax-h3{display:flex;align-items:center;justify-content:center;gap:6px;padding:4px 10px;margin:0}
+.ax-root .ax-h3 .ax-ga{width:44px;min-height:38px;font-size:9.5px}
+.ax-root .ax-t{margin:0;padding:4px 0;font-size:18px}
+.ax-root .ax-rh{padding:2px 1px;gap:2px;font-size:14px}
+.ax-root .ax-rb .ax-mb{width:26px;min-height:31px;border-radius:8px;font-size:8px}
+.ax-root .ax-rb .ax-mb::first-line{font-size:12px}
+.ax-root .ax-cw .ax-c{min-height:42px}
+.ax-root .ax-mb,.ax-root .ax-ga{min-height:42px}
