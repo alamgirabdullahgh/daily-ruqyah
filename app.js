@@ -1318,6 +1318,14 @@ function drShell(){
  window.__drPushSub=fn=>{try{history.pushState({drSub:1},"");window.__drSubs.push(fn)}catch(e){}};
  addEventListener("popstate",()=>{if(!window.__drSubs.length)return;const fn=window.__drSubs.pop();try{fn&&fn()}catch(e){console.error(e)}});
  {const bk=$("drBack");if(bk)bk.onclick=()=>{if(window.__drSubs.length)history.back();else if((window.__drNav||0)>1)history.back();else location.hash="#home"}}
+ // ফোনের নিজের ব্যাক বাটন (নেটিভ MainActivity থেকে ডাকা): true = অ্যাপ নিজে ধাপে ধাপে ফিরেছে, false = হোমে আছি, অ্যাপ বন্ধ হোক
+ window.__drBackKey=()=>{
+  if(side.classList.contains("on")){open(false);return true}
+  if(window.__drSubs.length){history.back();return true}
+  const h=location.hash||"#home";
+  if(h==="#home"||h==="#"||h==="")return false;
+  if((window.__drNav||0)>1)history.back();else location.hash="#home";
+  return true};
  navs.forEach(a=>a.addEventListener("click",e=>{e.preventDefault();const h=a.getAttribute("href");if(location.hash===h)route();else location.hash=h;open(false)}));
  addEventListener("hashchange",()=>{window.__drSubs.length=0;route()});
  route()}

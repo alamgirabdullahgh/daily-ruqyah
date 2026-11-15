@@ -18,6 +18,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.activity.OnBackPressedCallback;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
@@ -37,6 +38,16 @@ public class MainActivity extends BridgeActivity {
                     w.evaluateJavascript("fetch(" + org.json.JSONObject.quote(url) + ").then(r=>r.blob()).then(b=>window.__drSave&&window.__drSave(b))", null);
             });
         } catch (Exception ignored) {}
+        // ফোনের ব্যাক বাটন: আগে অ্যাপের ভেতরে ধাপে ধাপে ফেরে (JS __drBackKey), হোমে থাকলে তবেই অ্যাপ বন্ধ
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override public void handleOnBackPressed() {
+                try {
+                    getBridge().getWebView().evaluateJavascript(
+                        "(function(){try{return window.__drBackKey?window.__drBackKey():false}catch(e){return false}})()",
+                        v -> { if (!"true".equals(v)) finish(); });
+                } catch (Exception e) { finish(); }
+            }
+        });
         BgUpdater.schedule(this, 60 * 1000L); // অ্যাপ খোলার ১ মিনিট পর থেকে ব্যাকগ্রাউন্ড আপডেট-পাহারা চালু
     }
 
