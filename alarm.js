@@ -511,7 +511,7 @@
     var root = el("div", "dsy-kb"), KA = [21.4225, 39.8262];
     root.innerHTML = '<svg viewBox="0 0 200 200" class="dsy-cmp" role="img" aria-label="কিবলা কম্পাস"><g class="dsy-dial"><circle cx="100" cy="100" r="92" class="dsy-ring"/>' +
       (function () { var t = ""; for (var i = 0; i < 36; i++) { var big = i % 9 === 0; t += '<line x1="100" y1="' + (big ? 10 : 12) + '" x2="100" y2="' + (big ? 20 : 17) + '" transform="rotate(' + (i * 10) + ' 100 100)" class="dsy-tk"/>'; } return t; })() +
-      '<text x="100" y="36" class="dsy-dn" text-anchor="middle">উ</text><text x="166" y="106" class="dsy-dc" text-anchor="middle">পূ</text><text x="100" y="176" class="dsy-dc" text-anchor="middle">দ</text><text x="34" y="106" class="dsy-dc" text-anchor="middle">প</text>' +
+      '<text x="100" y="52" class="dsy-dn" text-anchor="middle">উত্তর</text><text x="142" y="108" class="dsy-dc" text-anchor="middle">পূর্ব</text><text x="100" y="170" class="dsy-dc" text-anchor="middle">দক্ষিণ</text><text x="58" y="108" class="dsy-dc" text-anchor="middle">পশ্চিম</text>' +
       '<g class="dsy-q"><line x1="100" y1="100" x2="100" y2="40" class="dsy-ql"/><text x="100" y="38" text-anchor="middle" class="dsy-qk">🕋</text></g></g>' +
       '<path d="M100 2l-8 13h16z" class="dsy-fix"/><circle cx="100" cy="100" r="5" class="dsy-hub"/></svg>';
     var info = el("div", "dsy-kt", "অবস্থান খোঁজা হচ্ছে…"), sub = el("small", "dsy-ks", ""), btn = el("button", "dsy-kbtn", "কম্পাস চালু করুন"); btn.type = "button";

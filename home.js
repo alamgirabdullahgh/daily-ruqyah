@@ -31,9 +31,9 @@
   /* দৈনন্দিন রুকইয়াহ: বদনজর·জাদু·জিন কার্ডের মতোই ট্যাব (শারীরিক | মানসিক); ট্যাবে শুধু ভেতরের তথ্য বদলায়, বাটনের নাম একই (অঙ্গভিত্তিক · রোগভিত্তিক), প্রতিটির নিজের PDF ও অডিও; নিচে সব একসাথের PDF/অডিও। অঙ্গভিত্তিক/রোগভিত্তিকের অডিও এই কার্ডেই বাজে, কোন অঙ্গ/রোগের আয়াত চলছে জ্বলে। */
   var DL=[["শারীরিক",[["অঙ্গভিত্তিক","physical@organ","শারীরিক অঙ্গভিত্তিক"],["রোগভিত্তিক","physical@disease","শারীরিক রোগভিত্তিক"]],["physical","phys"]],["মানসিক",[["অঙ্গভিত্তিক","mentalmain@organ","মানসিক অঙ্গভিত্তিক"],["রোগভিত্তিক","mentalmain@disease","মানসিক রোগভিত্তিক"]],["mentalmain","ment"]]];
   var dli=function(label,list,kind,cat,live,cls){var c=esc(cat),l=esc(label),al=esc(cat==="দৈনন্দিন"?label:cat);return '<li class="drq-ai'+(cls?' '+cls:'')+'"><div class="drq-air"><a href="#search" data-list="'+list+'">'+l+'</a><span class="drq-bt"><button type="button" class="drq-pd" data-au="'+kind+'" data-c="'+c+'" aria-label="'+al+' — PDF"><span class="drq-bi">📄</span><span class="drq-bl"> PDF</span></button><button type="button" class="drq-au'+(live?' drq-lv':'')+'" data-au="'+kind+'" data-c="'+c+'" aria-label="'+al+' — অডিও">🔊<span class="drq-bl"> অডিও</span></button></span></div><div class="drq-aup" data-k="pdf" hidden></div>'+(live?'':'<div class="drq-aup" data-k="au" hidden></div>')+'</li>'};
-  var dailyCard=function(title){var r='<section class="drq-card drq-tabcard drq-daily"><h3 class="drq-tabs drq-dtabs" role="tablist"><span class="drq-ttl">'+esc(title)+'</span>'+DL.map(function(d,i){return '<button type="button" role="tab" class="drq-tab'+(i?'':' on')+'" data-t="'+i+'" aria-selected="'+(i?'false':'true')+'">'+esc(d[0])+'</button>'}).join('')+'</h3>';
+  var dailyCard=function(title){var r='<section class="drq-card drq-tabcard drq-daily"><h3 class="drq-tabs drq-dtabs" role="tablist">'+DL.map(function(d,i){return '<button type="button" role="tab" class="drq-tab'+(i?'':' on')+'" data-t="'+i+'" aria-selected="'+(i?'false':'true')+'">'+esc(d[0])+'</button>'}).join('')+'<button type="button" role="tab" class="drq-tab drq-tab-all" data-t="2" aria-selected="false" aria-label="দুইটি একসাথে"><span>২টি একসাথে</span></button></h3>';
    DL.forEach(function(d,i){r+='<ul class="drq-opts drq-two" data-pane="'+i+'"'+(i?' hidden':'')+'>'+dli(d[1][0][0],d[1][0][1],'x',d[1][0][2],true)+dli(d[1][1][0],d[1][1][1],'x',d[1][1][2],true)+'</ul>'});
-   return r+'<div class="drq-live" hidden></div></section>'};
+   r+='<ul class="drq-opts drq-two" data-pane="2" hidden>'+dli('অঙ্গভিত্তিক','both@organ','x','শারীরিক ও মানসিক অঙ্গভিত্তিক',true)+dli('রোগভিত্তিক','both@disease','x','শারীরিক ও মানসিক রোগভিত্তিক',true)+'</ul>';return r+'<div class="drq-live" hidden></div></section>'};
   /* ===== লাইভ অডিও: অঙ্গভিত্তিক/রোগভিত্তিক বাটনে চাপলে এই কার্ডেই বাজে; নিচে নামের তালিকা, যে অঙ্গ/রোগের আয়াত চলছে সেটি জ্বলে ===== */
   var AUH='🔊<span class="drq-bl"> অডিও</span>',LV=null;
   var bn=function(n){return String(n).replace(/\d/g,function(d){return "০১২৩৪৫৬৭৮৯"[d]})};
@@ -87,7 +87,7 @@
   });
   H.innerHTML=h+'</div>';
   var fitT=function(){H.querySelectorAll('.drq-two').forEach(function(ul){var as=[].slice.call(ul.querySelectorAll('.drq-air>a'));if(!as.length||!as[0].clientWidth)return;var m=99;as.forEach(function(el){el.style.fontSize='';var f=parseFloat(getComputedStyle(el).fontSize);while(el.scrollWidth>el.clientWidth&&f>8){f-=.5;el.style.fontSize=f+'px'}m=Math.min(m,f)});as.forEach(function(el){el.style.fontSize=m+'px'})})};
-  var fitA=function(){var t=H.querySelector('.drq-tab-all');if(!t||!t.clientWidth)return;t.style.fontSize='';var f=parseFloat(getComputedStyle(t).fontSize);while(t.scrollWidth>t.clientWidth&&f>10){f-=.5;t.style.fontSize=f+'px'}};var fitT0=fitT;fitT=function(){fitT0();fitA()};
+  var fitA=function(){H.querySelectorAll('.drq-tab-all').forEach(function(t){if(!t.clientWidth)return;t.style.fontSize='';var f=parseFloat(getComputedStyle(t).fontSize);while(t.scrollWidth>t.clientWidth&&f>10){f-=.5;t.style.fontSize=f+'px'}})};var fitT0=fitT;fitT=function(){fitT0();fitA()};
   window.addEventListener('resize',function(){fitT()});
   window.__drSysCard&&window.__drSysCard(H);
   var tk=document.getElementById("drSupTk");
