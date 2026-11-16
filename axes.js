@@ -120,8 +120,8 @@ function scope(id,sec,mode){const t=id[0],p=id.slice(1).split(".").map(Number),g
   const r=regCell(gi,ci,oi,mode);if(!r)return;const from=list.length;r.ks.forEach(k=>{plist.push(k);list.push(k)});
   /* শরীরে ঘর: ঘরের নিজের আয়াতের পর অঙ্গের ক্রমে প্রতিটি অঙ্গের আয়াত (ঘরে আগেই থাকা আয়াত বা আগের অঙ্গে এসে গেলে আবার নয়); og = প্রতিটি অঙ্গের আয়াত-সীমা */
   let og=null;if(ORGS.length&&isBodyCell(c,n)){og=[];hasOrg=true;const sn=new Set(r.ks.map(k=>k[0]+":"+k[1]));
-   /* প্রতিক্রিয়া: ঘরের নিজের মৌলিক আয়াতের পর প্রতিটি অঙ্গের একটি মূল আয়াত (অঙ্গের ক্রমে); চিকিৎসা/অন্যান্য: অঙ্গের সব আয়াত */
-   ORGS.forEach((o,k)=>{const f=list.length;if(mode==="resp"){if(o.base)list.push(o.base)}else o.keys.forEach(x=>{const i=x[0]+":"+x[1];if(!sn.has(i)){sn.add(i);list.push(x)}});if(list.length>f)og.push({k,from:f,to:list.length})})}
+   /* "শরীরে" ঘরের অঙ্গ-তালিকা পালাক্রমে: "শরীরে" ঘরের মৌলিক আয়াত একবার, অঙ্গের আয়াত একবার — আবার "শরীরে", আবার অঙ্গ (ফলে আয়াত শুনেই বোঝা যায় এটা বদনজর/জাদু/জিনের কোন চার্ট)। প্রতিক্রিয়া: প্রতিটি অঙ্গের মূল আয়াতে ১১ পালা; চিকিৎসা: অঙ্গের প্রতিটি আয়াতের আগে "শরীরে"-র আয়াত। তৃতীয় সংখ্যা ১ = এই আয়াত একবারই */
+   const B=r.ks[0];ORGS.forEach((o,k)=>{const f=list.length;if(mode==="resp"){if(o.base){if(B)for(let q=0;q<REPN.resp;q++){list.push([B[0],B[1],1]);list.push([o.base[0],o.base[1],1])}else list.push(o.base)}}else o.keys.forEach(x=>{const i=x[0]+":"+x[1];if(!sn.has(i)){sn.add(i);if(mode==="treat"&&B)list.push([B[0],B[1],1]);list.push(x)}});if(list.length>f)og.push({k,from:f,to:list.length})})}
   cells.push({b:sec?sec.querySelector('.ax-c[data-k="'+gi+"."+ci+"."+oi+'"]'):null,name:c.name+" › "+n,from,to:list.length,og})}));
  const cat="অক্ষ "+G.name+(t!=="g"?" "+G.cols[p[1]].name:"")+(t==="c"?" "+G.cols[p[1]].opts[p[2]]:"")+(SFX[mode]||"");
  const seen=new Set(),ks=[];plist.forEach(k=>{const i=k[0]+":"+k[1];if(!seen.has(i)){seen.add(i);ks.push(k)}});

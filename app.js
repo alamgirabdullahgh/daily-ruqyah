@@ -301,11 +301,11 @@ function smoothAyah(ch,sr){const n=ch.length;let pk=0;for(let i=0;i<n;i++){const
  let e=0;for(let i=a;i<b;i++)e+=ch[i]*ch[i];const rms=Math.sqrt(e/m)||0.1;let g=Math.max(0.6,Math.min(1.8,0.1/rms));g=Math.min(g,0.97/pk);
  const fi=Math.min(Math.round(sr*0.02),m>>1),fo=Math.min(Math.round(sr*0.04),m>>1),o=new Int16Array(m);
  for(let k=0;k<m;k++){let v=ch[a+k]*g;if(k<fi)v*=k/fi;else if(m-k<fo)v*=(m-k)/fo;v=Math.max(-1,Math.min(1,v));o[k]=v<0?v*32768:v*32767}return o}
-async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=(s,a)=>opt&&opt.rep?opt.rep:repOf(s,a),ST=()=>opt&&opt.set?opt.set:setAll();
+async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=k=>k[2]||(opt&&opt.rep?opt.rep:repOf(k[0],k[1])),ST=()=>opt&&opt.set?opt.set:setAll();
  // কোনো সীমা নেই: প্রতিটি আয়াত নামিয়েই সাথে সাথে MP3-তে এনকোড হয়, মেমোরিতে শুধু ছোট MP3 টুকরো জমে — তাই হাজারো আয়াতেও একটাই ফাইল
  out.textContent="";let L=null;try{L=await loadLame()}catch(e){console.error(e)}
  if(!L){note("MP3 বানানোর লাইব্রেরি পাওয়া যায়নি (ইন্টারনেট দেখুন), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");playList(ST()>1?Array.from({length:ST()},()=>list).flat():list,out);return}
- const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));AS.loc=AS.net=0;let pool=null;try{pool=await mkEncPool()}catch(e){console.error(e);pool=null}const jobs=[],marks=[],oi=[],memo=(opt&&opt.memoMap)||new Map(),MK=x=>x[0]+":"+x[1];
+ const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));AS.loc=AS.net=0;let pool=null;try{pool=await mkEncPool()}catch(e){console.error(e);pool=null}const jobs=[],marks=[],oi=[],memo=(opt&&opt.memoMap)||new Map(),MK=x=>x[0]+":"+x[1]+(x[2]?"*"+x[2]:"");
  let wl=null;try{wl=await navigator.wakeLock.request("screen")}catch(e){}
  const push=pcm=>{for(let i=0;i<pcm.length;i+=B){const m=enc.encodeBuffer(pcm.subarray(i,i+B));if(m.length)mp3.push(new Uint8Array(m))}};
  const W=6,pf=[],get=i=>pf[i]||(pf[i]=fetchAud(list[i][0],list[i][1]).then(ab=>ab?ctx.decodeAudioData(ab).then(d=>({d}),()=>({err:1})):null).catch(()=>null));/* সামনের ১৪টি আয়াত একসাথে আনা ও ডিকোড হয় (আগে ৪টি, ডিকোড ক্রমে); এনকোডার ওয়ার্কারগুলো তাই বসে থাকে না */let ok=0,bad=0,cutN=0;
@@ -314,7 +314,7 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=(s,
   note("অডিও প্রস্তুত ও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+(bad?" (বাদ: "+bn2(bad)+")":"")+"…");
   const dr=await get(i);pf[i]=null;
   if(!dr){bad++;if(!ok&&bad>=5)break;continue}
-  try{if(dr.err)throw 0;const d=dr.d,ch=d.getChannelData(0),pcm=smoothAyah(tsm(ch,sr,spdOf()),sr),rp=RP(list[i][0],list[i][1]);
+  try{if(dr.err)throw 0;const d=dr.d,ch=d.getChannelData(0),pcm=smoothAyah(tsm(ch,sr,spdOf()),sr),rp=RP(list[i]);
     if(pool){const fl=new Int16Array(pcm.length+gap.length);fl.set(pcm);fl.set(gap,pcm.length);await pool.room();{const jb={p:null,pcm:fl,rp};jb.p=pool.run(fl,sr).then(c=>{if(c)jb.pcm=null;return c});/* এনকোড হলেই কাঁচা PCM ছেড়ে দেওয়া হয়: আগে হাজারো আয়াতের PCM শেষ পর্যন্ত মেমোরিতে জমে ফোনে অ্যাপ সাদা হয়ে বেরিয়ে যেত */jobs.push(jb);if(opt&&opt.memo)memo.set(MK(list[i]),jb)}}else{for(let q=0;q<rp;q++){push(pcm);push(gap)}marks.push(mp3.length)}
     oi.push(i);ok++}catch(e){bad++;if(!ok&&bad>=5)break}
   if(i%10===0)await new Promise(r=>setTimeout(r))}
@@ -825,7 +825,7 @@ const homeRep=(kind,cat)=>kind==="resp"?{rep:11,set:1}:kind==="treat"?{rep:1,set
 window.__drSfx={resp:SFX_R,treat:SFX_T};
 /* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */
 /* ===== স্থায়ী ভাণ্ডার: একবার বানানো অডিও/PDF ফোনের ভেতরে (Cache Storage) জমা থাকে। অ্যাপ বন্ধ করে আবার খুললেও আর নতুন করে বানাতে হয় না — বোতাম চাপলেই সাথে সাথে। কোড/তালিকা বদলালে PREV বাড়ালে পুরনোগুলো মুছে নতুন করে বানায়। ===== */
-const PREV="p3",PREC="dr-pre-"+PREV;
+const PREV="p4",PREC="dr-pre-"+PREV;
 const preUrl=(t,k)=>"https://dr.local/pre/"+t+"/"+encodeURIComponent(k);
 const PRE={
  async get(t,k){try{const c=await caches.open(PREC),r=await c.match(preUrl(t,k));if(!r)return null;const m=await c.match(preUrl(t,k)+"/meta");let meta={};try{meta=m?await m.json():{}}catch(e){}return{blob:await r.blob(),meta}}catch(e){return null}},
@@ -858,7 +858,7 @@ const HAUD=new Map();
 function homeAudio(kind,cat,say){const k=kind+"|"+cat;let e=HAUD.get(k);
  if(!e){e={say:()=>{},out:el("div")};e.p=(async()=>{const{rep,set}=homeRep(kind,cat);e.rep=rep;e.set=set;const hit=await PRE.get("aud",audKey(k));if(hit&&hit.blob&&hit.blob.size>2048){e.n=(hit.meta&&hit.meta.n)||0;preAudioInto(e.out,hit.blob,homeTitle(kind,cat));e.cached=true;e.done=true;return e}
    const list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty");e.n=list.length;const st={};
-   await mergeAudio(list,e.out,t=>e.say(t),{rep,set,noplay:true,name:homeTitle(kind,cat),stat:st});e.done=true;
+   await mergeAudio(list,e.out,t=>e.say(t),{rep,set,memo:true,noplay:true,name:homeTitle(kind,cat),stat:st});e.done=true;
    try{const a=e.out.querySelector("audio");if(a&&st.ok&&!st.bad){const b=await(await fetch(a.src)).blob();if(b.size>2048)PRE.put("aud",audKey(k),b,{n:list.length})}}catch(x){console.error(x)}return e})().catch(err=>{HAUD.delete(k);throw err});HAUD.set(k,e)}
  if(say)e.say=say;return e}
 let HPRE=false;
