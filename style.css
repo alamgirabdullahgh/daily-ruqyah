@@ -1191,9 +1191,9 @@ body.is-home{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
 #drLanding .drq-grid>.drq-card.drq-sys>.drq-tabs.dsy-tabs,.drq-sys .dsy-tabs{display:grid!important;grid-template-columns:1.7fr 1fr 1fr!important;gap:2px!important;align-items:center;padding:4px 6px!important;margin-bottom:6px}
 .drq-sys .dsy-tabs .drq-tab{width:100%;justify-content:center;gap:5px;font-size:clamp(13px,4.2vw,17px);padding:6px 0;white-space:nowrap;min-width:0;box-shadow:none}
 .drq-sys .dsy-tabs .drq-tab::before{display:inline-block!important;width:7px;height:7px}
-.dsy-kb{display:flex;flex-direction:row-reverse;align-items:center;justify-content:space-between;gap:12px;padding:0 8px;height:58px;box-sizing:border-box;text-align:left}
+.dsy-kb{display:flex;flex-direction:row-reverse;align-items:center;justify-content:space-evenly;gap:0;padding:0 8px;height:58px;box-sizing:border-box;text-align:left}
 .dsy-kx{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0}
-.dsy-cmp{flex:none;width:76px;height:76px;display:block;margin:-11px 0 -7px;position:relative;z-index:1}
+.dsy-cmp{flex:none;width:84px;height:84px;display:block;margin:-15px 0 -11px;position:relative;z-index:1}
 .dsy-ring{fill:var(--primary-light,#e6efe9);stroke:var(--primary);stroke-width:3}
 .dsy-tk{stroke:var(--text-muted);stroke-width:1.5;opacity:.7}
 .dsy-dn{font-size:34px;font-weight:800;fill:#c0392b;font-family:var(--font-head)}
