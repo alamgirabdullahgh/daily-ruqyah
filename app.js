@@ -1238,7 +1238,7 @@ const renderOrganTreat=(n,list)=>{GEN++;CURT=null;window.__bq="";window.__sq=n;r
   if(!window.__drFitBound){window.__drFitBound=1;let ft=0;window.addEventListener("resize",()=>{clearTimeout(ft);ft=setTimeout(()=>window.__drFitNow&&window.__drFitNow(),120)});if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>window.__drFitNow&&window.__drFitNow())}
   const qa=x=>String(x).replace(/"/g,"&quot;");
   const mkList=(items,pre)=>{const ul=document.createElement("ul");ul.className="drq-opts drq-two";
-   items.forEach((it,i)=>{const li=document.createElement("li");li.className="drq-ai";const air=document.createElement("div");air.className="drq-air";air.style.order=String(i*2+1);
+   items.forEach((it,i)=>{const li=document.createElement("li");li.className="drq-ai";const air=document.createElement("div");air.className="drq-air";air.style.order=String(i*2+1);air.dataset.nm=it.name;
     const a=document.createElement("a");a.href="#search";a.textContent=shortL(it.name);a.setAttribute("aria-label",it.name);a.onclick=e=>{e.preventDefault();window.__drPushSub&&window.__drPushSub(back);it.fn()};air.appendChild(a);
     const cat=pre+"|"+it.name;
     if(it.has){const bt=document.createElement("span");bt.className="drq-bt";
@@ -1246,12 +1246,44 @@ const renderOrganTreat=(n,list)=>{GEN++;CURT=null;window.__bq="";window.__sq=n;r
     li.appendChild(air);
     if(it.has)["pdf","au"].forEach(k=>{const h=document.createElement("div");h.className="drq-aup";h.setAttribute("data-k",k);h.hidden=true;h.style.order=String(i*2+2);li.appendChild(h)});
     ul.appendChild(li)});return ul};
-  {const h1=els("div",HS.replace("margin:16px 2px 10px","margin:0 2px 10px")+";position:relative",(ext?(mental?"🧠 মানসিক — ":"🩺 শারীরিক — "):"")+(only==="disease"?"💊 রোগভিত্তিক":"🫀 অঙ্গভিত্তিক"));h1.className="dr-combo-h";const b0=!app&&$("drBack");if(b0){const cb=b0.cloneNode(true);cb.removeAttribute("id");cb.className="dr-backbtn dr-combo-back";cb.onclick=()=>b0.click();h1.appendChild(cb)}host.appendChild(h1)}
+  {const h1=els("div",HS.replace("margin:16px 2px 10px","margin:0 2px 10px")+";position:relative",(ext?(mental?"🧠 মানসিক — ":"🩺 শারীরিক — "):"")+(only==="disease"?"💊 রোগভিত্তিক":"🫀 অঙ্গভিত্তিক"));h1.className="dr-combo-h";const b0=!app&&$("drBack");if(b0){const cb=b0.cloneNode(true);cb.removeAttribute("id");cb.className="dr-backbtn dr-combo-back";cb.onclick=()=>b0.click();h1.appendChild(cb)}if(only==="organ"||only==="disease"){const bt=document.createElement("span");bt.className="drq-bt";const cq=(mental?"মানসিক ":"শারীরিক ")+(only==="disease"?"রোগভিত্তিক":"অঙ্গভিত্তিক");bt.innerHTML='<button type="button" class="drq-pd" data-au="x" data-c="'+cq+'" aria-label="'+cq+' — PDF"><span class="drq-bi">📄</span><span class="drq-bl"> PDF</span></button><button type="button" class="drq-au drq-hv" data-au="x" data-c="'+cq+'" aria-label="'+cq+' — অডিও">🔊<span class="drq-bl"> অডিও</span></button>';h1.appendChild(bt)}host.appendChild(h1)}
   const prO=mental?"মানসিক অঙ্গ":"শারীরিক অঙ্গ",prD=mental?"মানসিক সমস্যা":"শারীরিক রোগ";
   if(only!=="disease")host.appendChild(mkList(organs.map(n=>({name:n,has:true,fn:()=>window.__drOpenOrgan(n)})),prO));
   if(!only){const h2=els("div",HS,mental?"💊 সমস্যাভিত্তিক":"💊 রোগভিত্তিক");h2.className="dr-combo-h2";host.appendChild(h2)}
   if(only!=="organ")host.appendChild(mkList(secs.map(x=>({name:x.name,has:x.ids.size>0,fn:()=>{$("rsBox").classList.add("dr-tonly");showDiag(Object.assign({},CFG,{only:x.name,back}))}})),prD));
-  host.addEventListener("click",e=>{const au=e.target.closest&&e.target.closest(".drq-au,.drq-pd");if(!au)return;e.preventDefault();const li=au.closest("li"),isP=au.classList.contains("drq-pd"),hp=li&&li.querySelector('.drq-aup[data-k="'+(isP?"pdf":"au")+'"]');const fn=isP?window.__drHomePdf:window.__drHomeAudio;fn&&fn("x",au.getAttribute("data-c"),hp)});
+  /* লাইভ: হেডিংয়ের অডিও চালালে কোন অঙ্গ/রোগের আয়াত চলছে সেটি তালিকায় জ্বলে; সারির নিজের অডিও চললেও ওই সারির নাম জ্বলে */
+   const AUH2='🔊<span class="drq-bl"> অডিও</span>';let LVS=null;
+   const airs=()=>[].slice.call(host.querySelectorAll(".drq-air[data-nm]"));
+   const clr=()=>host.querySelectorAll(".drq-air.live-now").forEach(x=>x.classList.remove("live-now"));
+   const stopLv=()=>{if(!LVS)return;const t=LVS;LVS=null;t.stop=true;try{if(t.a){t.a.pause();t.a.ontimeupdate=t.a.onended=t.a.onplay=null}}catch(e){}if(t.panel)t.panel.remove();if(t.btn){t.btn.classList.remove("on");t.btn.innerHTML=AUH2}clr()};
+   const liveList=async btn=>{const cat=btn.getAttribute("data-c"),same=LVS&&LVS.btn===btn;stopLv();if(same)return;
+    const panel=els("div",null);panel.className="dr-lvp";const tx=els("div",null,"▶ "+cat),nt=els("div",null,"⏳ তালিকা তৈরি হচ্ছে…");tx.className="dr-lvt";nt.className="dr-lvn";panel.append(tx,nt);
+    const h1=host.querySelector(".dr-combo-h");h1.after(panel);
+    const st={btn,a:null,stop:false,panel};LVS=st;btn.classList.add("on");btn.innerHTML='⏹<span class="drq-bl"> থামান</span>';
+    const fail=e=>{console.error(e);if(LVS===st){nt.textContent="অডিও তৈরি করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";btn.classList.remove("on");btn.innerHTML=AUH2;LVS=null}};
+    let items,list=[],segs=[],seen={},out=els("div",null);
+    try{items=await window.__drGroupItems(cat)}catch(e){return fail(e)}
+    if(st.stop||LVS!==st)return;
+    items.forEach((it,k)=>{const f=list.length;it.keys.forEach(x=>{const id=x[0]+":"+x[1];if(!seen[id]){seen[id]=1;list.push(x)}});if(list.length>f)segs.push({k,from:f,to:list.length})});
+    if(!list.length)return fail(new Error("empty"));
+    nt.textContent="⏳ অডিও প্রস্তুত হচ্ছে…";let marks=null;
+    try{await window.__drGroupAudio(list,out,t=>{if(LVS===st)nt.textContent="⏳ "+t},cat+" +লাইভ",m=>{marks=m});if(!out.querySelector("audio"))throw new Error("noaudio")}catch(e){return fail(e)}
+    if(st.stop||LVS!==st)return;
+    nt.remove();panel.appendChild(out);const a=out.querySelector("audio");st.a=a;let cur=-2;
+    const bnum=n=>String(n).replace(/\d/g,d=>"০১২৩৪৫৬৭৮৯"[d]);
+    const upd=()=>{if(!host.isConnected){stopLv();return}let m=marks||[];if(!m.length&&a.duration)m=list.map((_,i)=>({i,t:(i+1)/list.length*a.duration}));if(!m.length)return;
+     const t=a.currentTime+.03;let k=-1;for(let q=0;q<m.length;q++){if(m[q].t>t){k=q;break}}if(k<0)k=m.length-1;
+     const sg=segs.find(z=>m[k].i>=z.from&&m[k].i<z.to);if(!sg||sg.k===cur)return;cur=sg.k;
+     clr();const nm=items[sg.k].name,el0=airs().find(x=>x.dataset.nm===nm);
+     tx.textContent="▶ "+cat+" › "+nm+"  ("+bnum(sg.k+1)+"/"+bnum(items.length)+")";
+     if(el0){el0.classList.add("live-now");const r=el0.getBoundingClientRect();if(r.top<60||r.bottom>innerHeight-60)el0.scrollIntoView({behavior:"smooth",block:"center"})}};
+    a.ontimeupdate=upd;a.onplay=upd;a.onended=()=>{if(LVS===st)stopLv()};
+    try{a.currentTime=0;await a.play()}catch(e){}upd()};
+   host.addEventListener("play",e=>{const li=e.target.closest&&e.target.closest("li.drq-ai");if(!li)return;if(LVS&&e.target!==LVS.a)stopLv();clr();const ar=li.querySelector(".drq-air");if(ar)ar.classList.add("live-now")},true);
+   host.addEventListener("pause",e=>{const li=e.target.closest&&e.target.closest("li.drq-ai");if(li){const ar=li.querySelector(".drq-air");if(ar)ar.classList.remove("live-now")}},true);
+   host.addEventListener("ended",e=>{const li=e.target.closest&&e.target.closest("li.drq-ai");if(li){const ar=li.querySelector(".drq-air");if(ar)ar.classList.remove("live-now")}},true);
+   window.addEventListener("hashchange",()=>{if(!host.isConnected)stopLv()});
+   host.addEventListener("click",e=>{const au=e.target.closest&&e.target.closest(".drq-au,.drq-pd");if(!au)return;e.preventDefault();if(au.classList.contains("drq-hv")){liveList(au);return}const li=au.closest("li"),isP=au.classList.contains("drq-pd"),hp=li&&li.querySelector('.drq-aup[data-k="'+(isP?"pdf":"au")+'"]');const fn=isP?window.__drHomePdf:window.__drHomeAudio;fn&&fn("x",au.getAttribute("data-c"),hp)});
   $("rsOut").appendChild(host);
   regX().catch(()=>{});setTimeout(()=>window.__drHomePrebuild&&window.__drHomePrebuild(),800);
   fitX();setTimeout(fitX,250);{const sec=window.__drSec;window.__drSec="";if(sec==="disease")setTimeout(()=>{const t=host.querySelector(".dr-combo-h2");if(t)t.scrollIntoView({block:"start"})},350)}};
