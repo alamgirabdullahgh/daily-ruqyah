@@ -515,7 +515,7 @@
       '<g class="dsy-q"><line x1="100" y1="100" x2="100" y2="40" class="dsy-ql"/><text x="100" y="38" text-anchor="middle" class="dsy-qk">🕋</text></g></g>' +
       '<path d="M100 2l-8 13h16z" class="dsy-fix"/><circle cx="100" cy="100" r="5" class="dsy-hub"/></svg>';
     var info = el("div", "dsy-kt", "অবস্থান খোঁজা হচ্ছে…"), sub = el("small", "dsy-ks", ""), btn = el("button", "dsy-kbtn", "কম্পাস চালু করুন"); btn.type = "button";
-    root.appendChild(info); root.appendChild(sub); root.appendChild(btn);
+    var kx = el("div", "dsy-kx"); kx.appendChild(info); kx.appendChild(sub); kx.appendChild(btn); root.appendChild(kx);
     var dial = root.querySelector(".dsy-dial"), q = root.querySelector(".dsy-q");
     var bearing = null, locName = "", heading = null, hs = null, on = false, raf = 0, gotSensor = false, chk = 0, locTried = false;
     function rad(d) { return d * Math.PI / 180; }
@@ -528,11 +528,11 @@
     }
     function paint() {
       if (bearing == null) return;
-      var base = "কিবলা: উত্তর থেকে " + bn(Math.round(bearing)) + "° (ঘড়ির কাঁটার দিকে)";
-      if (heading == null) { info.textContent = base; sub.textContent = (locName ? locName + " · " : "") + (on ? "কম্পাস সেন্সরের সাড়া খোঁজা হচ্ছে…" : "ফোনের মাথা উত্তরে রেখে 🕋 তীরের দিকে ঘুরুন, বা কম্পাস চালু করুন"); root.classList.remove("ok"); return; }
+      var base = "কিবলা: উত্তর থেকে " + bn(Math.round(bearing)) + "°";
+      if (heading == null) { info.textContent = base; sub.textContent = (locName ? locName : ""); root.classList.remove("ok"); return; }
       var d = ((bearing - hs + 540) % 360) - 180, ok = Math.abs(d) <= 4;
-      info.textContent = ok ? "✔ আপনি কিবলার দিকে মুখ করে আছেন" : base;
-      sub.textContent = (locName ? locName + " · " : "") + (ok ? "" : "ফোন সমতলে ধরে 🕋 তীর ওপরে আনুন");
+      info.textContent = ok ? "✔ কিবলার দিকে মুখ করে আছেন" : base;
+      sub.textContent = locName;
       root.classList.toggle("ok", ok);
     }
     function frame() { raf = 0; if (heading == null) return; if (hs == null) hs = heading; else hs = (hs + ((((heading - hs) + 540) % 360) - 180) * 0.25 + 360) % 360; dial.setAttribute("transform", "rotate(" + (-hs).toFixed(1) + " 100 100)"); paint(); }
@@ -547,13 +547,13 @@
     function loc() {
       if (locTried) return; locTried = true;
       var have = false;
-      try { var j = JSON.parse(localStorage.getItem("drw_loc")); if (j && isFinite(j.lat) && isFinite(j.lng)) { have = true; locName = "আপনার অবস্থান"; calc(+j.lat, +j.lng); } } catch (e) { }
-      var fb = function () { if (!have) { have = true; locName = "ঢাকা ধরে (অবস্থান পাওয়া যায়নি)"; calc(23.8103, 90.4125); } };
-      if (navigator.geolocation) navigator.geolocation.getCurrentPosition(function (p) { have = true; locName = "আপনার অবস্থান"; calc(p.coords.latitude, p.coords.longitude); }, fb, { timeout: 10000, maximumAge: 600000 }); else fb();
+      try { var j = JSON.parse(localStorage.getItem("drw_loc")); if (j && isFinite(j.lat) && isFinite(j.lng)) { have = true; locName = ""; calc(+j.lat, +j.lng); } } catch (e) { }
+      var fb = function () { if (!have) { have = true; locName = "ঢাকা ধরে"; calc(23.8103, 90.4125); } };
+      if (navigator.geolocation) navigator.geolocation.getCurrentPosition(function (p) { have = true; locName = ""; calc(p.coords.latitude, p.coords.longitude); }, fb, { timeout: 10000, maximumAge: 600000 }); else fb();
     }
     function listen() {
       window.addEventListener("deviceorientationabsolute", onO, true); window.addEventListener("deviceorientation", onO, true);
-      clearTimeout(chk); chk = setTimeout(function () { if (!gotSensor && on) { sub.textContent = (locName ? locName + " · " : "") + "এই ফোনে কম্পাস সেন্সর পাওয়া যায়নি; উপরের কোণ দেখে দিক ঠিক করুন"; } }, 3500);
+      clearTimeout(chk); chk = setTimeout(function () { if (!gotSensor && on) { sub.textContent = (locName ? locName + " · " : "") + "কম্পাস সেন্সর পাওয়া যায়নি"; } }, 3500);
     }
     function start() {
       loc();
@@ -573,28 +573,28 @@
 
   /* ===== আজান (অটোমেটিক এলার্ম কার্ডের তৃতীয় ট্যাব): অনলাইন থেকে চলে (GitHub-এ রাখা অডিও); ফজরের আজানে "আস-সালাতু খাইরুম মিনান নাউম" থাকে ===== */
   var AZ = [
-    { k: "fajr", n: "ফজরের আজান", s: "আস-সালাতু খাইরুম মিনান নাউমসহ", u: "https://raw.githubusercontent.com/AalianKhan/adhans/master/adhan_fajr.mp3" },
-    { k: "norm", n: "সাধারণ আজান", s: "যোহর · আসর · মাগরিব · ইশা", u: "https://raw.githubusercontent.com/AalianKhan/adhans/master/adhan.mp3" }
+    { k: "fajr", n: "ফজরের আজান", s: "", u: "https://raw.githubusercontent.com/AalianKhan/adhans/master/adhan_fajr.mp3" },
+    { k: "norm", n: "সাধারণ আজান", s: "", u: "https://raw.githubusercontent.com/AalianKhan/adhans/master/adhan.mp3" }
   ];
   function adhanPane() {
     var root = el("div", "dsy-az"), au = new Audio(), cur = null, rows = {};
     au.preload = "none";
     AZ.forEach(function (x) {
       var r = el("div", "dsy-azr"), t = el("div", "dsy-azt"), b = el("button", "dsy-azb"); b.type = "button";
-      t.appendChild(el("b", "", x.n)); var st = el("small", "", x.s); t.appendChild(st);
+      var st = el("b", "", x.n); t.appendChild(st);
       b.innerHTML = ICON_PLAY; b.setAttribute("aria-label", x.n + " চালান");
-      r.appendChild(t); r.appendChild(b); root.appendChild(r); rows[x.k] = { r: r, b: b, st: st, s0: x.s };
+      r.appendChild(t); r.appendChild(b); root.appendChild(r); rows[x.k] = { r: r, b: b, st: st, s0: x.n };
       b.onclick = function () {
         if (cur === x.k) { stop(); return; }
-        stop(); cur = x.k; rows[x.k].r.classList.add("on"); rows[x.k].b.innerHTML = ICON_STOP; rows[x.k].st.textContent = "লোড হচ্ছে…";
-        au.src = x.u; var p = au.play(); if (p && p.catch) p.catch(function () { if (cur === x.k) { rows[x.k].st.textContent = "চালানো যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"; reset(true); } });
+        stop(); cur = x.k; rows[x.k].r.classList.add("on"); rows[x.k].b.innerHTML = ICON_STOP; rows[x.k].st.textContent = "লোড…";
+        au.src = x.u; var p = au.play(); if (p && p.catch) p.catch(function () { if (cur === x.k) { rows[x.k].st.textContent = "চালানো যায়নি"; reset(true); setTimeout(function () { rows[x.k].st.textContent = rows[x.k].s0; }, 2500); } });
       };
     });
     function reset(keepMsg) { if (cur && rows[cur]) { var o = rows[cur]; o.r.classList.remove("on"); o.b.innerHTML = ICON_PLAY; if (!keepMsg) o.st.textContent = o.s0; } cur = null; }
     function stop() { try { au.pause(); } catch (e) { } try { au.removeAttribute("src"); au.load(); } catch (e) { } reset(false); }
     au.addEventListener("playing", function () { if (cur && rows[cur]) rows[cur].st.textContent = "চলছে…"; });
     au.addEventListener("ended", function () { reset(false); });
-    au.addEventListener("error", function () { if (cur && rows[cur] && au.getAttribute("src")) { rows[cur].st.textContent = "অডিও লোড হয়নি — ইন্টারনেট দেখুন"; reset(true); } });
+    au.addEventListener("error", function () { if (cur && rows[cur] && au.getAttribute("src")) { var kk = cur; rows[kk].st.textContent = "লোড হয়নি"; reset(true); setTimeout(function () { rows[kk].st.textContent = rows[kk].s0; }, 2500); } });
     window.addEventListener("hashchange", function () { var h = location.hash; if (h && h !== "#" && h !== "#home" && h !== "#/home") stop(); });
     return { root: root, stop: stop };
   }

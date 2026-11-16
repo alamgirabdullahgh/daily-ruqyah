@@ -54,7 +54,7 @@
    /* আইটেমের ক্রমে আয়াত; আগের আইটেমে এসে গেলে আবার নয় */
    items.forEach(function(it,k){var f=list.length;it.keys.forEach(function(x){var id=x[0]+":"+x[1];if(!seen[id]){seen[id]=1;list.push(x)}});if(list.length>f)segs.push({k:k,from:f,to:list.length})});
    if(!list.length)return fail(new Error("empty"));
-   var grid=mk("drq-lg "+(cat.indexOf("অঙ্গ")>-1?"drq-lg8":"drq-lg4"));var lb=items.map(function(it){var b=mk("drq-lb",shortN(it.name));b.title=it.name;grid.appendChild(b);return b});host.appendChild(grid);
+   var grid=mk("drq-lg "+(cat.indexOf("অঙ্গ")>-1?"drq-lg8":"drq-lg4"));var lb=items.map(function(it){var b=mk("drq-lb",shortN(it.name));b.title=it.name;grid.appendChild(b);return b});host.appendChild(grid);/* সব বাটন একই মাপের; লম্বা নাম দুই লাইনে ভাঙে, বাটন বড় হয় না — না আঁটলে শুধু লেখা একটু ছোট হয় */var fitLb=function(){lb.forEach(function(b){b.style.fontSize="";if(!b.clientWidth)return;var f=parseFloat(getComputedStyle(b).fontSize)||10;while((b.scrollHeight>b.clientHeight+.5||b.scrollWidth>b.clientWidth+.5)&&f>7){f-=.5;b.style.fontSize=f+"px"}})};fitLb();requestAnimationFrame(fitLb);setTimeout(fitLb,300);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitLb);
    nt.textContent="⏳ অডিও প্রস্তুত হচ্ছে…";
    var marks=null;
    try{await window.__drGroupAudio(list,out,function(t){if(LV===st)nt.textContent="⏳ "+t},cat+" +লাইভ",function(m){marks=m});if(!out.querySelector("audio"))throw new Error("noaudio")}catch(e){return fail(e)}
