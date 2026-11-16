@@ -82,6 +82,7 @@ jobs:
               <service android:name=".UpdateService" android:exported="false" android:foregroundServiceType="dataSync" />
               <service android:name=".UpdateJobService" android:exported="false" android:permission="android.permission.BIND_JOB_SERVICE" />
               <service android:name=".OfflineAudioService" android:exported="false" android:foregroundServiceType="dataSync" />
+              <service android:name=".PrebuildService" android:exported="false" android:foregroundServiceType="dataSync" />
               <service android:name=".RuqyahAudioService" android:exported="false" android:foregroundServiceType="mediaPlayback" />
               <activity android:name=".WidgetSettingsActivity" android:exported="false" android:label="@string/tw_widget_name" android:theme="@android:style/Theme.Material.NoActionBar" />
               <receiver android:name=".ClockWidget" android:exported="true" android:label="@string/tw_widget_name">

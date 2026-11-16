@@ -57,6 +57,19 @@ public class MainActivity extends BridgeActivity {
         BgUpdater.schedule(this, 60 * 1000L); // অ্যাপ খোলার ১ মিনিট পর থেকে ব্যাকগ্রাউন্ড আপডেট-পাহারা চালু
     }
 
+    // অডিও/PDF তৈরির কাজ চলার সময় মিনিমাইজ করলেও ওয়েবভিউ থামানো যাবে না
+    @Override
+    public void onPause() {
+        super.onPause();
+        try {
+            if (PrebuildService.running) {
+                WebView w = getBridge().getWebView();
+                w.resumeTimers();
+                w.onResume();
+            }
+        } catch (Exception ignored) {}
+    }
+
     // স্ট্যাটাস বার (সময়/নেটওয়ার্ক/ব্যাটারি): নিচের নেভিগেশন বারের ব্যাকগ্রাউন্ডের একই রং (দিনে #fffdf9, ডার্ক মোডে #101b16); আইকন রংও সেই অনুযায়ী
     private void applyStatusBar() {
         try {

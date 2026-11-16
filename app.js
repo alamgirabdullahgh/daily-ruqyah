@@ -866,7 +866,14 @@ function homeAudio(kind,cat,say){const k=kind+"|"+cat;let e=HAUD.get(k);
    try{const a=e.out.querySelector("audio");if(a&&st.ok&&!st.bad){const b=await(await fetch(a.src)).blob();if(b.size>2048)PRE.put("aud",audKey(k),b,{n:list.length})}}catch(x){console.error(x)}return e})().catch(err=>{HAUD.delete(k);throw err});HAUD.set(k,e)}
  if(say)e.say=say;return e}
 let HPRE=false;
-window.__drHomePrebuild=async()=>{if(HPRE)return;HPRE=true;
+/* তৈরির অগ্রগতি: স্ক্রিনে ছোট লাইভ সূচক + ফোনের নোটিফিকেশন (মিনিমাইজ করলেও দেখা যায়, অ্যাপ জেগে থাকে) */
+const PB={d:0,t:0,last:0,on:false,el:null};
+function pbPaint(force){const now=Date.now();if(!force&&now-PB.last<1500)return;PB.last=now;const tx="⚙ অডিও ও PDF তৈরি হচ্ছে "+bn2(PB.d)+"/"+bn2(PB.t);
+ try{if(!PB.el){PB.el=els("div","position:fixed;left:6px;bottom:calc(54px + env(safe-area-inset-bottom,0px));z-index:9998;pointer-events:none;background:var(--primary);color:#fff;font-size:10px;font-weight:700;line-height:1.3;padding:1px 8px;border-radius:10px;opacity:.85");document.body.appendChild(PB.el)}PB.el.hidden=!PB.on;PB.el.textContent=tx}catch(e){}
+ try{const np=NAO();if(np&&np.prebuild)np.prebuild({on:PB.on,text:tx}).catch(()=>{})}catch(e){}}
+window.__drPreAdd=n=>{PB.t+=n;pbPaint()};window.__drPreTick=()=>{PB.d++;pbPaint()};
+window.__drHomePrebuild=async()=>{if(HPRE)return;HPRE=true;PB.on=true;pbPaint(true);try{await prebuildAll()}catch(e){console.error(e)}finally{PB.on=false;PB.d=PB.t;pbPaint(true)}};
+async function prebuildAll(){
  /* অফলাইন অডিও সম্পূর্ণ কি না: অ্যান্ড্রয়েডে নেটিভ সার্ভিসের স্ট্যাটাস, না হলে Cache-এর সংখ্যা। সম্পূর্ণ না হলে অডিও আগে-থেকে বানানো হয় না (নেটে ডেটা খরচ এড়াতে); PDF তবু বানানো হয়। */
  let offReady=false;
  for(let t=0;t<40&&!offReady;t++){
@@ -874,19 +881,21 @@ window.__drHomePrebuild=async()=>{if(HPRE)return;HPRE=true;
   if(!offReady)break}
  /* বদনজর/জাদু/জিন চার্টের হেডিং-অডিও (সব ঘর এক ফাইলে) সবার আগে ব্যাকগ্রাউন্ডে তৈরি */
  try{window.__drAxPre&&await window.__drAxPre()}catch(e){console.error(e)}
+ window.__drPreAdd(12);
  for(const cat of["বদনজর","জাদু","জিন","সব"])for(const kind of["sym","resp","treat"]){
   let hot=false;
   try{const r=await homePdf(kind,cat);hot=!!(r&&r.cached)}catch(e){console.error(e)}
   if(kind!=="sym"){try{const ae=await homeAudio(kind,cat).p;if(!ae.cached)hot=false}catch(e){console.error(e);hot=false}}
-  if(!hot)await new Promise(r=>setTimeout(r,300))}
+  window.__drPreTick();if(!hot)await new Promise(r=>setTimeout(r,300))}
  /* শারীরিক/মানসিক পাতার প্রতিটি অঙ্গ ও রোগের PDF ও জোড়া অডিওও একইভাবে আগে থেকে বানানো থাকে */
  let xs=[];try{xs=window.__drXReg?await window.__drXReg():[]}catch(e){console.error(e)}
+ window.__drPreAdd(xs.length);
  for(const cat of xs){
   let hot=false;
   try{const r=await homePdf("x",cat);hot=!!(r&&r.cached)}catch(e){console.error(e)}
   try{const ae=await homeAudio("x",cat).p;if(!ae.cached)hot=false}catch(e){console.error(e);hot=false}
-  if(!hot)await new Promise(r=>setTimeout(r,300))}
- for(const k of["বদনজর","জাদু","জিন"]){const n=window.__drGitCount?window.__drGitCount(k):1;for(let i=0;i<n;i++){try{await window.__drGitAudio(k,i?String(i-1):"").p}catch(e){console.error(e)}await new Promise(r=>setTimeout(r,300))}}};
+  window.__drPreTick();if(!hot)await new Promise(r=>setTimeout(r,300))}
+ for(const k of["বদনজর","জাদু","জিন"]){const n=window.__drGitCount?window.__drGitCount(k):1;window.__drPreAdd(n);for(let i=0;i<n;i++){try{await window.__drGitAudio(k,i?String(i-1):"").p}catch(e){console.error(e)}window.__drPreTick();await new Promise(r=>setTimeout(r,300))}}}
 /* ===== অডিও/PDF বাটন: পাতার সাজ একটুও বদলায় না। তৈরির অগ্রগতি নিচে ভাসমান একটি বক্সে (dock) দেখায়; তৈরি হলে নিজে ডাউনলোড হয়, বক্সে শেয়ার/প্লেয়ার/(PDF-এ) দেখার বোতাম থাকে ===== */
 const dockEl=()=>{let d=document.getElementById("drDock");if(!d){d=els("div","position:fixed;left:8px;right:8px;bottom:calc(68px + env(safe-area-inset-bottom,0px));z-index:9999;background:var(--card-bg,#fff);border:1.5px solid var(--primary);border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.28);padding:10px 12px;max-height:68vh;overflow:auto");d.id="drDock";document.body.appendChild(d)}return d};
 const dockOpen=title=>{const d=dockEl();d.hidden=false;d.textContent="";const hd=els("div","display:flex;align-items:center;gap:8px;margin-bottom:4px"),t=els("div","flex:1;min-width:0;font-weight:800;color:var(--primary);font-size:14px",title||""),x=mkBtn("✕",()=>{d.hidden=true;d.textContent=""});x.style.cssText+=";flex:none;margin:0;padding:2px 10px;width:auto";hd.append(t,x);const n=els("div","font-size:13px;color:var(--text-muted);margin:2px 0"),body=el("div");d.append(hd,n,body);return{n,body}};

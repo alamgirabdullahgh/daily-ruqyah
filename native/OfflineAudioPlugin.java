@@ -25,6 +25,25 @@ public class OfflineAudioPlugin extends Plugin {
         }
     }
 
+    // আগে-থেকে অডিও/PDF তৈরির সময় অ্যাপ জাগিয়ে রাখা (on=true) ও অগ্রগতি-লেখা বদলানো; শেষে on=false
+    @PluginMethod
+    public void prebuild(PluginCall call) {
+        try {
+            Context c = getContext();
+            boolean on = Boolean.TRUE.equals(call.getBoolean("on", false));
+            String text = call.getString("text", "অডিও ও PDF তৈরি হচ্ছে");
+            if (!on) { c.stopService(new Intent(c, PrebuildService.class)); }
+            else if (PrebuildService.running) PrebuildService.update(c, text);
+            else {
+                Intent i = new Intent(c, PrebuildService.class).putExtra("text", text);
+                if (Build.VERSION.SDK_INT >= 26) c.startForegroundService(i); else c.startService(i);
+            }
+            call.resolve();
+        } catch (Exception e) {
+            call.reject(String.valueOf(e.getMessage()));
+        }
+    }
+
     @PluginMethod
     public void status(PluginCall call) {
         try {
