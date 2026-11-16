@@ -60,6 +60,7 @@ public class MainActivity extends BridgeActivity {
     // অডিও/PDF তৈরির কাজ চলার সময় মিনিমাইজ করলেও ওয়েবভিউ থামানো যাবে না
     @Override
     public void onPause() {
+        BgUpdater.fg = false;
         super.onPause();
         try {
             if (PrebuildService.running) {
@@ -98,12 +99,6 @@ public class MainActivity extends BridgeActivity {
         super.onResume();
         BgUpdater.fg = true;
         BgUpdater.clearNotice(this);
-    }
-
-    @Override
-    public void onPause() {
-        BgUpdater.fg = false;
-        super.onPause();
     }
 
     /** JS থেকে ফাইল টুকরো টুকরো করে নিয়ে Downloads ফোল্ডারে সেভ করে */
