@@ -1231,10 +1231,7 @@ const renderOrganTreat=(n,list)=>{GEN++;CURT=null;window.__bq="";window.__sq=n;r
   const shortL=n=>{const k=String(n).normalize("NFC");if(SHORT[k])return SHORT[k];return k.replace(/\s*\([^)]*\)/g,"").trim()||k};
   if(!app)showNames("",[],"");
   const host=els("div",null);host.className="dr-physhost";
-  const fitX=()=>{host.querySelectorAll(".drq-opts").forEach(ul=>{const as=[].slice.call(ul.querySelectorAll(".drq-air>a"));if(!as.length||!as[0].clientWidth)return;const MAX=16,MIN=9;
-   const best=as.map(el=>{let f=MAX;el.style.fontSize=f+"px";while(el.scrollWidth>el.clientWidth&&f>MIN){f-=.5;el.style.fontSize=f+"px"}return f});
-   const big=best.filter(f=>f>=13),u=big.length?Math.min(...big):0;as.forEach((el,i)=>{el.style.fontSize=(best[i]>=13?u:best[i])+"px"})})};
-  window.__drFitNow=fitX;
+  const fitX=()=>{const as=[].slice.call(document.querySelectorAll(".dr-physhost .drq-air>a"));if(!as.length||!as[0].clientWidth)return;/* সব নামের লেখা একই মাপের; বাটনের মাপ বদলায় না — লম্বা নাম দুই লাইনে ভাঙে, সবচেয়ে লম্বা নামটা যে মাপে দুই লাইনে আঁটে সেটাই সবার মাপ */const ok=f=>{as.forEach(el=>{el.style.fontSize=f+"px"});return as.every(el=>el.scrollHeight<=el.clientHeight+.5&&el.scrollWidth<=el.clientWidth+.5)};let f=17;while(f>8&&!ok(f))f-=.5;as.forEach(el=>{el.style.fontSize=f+"px"})};   window.__drFitNow=fitX;
   if(!window.__drFitBound){window.__drFitBound=1;let ft=0;window.addEventListener("resize",()=>{clearTimeout(ft);ft=setTimeout(()=>window.__drFitNow&&window.__drFitNow(),120)});if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>window.__drFitNow&&window.__drFitNow())}
   const qa=x=>String(x).replace(/"/g,"&quot;");
   const mkList=(items,pre)=>{const ul=document.createElement("ul");ul.className="drq-opts drq-two";

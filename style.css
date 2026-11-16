@@ -1227,3 +1227,6 @@ body.is-home{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
 .dr-lvt{font-size:13px;font-weight:700;color:var(--primary);margin:0 2px 6px}
 .dr-lvn{font-size:12.5px;color:var(--text-muted);margin:2px}
 .dr-lvp audio{width:100%}
+
+/* শারীরিক/মানসিক তালিকা: বাটনের মাপ স্থির (৪৮px); লম্বা নাম দুই লাইনে ভেঙে বাটনের ভেতরেই বসে */
+#rsOut .dr-physhost .drq-opts.drq-two:not(.drq-three) .drq-air>a{white-space:normal!important;overflow:hidden!important;height:48px!important;min-height:48px!important;max-height:48px;box-sizing:border-box;padding:2px 4px!important;line-height:1.2!important;overflow-wrap:normal;word-break:normal;text-align:center}
