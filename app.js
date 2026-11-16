@@ -1112,7 +1112,6 @@ const DISEASE={file:"quran-disease.json?v="+DV+"x10",title:"💊 শারীর
    H.innerHTML="";const lg=k=>lsGet(k,"");
    {const t0=els("div","font-weight:800;font-size:18px;color:var(--primary);margin:4px 2px 10px","🩺 রোগ নির্ণয় (ডায়াগনোসিস)");t0.id="drHomeT";H.appendChild(t0)}
    /* আগের "চিকিৎসা" অপশনে যা আসত (বদনজর·জাদু·জিনের চিকিৎসা ও আমল) এখন আমলের ভেতরে */
-   {const tr=els("div","display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px");tr.id="drAmalTr";[["বদনজরের চিকিৎসা","nazar"],["জাদুর চিকিৎসা","#amol/b2b"],["জিনের চিকিৎসা","#amol/b1a"],["সব চিকিৎসা ও আমল","#amol/all"]].forEach(([l,h])=>{const a=els("a","flex:1 1 45%;text-align:center;padding:10px 8px;border:1px solid var(--border-light);border-radius:14px;background:var(--card-bg);color:var(--primary);font-weight:800;text-decoration:none;font-size:15px",l);if(h==="nazar"){a.href="#search";a.onclick=e=>{e.preventDefault();location.hash="#search";setTimeout(()=>window.__drOpenTopic&&window.__drOpenTopic("বদনজর"),90)}}else a.href=h;tr.appendChild(a)});H.appendChild(tr)}
    const card=els("div","display:flex;gap:8px;padding:10px;border:1px solid var(--border-light);border-radius:16px;background:var(--card-bg);margin:0 0 12px");
    
    const nm=document.createElement("input"),ph=document.createElement("input");
@@ -1410,20 +1409,19 @@ function drShell(){
  let lastH="home";
  const route=()=>{open(false);const h=(location.hash||"#home").replace(/^#/,""),p=h.split("/");{const rb=$("rsBox"),hd=window.__drHold;window.__drHold=false;if(rb){if(hd)rb.classList.add("dr-tonly");else{if(rb.classList.contains("dr-tonly")){const ro=$("rsOut"),ri=$("rsInfo");if(ro)ro.innerHTML="";if(ri)ri.textContent=""}rb.classList.remove("dr-tonly","dr-topic")}}}
   document.querySelectorAll("audio").forEach(a=>{try{a.pause()}catch(e){}});
-  const al=$("drAlarm");if(al)al.hidden=true;const hm=$("drHome");if(hm)hm.hidden=true;const ln=$("drLanding");if(ln)ln.hidden=true;const am=$("drAmol");if(am)am.hidden=true;const sy=$("drSym");if(sy)sy.hidden=true;const ax=$("drAxes");if(ax)ax.hidden=true;
+  const al=$("drAlarm");if(al)al.hidden=true;const hm=$("drHome");if(hm)hm.hidden=true;const ln=$("drLanding");if(ln)ln.hidden=true;const sy=$("drSym");if(sy)sy.hidden=true;const ax=$("drAxes");if(ax)ax.hidden=true;
   if(p[0]==="timewidget"){window.DRALARM&&DRALARM.openWidget();location.hash="#"+lastH;return}
   let key="search";
   if(p[0]==="home"&&ln){key="home";box.hidden=true;rd.hidden=true;ln.hidden=false;window.__drLanding&&window.__drLanding();window.scrollTo(0,0)}
   else if(p[0]==="resp"&&ax){key="resp";box.hidden=true;rd.hidden=true;ax.hidden=false;window.__drAxes&&window.__drAxes(p[1]||"","প্রতিক্রিয়া ভিত্তিক রোগ নির্ণয়","resp");window.scrollTo(0,0)}
   else if(p[0]==="treat"&&ax){key="treat";box.hidden=true;rd.hidden=true;ax.hidden=false;window.__drAxes&&window.__drAxes(p[1]||"","চিকিৎসা","treat");window.scrollTo(0,0)}
-  else if(p[0]==="amal"&&hm){key="amal";box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.__drHomeF&&window.__drHomeF("");window.scrollTo(0,0)}
+  else if(p[0]==="amal"||p[0]==="amol"){location.replace("#home");return}
   else if((p[0]==="resp"||p[0]==="home")&&hm){key=p[0];box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.__drHomeF&&window.__drHomeF(p[0]==="resp"?p[1]:"");window.scrollTo(0,0)}
   else if(p[0]==="diag"&&sy){key="diag";box.hidden=true;rd.hidden=true;sy.hidden=false;if(window.__drSymInit&&!window.__drSymDone){window.__drSymDone=1;window.__drSymInit()}window.__drSymF&&window.__drSymF(p[1]||"");window.scrollTo(0,0)}
   else if(p[0]==="axes"&&ax){key="axes";box.hidden=true;rd.hidden=true;ax.hidden=false;window.__drAxes&&window.__drAxes(p[1]||"");window.scrollTo(0,0)}
-  else if(p[0]==="amol"&&am){key="amol";box.hidden=true;rd.hidden=true;am.hidden=false;window.__drAmol&&window.__drAmol(p[1]);window.scrollTo(0,0)}
   else if(p[0]==="alarm"&&al){key="alarm";box.hidden=true;rd.hidden=true;al.hidden=false;window.DRALARM&&DRALARM.show();window.scrollTo(0,0)}
   else if(p[0]==="read"&&RMODES.some(m=>m[0]===p[1])){key="read/"+p[1];const s=+p[2]||0;box.hidden=true;rd.hidden=false;renderReader(p[1],s>=1&&s<=114?s:0);window.scrollTo(0,0)}
-  else{rd.hidden=true;box.hidden=false;RG++;if(p[0]==="topics"){location.replace("#home");return}else if(prev.startsWith("read/")||prev===""||prev==="home"||prev==="resp"||prev==="alarm"||prev==="amol")window.scrollTo(0,0)}
+  else{rd.hidden=true;box.hidden=false;RG++;if(p[0]==="topics"){location.replace("#home");return}else if(prev.startsWith("read/")||prev===""||prev==="home"||prev==="resp"||prev==="alarm")window.scrollTo(0,0)}
   prev=key;lastH=h;{const bk=$("drBackRow");if(bk)bk.hidden=key==="home";window.__drPlaceBack&&window.__drPlaceBack(key);window.__drNav=(window.__drNav||0)+1}document.body.classList.toggle("is-home",key==="home");{const sh=key==="home"?"":"none";["drWidget","drWBar"].forEach(i=>{const x=$(i);if(x)x.style.display=sh})}navs.forEach(a=>a.classList.toggle("on",a.dataset.nav===key))};
  window.__drSubs=[];
  window.__drPushSub=fn=>{try{history.pushState({drSub:1},"");window.__drSubs.push(fn)}catch(e){}};

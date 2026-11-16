@@ -458,45 +458,6 @@ body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
 
 html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bottom:0}
 
-/* আমল ও চিকিৎসা-নির্দেশিকা (amol.js) */
-.am-h{font-size:21px;margin:4px 2px 6px;color:var(--primary-dark);font-family:var(--font-display,inherit)}
-.am-intro{font-size:13.5px;line-height:1.7;color:var(--text-sub);margin:0 2px 10px}
-.am-warn{background:var(--warning-light);border:1px solid #ecd9a8;color:var(--warning);border-radius:var(--radius-md);padding:9px 12px;font-size:13px;line-height:1.6;margin:0 0 10px}
-.am-q{width:100%;box-sizing:border-box;padding:11px 14px;border:1px solid var(--border);border-radius:14px;background:var(--card-bg);color:var(--text-main);font:inherit;font-size:15px;margin:0 0 10px}
-.am-tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin:0 -2px;scrollbar-width:none}
-.am-tabs::-webkit-scrollbar{display:none}
-.am-tab{flex:0 0 auto;display:flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-main);border-radius:999px;padding:8px 14px;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap}
-.am-tab i{font-style:normal}
-.am-tab.on{background:var(--primary);border-color:var(--primary);color:#fff}
-.am-it{background:var(--card-bg);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:14px 14px 12px;margin:0 0 12px;box-shadow:var(--shadow-card)}
-.am-it h3{margin:0 0 6px;font-size:16.5px;color:var(--primary-dark)}
-.am-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px;align-items:center}
-.am-g{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--accent-light);color:var(--warning)}
-.am-g-h{background:var(--primary-light);color:var(--primary)}
-.am-g-q{background:var(--info-light);color:var(--info)}
-.am-src{font-size:11.5px;color:var(--text-muted)}
-.am-why{font-size:14px;line-height:1.75;color:var(--text-main);margin:0 0 8px}
-.am-how{margin:0 0 8px;padding-left:20px;font-size:14px;line-height:1.75;color:var(--text-sub)}
-.am-how li{margin:3px 0}
-.am-ar{font-family:var(--mf-font);font-size:calc(var(--ar-size) - 2px);line-height:2;text-align:center;color:var(--mf-ink);background:var(--accent-light);border-radius:var(--radius-md);padding:8px 10px;margin:0 0 8px}
-.am-note{background:var(--info-light);color:var(--info);border-radius:var(--radius-md);padding:8px 11px;font-size:13px;line-height:1.65;margin:0 0 8px}
-.am-refs{display:flex;flex-direction:column;gap:6px;margin:6px 0}
-.am-ref{border:1px solid var(--border-light);border-radius:var(--radius-md);background:var(--bg)}
-.am-ref summary{cursor:pointer;padding:8px 12px;font-size:13.5px;font-weight:600;color:var(--primary)}
-.am-v{padding:2px 12px 10px;font-size:14px}
-.am-ay{padding:8px 0;border-top:1px dashed var(--border-light)}
-.am-ay-ar{font-family:var(--mf-font);font-size:var(--ar-size);line-height:2.1;color:var(--mf-ink)}
-.am-n{font-size:.6em;color:var(--accent)}
-.am-ay-bn{font-size:13.5px;line-height:1.7;color:var(--text-sub);margin-top:2px}
-.am-tx{white-space:normal;word-break:break-word;font-size:14px;line-height:1.85;color:var(--text-main);padding:8px 0;border-top:1px dashed var(--border-light)}
-.am-tx:first-of-type{border-top:0}
-.am-tx p{margin:0 0 2px}.am-tx p.gp{margin-top:9px}.am-tx p:last-child{margin-bottom:0}
-.am-bk{font-size:12px;color:var(--text-muted);margin-top:6px}
-.am-ex-h{font-size:17px;font-weight:700;color:var(--danger);margin:4px 2px 6px}
-.am-ex{background:var(--card-bg);border:1px solid var(--border-light);border-radius:var(--radius-md);margin:0 0 8px}
-.am-ex summary{cursor:pointer;padding:11px 14px;font-weight:700;font-size:14.5px;color:var(--text-main)}
-.am-ex ul{margin:0;padding:0 14px 12px 32px;font-size:13.5px;line-height:1.7;color:var(--text-sub)}
-.am-empty,.am-load{text-align:center;color:var(--text-muted);padding:22px 8px;font-size:14px}
 
 /* রোগ নির্ণয়: "প্রতিটি আয়াত / পুরো সেট / সব রোগের অডিও" এক লাইনে, ছোট ঘর */
 .rs-top{display:flex;flex-wrap:nowrap;align-items:stretch;gap:6px;margin:0 0 8px}
@@ -564,12 +525,6 @@ html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bot
 .drq-tab.on::before{background:var(--accent)}
 .drq-opts[hidden]{display:none}
 
-/* ট্রিটমেন্ট — সব একসাথে (#amol/all) */
-.am-gh{margin:22px 0 8px;display:flex;align-items:center;gap:8px}
-.am-gh::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
-.am-ch{margin:14px 0 8px;padding:9px 12px;border-radius:10px;background:var(--primary-light);color:var(--primary);font-weight:700;font-size:14.5px}
-.am-nazar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:6px 0 4px;padding:12px 14px;border-radius:10px;background:var(--primary-light);color:var(--primary);font-weight:600;font-size:14px;text-decoration:none}
-.am-nazar::after{content:"\2192";font-weight:700;opacity:.6}
 
 .drq-tab-all{font-size:14px;gap:4px}
 .drq-tab-all svg{flex:none;opacity:.8}
@@ -701,11 +656,6 @@ html:has(body:not(.is-home)){scroll-padding-top:calc(env(safe-area-inset-top) + 
 .drq-sys .dsy-tm b{color:var(--primary)}
 .drq-sys .dsy-ap{border:1px solid var(--border-light);border-radius:8px;background:var(--primary-light);color:var(--primary);font:inherit;font-size:12.5px;font-weight:700;padding:5px 7px;margin-left:3px;cursor:pointer}
 .drq-sys .dsy-ef input.dsy-n,.drq-sys .dsy-ef>input{width:60px;text-align:center}
-.am-st{margin:14px 0 4px}.am-st h4{margin:0 0 6px;font-size:1.02em;color:#0b4a3a}.am-st p{margin:4px 0}.am-st ol{margin:4px 0 0;padding-left:1.5em}.am-st li{margin:5px 0}
-.am-cl{display:flex;flex-direction:column;margin-top:6px}.am-cond{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:13px 2px;border:0;border-bottom:1px solid var(--border-light);background:none;font:inherit;color:inherit}.am-cond i{font-style:normal;font-size:1.25em}.am-cond span{flex:1}.am-cond small{display:block;font-size:12px;color:var(--text-muted);margin-top:2px}.am-cond b{opacity:.5;font-size:1.3em}.am-back{border:0;background:none;color:#0b4a3a;font:inherit;padding:6px 0;margin-bottom:4px}.am-bk0{font-size:12px;color:var(--text-muted);margin:0 0 8px}
-.am-it{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important;border-radius:0!important}.am-ref{background:none;border-radius:8px}
-.am-sh{margin:16px 0 6px;font-size:1.05em;color:#0b4a3a}.am-st ul{margin:4px 0 0;padding-left:1.4em}.am-lk{display:flex;gap:8px;margin:4px 0 2px}.am-lk a{font-size:13px;padding:4px 12px;border-radius:999px;background:var(--primary-light);color:var(--primary);text-decoration:none}
-.am-orig{margin-top:18px;border-top:1px dashed var(--border-light);padding-top:8px}.am-orig summary{cursor:pointer;font-size:13.5px;color:var(--text-muted)}.am-sd{border-bottom:1px solid var(--border-light);padding:4px 0}.am-sd summary{cursor:pointer;padding:10px 2px;font-weight:600}.am-go{display:inline-block;margin:6px 0 10px;font-size:13.5px;color:var(--primary)}.am-sec2{margin:10px 0 16px}
 
 /* হোমের ২-কলাম সারি (শারীরিক/মানসিক): নাম + ছোট PDF/অডিও বোতাম এক লাইনে; খোলা প্যানেল পুরো প্রস্থে নিচে */
 .drq-opts.drq-two{flex-wrap:wrap}
@@ -800,8 +750,6 @@ body.is-home #drLanding:not([hidden]){width:100%;align-self:stretch;box-sizing:b
 .dr-btn{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;min-width:0;width:100%;min-height:48px;padding:9px 8px;text-align:center;font-size:14px;line-height:1.35;overflow-wrap:anywhere}
 .dr-btn small{font-size:11px;font-weight:400;color:var(--text-muted)}
 .dr-btn-row{flex-direction:row;justify-content:space-between;text-align:left;padding:12px 14px}
-.am-cond{border-bottom-width:1.5px;margin:0 0 8px;padding:12px 12px}
-.am-cl{gap:0}
 
 /* ===== হোম: তিন বোতাম এক লাইনে (লেখা ভাঙে না, তিনটারই মাপ সমান); PDF/অডিও বোতাম আরও বড়, নিচের পুরো জায়গা জুড়ে ===== */
 :is(#drLanding,.dr-physhost) .drq-opts.drq-three .drq-air>a{white-space:nowrap;font-size:clamp(9.5px,3.15vw,13px);padding:9px 1px;margin:0;letter-spacing:0;overflow:hidden;min-height:46px}
