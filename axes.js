@@ -61,8 +61,8 @@ async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").m
  pn.append(hd);
  const lg=el("div","ax-lg");lg.append(el("span","rs-gold","সোনালি অংশ")," = মৌলিক অংশ");pn.appendChild(lg);
  sec.appendChild(pn);
- if(C&&window.__drXKeys){const cat="অক্ষ "+G.name+" "+G.cols[ci].name+" "+G.cols[ci].opts[oi],seen=new Set(),ks=[];
-  [...C.b.map(r=>[r[0],r[1]]),...C.m.map(v=>{const p=v.split(":").map(Number);return[p[0],p[1]]})].forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);ks.push(k)}});
+ if(C&&window.__drXKeys){const md=R.__mode,cat="অক্ষ "+G.name+" "+G.cols[ci].name+" "+G.cols[ci].opts[oi]+(SFX[md]||""),seen=new Set(),ks=[];
+  [...C.b.map(r=>[r[0],r[1]]),...(md==="resp"?[]:C.m).map(v=>{const p=v.split(":").map(Number);return[p[0],p[1]]})].forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);ks.push(k)}});
   window.__drXKeys(cat,ks);
   const act=el("div","ax-act"),hp=el("div","ax-hp"),ha=el("div","ax-hp");hp.hidden=ha.hidden=true;
   const bp=el("button","ax-ab","📄 PDF"),ba=el("button","ax-ab","🔊 অডিও");bp.type=ba.type="button";
@@ -108,22 +108,25 @@ function fit(R){const rows=[...R.querySelectorAll(".ax-g:not([hidden]) .ax-ro")]
  if(hs.length){let s=15;hs.forEach(h=>h.style.fontSize=s+"px");while(s>6&&hs.some(h=>h.scrollWidth>h.clientWidth)){s-=.25;hs.forEach(h=>h.style.fontSize=s+"px")}};fitH(R)}
 
 /* ===== হেডিংয়ের পাশের অডিও: ওই বিষয়ের ঘরগুলো ক্রমানুসারে (ধরন → মুগ্ধতা, হিংসা → উৎস …) এই পাতাতেই বাজে; যে ঘর বাজছে সেখানে জ্বলজ্বলে ফোঁটা ===== */
-function regCell(gi,ci,oi){const key=gi+"."+ci+"."+oi,C=DATA.cells[key];if(!C)return null;
+/* mode: "resp" = শুধু মৌলিক আয়াত (প্রতিক্রিয়া ভিত্তিক), অন্যথায় মৌলিক + বাকি সব (চিকিৎসা) */
+const SFX={resp:" · প্রতিক্রিয়া",treat:" · চিকিৎসা"},REPN={resp:11,treat:1};
+function regCell(gi,ci,oi,mode){const key=gi+"."+ci+"."+oi,C=DATA.cells[key];if(!C)return null;
  const seen=new Set(),ks=[];
- [...C.b.map(r=>[r[0],r[1]]),...C.m.map(v=>{const p=v.split(":").map(Number);return[p[0],p[1]]})].forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);ks.push(k)}});
+ [...C.b.map(r=>[r[0],r[1]]),...(mode==="resp"?[]:C.m.map(v=>{const p=v.split(":").map(Number);return[p[0],p[1]]}))].forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);ks.push(k)}});
  return ks.length?{ks}:null}
 /* স্কোপ: "g0" = পুরো হেডিং · "r0.1" = একটি সারি (যেমন ধরন) · "c0.1.0" = একটি ঘর (যেমন মুগ্ধতা)। আয়াত-তালিকা ক্রমানুসারে, "উভয়" বাদ */
-function scope(id,sec){const t=id[0],p=id.slice(1).split(".").map(Number),gi=p[0],G=DATA.axes[gi],plist=[],list=[],cells=[];let hasOrg=false;
+function scope(id,sec,mode){const t=id[0],p=id.slice(1).split(".").map(Number),gi=p[0],G=DATA.axes[gi],plist=[],list=[],cells=[];let hasOrg=false;
  G.cols.forEach((c,ci)=>c.opts.forEach((n,oi)=>{if(n==="উভয়")return;if(t==="r"&&ci!==p[1])return;if(t==="c"&&(ci!==p[1]||oi!==p[2]))return;
-  const r=regCell(gi,ci,oi);if(!r)return;const from=list.length;r.ks.forEach(k=>{plist.push(k);list.push(k)});
+  const r=regCell(gi,ci,oi,mode);if(!r)return;const from=list.length;r.ks.forEach(k=>{plist.push(k);list.push(k)});
   /* শরীরে ঘর: ঘরের নিজের আয়াতের পর অঙ্গের ক্রমে প্রতিটি অঙ্গের আয়াত (ঘরে আগেই থাকা আয়াত বা আগের অঙ্গে এসে গেলে আবার নয়); og = প্রতিটি অঙ্গের আয়াত-সীমা */
   let og=null;if(ORGS.length&&isBodyCell(c,n)){og=[];hasOrg=true;const sn=new Set(r.ks.map(k=>k[0]+":"+k[1]));
-   ORGS.forEach((o,k)=>{const f=list.length;o.keys.forEach(x=>{const i=x[0]+":"+x[1];if(!sn.has(i)){sn.add(i);list.push(x)}});if(list.length>f)og.push({k,from:f,to:list.length})})}
+   /* প্রতিক্রিয়া: ঘরের নিজের মৌলিক আয়াতের পর প্রতিটি অঙ্গের একটি মূল আয়াত (অঙ্গের ক্রমে); চিকিৎসা/অন্যান্য: অঙ্গের সব আয়াত */
+   ORGS.forEach((o,k)=>{const f=list.length;if(mode==="resp"){if(o.base)list.push(o.base)}else o.keys.forEach(x=>{const i=x[0]+":"+x[1];if(!sn.has(i)){sn.add(i);list.push(x)}});if(list.length>f)og.push({k,from:f,to:list.length})})}
   cells.push({b:sec?sec.querySelector('.ax-c[data-k="'+gi+"."+ci+"."+oi+'"]'):null,name:c.name+" › "+n,from,to:list.length,og})}));
- const cat="অক্ষ "+G.name+(t!=="g"?" "+G.cols[p[1]].name:"")+(t==="c"?" "+G.cols[p[1]].opts[p[2]]:"");
+ const cat="অক্ষ "+G.name+(t!=="g"?" "+G.cols[p[1]].name:"")+(t==="c"?" "+G.cols[p[1]].opts[p[2]]:"")+(SFX[mode]||"");
  const seen=new Set(),ks=[];plist.forEach(k=>{const i=k[0]+":"+k[1];if(!seen.has(i)){seen.add(i);ks.push(k)}});
  if(window.__drXKeys)window.__drXKeys(cat,ks);/* PDF-এর আয়াত আগের মতোই (অঙ্গ ছাড়া); শুধু অডিওতে অঙ্গ যোগ হয়, তাই অডিওর নাম আলাদা */
- return{G,list,cells,cat,acat:cat+(hasOrg?" +অঙ্গ":""),hasOrg,gi}}
+ return{G,list,cells,cat,acat:cat+(hasOrg?" +অঙ্গ":""),hasOrg,gi,rep:REPN[mode]||3}}
 function stopPlay(R){const st=R&&R.__pl;if(!st)return;st.stop=true;R.__pl=null;try{if(st.a){st.a.pause();st.a.ontimeupdate=st.a.onended=st.a.onplay=null}}catch(e){}
  R.querySelectorAll(".ax-now").forEach(x=>x.classList.remove("ax-now"));R.querySelectorAll(".ax-live,.ax-orgs").forEach(x=>x.remove());
  R.querySelectorAll(".ax-au.on").forEach(b=>{b.classList.remove("on");b.textContent=AUL})}
@@ -131,7 +134,7 @@ function stopPlay(R){const st=R&&R.__pl;if(!st)return;st.stop=true;R.__pl=null;t
 const GM={};
 function gMerge(id,sc){const gk=id+"|"+sc.acat;if(GM[gk])return GM[gk];
  const ent={out:el("div"),marks:null,note:()=>{}};
- ent.p=(async()=>{await window.__drGroupAudio(sc.list,ent.out,t=>ent.note(t),sc.acat,m=>{ent.marks=m});if(!ent.out.querySelector("audio"))throw new Error("noaudio");return ent})().catch(e=>{delete GM[gk];throw e});
+ ent.p=(async()=>{await window.__drGroupAudio(sc.list,ent.out,t=>ent.note(t),sc.acat,m=>{ent.marks=m},sc.rep);if(!ent.out.querySelector("audio"))throw new Error("noaudio");return ent})().catch(e=>{delete GM[gk];throw e});
  GM[gk]=ent;return ent}
 const rowEl=(sec,id)=>sec.querySelector('.ax-r[data-r="'+id.slice(1).split(".").slice(0,2).join(".")+'"]');
 const anchorOf=(sec,id)=>id[0]==="g"?sec.querySelector("h3"):rowEl(sec,id);
@@ -139,7 +142,7 @@ const anchorOf=(sec,id)=>id[0]==="g"?sec.querySelector("h3"):rowEl(sec,id);
 async function playSeq(R,id,sec,btn){const same=R.__pl&&R.__pl.id===id;stopPlay(R);if(same)return;
  if(!window.__drGroupAudio)return;
  if(hasBody(id)&&!ORGS.length){const m={id,stop:false,a:null};R.__pl=m;btn.classList.add("on");btn.textContent="⏳\nঅঙ্গ";await loadOrg();btn.classList.remove("on");btn.textContent=AUL;if(R.__pl!==m)return;R.__pl=null}
- const sc=scope(id,sec),{G,list,cells}=sc;
+ const sc=scope(id,sec,R.__mode),{G,list,cells}=sc;
  if(!list.length)return;
  const st={id,stop:false,a:null};R.__pl=st;btn.classList.add("on");btn.textContent="⏹\nথামান";
  const bar=el("div","ax-live"),tx=el("div","ax-lt"),nt=el("div","ax-ln"),hb=el("div");bar.append(tx,nt,hb);anchorOf(sec,id).after(bar);
@@ -168,19 +171,23 @@ async function playSeq(R,id,sec,btn){const same=R.__pl&&R.__pl.id===id;stopPlay(
  a.ontimeupdate=upd;a.onplay=upd;a.onended=()=>{if(R.__pl===st)stopPlay(R)};
  try{a.currentTime=0;await a.play()}catch(e){}
  upd()}
-function openPdf(R,id,sec){const sc=scope(id,sec);window.__drHomePdf&&window.__drHomePdf("x",sc.cat,null)}
+function openPdf(R,id,sec){const sc=scope(id,sec,R.__mode);window.__drHomePdf&&window.__drHomePdf("x",sc.cat,null)}
 /* অ্যাপ চালু হলে ব্যাকগ্রাউন্ডে সবকিছুর অডিও ও PDF আগে থেকে তৈরি: আগে প্রতিটি ঘর, তারপর সারি, শেষে পুরো হেডিং (আয়াতের এনকোড ভাগ হয়, তাই পরের দুটো দ্রুত) */
 window.__drAxPre=async()=>{await load();try{await loadOrg()}catch(e){console.error(e)}const sl=()=>new Promise(r=>setTimeout(r,300)),ids=[];
  DATA.axes.forEach((g,gi)=>{g.cols.forEach((c,ci)=>c.opts.forEach((n,oi)=>{if(n!=="উভয়")ids.push("c"+gi+"."+ci+"."+oi)}));g.cols.forEach((c,ci)=>ids.push("r"+gi+"."+ci));ids.push("g"+gi)});
- const all=ids.map(id=>({id,sc:scope(id,null)})).filter(x=>x.sc.list.length);
+ /* দুই পাতার (প্রতিক্রিয়া ভিত্তিক / চিকিৎসা) আলাদা আয়াত-তালিকা, তাই দুই রকমই আগে থেকে তৈরি */
+ const all=[];["resp","treat"].forEach(m=>ids.forEach(id=>{const sc=scope(id,null,m);if(sc.list.length)all.push({id,sc,m})}));
  window.__drPreAdd&&window.__drPreAdd(all.length*2);
  /* সব অডিওই আগে থেকে তৈরি: হালকাগুলো আগে, "শরীরে" ঘর-যুক্ত (অঙ্গসহ, লম্বা) গুলো শেষে — চাপলে আর জোড়া লাগাতে হয় না */
  if(window.__drGroupAudio)for(const x of all.slice().sort((a,b)=>hasBody(a.id)-hasBody(b.id))){const t0=Date.now();try{await gMerge(x.id,x.sc).p}catch(e){console.error(e)}window.__drPreTick&&window.__drPreTick();if(Date.now()-t0>80)await sl()}
  if(window.__drHomePdfPre)for(const x of all){const t0=Date.now();try{await window.__drHomePdfPre(x.sc.cat)}catch(e){console.error(e)}window.__drPreTick&&window.__drPreTick();if(Date.now()-t0>80)await sl()}};
+/* হোমের প্রতিক্রিয়া/চিকিৎসা অডিও-PDF-এর আয়াত-তালিকা: kind = resp | treat; slug = nazar | jadu | jin | "" (তিন চার্ট পরপর)। প্রতিটি ঘর চার্টের ক্রমে */
+window.__drAxList=async(kind,slug)=>{await load();await loadOrg();if(!ORGS.length)throw new Error("noorg");const out=[];
+ DATA.axes.forEach((g,gi)=>{if(slug&&g.slug!==slug)return;scope("g"+gi,null,kind).list.forEach(k=>out.push(k))});return out};
 
 const SLUG={nazar:1,jadu:1,jin:1};
 /* R = চার্ট বসানোর ঘর: #axBody (পুরো পাতা, শিরোনামসহ) অথবা হোমের ট্যাবের ভেতরের .ax-home (শুধু চার্ট) */
-async function mount(R,slug,full,title){if(!R)return;
+async function mount(R,slug,full,title,mode){if(!R)return;R.__mode=mode||"";
  if(!R.dataset.ready){if(R.__ld)return;R.__ld=1;R.textContent="";R.appendChild(el("div","ax-info","লোড হচ্ছে…"));
   try{await load()}catch(e){R.__ld=0;R.textContent="";const m=el("div","ax-info","চার্ট লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"),r=el("button","rs-more","আবার চেষ্টা");r.type="button";r.onclick=()=>mount(R,slug,full,title);R.append(m,r);return}
   R.textContent="";
@@ -196,7 +203,7 @@ async function mount(R,slug,full,title){if(!R)return;
  requestAnimationFrame(()=>requestAnimationFrame(()=>fit(R)))}
 window.addEventListener("resize",()=>{const R=$("axBody");if(R&&R.dataset.ready&&R.offsetParent)fit(R)});
 window.addEventListener("hashchange",()=>{if(!/^#(resp|treat|axes)/.test(location.hash))stopPlay($("axBody"))});
-window.__drAxes=(slug,title)=>mount($("axBody"),slug,true,title);
+window.__drAxes=(slug,title,mode)=>mount($("axBody"),slug,true,title,mode);
 window.__drAxesMount=(R,slug)=>mount(R,slug,false);
 window.__drAxesFit=R=>fit(R);
 })();

@@ -803,16 +803,10 @@ async function topicKeys(topic){
   const u=new Set();items.forEach(it=>[...lst(it,it.sc===100)].forEach(f=>f.refs.forEach(r=>u.add(key(r)))));
   [...u].filter(k=>!seen.has(k)).map(k=>k.split(":").map(Number)).sort((x,y)=>x[0]-y[0]||x[1]-y[1]).forEach(x=>{seen.add(x[0]+":"+x[1]);out.push(x)})}
  return out}
-async function respKeys(cat){
- if(cat!=="সব")return[];
- const D=await rsFetch(BASE+"quran-diagnosis.json?v="+DV+"d20"),C=["বদনজর","জাদু","জিন"],seen=new Set(),out=[];
- D.groups.filter(g=>cat==="সব"?C.includes(g.section):g.section===cat).forEach(g=>g.cats.forEach(c=>c.keys.forEach(k=>{const id=k.s+":"+k.a;if(!seen.has(id)){seen.add(id);out.push([k.s,k.a])}})));
- return out}
-async function treatKeys(cat){
- if(cat!=="সব")return[];
- const T=n=>topicKeys(TOPICS.find(x=>x.name===n)),seen=new Set(),out=[];
- const parts=cat==="সব"?[await T("বদনজর"),await T("জাদু"),await T("জিন")]:[await T(cat)];
- parts.forEach(l=>l.forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);out.push(k)}}));return out}
+/* প্রতিক্রিয়া/চিকিৎসার হোম-অডিও ও PDF-এর আয়াত-তালিকা এখন সাতটি অক্ষের চার্ট (axes.js) থেকে: প্রতিক্রিয়া = প্রতিটি বাটনের শুধু মৌলিক আয়াত (শরীরে বাটনে এর পর প্রতিটি অঙ্গের একটি মূল আয়াত), চিকিৎসা = প্রতিটি বাটনের সংশ্লিষ্ট সব আয়াত; cat = বদনজর | জাদু | জিন | সব (তিন চার্ট পরপর) */
+const AXSLUG={"বদনজর":"nazar","জাদু":"jadu","জিন":"jin","সব":""};
+async function axList(kind,cat){for(let i=0;i<80&&!window.__drAxList;i++)await new Promise(r=>setTimeout(r,250));if(!window.__drAxList)throw new Error("noax");return window.__drAxList(kind,AXSLUG[cat]||"")}
+const respKeys=cat=>axList("resp",cat),treatKeys=cat=>axList("treat",cat);
 async function bodyKeys(file){const D=await rsFetch(BASE+file),seen=new Set(),out=[];D.groups.forEach(g=>g.cats.forEach(c=>c.keys.forEach(k=>{const id=k.s+":"+k.a;if(!seen.has(id)){seen.add(id);out.push([k.s,k.a])}})));return out}
 const XKEYS=new Map();window.__drXKeys=(c,l)=>XKEYS.set(c,l);
 /* সাতটি অক্ষের চার্টে "অবস্থান → শরীরে" ঘরের অডিওর জন্য: দৈনন্দিন রুকইয়াহর "শারীরিক → অঙ্গভিত্তিক" তালিকার ক্রমে প্রতিটি অঙ্গ ও তার আয়াত ([{name,keys}]) */
@@ -822,14 +816,16 @@ window.__drGroupItems=cat=>{if(GRPC[cat])return GRPP[cat]||(GRPP[cat]=Promise.al
  return GRPP[cat]||(GRPP[cat]=(async()=>{if(!window.__drXReg)throw new Error("noreg");const cats=await window.__drXReg(),out=[];
   for(const c of cats){if(c.indexOf(pre+"|")!==0)continue;const v=XKEYS.get(c),keys=typeof v==="function"?await v():(v||[]);if(keys.length)out.push({name:c.slice(pre.length+1),keys})}return out})().catch(e=>{delete GRPP[cat];throw e}))};
 const groupKeys=cat=>window.__drGroupItems(cat).then(items=>{const seen=new Set(),out=[];items.forEach(it=>it.keys.forEach(k=>{const i=k[0]+":"+k[1];if(!seen.has(i)){seen.add(i);out.push(k)}}));return out});
-let ORGP=null;window.__drOrgans=()=>ORGP||(ORGP=(async()=>{const out=[];for(const o of ORG){const t=TOPICS.find(x=>x.name===o[0]);if(!t)continue;out.push({name:o[0],keys:await topicKeys(t)})}return out})().catch(e=>{ORGP=null;throw e}));
+let ORGP=null;window.__drOrgans=()=>ORGP||(ORGP=(async()=>{const out=[];for(const o of ORG){const t=TOPICS.find(x=>x.name===o[0]);if(!t)continue;const keys=await topicKeys(t);let base=null;/* অঙ্গের মূল (মৌলিক) আয়াত: অঙ্গের প্রধান (প্রথম) শব্দ-রুটে সরাসরি মেলা আয়াতগুলোর মধ্যে কুরআনের ক্রমে প্রথমটি; না মিললে অঙ্গের তালিকার প্রথম আয়াত */try{const k1=await topicKeys({terms:[o[2][0]]});base=k1[0]||null}catch(e){}out.push({name:o[0],keys,base:base||keys[0]||null})}return out})().catch(e=>{ORGP=null;throw e}));
 const homeKeys=(kind,cat)=>kind==="x"&&(GRPN[cat]||GRPC[cat])?groupKeys(cat):kind==="x"?Promise.resolve().then(()=>{const v=XKEYS.get(cat);return typeof v==="function"?v():(v||[])}):kind==="resp"?respKeys(cat):kind==="phys"?bodyKeys(DISEASE.file):kind==="ment"?bodyKeys(MENTAL.file):treatKeys(cat);
 const homeTitle=(kind,cat)=>kind==="x"?(/^(শারীরিক রোগ|মানসিক সমস্যা)\|/.test(String(cat))?String(cat).split("|").slice(1).join(" "):String(cat).replace("|"," ")):kind==="sym"?"সিমটম ডায়াগনোসিস "+(cat==="সব"?"বদনজর জাদু জিন":cat):kind==="phys"||kind==="ment"?"দৈনন্দিন রুকইয়াহ "+cat:(kind==="resp"?"রেসপন্স ডায়াগনোসিস":"ট্রিটমেন্ট")+" "+(cat==="সব"?"বদনজর জাদু জিন":cat);
 /* পুনরাবৃত্তি: রেসপন্স ডায়াগনোসিস — প্রতিটি আয়াত ১১ বার, পুরো সেট ৩ বার; ট্রিটমেন্ট — প্রতিটি আয়াত ৩ বার, সেট ১ বার */
-const homeRep=kind=>kind==="resp"?{rep:11,set:3}:{rep:3,set:1};
+const SFX_R=" · প্রতিক্রিয়া",SFX_T=" · চিকিৎসা";
+const homeRep=(kind,cat)=>kind==="resp"?{rep:11,set:1}:kind==="treat"?{rep:1,set:1}:kind==="x"&&String(cat).endsWith(SFX_R)?{rep:11,set:1}:kind==="x"&&String(cat).endsWith(SFX_T)?{rep:1,set:1}:{rep:3,set:1};
+window.__drSfx={resp:SFX_R,treat:SFX_T};
 /* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */
 /* ===== স্থায়ী ভাণ্ডার: একবার বানানো অডিও/PDF ফোনের ভেতরে (Cache Storage) জমা থাকে। অ্যাপ বন্ধ করে আবার খুললেও আর নতুন করে বানাতে হয় না — বোতাম চাপলেই সাথে সাথে। কোড/তালিকা বদলালে PREV বাড়ালে পুরনোগুলো মুছে নতুন করে বানায়। ===== */
-const PREV="p1",PREC="dr-pre-"+PREV;
+const PREV="p2",PREC="dr-pre-"+PREV;
 const preUrl=(t,k)=>"https://dr.local/pre/"+t+"/"+encodeURIComponent(k);
 const PRE={
  async get(t,k){try{const c=await caches.open(PREC),r=await c.match(preUrl(t,k));if(!r)return null;const m=await c.match(preUrl(t,k)+"/meta");let meta={};try{meta=m?await m.json():{}}catch(e){}return{blob:await r.blob(),meta}}catch(e){return null}},
@@ -855,12 +851,12 @@ async function prePdfGet(k){const h=await PRE.get("pdf",k);if(!h||!h.blob)return
  return r}
 async function prePdfPut(k,r){if(!r||!r.pdf)return;try{const lens=(r.imgs||[]).map(u=>u.length);if(lens.length)await PRE.put("img",k,new Blob(r.imgs,{type:"application/octet-stream"}),{});await PRE.put("pdf",k,r.pdf,{nm:r.nm,N:r.N,lens})}catch(e){console.error(e)}}
 function homePdf(kind,cat,say){const k=kind+"|"+cat;let e=HPDF.get(k);
- if(!e){e={say:()=>{}};e.p=(async()=>{const hit=await prePdfGet(k);if(hit){e.cached=true;return hit}let r;if(kind==="sym")r=await symPdfBuild(cat,t=>e.say(t));else{const list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty");r=await ayatPdfBuild(list,homeTitle(kind,cat),t=>e.say(t))}prePdfPut(k,r);return r})().catch(err=>{HPDF.delete(k);throw err});HPDF.set(k,e)}
+ if(!e){e={say:()=>{}};e.p=(async()=>{const hit=await prePdfGet(k);if(hit){e.cached=true;return hit}let r;if(kind==="sym")r=await symPdfBuild(cat,t=>e.say(t));else{const list=await homeKeys(kind,cat).then(l=>{const sn=new Set();return l.filter(k=>{const i=k[0]+":"+k[1];if(sn.has(i))return false;sn.add(i);return true})});if(!list.length)throw new Error("empty");r=await ayatPdfBuild(list,homeTitle(kind,cat),t=>e.say(t))}prePdfPut(k,r);return r})().catch(err=>{HPDF.delete(k);throw err});HPDF.set(k,e)}
  if(say)e.say=say;return e.p}
 /* জোড়া অডিওও আগে থেকে বানানো থাকে: ফোনে অফলাইন অডিও নামানো থাকলে (সব আয়াত) ব্যাকগ্রাউন্ডে প্রতিটি ক্যাটাগরির ফাইল জোড়া হয়ে বসে; বোতাম চাপলে সাথে সাথে বাজে ও ডাউনলোড/শেয়ার করা যায় */
 const HAUD=new Map();
 function homeAudio(kind,cat,say){const k=kind+"|"+cat;let e=HAUD.get(k);
- if(!e){e={say:()=>{},out:el("div")};e.p=(async()=>{const{rep,set}=homeRep(kind);e.rep=rep;e.set=set;const hit=await PRE.get("aud",audKey(k));if(hit&&hit.blob&&hit.blob.size>2048){e.n=(hit.meta&&hit.meta.n)||0;preAudioInto(e.out,hit.blob,homeTitle(kind,cat));e.cached=true;e.done=true;return e}
+ if(!e){e={say:()=>{},out:el("div")};e.p=(async()=>{const{rep,set}=homeRep(kind,cat);e.rep=rep;e.set=set;const hit=await PRE.get("aud",audKey(k));if(hit&&hit.blob&&hit.blob.size>2048){e.n=(hit.meta&&hit.meta.n)||0;preAudioInto(e.out,hit.blob,homeTitle(kind,cat));e.cached=true;e.done=true;return e}
    const list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty");e.n=list.length;const st={};
    await mergeAudio(list,e.out,t=>e.say(t),{rep,set,noplay:true,name:homeTitle(kind,cat),stat:st});e.done=true;
    try{const a=e.out.querySelector("audio");if(a&&st.ok&&!st.bad){const b=await(await fetch(a.src)).blob();if(b.size>2048)PRE.put("aud",audKey(k),b,{n:list.length})}}catch(x){console.error(x)}return e})().catch(err=>{HAUD.delete(k);throw err});HAUD.set(k,e)}
@@ -914,9 +910,9 @@ window.__drHomePdf=(kind,cat,host)=>{const key=kind+"|"+cat;return window.__drDo
 /* অডিও: চাপলেই সাথে সাথে বাজে (আয়াত একটার পর একটা, নির্ধারিত পুনরাবৃত্তিসহ); পাশাপাশি পেছনে একটি ফাইল জোড়া হয় — তৈরি হলে নিচে প্লেয়ার, শেয়ার ও ডাউনলোড আসে */
 /* একটি হেডিংয়ের সব ঘরের আয়াত একটাই অডিও ফাইলে (প্রতিটি ঘরের আয়াত পরপর, প্রতিটি ৩ বার); cb তে প্রতিটি আয়াতের শেষ-সময় (সেকেন্ড) আসে, যাতে বাজার সময় কোন ঘর চলছে বোঝা যায় */
 const AXM=new Map(); /* আয়াত→এনকোড-করা MP3 টুকরো: ঘর, সারি ও হেডিংয়ের অডিও একই আয়াত বারবার এনকোড করে না */
-window.__drGroupAudio=async(list,out,note,name,cb)=>{const k=audKey("g|"+name),hit=await PRE.get("aud",k);
+window.__drGroupAudio=async(list,out,note,name,cb,rep)=>{const k=audKey("g|"+name),hit=await PRE.get("aud",k);
  if(hit&&hit.blob&&hit.blob.size>2048&&hit.meta&&hit.meta.marks){preAudioInto(out,hit.blob,name);try{cb&&cb(hit.meta.marks)}catch(e){}return}
- let marks=null;const st={};await mergeAudio(list,out,note,{rep:3,set:1,noplay:true,name,onmarks:m=>{marks=m;if(cb)cb(m)},memo:true,memoMap:AXM,stat:st});
+ let marks=null;const st={};await mergeAudio(list,out,note,{rep:rep||3,set:1,noplay:true,name,onmarks:m=>{marks=m;if(cb)cb(m)},memo:true,memoMap:AXM,stat:st});
  try{const a=out.querySelector("audio");if(a&&marks&&st.ok&&!st.bad){const b=await(await fetch(a.src)).blob();if(b.size>2048)PRE.put("aud",k,b,{marks})}}catch(e){console.error(e)}};
 window.__drHomePdfPre=cat=>homePdf("x",cat);
 const AUB=new Map();
@@ -1418,8 +1414,8 @@ function drShell(){
   if(p[0]==="timewidget"){window.DRALARM&&DRALARM.openWidget();location.hash="#"+lastH;return}
   let key="search";
   if(p[0]==="home"&&ln){key="home";box.hidden=true;rd.hidden=true;ln.hidden=false;window.__drLanding&&window.__drLanding();window.scrollTo(0,0)}
-  else if(p[0]==="resp"&&ax){key="resp";box.hidden=true;rd.hidden=true;ax.hidden=false;window.__drAxes&&window.__drAxes(p[1]||"","প্রতিক্রিয়া ভিত্তিক রোগ নির্ণয়");window.scrollTo(0,0)}
-  else if(p[0]==="treat"&&ax){key="treat";box.hidden=true;rd.hidden=true;ax.hidden=false;window.__drAxes&&window.__drAxes(p[1]||"","চিকিৎসা");window.scrollTo(0,0)}
+  else if(p[0]==="resp"&&ax){key="resp";box.hidden=true;rd.hidden=true;ax.hidden=false;window.__drAxes&&window.__drAxes(p[1]||"","প্রতিক্রিয়া ভিত্তিক রোগ নির্ণয়","resp");window.scrollTo(0,0)}
+  else if(p[0]==="treat"&&ax){key="treat";box.hidden=true;rd.hidden=true;ax.hidden=false;window.__drAxes&&window.__drAxes(p[1]||"","চিকিৎসা","treat");window.scrollTo(0,0)}
   else if(p[0]==="amal"&&hm){key="amal";box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.__drHomeF&&window.__drHomeF("");window.scrollTo(0,0)}
   else if((p[0]==="resp"||p[0]==="home")&&hm){key=p[0];box.hidden=true;rd.hidden=true;hm.hidden=false;window.__drHome&&window.__drHome();window.__drHomeF&&window.__drHomeF(p[0]==="resp"?p[1]:"");window.scrollTo(0,0)}
   else if(p[0]==="diag"&&sy){key="diag";box.hidden=true;rd.hidden=true;sy.hidden=false;if(window.__drSymInit&&!window.__drSymDone){window.__drSymDone=1;window.__drSymInit()}window.__drSymF&&window.__drSymF(p[1]||"");window.scrollTo(0,0)}
