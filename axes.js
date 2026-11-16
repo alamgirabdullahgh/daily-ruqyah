@@ -170,11 +170,11 @@ async function playSeq(R,id,sec,btn){const same=R.__pl&&R.__pl.id===id;stopPlay(
  upd()}
 function openPdf(R,id,sec){const sc=scope(id,sec);window.__drHomePdf&&window.__drHomePdf("x",sc.cat,null)}
 /* অ্যাপ চালু হলে ব্যাকগ্রাউন্ডে সবকিছুর অডিও ও PDF আগে থেকে তৈরি: আগে প্রতিটি ঘর, তারপর সারি, শেষে পুরো হেডিং (আয়াতের এনকোড ভাগ হয়, তাই পরের দুটো দ্রুত) */
-window.__drAxPre=async()=>{await load();const sl=()=>new Promise(r=>setTimeout(r,300)),ids=[];
+window.__drAxPre=async()=>{await load();try{await loadOrg()}catch(e){console.error(e)}const sl=()=>new Promise(r=>setTimeout(r,300)),ids=[];
  DATA.axes.forEach((g,gi)=>{g.cols.forEach((c,ci)=>c.opts.forEach((n,oi)=>{if(n!=="উভয়")ids.push("c"+gi+"."+ci+"."+oi)}));g.cols.forEach((c,ci)=>ids.push("r"+gi+"."+ci));ids.push("g"+gi)});
  const all=ids.map(id=>({id,sc:scope(id,null)})).filter(x=>x.sc.list.length);
- /* "শরীরে" ঘর-যুক্ত অডিও (অঙ্গসহ, অনেক লম্বা) আগে থেকে তৈরি হয় না — চাপলে তখনই তৈরি হয় (একবার হলে মনে থাকে) */
- if(window.__drGroupAudio)for(const x of all){if(hasBody(x.id))continue;const t0=Date.now();try{await gMerge(x.id,x.sc).p}catch(e){console.error(e)}if(Date.now()-t0>80)await sl()}
+ /* সব অডিওই আগে থেকে তৈরি: হালকাগুলো আগে, "শরীরে" ঘর-যুক্ত (অঙ্গসহ, লম্বা) গুলো শেষে — চাপলে আর জোড়া লাগাতে হয় না */
+ if(window.__drGroupAudio)for(const x of all.slice().sort((a,b)=>hasBody(a.id)-hasBody(b.id))){const t0=Date.now();try{await gMerge(x.id,x.sc).p}catch(e){console.error(e)}if(Date.now()-t0>80)await sl()}
  if(window.__drHomePdfPre)for(const x of all){const t0=Date.now();try{await window.__drHomePdfPre(x.sc.cat)}catch(e){console.error(e)}if(Date.now()-t0>80)await sl()}};
 
 const SLUG={nazar:1,jadu:1,jin:1};

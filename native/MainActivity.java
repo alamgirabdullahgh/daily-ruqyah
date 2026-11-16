@@ -40,7 +40,7 @@ public class MainActivity extends BridgeActivity {
             // অডিও প্লেয়ারের তিন-ডট মেনুর "Download" (blob:) ধরে একই সেভারে পাঠায়
             w.setDownloadListener((url, ua, cd, mime, len) -> {
                 if (url != null && url.startsWith("blob:"))
-                    w.evaluateJavascript("fetch(" + org.json.JSONObject.quote(url) + ").then(r=>r.blob()).then(b=>window.__drSave&&window.__drSave(b))", null);
+                    w.evaluateJavascript("fetch(" + org.json.JSONObject.quote(url) + ").then(r=>r.blob()).then(b=>window.__drSave&&window.__drSave(b," + org.json.JSONObject.quote(url) + "))", null);
             });
         } catch (Exception ignored) {}
         // ফোনের ব্যাক বাটন: আগে অ্যাপের ভেতরে ধাপে ধাপে ফেরে (JS __drBackKey), হোমে থাকলে তবেই অ্যাপ বন্ধ
