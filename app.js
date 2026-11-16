@@ -1187,7 +1187,7 @@ window.__drOpenDisease=()=>showDiag(DISEASE);window.__drOpenMental=()=>showDiag(
   out.appendChild(w);window.scrollTo({top:rs.getBoundingClientRect().top+scrollY-60,behavior:"smooth"})};
  const nameList=async(CFG,title,sub,up)=>{GEN++;$("rsInfo").textContent="লোড হচ্ছে…";$("rsOut").innerHTML="";let D;try{D=await rsFetch(BASE+CFG.file)}catch(e){$("rsInfo").textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
   const secs=[];D.groups.forEach(g=>{let x=secs.find(y=>y.name===g.section);if(!x)secs.push(x={name:g.section,ids:new Set()});g.cats.forEach(c=>c.keys.forEach(k=>x.ids.add(k.s+":"+k.a)))});
-  {const f=keepDis(secs,CFG);secs.length=0;f.forEach(x=>secs.push(x))}await loadOT();addGSecs(secs,CFG);const back=()=>nameList(CFG,title,sub,up);
+  {const f=keepDis(secs,CFG).slice();secs.length=0;f.forEach(x=>secs.push(x))}await loadOT();addGSecs(secs,CFG);const back=()=>nameList(CFG,title,sub,up);
   showNames(title,secs.map(x=>({name:x.name,note:secNote(x),fn:()=>{$("rsBox").classList.add("dr-tonly");showDiag(Object.assign({},CFG,{only:x.name,back}));}})),sub,up)};
  const OT={d:null};
  const loadOT=async()=>{if(OT.d)return OT.d;try{OT.d=await rsFetch(BASE+"organ-treat.json?v=3")}catch(e){OT.d={}}return OT.d};
@@ -1214,7 +1214,7 @@ const renderOrganTreat=(n,list)=>{GEN++;CURT=null;window.__bq="";window.__sq=n;r
  /* অঙ্গ ও রোগের PDF/অডিওর আয়াত-তালিকা: নাম → [[সূরা,আয়াত]…] (অঙ্গের তালিকা ব্যবহারের সময় গণনা হয়) */
  const XS={p:null};
  const regX=()=>XS.p||(XS.p=(async()=>{const cats=[];
-  const mk=async CFG=>{const D=await rsFetch(BASE+CFG.file),secs=[];D.groups.forEach(g=>{let x=secs.find(y=>y.name===g.section);if(!x)secs.push(x={name:g.section,ids:new Set()});g.cats.forEach(c=>c.keys.forEach(k=>x.ids.add(k.s+":"+k.a)))});{const f=keepDis(secs,CFG);secs.length=0;f.forEach(x=>secs.push(x))}await loadOT();addGSecs(secs,CFG);return secs};
+  const mk=async CFG=>{const D=await rsFetch(BASE+CFG.file),secs=[];D.groups.forEach(g=>{let x=secs.find(y=>y.name===g.section);if(!x)secs.push(x={name:g.section,ids:new Set()});g.cats.forEach(c=>c.keys.forEach(k=>x.ids.add(k.s+":"+k.a)))});{const f=keepDis(secs,CFG).slice();secs.length=0;f.forEach(x=>secs.push(x))}await loadOT();addGSecs(secs,CFG);return secs};
   const org=(pre,names)=>names.forEach(n=>{const t=TOPICS.find(x=>x.name===n);if(!t)return;XKEYS.set(pre+"|"+n,()=>topicKeys(t));cats.push(pre+"|"+n)});
   const dis=(pre,secs)=>secs.forEach(x=>{if(!x.ids.size)return;XKEYS.set(pre+"|"+x.name,[...x.ids].map(i=>i.split(":").map(Number)).sort((a,b)=>a[0]-b[0]||a[1]-b[1]));cats.push(pre+"|"+x.name)});
   const[sd,sm]=await Promise.all([mk(DISEASE),mk(MENTAL)]);
@@ -1222,9 +1222,9 @@ const renderOrganTreat=(n,list)=>{GEN++;CURT=null;window.__bq="";window.__sq=n;r
   org("মানসিক অঙ্গ",["অন্তর (হৃদয়)","বুক ও বক্ষ"]);dis("মানসিক সমস্যা",sm);
   return cats})().catch(e=>{XS.p=null;throw e}));
  window.__drXReg=regX;
- const combo=async kind=>{const mental=kind==="mental",CFG=mental?MENTAL:DISEASE,title=mental?"🧠 মানসিক":"🩺 শারীরিক";GEN++;$("rsInfo").textContent="লোড হচ্ছে…";$("rsOut").innerHTML="";let D;try{D=await rsFetch(BASE+CFG.file)}catch(e){$("rsInfo").textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
+ const combo=async(kind,only)=>{const mental=kind==="mental",CFG=mental?MENTAL:DISEASE,title=mental?"🧠 মানসিক":"🩺 শারীরিক";GEN++;$("rsInfo").textContent="লোড হচ্ছে…";$("rsOut").innerHTML="";let D;try{D=await rsFetch(BASE+CFG.file)}catch(e){$("rsInfo").textContent="তালিকা লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
   const secs=[];D.groups.forEach(g=>{let x=secs.find(y=>y.name===g.section);if(!x)secs.push(x={name:g.section,ids:new Set()});g.cats.forEach(c=>c.keys.forEach(k=>x.ids.add(k.s+":"+k.a)))});
-  {const f=keepDis(secs,CFG);secs.length=0;f.forEach(x=>secs.push(x))}await loadOT();addGSecs(secs,CFG);const back=()=>combo(kind),organs=mental?["অন্তর (হৃদয়)","বুক ও বক্ষ"]:ORG.map(o=>o[0]);
+  {const f=keepDis(secs,CFG).slice();secs.length=0;f.forEach(x=>secs.push(x))}await loadOT();addGSecs(secs,CFG);const back=()=>combo(kind,only),organs=mental?["অন্তর (হৃদয়)","বুক ও বক্ষ"]:ORG.map(o=>o[0]);
   /* উপরে "অঙ্গভিত্তিক" হেডিং, নিচে "রোগভিত্তিক" হেডিং; প্রতিটি নাম হোমের "দৈনন্দিন রুকইয়াহ"-র মতো দুই কলামে — নাম + 📄 PDF + 🔊 অডিও */
   const HS="display:flex;align-items:center;gap:8px;margin:16px 2px 10px;padding:9px 12px;border-radius:12px;background:var(--primary-light,#e6efe9);border-right:5px solid var(--accent);border-left:5px solid var(--accent);font-weight:800;font-size:17px;color:var(--accent);justify-content:center";
   const SHORT={"কণ্ঠনালী ও কণ্ঠার হাড়":"কণ্ঠনালী","বুক ও বক্ষ":"বুক","অন্ত্র ও নাড়িভুঁড়ি":"অন্ত্র"};
@@ -1246,11 +1246,11 @@ const renderOrganTreat=(n,list)=>{GEN++;CURT=null;window.__bq="";window.__sq=n;r
     li.appendChild(air);
     if(it.has)["pdf","au"].forEach(k=>{const h=document.createElement("div");h.className="drq-aup";h.setAttribute("data-k",k);h.hidden=true;h.style.order=String(i*2+2);li.appendChild(h)});
     ul.appendChild(li)});return ul};
-  {const h1=els("div",HS.replace("margin:16px 2px 10px","margin:0 2px 10px")+";position:relative","🫀 অঙ্গভিত্তিক");h1.className="dr-combo-h";const b0=$("drBack");if(b0){const cb=b0.cloneNode(true);cb.removeAttribute("id");cb.className="dr-backbtn dr-combo-back";cb.onclick=()=>b0.click();h1.appendChild(cb)}host.appendChild(h1)}
+  {const h1=els("div",HS.replace("margin:16px 2px 10px","margin:0 2px 10px")+";position:relative",only==="disease"?"💊 রোগভিত্তিক":"🫀 অঙ্গভিত্তিক");h1.className="dr-combo-h";const b0=$("drBack");if(b0){const cb=b0.cloneNode(true);cb.removeAttribute("id");cb.className="dr-backbtn dr-combo-back";cb.onclick=()=>b0.click();h1.appendChild(cb)}host.appendChild(h1)}
   const prO=mental?"মানসিক অঙ্গ":"শারীরিক অঙ্গ",prD=mental?"মানসিক সমস্যা":"শারীরিক রোগ";
-  host.appendChild(mkList(organs.map(n=>({name:n,has:true,fn:()=>window.__drOpenOrgan(n)})),prO));
-  {const h2=els("div",HS,mental?"💊 সমস্যাভিত্তিক":"💊 রোগভিত্তিক");h2.className="dr-combo-h2";host.appendChild(h2)}
-  host.appendChild(mkList(secs.map(x=>({name:x.name,has:x.ids.size>0,fn:()=>{$("rsBox").classList.add("dr-tonly");showDiag(Object.assign({},CFG,{only:x.name,back}))}})),prD));
+  if(only!=="disease")host.appendChild(mkList(organs.map(n=>({name:n,has:true,fn:()=>window.__drOpenOrgan(n)})),prO));
+  if(!only){const h2=els("div",HS,mental?"💊 সমস্যাভিত্তিক":"💊 রোগভিত্তিক");h2.className="dr-combo-h2";host.appendChild(h2)}
+  if(only!=="organ")host.appendChild(mkList(secs.map(x=>({name:x.name,has:x.ids.size>0,fn:()=>{$("rsBox").classList.add("dr-tonly");showDiag(Object.assign({},CFG,{only:x.name,back}))}})),prD));
   host.addEventListener("click",e=>{const au=e.target.closest&&e.target.closest(".drq-au,.drq-pd");if(!au)return;e.preventDefault();const li=au.closest("li"),isP=au.classList.contains("drq-pd"),hp=li&&li.querySelector('.drq-aup[data-k="'+(isP?"pdf":"au")+'"]');const fn=isP?window.__drHomePdf:window.__drHomeAudio;fn&&fn("x",au.getAttribute("data-c"),hp)});
   $("rsOut").appendChild(host);
   regX().catch(()=>{});setTimeout(()=>window.__drHomePrebuild&&window.__drHomePrebuild(),800);
@@ -1258,8 +1258,8 @@ const renderOrganTreat=(n,list)=>{GEN++;CURT=null;window.__bq="";window.__sq=n;r
  window.__drOpenList=k0=>{const sp=String(k0).split("@"),k=sp[0];window.__drSec=sp[1]||"";
   const phys=()=>showNames("🩺 শারীরিক",[{name:"অঙ্গভিত্তিক",fn:()=>window.__drOpenList("organ")},{name:"রোগভিত্তিক",fn:()=>window.__drOpenList("disease")}],"একটি বেছে নিন");
   const ment=()=>showNames("🧠 মানসিক",[{name:"অঙ্গভিত্তিক",fn:()=>window.__drOpenList("mentalorgan")},{name:"রোগভিত্তিক",fn:()=>window.__drOpenList("mental")}],"একটি বেছে নিন");
-  if(k==="physical")combo("physical");
-  else if(k==="mentalmain")combo("mental");
+  if(k==="physical")combo("physical",sp[1]);
+  else if(k==="mentalmain")combo("mental",sp[1]);
   else if(k==="disease")nameList(DISEASE,"💊 শারীরিক — রোগভিত্তিক","রোগের নামে চাপুন, সেই রোগ সম্পর্কিত আয়াত দেখা যাবে",phys);
   else if(k==="mental")nameList(MENTAL,"🧠 মানসিক — রোগভিত্তিক","সমস্যার নামে চাপুন, সেই সম্পর্কিত আয়াত দেখা যাবে",ment);
   else if(k==="organ")organList(ORG.map(o=>o[0]),"🫀 শারীরিক — অঙ্গভিত্তিক","অঙ্গের নামে চাপুন, সেই অঙ্গ সম্পর্কিত আয়াত দেখা যাবে",phys);
