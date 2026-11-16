@@ -9,7 +9,7 @@
   if(DATA)return Promise.resolve(DATA);
   if(loading)return loading;
   var u=function(p){return new URL(p,location.href).href};
-  loading=Promise.all([fetch(u("data/amol-guide.json?v=9")).then(function(r){if(!r.ok)throw 0;return r.json()}),fetch(u("data/amol-struct.json?v=2")).then(function(r){return r.ok?r.json():{conds:{}}}).catch(function(){return{conds:{}}})]).then(function(x){DATA=x[0];ST=(x[1]&&x[1].conds)||{};return DATA}).catch(function(e){loading=null;throw e});
+  loading=Promise.all([fetch(u("data/amol-guide.json?v=10")).then(function(r){if(!r.ok)throw 0;return r.json()}),fetch(u("data/amol-struct.json?v=2")).then(function(r){return r.ok?r.json():{conds:{}}}).catch(function(){return{conds:{}}})]).then(function(x){DATA=x[0];ST=(x[1]&&x[1].conds)||{};return DATA}).catch(function(e){loading=null;throw e});
   return loading;
  }
  function refLabel(r){var n=SN[r[0]]||("সূরা "+bn(r[0]));return "সূরা "+n+" "+bn(r[0])+":"+bn(r[1])+(r[2]?"-"+bn(r[2]):"")}
