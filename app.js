@@ -821,11 +821,11 @@ const homeKeys=(kind,cat)=>kind==="x"&&(GRPN[cat]||GRPC[cat])?groupKeys(cat):kin
 const homeTitle=(kind,cat)=>kind==="x"?(/^(শারীরিক রোগ|মানসিক সমস্যা)\|/.test(String(cat))?String(cat).split("|").slice(1).join(" "):String(cat).replace("|"," ")):kind==="sym"?"সিমটম ডায়াগনোসিস "+(cat==="সব"?"বদনজর জাদু জিন":cat):kind==="phys"||kind==="ment"?"দৈনন্দিন রুকইয়াহ "+cat:(kind==="resp"?"রেসপন্স ডায়াগনোসিস":"ট্রিটমেন্ট")+" "+(cat==="সব"?"বদনজর জাদু জিন":cat);
 /* পুনরাবৃত্তি: রেসপন্স ডায়াগনোসিস — প্রতিটি আয়াত ১১ বার, পুরো সেট ৩ বার; ট্রিটমেন্ট — প্রতিটি আয়াত ৩ বার, সেট ১ বার */
 const SFX_R=" · প্রতিক্রিয়া",SFX_T=" · চিকিৎসা";
-const homeRep=(kind,cat)=>kind==="resp"?{rep:11,set:1}:kind==="treat"?{rep:1,set:1}:kind==="x"&&String(cat).endsWith(SFX_R)?{rep:11,set:1}:kind==="x"&&String(cat).endsWith(SFX_T)?{rep:1,set:1}:{rep:3,set:1};
+const homeRep=(kind,cat)=>kind==="resp"?{rep:11,set:1}:kind==="treat"?{rep:1,set:1}:kind==="x"&&String(cat).endsWith(SFX_R)?{rep:11,set:1}:kind==="x"&&String(cat).endsWith(SFX_T)?{rep:1,set:1}:kind==="x"&&/^অক্ষ /.test(String(cat))?{rep:3,set:1}:{rep:11,set:1};/* শারীরিক/মানসিক (অঙ্গ, রোগ, সব): প্রতিটি আয়াত ১১ বার, সেট একবার */
 window.__drSfx={resp:SFX_R,treat:SFX_T};
 /* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */
 /* ===== স্থায়ী ভাণ্ডার: একবার বানানো অডিও/PDF ফোনের ভেতরে (Cache Storage) জমা থাকে। অ্যাপ বন্ধ করে আবার খুললেও আর নতুন করে বানাতে হয় না — বোতাম চাপলেই সাথে সাথে। কোড/তালিকা বদলালে PREV বাড়ালে পুরনোগুলো মুছে নতুন করে বানায়। ===== */
-const PREV="p2",PREC="dr-pre-"+PREV;
+const PREV="p3",PREC="dr-pre-"+PREV;
 const preUrl=(t,k)=>"https://dr.local/pre/"+t+"/"+encodeURIComponent(k);
 const PRE={
  async get(t,k){try{const c=await caches.open(PREC),r=await c.match(preUrl(t,k));if(!r)return null;const m=await c.match(preUrl(t,k)+"/meta");let meta={};try{meta=m?await m.json():{}}catch(e){}return{blob:await r.blob(),meta}}catch(e){return null}},
@@ -912,7 +912,7 @@ window.__drHomePdf=(kind,cat,host)=>{const key=kind+"|"+cat;return window.__drDo
 const AXM=new Map(); /* আয়াত→এনকোড-করা MP3 টুকরো: ঘর, সারি ও হেডিংয়ের অডিও একই আয়াত বারবার এনকোড করে না */
 window.__drGroupAudio=async(list,out,note,name,cb,rep)=>{const k=audKey("g|"+name),hit=await PRE.get("aud",k);
  if(hit&&hit.blob&&hit.blob.size>2048&&hit.meta&&hit.meta.marks){preAudioInto(out,hit.blob,name);try{cb&&cb(hit.meta.marks)}catch(e){}return}
- let marks=null;const st={};await mergeAudio(list,out,note,{rep:rep||3,set:1,noplay:true,name,onmarks:m=>{marks=m;if(cb)cb(m)},memo:true,memoMap:AXM,stat:st});
+ let marks=null;const st={};await mergeAudio(list,out,note,{rep:rep||(/^অক্ষ /.test(String(name))?3:11),set:1,noplay:true,name,onmarks:m=>{marks=m;if(cb)cb(m)},memo:true,memoMap:AXM,stat:st});
  try{const a=out.querySelector("audio");if(a&&marks&&st.ok&&!st.bad){const b=await(await fetch(a.src)).blob();if(b.size>2048)PRE.put("aud",k,b,{marks})}}catch(e){console.error(e)}};
 window.__drHomePdfPre=cat=>homePdf("x",cat);
 const AUB=new Map();
