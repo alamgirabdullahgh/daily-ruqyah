@@ -1178,3 +1178,20 @@ body.is-home{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
 
 /* শারীরিক/মানসিক তালিকা: বাটনের মাপ স্থির (৪৮px); লম্বা নাম দুই লাইনে ভেঙে বাটনের ভেতরেই বসে */
 #rsOut .dr-physhost .drq-opts.drq-two:not(.drq-three) .drq-air>a{white-space:normal!important;overflow:hidden!important;height:48px!important;min-height:48px!important;max-height:48px;box-sizing:border-box;padding:2px 4px!important;line-height:1.2!important;overflow-wrap:normal;word-break:normal;text-align:center}
+
+/* বাধা দূর করার রুকইয়াহ (badha.js) */
+#drBadha{padding:4px 2px 24px}
+.bd-h{font-size:19px;color:var(--primary);margin:6px 2px 12px;display:flex;align-items:center;gap:8px}
+.bd-l{display:flex;flex-direction:column;gap:8px}
+.bd-b{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--border-light);border-radius:14px;background:var(--card-bg);color:var(--text-main);text-decoration:none}
+.bd-b i{font-style:normal;font-size:22px}.bd-b span{flex:1}.bd-b b{display:block;font-size:15.5px;color:var(--primary)}.bd-b small{color:var(--text-muted,#667)}
+.bd-back{display:inline-block;margin:2px 0 6px;color:var(--accent);font-weight:700;text-decoration:none}
+.bd-c{margin:0 0 10px;padding:11px 13px;border:1px solid var(--border-light);border-radius:14px;background:var(--card-bg);line-height:1.8;font-size:15.5px}
+.bd-c h3{margin:0 0 4px;font-size:16.5px;color:var(--primary);display:flex;align-items:center;gap:8px}
+.bd-c h4{margin:8px 0 2px;font-size:15px;color:var(--accent)}
+.bd-c p{margin:4px 0}.bd-c ul{margin:2px 0 4px;padding-inline-start:20px}
+.bd-n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--primary-light);display:inline-flex;align-items:center;justify-content:center;font-size:14px}
+.bd-ar{direction:rtl;text-align:center;font-family:var(--font-ar);font-size:24px;line-height:2.1;margin:8px 0;padding:8px;border-radius:12px;background:var(--primary-light)}
+.bd-tr{color:var(--text-main);opacity:.9}.bd-m{padding:6px 10px;border-inline-start:4px solid var(--accent);background:var(--accent-light);border-radius:8px}
+.bd-when{background:var(--primary-light);text-align:center;color:var(--primary)}
+.bd-note{margin:6px 2px;padding:10px 12px;border-radius:12px;background:var(--accent-light);font-size:14.5px;line-height:1.7}
