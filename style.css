@@ -1207,3 +1207,13 @@ body:not(.dr-unlocked) [data-lock],body:not(.dr-unlocked) #drLogout{display:none
 .bd-when{background:var(--primary-light);text-align:center;color:var(--primary)}
 .bd-note{margin:6px 2px;padding:10px 12px;border-radius:12px;background:var(--accent-light);font-size:14.5px;line-height:1.7}
 .dr-lgp{position:relative;display:flex}.dr-lgp input{flex:1;min-width:0;width:100%;padding-right:48px}.dr-lgp button{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:40px;height:40px;border:0;border-radius:10px;background:transparent;color:inherit;opacity:.7;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}.dr-lgp button:active{opacity:1;background:rgba(0,0,0,.06)}
+
+/* বাধা দূর করার রুকইয়াহ: শারীরিক পাতার মতো বাটন-গ্রিড; প্রতিটি বাটনের নিচে কপি · PDF · অডিও */
+.bd-g{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.bd-cell{display:flex;flex-direction:column;gap:6px;padding:8px;border:1px solid var(--border-light);border-radius:14px;background:var(--card-bg)}
+.bd-bt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:84px;padding:8px 6px;border-radius:12px;background:var(--primary-light);color:var(--primary);text-decoration:none;text-align:center}
+.bd-bt i{font-style:normal;font-size:24px}.bd-bt b{font-size:14.5px;line-height:1.45}
+.bd-acts{display:flex;gap:6px}
+.bd-a{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px;border:0;border-radius:10px;background:var(--primary);color:#fff;font-family:inherit;cursor:pointer}
+.bd-a small{font-size:11.5px;font-weight:700;white-space:nowrap}
+.bd-top{margin:0 0 10px}.bd-top .bd-acts{max-width:360px}

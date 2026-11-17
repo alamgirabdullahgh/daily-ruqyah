@@ -5,12 +5,33 @@
  var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
  var P=function(a){return(a||[]).map(function(x){return'<p>'+esc(x)+'</p>'}).join("")};
  var UL=function(a){return'<ul>'+a.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ul>'};
+ var SVG={cp:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+  pd:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg>',
+  au:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>'};
+ // প্রতিটি আইটেমের সব আয়াত একই: ফাতির ৩৫:২, ইউনুস ১০:৮১, আ‘রাফ ৭:১১৮, ফালাক ১১৩:৪, ইনশিরাহ ৯৪:৫-৬ (প্রতিটি ২১ বার)
+ var KEYS=[[35,2],[10,81],[7,118],[113,4],[94,5],[94,6]],CAT=function(k){return"বাধা|"+D[k].t};
+ function short(t){return t.replace(/ দূর করার রুকইয়াহ$/,"")}
+ function plain(k){
+  var d=D[k],o=[d.t,"",d.sub,"","আলামত:"];
+  d.sym.forEach(function(s){o.push(s.h);s.l.forEach(function(x){o.push("• "+x)})});
+  o.push("",d.when);
+  d.steps.forEach(function(s){o.push("","["+s.n+"] "+(s.h||""));(s.p||[]).forEach(function(x){o.push(x)});if(s.ar)o.push(s.ar);if(s.tr)o.push(s.tr);(s.m||[]).forEach(function(x){o.push(x)})});
+  o.push("",d.sign.h);d.sign.l.forEach(function(x){o.push("• "+x)});if(d.note)o.push("",d.note);
+  return o.join("\n");
+ }
+ function copyText(x){
+  return(navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(x):Promise.reject()).catch(function(){
+   var t=document.createElement("textarea");t.value=x;t.style.cssText="position:fixed;opacity:0";document.body.appendChild(t);t.select();var ok=false;try{ok=document.execCommand("copy")}catch(e){}t.remove();if(!ok)throw new Error("copy")});
+ }
+ function acts(k){
+  return'<span class="bd-acts"><button type="button" class="bd-a" data-act="cp" data-k="'+k+'" aria-label="কপি" title="কপি">'+SVG.cp+'<small>কপি</small></button><button type="button" class="bd-a" data-act="pd" data-k="'+k+'" aria-label="PDF" title="PDF">'+SVG.pd+'<small>PDF</small></button><button type="button" class="bd-a" data-act="au" data-k="'+k+'" aria-label="অডিও" title="অডিও">'+SVG.au+'<small>অডিও</small></button></span>';
+ }
  function list(){
-  return'<h2 class="bd-h">🔓 বাধা দূর করার রুকইয়াহ</h2><div class="bd-l">'+Object.keys(D).map(function(k){var d=D[k];return'<a class="bd-b" href="#badha/'+k+'"><i>'+d.icon+'</i><span><b>'+esc(d.t)+'</b><small>'+esc(d.sub)+'</small></span><u>›</u></a>'}).join("")+'</div>';
+  return'<h2 class="bd-h">🔓 বাধা দূর করার রুকইয়াহ</h2><div class="bd-g">'+Object.keys(D).map(function(k){var d=D[k];return'<div class="bd-cell"><a class="bd-bt" href="#badha/'+k+'"><i>'+d.icon+'</i><b>'+esc(short(d.t))+'</b></a>'+acts(k)+'</div>'}).join("")+'</div>';
  }
  function page(k){
   var d=D[k];if(!d)return list();
-  var h='<a class="bd-back" href="#badha">← বাধা দূর করার রুকইয়াহ</a><h2 class="bd-h"><i>'+d.icon+'</i> '+esc(d.t)+'</h2>';
+  var h='<a class="bd-back" href="#badha">← বাধা দূর করার রুকইয়াহ</a><h2 class="bd-h"><i>'+d.icon+'</i> '+esc(d.t)+'</h2><div class="bd-top">'+acts(k)+'</div>';
   h+='<section class="bd-c"><h3>আলামত</h3>'+d.sym.map(function(s){return'<h4>'+esc(s.h)+'</h4>'+UL(s.l)}).join("")+'</section>';
   h+='<section class="bd-c bd-when"><b>'+esc(d.when)+'</b></section>';
   d.steps.forEach(function(s){
@@ -23,6 +44,14 @@
   h+='<section class="bd-c bd-sign"><h3>'+esc(d.sign.h)+'</h3>'+UL(d.sign.l)+'</section>';
   if(d.note)h+='<div class="bd-note">ℹ️ '+esc(d.note)+'</div>';
   return h;
+ }
+ function flash(b,t){var o=b.querySelector("small"),old=o.textContent;o.textContent=t;setTimeout(function(){o.textContent=old},1600)}
+ function act(a,k,b){
+  if(!D||!D[k])return;
+  if(a==="cp"){copyText(plain(k)).then(function(){flash(b,"✓ কপি হয়েছে")},function(){flash(b,"হয়নি")});return}
+  if(!window.__drXKeys||!window.__drHomePdf||!window.__drHomeAudio){flash(b,"একটু পরে");return}
+  var c=CAT(k);window.__drXKeys(c,KEYS);
+  if(a==="pd")window.__drHomePdf("x",c);else window.__drHomeAudio("x",c);
  }
  var b64d=function(s){var r=atob(s),a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a};
  var b64e=function(a){var s="";a=new Uint8Array(a);for(var i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);return btoa(s)};
@@ -93,5 +122,7 @@
    if(n>=7){n=0;if(!D)dialog()}
   }
   if(t0.closest&&t0.closest("#drLogout")){logout()}
+  var ab=t0.closest&&t0.closest(".bd-a");
+  if(ab&&D){e.preventDefault();e.stopPropagation();act(ab.getAttribute("data-act"),ab.getAttribute("data-k"),ab)}
  },true);
 })();
