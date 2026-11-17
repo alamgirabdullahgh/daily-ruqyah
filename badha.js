@@ -9,7 +9,7 @@
   pd:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg>',
   au:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>'};
  // প্রতিটি আইটেমের সব আয়াত একই: ফাতির ৩৫:২, ইউনুস ১০:৮১, আ‘রাফ ৭:১১৮, ফালাক ১১৩:৪, ইনশিরাহ ৯৪:৫-৬ (প্রতিটি ২১ বার)
- var KEYS=[[35,2],[10,81],[7,118],[113,4],[94,5],[94,6]],CAT=function(k){return"বাধা|"+D[k].t};
+ var CAT=function(k){return"বাধা|"+D[k].t};
  // অডিও চার পার্টে, চিকিৎসার ক্রম মেনে। [সূরা,আয়াত,বার,শব্দ-শুরু,শব্দ-শেষ]; ["dua","dN",বার] = dua/dN.mp3 (Gemini TTS)
  // ফাতির ৩৫:২ শুধু "মা ইয়াফতাহিল্লাহু ... মিম বা‘দিহী" পর্যন্ত (শব্দ ১–১৬); "ওয়া হুয়াল আযীযুল হাকীম" বাদ
  var FT=function(n){return[35,2,n,1,16]};
@@ -29,23 +29,20 @@
   return o}
  // পার্ট ৪ (ধাপ ৮) — তাহাজ্জুদের দোয়া ১০০ বার
  function SEQT(){return[["dua","d6",100]]}
- var PARTS=[{n:"১",t:"পানি",s:"মাগরিবের আগে: ফাতির ২ ×৭",f:SEQ1},
-  {n:"২",t:"তেল",s:"আয়াতুল কুরসি ×৭; ফালাক+নাস মিলে ১ বার, ×৭",f:SEQ2},
-  {n:"৩",t:"পড়া ও দোয়া",s:"ধাপ ৩–৭: ২১ বার ও ৭ বার, দোয়াসহ",f:SEQ},
-  {n:"৪",t:"তাহাজ্জুদ",s:"রাত ৩টায়: দোয়া ১০০ বার",f:SEQT}];
- function parts(k){
-  if(document.getElementById("drPt"))return;
-  var c=CAT(k),w=document.createElement("div");w.id="drPt";w.className="dr-lg";
-  w.innerHTML='<div class="dr-lgb"><b>অডিওর পার্ট বেছে নিন</b>'+PARTS.map(function(p,i){return'<button type="button" data-i="'+i+'" style="display:block;width:100%;text-align:left;margin:6px 0;padding:10px 12px;border-radius:10px;border:1px solid currentColor;background:transparent;color:inherit;font:inherit"><b>পার্ট '+p.n+': '+esc(p.t)+'</b><br><small>'+esc(p.s)+'</small></button>'}).join("")+'<div class="dr-lgr"><button type="button" id="drPtC">বাতিল</button></div></div>';
-  document.body.appendChild(w);
-  var close=function(){w.remove()};
-  w.onclick=function(e){
-   if(e.target===w||(e.target.id==="drPtC")){close();return}
-   var bt=e.target.closest&&e.target.closest("button[data-i]");if(!bt)return;
-   var p=PARTS[+bt.getAttribute("data-i")],ca=c+" · পার্ট "+p.n+" "+p.t;
-   close();window.__drXKeys(ca,p.f());window.__drHomeAudio("x",ca);
-  };
- }
+ var PARTS=[{n:"১",t:"পানি",s:"মাগরিবের আগে: ফাতির ২ ×৭",f:SEQ1,pdf:1},
+  {n:"২",t:"তেল",s:"আয়াতুল কুরসি ×৭; ফালাক+নাস মিলে ১ বার, ×৭",f:SEQ2,pdf:1},
+  {n:"৩–৭",t:"পড়া ও দোয়া",s:"২১ বার ও ৭ বার, দোয়াসহ",f:SEQ,pdf:1},
+  {n:"৮",t:"তাহাজ্জুদ",s:"রাত ৩টায়: দোয়া ১০০ বার",f:SEQT,pdf:0}];
+ // ক্রম থেকে অনন্য [সূরা,আয়াত] (PDF-এর জন্য); "dua" ঘর বাদ
+ function keysOf(seq){var o=[],seen={};seq.forEach(function(x){if(typeof x[0]!=="number")return;var id=x[0]+":"+x[1];if(!seen[id]){seen[id]=1;o.push([x[0],x[1]])}});return o}
+ function SEQALL(){return SEQ1().concat(SEQ2(),SEQ(),SEQT())}
+ var BTN=function(act,k,i,svg,lbl,al){return'<button type="button" class="bd-a" data-act="'+act+'" data-k="'+k+'"'+(i==null?'':' data-p="'+i+'"')+' aria-label="'+esc(al||lbl)+'" title="'+esc(al||lbl)+'">'+svg+'<small>'+esc(lbl)+'</small></button>'};
+ // পাতার মাথায়: পুরো আমলের PDF ও সম্পূর্ণ অডিও
+ function topActs(k){return'<span class="bd-acts">'+BTN("cp",k,null,SVG.cp,"কপি")+BTN("pd",k,null,SVG.pd,"পুরো আমল PDF")+BTN("au",k,null,SVG.au,"সম্পূর্ণ অডিও")+'</span>'}
+ // প্রতিটি ধাপের আলাদা সারি: নাম + নিজের PDF ও অডিও (দৈনন্দিন রুকইয়াহর "শারীরিক" তালিকার মতো)
+ function rows(k){
+  return'<section class="bd-c bd-parts"><h3>ধাপ অনুযায়ী অডিও ও PDF</h3>'+PARTS.map(function(p,i){
+   return'<div class="bd-pr"><div class="bd-pl"><b>'+esc(p.n)+'</b><span>'+esc(p.t)+'<small>'+esc(p.s)+'</small></span></div><span class="bd-pb">'+(p.pdf?BTN("ps",k,i,SVG.pd,"PDF","ধাপ "+p.n+" — PDF"):'')+BTN("pa",k,i,SVG.au,"অডিও","ধাপ "+p.n+" — অডিও")+'</span></div>'}).join("")+'</section>'}
  function short(t){return t.replace(/ দূর করার রুকইয়াহ$/,"")}
  function plain(k){
   var d=D[k],o=[d.t,"",d.sub,"","আলামত:"];
@@ -67,7 +64,7 @@
  }
  function page(k){
   var d=D[k];if(!d)return list();
-  var h='<a class="bd-back" href="#badha">← বাধা দূর করার রুকইয়াহ</a><h2 class="bd-h"><i>'+d.icon+'</i> '+esc(d.t)+'</h2><div class="bd-top">'+acts(k)+'</div>';
+  var h='<a class="bd-back" href="#badha">← বাধা দূর করার রুকইয়াহ</a><h2 class="bd-h"><i>'+d.icon+'</i> '+esc(d.t)+'</h2><div class="bd-top">'+topActs(k)+'</div>'+rows(k);
   h+='<section class="bd-c"><h3>আলামত</h3>'+d.sym.map(function(s){return'<h4>'+esc(s.h)+'</h4>'+UL(s.l)}).join("")+'</section>';
   h+='<section class="bd-c bd-when"><b>'+esc(d.when)+'</b></section>';
   d.steps.forEach(function(s){
@@ -86,9 +83,12 @@
   if(!D||!D[k])return;
   if(a==="cp"){copyText(plain(k)).then(function(){flash(b,"✓ কপি হয়েছে")},function(){flash(b,"হয়নি")});return}
   if(!window.__drXKeys||!window.__drHomePdf||!window.__drHomeAudio){flash(b,"একটু পরে");return}
-  var c=CAT(k);window.__drXKeys(c,KEYS);
-  if(a==="pd"){window.__drHomePdf("x",c);return}
-  parts(k);
+  var c=CAT(k),X=window.__drXKeys,p;
+  if(a==="pd"){X(c,keysOf(SEQALL()));window.__drHomePdf("x",c);return}
+  if(a==="au"){var cf=c+" · সম্পূর্ণ আমল";X(cf,SEQALL());window.__drHomeAudio("x",cf);return}
+  p=PARTS[+b.getAttribute("data-p")];if(!p)return;
+  if(a==="ps"){var cp=c+" · ধাপ "+p.n+" "+p.t;X(cp,keysOf(p.f()));window.__drHomePdf("x",cp);return}
+  if(a==="pa"){var ca=c+" · ধাপ "+p.n+" "+p.t+" (অডিও)";X(ca,p.f());window.__drHomeAudio("x",ca)}
  }
  var b64d=function(s){var r=atob(s),a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a};
  var b64e=function(a){var s="";a=new Uint8Array(a);for(var i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);return btoa(s)};
