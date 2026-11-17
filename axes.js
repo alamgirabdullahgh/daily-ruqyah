@@ -236,7 +236,7 @@ window.__drAxesFit=R=>fit(R);
   const pv=el("div","ed-r");const mk=(txt,mode)=>{const k=el("button","ed-k",txt);k.type="button";k.onclick=async()=>{if(!AB||T0==null||T1==null||T1<=T0){info.textContent="আগে শুরু ও শেষ বসান";return}try{const d=await window.__drCutPrev(AB,T0,T1,mode);info.textContent="▶ বাজছে ("+f3(d)+" সে.)"}catch(e){info.textContent="বাজানো যায়নি"}};return k};
   const stp=el("button","ed-k","⏹");stp.type="button";stp.onclick=()=>{window.__drCutStop&&window.__drCutStop();try{au.pause()}catch(e){}};
   pv.append(mk("▶ কাটা অংশ",""),mk("▶ শেষের ২ সেকেন্ড","tail"),mk("▶ শুরুর ২ সেকেন্ড","head"),stp);
-  b.append(info,au,wv,r0,r1,pv,el("div","ed-n","লাল দাগ মাঝে স্থির; রেখা আঙুলে টেনে সরান (বাজার সময়ও চলে)। সাদা শুরু/শেষ হ্যান্ডেল ধরে টানুন। ওপরের সোনালি ঘরে বর্তমান শব্দ দেখায়। ⌖ চাপলে লাল দাগের জায়গা শুরু/শেষ হয়। ▶ বোতামগুলো হুবহু অ্যাপের কাটা-অডিও বাজায় (গতিসহ)।"));
+  b.append(info,au,wv,r0,r1,pv,el("div","ed-n","লাল দাগ মাঝে স্থির। রেখায় আঙুল রাখলেই বাজা থামে; আঙুল টানলে রেখা সরে আর সেই জায়গার শব্দ শোনা যায়। সাদা ফ্রেমের দুই পাশের হ্যান্ডেল টানলেও শব্দ শোনা যায় (শুরুর হ্যান্ডেলে তার ঠিক পরের শব্দ, শেষের হ্যান্ডেলে তার ঠিক আগের শব্দ)। দুই আঙুলে চিমটি কেটে জুম করুন। ওপরের সোনালি ঘরে বর্তমান শব্দ দেখায়। ⌖ চাপলে লাল দাগের জায়গা শুরু/শেষ হয়। ▶ বোতামগুলো হুবহু অ্যাপের কাটা-অডিও বাজায় (গতিসহ)।"));
   const act=el("div","ed-r"),sv=el("button","ed-k p","💾 সংরক্ষণ"),rs=el("button","ed-k d","↩ আগের অবস্থায়");sv.type=rs.type="button";
   const bump=()=>{try{localStorage.setItem("drEdV",Date.now().toString(36))}catch(e){}};
   sv.onclick=()=>{if(!f){alert("আগে শব্দে চেপে মার্ক ঠিক করুন");return}
@@ -289,29 +289,49 @@ window.__drAxesFit=R=>fit(R);
      wt.forEach((r,i)=>{if(c>=r[0]&&c<r[1])curI=i;const x0=X(r[0]),x1=X(r[1]);if(x1<0||x0>W)return;const on=f&&i+1>=f&&i+1<=t,isC=i===curI;
       g.fillStyle=isC?"#c9a227":on?"#5b3b86":"#2e2e36";g.fillRect(x0+1,wy,Math.max(1,x1-x0-2),wh);g.fillStyle=isC?"#111":"#eee";g.font="19px "+fam;
       if(x1-x0>26)g.fillText(aw[i],(x0+x1)/2,wy+wh/2+1,x1-x0-4)});
-     /* শুরু/শেষ হ্যান্ডেল */
-     const H_=(v,lab)=>{if(v==null)return;const x=Math.round(X(v));g.fillStyle="#fff";g.fillRect(x-1,my-6,2,mh+12);g.beginPath();g.roundRect?g.roundRect(x-11,my+mh/2-16,22,32,6):g.rect(x-11,my+mh/2-16,22,32);g.fill();g.fillStyle="#222";g.fillRect(x-1,my+mh/2-8,2,16);g.fillStyle="#fff";g.font="bold 11px sans-serif";g.textAlign=lab==="শুরু"?"right":"left";g.textBaseline="top";g.fillText(lab,lab==="শুরু"?x-13:x+13,my-4)};
-     H_(T0,"শুরু");H_(T1,"শেষ");
+     /* ক্লিপের সাদা ফ্রেম + দুই পাশে সাদা হ্যান্ডেল (ভিডিও-এডিটরের মতো) */
+     const rr=(x,y,w,h,r)=>{g.beginPath();if(g.roundRect)g.roundRect(x,y,w,h,r);else g.rect(x,y,w,h)};
+     if(hasR){const xa=X(T0),xb=X(T1),y0=my-5,hh2=mh+10;g.strokeStyle="#fff";g.lineWidth=2;g.strokeRect(xa,y0,xb-xa,hh2);
+      const hnd=(x,left,lab)=>{g.fillStyle=(mode==="h"&&which===(left?0:1))?"#ffe27a":"#fff";rr(left?x-17:x,y0,17,hh2,5);g.fill();g.fillStyle="#222";g.fillRect((left?x-9:x+7),y0+hh2/2-9,2,18);g.fillStyle="#fff";g.font="bold 11px sans-serif";g.textBaseline="bottom";g.textAlign=left?"right":"left";g.fillText(lab,left?x-2:x+2,y0-1)};
+      hnd(xa,true,"শুরু");hnd(xb,false,"শেষ")}
+     else{[[T0,"শুরু"],[T1,"শেষ"]].forEach(([v,lab])=>{if(v==null)return;const x=X(v);g.fillStyle="#fff";g.fillRect(x-1,my-6,2,mh+12);g.font="bold 11px sans-serif";g.textAlign="left";g.textBaseline="bottom";g.fillText(lab,x+3,my-6)})}
      /* মাঝের স্থির প্লেহেড */
      g.fillStyle="#ff4d4d";g.fillRect(cx0-1,0,2,H);g.beginPath();g.moveTo(cx0-7,0);g.lineTo(cx0+7,0);g.lineTo(cx0,9);g.fill();
      ct0.textContent=fmt(c)+" / "+fmt(dur)+" সে.";cw.textContent=curI>=0?aw[curI]:"—";
      cs.textContent=(curI>=0?"শব্দ "+bn2(curI+1)+" (আনুমানিক)":"শব্দের বাইরে/নীরবতা")+(hasR?(c<T0?" · কাটার আগে":c>T1?" · কাটার পরে":" · কাটার ভেতরে"):"");
      zt.textContent="১ সে. = "+Math.round(pps)+"px";dirty=false;return};
     onT=()=>{dirty=true};
-    /* আঙুল: হ্যান্ডেলের কাছে হলে হ্যান্ডেল টানা, নইলে পুরো রেখা টেনে সরানো (বাজার সময়ও) */
-    let mode=null,sx=0,sc0=0,wasPlay=false,which=0;
+    /* স্ক্রাবিং-শব্দ: টানার সময়ই সেই জায়গার ছোট টুকরো বাজে (Web Audio) */
+    let gx=null,lastG=0;
+    const grain=(tt,end)=>{try{const nw=performance.now();if(nw-lastG<40)return;lastG=nw;if(!gx){gx=new(window.AudioContext||window.webkitAudioContext)()}if(gx.state==="suspended")gx.resume();
+     const L=.16;let st=end?tt-L:tt-.03;st=Math.max(0,Math.min(dur-.03,st));const sr2=gx.createBufferSource(),gn=gx.createGain();sr2.buffer=dd;sr2.connect(gn);gn.connect(gx.destination);
+     const n0=gx.currentTime;gn.gain.setValueAtTime(0,n0);gn.gain.linearRampToValueAtTime(1,n0+.012);gn.gain.setValueAtTime(1,n0+L-.03);gn.gain.linearRampToValueAtTime(0,n0+L);sr2.start(n0,st,L)}catch(e){}};
+    /* আঙুল: হ্যান্ডেল ধরলে হ্যান্ডেল টানা; রেখায় আঙুল রাখলেই বাজা থামে ও টানলে সরে (শব্দসহ); দুই আঙুলে জুম */
+    let mode=null,sx=0,sc0=0,wasPlay=false,which=0,lastX=0,moved=0,t0d=0,pts=new Map(),pd0=0,pps0=0;
     const tOfX=x=>curTime()+(x-box.getBoundingClientRect().left-box.clientWidth/2)/pps;
-    box.addEventListener("pointerdown",e=>{e.preventDefault();box.setPointerCapture(e.pointerId);const R=box.getBoundingClientRect(),x=e.clientX-R.left,c=curTime(),X=v=>R.width/2+(v-c)*pps;
-     let best=null,bd=26;[[T0,0],[T1,1]].forEach(([v,i])=>{if(v==null)return;const d=Math.abs(X(v)-x);if(d<bd){bd=d;best=i}});
-     if(best!=null){mode="h";which=best}else{mode="s";scrub=true;wasPlay=!au.paused;if(wasPlay)au.pause();sx=e.clientX;sc0=c;ct=c}dirty=true});
-    box.addEventListener("pointermove",e=>{if(!mode)return;if(mode==="h"){const v=Math.max(0,Math.min(dur,tOfX(e.clientX)));if(which===0)T0=v;else T1=v;r0.__u();r1.__u()}else{ct=Math.max(0,Math.min(dur,sc0-(e.clientX-sx)/pps));try{au.currentTime=ct}catch(x){}}dirty=true});
-    const up=()=>{if(!mode)return;if(mode==="s"){scrub=false;if(wasPlay){au.play().catch(()=>{})}}mode=null;dirty=true};box.addEventListener("pointerup",up);box.addEventListener("pointercancel",up);
-    box.addEventListener("wheel",e=>{e.preventDefault();ct=Math.max(0,Math.min(dur,curTime()+(e.deltaX||e.deltaY)/pps));try{au.currentTime=ct}catch(x){}dirty=true},{passive:false});
+    const setH=cx=>{const v=Math.max(0,Math.min(dur,tOfX(cx)));if(which===0)T0=v;else T1=v;r0.__u();r1.__u();grain(v,which===1);dirty=true};
+    box.addEventListener("pointerdown",e=>{e.preventDefault();try{box.setPointerCapture(e.pointerId)}catch(x){}pts.set(e.pointerId,e.clientX);
+     if(pts.size===2){const v=[...pts.values()];pd0=Math.abs(v[0]-v[1])||1;pps0=pps;if(mode==="s"){mode="z"}else if(mode==null){mode="z";wasPlay=!au.paused;if(wasPlay)au.pause();ct=curTime()}else if(mode==="h"){mode="z"}return}
+     const R=box.getBoundingClientRect(),x=e.clientX-R.left,c=curTime(),X=v=>R.width/2+(v-c)*pps;
+     let best=null,bd=30;[[T0,0],[T1,1]].forEach(([v,i])=>{if(v==null)return;const d=Math.abs(X(v)+(i===0?-8:8)-x);if(d<bd){bd=d;best=i}});
+     wasPlay=!au.paused;if(wasPlay)au.pause();ct=c;scrub=true;lastX=e.clientX;moved=0;t0d=performance.now();sx=e.clientX;sc0=c;
+     if(best!=null){mode="h";which=best;grain(which===0?T0:T1,which===1)}else{mode="s"}dirty=true});
+    box.addEventListener("pointermove",e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,e.clientX);lastX=e.clientX;
+     if(mode==="z"&&pts.size>=2){const v=[...pts.values()];pps=Math.max(60,Math.min(4000,pps0*(Math.abs(v[0]-v[1])||1)/pd0));dirty=true;return}
+     if(!mode)return;moved=Math.max(moved,Math.abs(e.clientX-sx));
+     if(mode==="h")setH(e.clientX);
+     else if(mode==="s"){ct=Math.max(0,Math.min(dur,sc0-(e.clientX-sx)/pps));try{au.currentTime=ct}catch(x){}grain(ct,false);dirty=true}});
+    const up=e=>{pts.delete(e.pointerId);if(mode==="z"){if(pts.size<2){mode=null;scrub=false;if(wasPlay)au.play().catch(()=>{});dirty=true}return}
+     if(!mode)return;
+     if(mode==="s"&&moved<6&&performance.now()-t0d<400){/* ছোট চাপ: ওই জায়গায় যাও, থামা অবস্থায় থাকো */const R=box.getBoundingClientRect(),tt=Math.max(0,Math.min(dur,tOfX(e.clientX)));ct=tt;try{au.currentTime=tt}catch(x){}grain(tt,false);wasPlay=false}
+     scrub=false;mode=null;if(wasPlay)au.play().catch(()=>{});dirty=true};
+    box.addEventListener("pointerup",up);box.addEventListener("pointercancel",up);
+    box.addEventListener("wheel",e=>{e.preventDefault();ct=Math.max(0,Math.min(dur,curTime()+(e.deltaX||e.deltaY)/pps));try{au.currentTime=ct}catch(x){}grain(ct,false);dirty=true},{passive:false});
     const zoom=k=>{pps=Math.max(60,Math.min(4000,pps*k));dirty=true};zi.onclick=()=>zoom(1.6);zo.onclick=()=>zoom(1/1.6);
     pp.onclick=()=>{if(au.paused)au.play().catch(()=>{});else au.pause()};
     au.addEventListener("seeked",()=>{if(!scrub)ct=au.currentTime;dirty=true});au.addEventListener("pause",()=>{ct=au.currentTime;dirty=true});
     /* প্রতি ফ্রেমে: বাজলে তরঙ্গ নিজে সরে (প্লেহেড মাঝে স্থির) */
-    const loop=()=>{if(!alive||!document.body.contains(m)){alive=false;return}if(!au.paused||dirty)draw();requestAnimationFrame(loop)};
+    const loop=()=>{if(!alive||!document.body.contains(m)){alive=false;return}if(mode==="h"){const R=box.getBoundingClientRect(),x=lastX-R.left;let v=0;if(x<48)v=-(48-x);else if(x>R.width-48)v=x-(R.width-48);if(v){ct=Math.max(0,Math.min(dur,ct+v*.6/pps));setH(lastX)}}if(!au.paused||dirty)draw();requestAnimationFrame(loop)};
     ct=T0!=null?Math.max(0,T1!=null?T1-1.2:T0):0;try{au.currentTime=ct}catch(e){}
     au.addEventListener("loadedmetadata",()=>{try{au.currentTime=ct}catch(e){}dirty=true});requestAnimationFrame(loop);
     window.addEventListener("resize",()=>{dirty=true})}catch(e){console.error(e);wv.append(el("div","ed-n","তরঙ্গ-রেখা আঁকা যায়নি — নিচের সংখ্যা ও ± বোতাম দিয়ে করুন"))}
