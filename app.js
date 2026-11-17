@@ -887,7 +887,8 @@ function pbPaint(force){const now=Date.now();if(!force&&now-PB.last<1500)return;
  try{if(!PB.el){PB.el=els("div","position:fixed;left:6px;bottom:calc(54px + env(safe-area-inset-bottom,0px));z-index:9998;pointer-events:none;background:var(--primary);color:#fff;font-size:10px;font-weight:700;line-height:1.3;padding:1px 8px;border-radius:10px;opacity:.85");document.body.appendChild(PB.el)}PB.el.hidden=!PB.on;PB.el.textContent=tx}catch(e){}
  try{const np=NAO();if(np&&np.prebuild)np.prebuild({on:PB.on,text:tx}).catch(()=>{})}catch(e){}}
 window.__drPreAdd=n=>{PB.t+=n;pbPaint()};window.__drPreTick=()=>{PB.d++;pbPaint()};
-window.__drHomePrebuild=async()=>{if(HPRE)return;HPRE=true;PB.on=true;pbPaint(true);try{await prebuildAll()}catch(e){console.error(e)}finally{PB.on=false;PB.d=PB.t;pbPaint(true)}};
+/* আগে থেকে (ব্যাকগ্রাউন্ডে) PDF/অডিও বানানো বন্ধ — অ্যাপ ধীর/হ্যাং হচ্ছিল। এখন বোতাম চাপলেই তৈরি হয়; আগে বানানো জমা-থাকা ফাইল থাকলে সেটাই কাজে লাগে। */
+window.__drHomePrebuild=async()=>{return;if(HPRE)return;HPRE=true;PB.on=true;pbPaint(true);try{await prebuildAll()}catch(e){console.error(e)}finally{PB.on=false;PB.d=PB.t;pbPaint(true)}};
 async function prebuildAll(){
  /* অফলাইন অডিও সম্পূর্ণ কি না: অ্যান্ড্রয়েডে নেটিভ সার্ভিসের স্ট্যাটাস, না হলে Cache-এর সংখ্যা। সম্পূর্ণ না হলে অডিও আগে-থেকে বানানো হয় না (নেটে ডেটা খরচ এড়াতে); PDF তবু বানানো হয়। */
  let offReady=false;
@@ -1194,7 +1195,7 @@ const DISEASE={file:"quran-disease.json?v="+DV+"x10",title:"💊 শারীর
   const tpD=C.types?TOPICS.find(x=>x.name===C.types):null,names=[C.types?"সব "+C.noun.replace(/র$/,""):C.noun.replace(/র$/,"")].concat(gitGroups(C).map(g=>g.name));
   const rw=els("div","display:flex;flex-direction:column;gap:8px");
   names.forEach((nm,i)=>{const sv=i===0?"":String(i-1),r=els("div","border-radius:12px;background:var(--card-bg);border:1px solid var(--border-light);padding:8px 10px"),hd=els("div","display:flex;align-items:center;gap:8px"),host2=els("div","margin-top:6px"),stt=els("div","font-size:12.5px;color:var(--text-muted)");host2.hidden=true;
-   const b=mkBtn("🔊 অডিও",async()=>{if(!host2.hidden){host2.hidden=true;return}host2.hidden=false;host2.textContent="";const g=gitAudio(kind,sv,t=>stt.textContent=t);stt.textContent=g.done?"":"⏳ আগে থেকেই ব্যাকগ্রাউন্ডে তৈরি হচ্ছে…";host2.append(stt);try{await g.p;stt.textContent="";host2.append(g.out);const au=g.out.querySelector("audio");au&&au.play().catch(()=>{})}catch(x){console.error(x);stt.textContent="অডিও তৈরি করা যায়নি"}});
+   const b=mkBtn("🔊 অডিও",async()=>{if(!host2.hidden){host2.hidden=true;return}host2.hidden=false;host2.textContent="";const g=gitAudio(kind,sv,t=>stt.textContent=t);stt.textContent=g.done?"":"⏳ তৈরি হচ্ছে…";host2.append(stt);try{await g.p;stt.textContent="";host2.append(g.out);const au=g.out.querySelector("audio");au&&au.play().catch(()=>{})}catch(x){console.error(x);stt.textContent="অডিও তৈরি করা যায়নি"}});
    b.style.cssText+=";margin:0;flex:none";hd.append(els("b","flex:1;font-size:15.5px;line-height:1.5",nm),b);r.append(hd,host2);rw.append(r)});
   box.append(rw);
   box.append(els("div","font-weight:700;color:var(--accent);margin:12px 0 4px","📍 অডিও শোনার সময় যে অঙ্গে সমস্যা বা প্রতিক্রিয়া হবে, সাথে সাথে এই তালিকায় সেই অঙ্গে টিক দিন"));
