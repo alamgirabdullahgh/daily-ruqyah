@@ -18,8 +18,10 @@ jobs:
           import wave,struct,math
           w=wave.open('tools/editor-harness/t.wav','wb');w.setnchannels(1);w.setsampwidth(2);w.setframerate(22050)
           for i in range(22050*9):
-              t=i/22050;env=0.9 if int(t*3)%2==0 else 0.15
-              w.writeframes(struct.pack('<h',int(12000*env*math.sin(2*math.pi*220*t))))
+              t=i/22050;k=int(t*25);r=((k*2654435761)%1000)/1000.0
+              env=abs(math.sin(math.pi*t*3.3))*(0.25+0.75*r)
+              if int(t*1.2)%4==3: env*=0.05
+              w.writeframes(struct.pack('<h',int(14000*env*math.sin(2*math.pi*(180+60*r)*t))))
           w.close()
           P
           npm i playwright --no-save && npx playwright install --with-deps chromium
