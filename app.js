@@ -481,9 +481,9 @@ async function ayatPdfBuild(list,title,say){
  put({t:"মোট "+bn2(list.length)+"টি আয়াত"+(dt?" · "+dt:""),font:f(400,22,BNF),c:"#666",x:M,al:"left",dir:"ltr"},40);
  put({line:1,c:"#0a5240",w:3},30);
  for(let i=0;i<list.length;i++){
-  const[s,a]=list[i],A=((await chunk("a",s))||[])[a-1],B=((await chunk(TR,s))||[])[a-1];if(A==null)continue;
+  const L=list[i],s=L[0],a=L[1];let A=((await chunk("a",s))||[])[a-1],B=((await chunk(TR,s))||[])[a-1];if(A==null)continue;/* ছাঁটা অংশ: L[3..4] = আরবি শব্দ-পাল্লা, L[5..6] = অনুবাদের শব্দ-পাল্লা (১-ভিত্তিক) — অডিওর কাটের সাথে মিল রেখে */const part=!!(L[3]&&L[4]);if(part){A=A.split(" ").slice(L[3]-1,L[4]).join(" ");if(B&&L[5]&&L[6])B=B.split(" ").slice(L[5]-1,L[6]).join(" ")}
   const al=wrap(A,f(400,38,AR),CW,true),bl=wrap(B||"",f(400,26,BNF),CW,false);
-  const ref="সূরা "+(typeof SBN!=="undefined"?SBN[s-1]:SN[s-1])+" — "+bn2(s)+":"+bn2(a),hh=44+al.length*76+(bl.length?10+bl.length*42:0)+40;
+  const ref="সূরা "+(typeof SBN!=="undefined"?SBN[s-1]:SN[s-1])+" — "+bn2(s)+":"+bn2(a)+(part?" (অংশ: শব্দ "+bn2(L[3])+"–"+bn2(L[4])+")":""),hh=44+al.length*76+(bl.length?10+bl.length*42:0)+40;
   if(hh<=BOT-M&&y+hh>BOT){pages.push([]);y=M}
   put({t:ref,font:f(700,24,BNF),c:"#0a5240",x:M,al:"left",dir:"ltr"},44);
   al.forEach(l=>put({t:l,font:f(400,38,AR),c:"#111",x:W-M,al:"right",dir:"rtl"},76));
@@ -852,7 +852,7 @@ const homeRep=(kind,cat)=>kind==="x"&&/^বাধা\|/.test(String(cat))?{rep:2
 window.__drSfx={resp:SFX_R,treat:SFX_T};
 /* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */
 /* ===== স্থায়ী ভাণ্ডার: একবার বানানো অডিও/PDF ফোনের ভেতরে (Cache Storage) জমা থাকে। অ্যাপ বন্ধ করে আবার খুললেও আর নতুন করে বানাতে হয় না — বোতাম চাপলেই সাথে সাথে। কোড/তালিকা বদলালে PREV বাড়ালে পুরনোগুলো মুছে নতুন করে বানায়। ===== */
-const EDV=(()=>{try{return localStorage.getItem("drEdV")||""}catch(e){return""}})(),PREV="p18"+EDV,PREC="dr-pre-"+PREV; /* মালিকের সম্পাদনা (✂ কাস্টমাইজ) বদলালে drEdV বদলায় — তাই জমানো অডিও/PDF নতুন করে তৈরি হয় */
+const EDV=(()=>{try{return localStorage.getItem("drEdV")||""}catch(e){return""}})(),PREV="p19"+EDV,PREC="dr-pre-"+PREV; /* মালিকের সম্পাদনা (✂ কাস্টমাইজ) বদলালে drEdV বদলায় — তাই জমানো অডিও/PDF নতুন করে তৈরি হয় */
 const preUrl=(t,k)=>"https://dr.local/pre/"+t+"/"+encodeURIComponent(k);
 const PRE={
  async get(t,k){try{const c=await caches.open(PREC),r=await c.match(preUrl(t,k));if(!r)return null;const m=await c.match(preUrl(t,k)+"/meta");let meta={};try{meta=m?await m.json():{}}catch(e){}return{blob:await r.blob(),meta}}catch(e){return null}},
