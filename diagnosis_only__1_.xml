@@ -1,0 +1,2563 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html b:css='false' b:defaultmessages='false' b:responsive='true' b:templateUrl='indie' b:templateVersion='2.0.0' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+<meta charset='UTF-8'/>
+<meta content='width=device-width, initial-scale=1' name='viewport'/>
+<b:include data='blog' name='all-head-content'/>
+<title><data:blog.pageTitle/></title>
+<b:skin><![CDATA[body{margin:0;padding:0;}]]></b:skin>
+<style type='text/css'>
+*{box-sizing:border-box;margin:0;padding:0;}
+body,html{background:#111!important;font-family:Arial,sans-serif;min-height:100vh;overflow-x:hidden;}
+#page-wrap,#outer-wrapper,#wrapper,#header-wrapper,#header,#crosscol-wrapper,#crosscol,#main-wrapper,#sidebar-wrapper,#footer-wrapper,#footer,.navbar,.sidebar,.footer,#navbar,#blog-pager,.blog-pager,.post,.post-outer,.date-outer,h2.date-header,.post-footer,.widget.Blog,.widget.Profile,.widget.PageList,.widget.BlogArchive,.widget.Label,.widget.Attribution,.widget.ReportAbuse{display:none!important;height:0!important;overflow:hidden!important;}
+
+#app{position:fixed;top:0;left:0;right:0;margin:0 auto;width:100%;max-width:500px;height:100%;background:#0f2d25;z-index:99999;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:14px 12px 40px;}
+
+/* ===== SITE HEADER ===== */
+.site-header{background:#12372d;border-bottom:1px solid rgba(231,200,115,0.15);max-width:500px;margin:0 auto;}
+.site-header-top{background:#12372d;padding:12px 0;position:sticky;top:0;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.4);}
+.site-header-container{width:95%;max-width:500px;margin:0 auto;display:flex;align-items:center;}
+.site-logo-block{display:flex;align-items:center;gap:12px;width:100%;}
+.site-logo-block img{width:48px;height:48px;border-radius:50%;border:2px solid #e7c873;object-fit:cover;flex-shrink:0;}
+.site-logo-block h1{font-size:20px;font-weight:700;color:#e7c873;margin:0;letter-spacing:0.5px;white-space:nowrap;flex:1;font-family:Arial,sans-serif;}
+.site-header-img{width:100%;max-height:180px;object-fit:cover;display:block;}
+
+/* ===== DIAGNOSIS PANEL ===== */
+.diag-panel-card{background:#fff;border-radius:12px;width:100%;max-width:500px;margin:0 auto;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+.diag-panel-header{background:#1a5c3a;color:#fff;padding:16px 16px 12px;}
+.diag-panel-title{font-size:16px;font-weight:700;}
+.diag-panel-sub{font-size:11px;opacity:0.85;margin-top:3px;}
+
+/* ===== FORM FIELDS ===== */
+.fg{display:flex;flex-direction:column;gap:2px;}
+.fg label{font-size:9px;font-weight:700;color:#777;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fg input,.fg select,.fg textarea{padding:5px 7px;border:1px solid #ddd;border-radius:6px;font-size:13px;color:#222;background:#fff;outline:none;font-family:Arial,sans-serif;width:100%;}
+.fg input:focus,.fg select:focus{border-color:#1a5c3a;}
+
+/* ===== POPUP OVERLAY ===== */
+.popup-overlay{display:none;position:fixed;top:0;left:0;right:0;margin:0 auto;width:100%;max-width:500px;height:100%;background:rgba(0,0,0,0.7);z-index:999999;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:16px 12px 40px;}
+.popup-overlay.open{display:block;}
+.popup-card{background:#fff;border-radius:14px;width:100%;max-width:500px;margin:0 auto;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.5);}
+.popup-header{background:#1a5c3a;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
+.popup-header-title{font-size:15px;font-weight:700;line-height:1.3;}
+.popup-header-sub{font-size:11px;opacity:0.85;margin-top:3px;}
+.popup-close{background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.popup-body{padding:12px 14px;}
+.popup-count{font-size:12px;color:#1a5c3a;font-weight:700;background:#e8f5eb;border-radius:6px;padding:6px 10px;margin-bottom:10px;text-align:center;}
+
+/* ===== CHECKBOX ITEMS ===== */
+.chk-item{display:flex;align-items:flex-start;gap:10px;padding:9px 10px;border-radius:8px;margin-bottom:6px;cursor:pointer;border:1.5px solid #e8f0e9;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
+.chk-item:active{background:#f0faf2;}
+.chk-item.checked{background:#e8f5eb;border-color:#1a5c3a;}
+.chk-box{width:22px;height:22px;min-width:22px;border:2px solid #bbb;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;background:#fff;transition:all 0.15s;margin-top:1px;}
+.chk-item.checked .chk-box{background:#1a5c3a;border-color:#1a5c3a;}
+.chk-num{font-size:11px;font-weight:700;color:#888;min-width:20px;margin-top:3px;}
+.chk-item.checked .chk-num{color:#1a5c3a;}
+.chk-text{font-size:13px;color:#333;line-height:1.5;}
+.chk-item.checked .chk-text{color:#1a5c3a;font-weight:600;}
+
+/* ===== POPUP FOOTER ===== */
+.popup-footer{padding:10px 14px 16px;border-top:1px solid #e8f0e9;}
+.popup-submit{width:100%;padding:13px;background:#e7c873;color:#000;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Arial,sans-serif;}
+.popup-submit:active{opacity:0.85;}
+.popup-clear{width:100%;padding:9px;background:none;color:#e53935;border:1px solid #e53935;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;font-family:Arial,sans-serif;}
+.popup-clear:active{opacity:0.7;}
+
+/* ===== RESULT POPUP ===== */
+.result-overlay{display:none;position:fixed;top:0;left:0;right:0;margin:0 auto;width:100%;max-width:500px;height:100%;background:rgba(0,0,0,0.75);z-index:9999999;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:16px 12px 40px;}
+.result-overlay.open{display:block;}
+.result-card{background:#fff;border-radius:14px;width:100%;max-width:500px;margin:0 auto;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.5);}
+.result-header{padding:16px;display:flex;align-items:center;justify-content:space-between;}
+.result-header-title{font-size:16px;font-weight:800;color:#fff;line-height:1.3;}
+.result-header-sub{font-size:11px;color:rgba(255,255,255,0.85);margin-top:3px;}
+.result-body{padding:14px;}
+.result-section{background:#f8fdf9;border:1px solid #d0e8d8;border-radius:10px;padding:12px;margin-bottom:10px;}
+.result-section-title{font-size:12px;font-weight:700;color:#1a5c3a;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;}
+.result-prob-row{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:#fff;border-radius:7px;margin-bottom:6px;border:1px solid #e0ede3;}
+.result-prob-row:last-child{margin-bottom:0;}
+.result-prob-name{font-size:14px;font-weight:700;color:#222;}
+.result-prob-badge{font-size:12px;font-weight:700;color:#fff;background:#1a5c3a;border-radius:20px;padding:3px 10px;}
+.result-prob-badge.low{background:#e7c873;color:#000;}
+.result-next-btn{width:100%;padding:12px;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Arial,sans-serif;margin-bottom:8px;color:#fff;}
+.result-next-btn:active{opacity:0.85;}
+.result-appt-box{background:#e8f5eb;border:1px solid #b2dbb9;border-radius:10px;padding:12px;margin-bottom:10px;}
+.result-appt-title{font-size:14px;font-weight:700;color:#1a5c3a;margin-bottom:6px;}
+.result-appt-text{font-size:13px;color:#333;line-height:1.6;}
+.result-wa-btn{width:100%;padding:13px;background:#25D366;color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Arial,sans-serif;}
+.result-wa-btn:active{opacity:0.85;}
+.result-close-btn{width:100%;padding:9px;background:none;color:#888;border:1px solid #ddd;border-radius:9px;font-size:13px;cursor:pointer;margin-top:8px;font-family:Arial,sans-serif;}
+
+/* ===== EFFECT DIAGNOSIS OVERLAY ===== */
+.effect-overlay{display:none;position:fixed;top:0;left:0;right:0;margin:0 auto;width:100%;max-width:500px;height:100%;background:rgba(0,0,0,0.82);z-index:99999999;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:16px 12px 40px;}
+.effect-overlay.open{display:block;}
+.effect-card{background:#fff;border-radius:14px;width:100%;max-width:500px;margin:0 auto;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.6);}
+.effect-header{padding:14px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.effect-header-icon{font-size:28px;line-height:1;flex-shrink:0;}
+.effect-header-text{flex:1;}
+.effect-header-title{font-size:15px;font-weight:800;color:#fff;line-height:1.3;}
+.effect-header-sub{font-size:11px;color:rgba(255,255,255,0.82);margin-top:3px;}
+.effect-step-bar{display:flex;gap:4px;padding:0 14px 12px;background:inherit;}
+.effect-step-dot{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,0.25);transition:background 0.3s;}
+.effect-step-dot.active{background:#e7c873;}
+.effect-step-dot.done{background:rgba(255,255,255,0.6);}
+.effect-body{padding:14px;}
+.effect-ayat-box{background:#f0faf2;border:1.5px solid #1a5c3a;border-radius:10px;padding:12px 14px;margin-bottom:12px;}
+.effect-ayat-title{font-size:11px;font-weight:700;color:#1a5c3a;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.effect-ayat-arabic{font-size:18px;color:#1a3a5c;line-height:2;text-align:right;direction:rtl;margin-bottom:6px;font-weight:600;}
+.effect-ayat-bangla{font-size:12px;color:#555;line-height:1.7;margin-bottom:4px;}
+.effect-ayat-ref{font-size:10px;color:#1a5c3a;font-weight:700;}
+.effect-count-box{background:#fff3e0;border:1px solid #ffcc80;border-radius:8px;padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.effect-count-icon{font-size:20px;}
+.effect-count-text{font-size:13px;color:#e65100;font-weight:700;}
+.effect-count-sub{font-size:11px;color:#bf360c;margin-top:1px;}
+.effect-inst{font-size:12px;color:#333;background:#f8f8f8;border-radius:8px;padding:10px 12px;margin-bottom:12px;line-height:1.7;border-left:3px solid #1a5c3a;}
+.effect-q{font-size:13px;font-weight:700;color:#1a3a5c;margin-bottom:10px;line-height:1.5;}
+.effect-opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;margin-bottom:7px;cursor:pointer;border:1.5px solid #e0e0e0;transition:all 0.15s;-webkit-tap-highlight-color:transparent;background:#fff;}
+.effect-opt:active{opacity:0.8;}
+.effect-opt.sel{background:#e8f5eb;border-color:#1a5c3a;}
+.effect-opt.sel-neg{background:#fdecea;border-color:#c0392b;}
+.effect-opt-dot{width:20px;height:20px;min-width:20px;border:2px solid #bbb;border-radius:50%;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;transition:all 0.15s;}
+.effect-opt.sel .effect-opt-dot{background:#1a5c3a;border-color:#1a5c3a;}
+.effect-opt.sel-neg .effect-opt-dot{background:#c0392b;border-color:#c0392b;}
+.effect-opt-label{font-size:13px;color:#333;line-height:1.5;flex:1;}
+.effect-opt.sel .effect-opt-label{color:#1a5c3a;font-weight:600;}
+.effect-opt.sel-neg .effect-opt-label{color:#c0392b;font-weight:600;}
+.effect-opt-badge{font-size:9px;font-weight:700;color:#fff;border-radius:3px;padding:1px 5px;margin-left:5px;flex-shrink:0;vertical-align:middle;}
+.effect-footer{padding:10px 14px 16px;border-top:1px solid #eee;}
+.effect-next-btn{width:100%;padding:13px;background:#1a5c3a;color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Arial,sans-serif;}
+.effect-next-btn:active{opacity:0.85;}
+.effect-skip-btn{width:100%;padding:9px;background:none;color:#888;border:1px solid #ddd;border-radius:9px;font-size:12px;cursor:pointer;margin-top:7px;font-family:Arial,sans-serif;}
+
+/* ===== EFFECT RESULT ===== */
+.eff-result-overlay{display:none;position:fixed;top:0;left:0;right:0;margin:0 auto;width:100%;max-width:500px;height:100%;background:rgba(0,0,0,0.85);z-index:999999999;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:16px 12px 40px;}
+.eff-result-overlay.open{display:block;}
+.eff-result-card{background:#fff;border-radius:14px;width:100%;max-width:500px;margin:0 auto;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.6);}
+.eff-gauge-wrap{padding:16px 14px 8px;text-align:center;}
+.eff-gauge-title{font-size:12px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;}
+.eff-gauge-ring{width:120px;height:120px;margin:0 auto 10px;position:relative;}
+.eff-gauge-ring svg{width:120px;height:120px;}
+.eff-gauge-pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:26px;font-weight:800;color:#1a5c3a;}
+.eff-gauge-label{font-size:14px;font-weight:700;margin-bottom:4px;}
+.eff-gauge-sub{font-size:12px;color:#666;line-height:1.5;}
+.eff-detail-row{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:7px;margin-bottom:5px;border:1px solid #e8e8e8;}
+.eff-detail-name{font-size:13px;color:#333;font-weight:600;}
+.eff-detail-badge{font-size:11px;font-weight:700;color:#fff;border-radius:12px;padding:3px 10px;}
+</style>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'/>
+</head>
+<body>
+
+<b:section class='header' id='header' maxwidgets='1' name='Header' showaddelement='false'>
+<b:widget id='Header1' locked='true' title='Raqi Store' type='Header' visible='false'/>
+</b:section>
+<b:section class='main' id='main' name='Blog' showaddelement='false'>
+<b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' visible='true'>
+<b:includable id='main' var='top'></b:includable>
+<b:includable id='postQuickEdit' var='post'></b:includable>
+<b:includable id='backlinks' var='post'></b:includable>
+<b:includable id='backlinkDeleteIcon' var='i'></b:includable>
+<b:includable id='comment' var='comment'></b:includable>
+<b:includable id='commentDeleteIcon' var='i'></b:includable>
+<b:includable id='comments' var='post'></b:includable>
+<b:includable id='feedLinks'></b:includable>
+<b:includable id='feedLinksBody' var='links'></b:includable>
+<b:includable id='nextprev' var='posts'></b:includable>
+<b:includable id='post' var='post'></b:includable>
+<b:includable id='status-message'></b:includable>
+</b:widget>
+</b:section>
+<b:section class='foot' id='footer' name='Footer' showaddelement='false'/>
+
+<div id='app'>
+
+  <!-- ===== SITE HEADER ===== -->
+  <header class='site-header'>
+    <div class='site-header-top'>
+      <div class='site-header-container'>
+        <div class='site-logo-block'>
+          <img alt='Shop Logo' referrerpolicy='no-referrer' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjrSRVDTGxLMGxp7mMEyTmO_6xAbYzOE5cRt4YAhGStdqDULQI1GpRQIF9n3DBljhqxN4mQYQwdn-c7SlYcYdnll3P76zPlXkyOJDYE6DvsfuV_j4l1vDpXE-hwPsIWRq0mYX_rnLNiTdh7w2qM2GeQRhTZeaM1CX_ot6WQGnJpKGl_U_udmAQiugEL3o_z/s1254/ChatGPT%20Image%20May%2022,%202026,%2012_23_34%20AM.png'/>
+          <h1>Raqi Alamgir Abdullah</h1>
+        </div>
+      </div>
+    </div>
+    <img alt='Header Banner' class='site-header-img' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjkqW16IAtma1Fy_fpqZgoWBRNtBQFY1q22oqu4asfBgfajkOEw5p1NvRprOcz2scN7zVo0RJ3tmnGnMz3N3S37XSJzpAEfcKL1XZRndeqtquwYIUcVGiK_F9FRj62QzDg5gRhaD7Must_HvhiKYynIT3LRCz1x4iDG10jC29JT8i4c4vLR9nEIsbC35BJ7/s1600/IMG-20260526-WA0002.jpg'/>
+  </header>
+
+  <!-- ===== DIAGNOSIS PANEL ===== -->
+  <div style='padding-top:14px;'>
+    <div class='diag-panel-card'>
+      <div class='diag-panel-header'>
+        <div style='display:flex;align-items:center;gap:10px;'>
+          <img src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjkqW16IAtma1Fy_fpqZgoWBRNtBQFY1q22oqu4asfBgfajkOEw5p1NvRprOcz2scN7zVo0RJ3tmnGnMz3N3S37XSJzpAEfcKL1XZRndeqtquwYIUcVGiK_F9FRj62QzDg5gRhaD7Must_HvhiKYynIT3LRCz1x4iDG10jC29JT8i4c4vLR9nEIsbC35BJ7/s1600/IMG-20260526-WA0002.jpg' alt='Logo' style='width:46px;height:46px;object-fit:contain;border-radius:8px;background:#fff;padding:2px;flex-shrink:0;'/>
+          <div>
+            <div class='diag-panel-title'>&#128297; ডায়াগনোসিস</div>
+            <div class='diag-panel-sub'>সমস্যার ধরন অনুযায়ী ডায়াগনোসিস করুন</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 1: রোগীর তথ্য ফর্ম -->
+      <div id='diagInfoForm' style='padding:14px;'>
+        <div style='font-size:12px;font-weight:700;color:#1a5c3a;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;'>&#x1F464; রোগীর তথ্য পূরণ করুন</div>
+
+        <!-- Step 1: কার জন্য + বয়স গ্রুপ -->
+        <div style='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;'>
+          <div style='display:flex;flex-direction:column;gap:3px;'>
+            <label style='font-size:10px;font-weight:700;color:#777;text-transform:uppercase;'>কার জন্য?</label>
+            <select id='diagFor' onchange='onDiagForChange()' style='padding:8px 10px;border:1.5px solid #d0e8d8;border-radius:7px;font-size:13px;outline:none;font-family:Arial,sans-serif;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2710%27 height=%276%27%3E%3Cpath d=%27M0 0l5 6 5-6z%27 fill=%27%231a5c3a%27/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px;'>
+              <option value=''>-- সিলেক্ট --</option>
+              <option value='self'>নিজের জন্য</option>
+              <option value='other'>অন্যের জন্য</option>
+            </select>
+          </div>
+          <div style='display:flex;flex-direction:column;gap:3px;'>
+            <label style='font-size:10px;font-weight:700;color:#777;text-transform:uppercase;'>বয়স গ্রুপ</label>
+            <select id='diagAgeSelect' onchange='onDiagAgeSelectChange()' style='padding:8px 10px;border:1.5px solid #d0e8d8;border-radius:7px;font-size:13px;outline:none;font-family:Arial,sans-serif;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2710%27 height=%276%27%3E%3Cpath d=%27M0 0l5 6 5-6z%27 fill=%27%231a5c3a%27/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px;'>
+              <option value=''>-- সিলেক্ট --</option>
+              <option value='infant'>&#x1F37C; ০ – ২ বছর</option>
+              <option value='child'>&#x1F9D2; ২ – ১২ বছর</option>
+              <option value='adult'>&#x1F9D1; ১২+ বছর</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- নাম -->
+        <div style='display:flex;flex-direction:column;gap:3px;margin-bottom:10px;'>
+          <label style='font-size:10px;font-weight:700;color:#777;text-transform:uppercase;'>নাম (Name) *</label>
+          <input id='diagName' type='text' placeholder='পূর্ণ নাম লিখুন' style='padding:8px 10px;border:1.5px solid #d0e8d8;border-radius:7px;font-size:13px;outline:none;font-family:Arial,sans-serif;'/>
+        </div>
+
+        <!-- WhatsApp নম্বর -->
+        <div style='display:flex;flex-direction:column;gap:3px;margin-bottom:10px;'>
+          <label style='font-size:10px;font-weight:700;color:#777;text-transform:uppercase;'>WhatsApp নম্বর *</label>
+          <input id='diagPhone' type='tel' placeholder='01XXXXXXXXX' style='padding:8px 10px;border:1.5px solid #d0e8d8;border-radius:7px;font-size:13px;outline:none;font-family:Arial,sans-serif;'/>
+        </div>
+
+        <!-- Hidden state fields -->
+        <input type='hidden' id='diagAge' value=''/>
+        <input type='hidden' id='diagPersonType' value=''/>
+        <input type='hidden' id='diagChildAge' value=''/>
+        <input type='hidden' id='diagOtherAge' value=''/>
+
+        <!-- Hidden fields used by sendDiagnosis/PDF (compatibility) -->
+        <input type='hidden' id='cName' value=''/>
+        <input type='hidden' id='cPhone' value=''/>
+        <input type='hidden' id='cAge' value=''/>
+        <input type='hidden' id='cGender' value=''/>
+        <input type='hidden' id='issueDate' value=''/>
+        <input type='hidden' id='bizName' value='Ruqyah Haven'/>
+        <input type='hidden' id='centerPhone' value=''/>
+        <input type='hidden' id='apptBizWA' value=''/>
+        <input type='hidden' id='logoImg' value=''/>
+
+        <!-- গুরুত্বপূর্ণ সতর্কতা -->
+        <div style='background:#fff8e1;border:1.5px solid #f9a825;border-radius:8px;padding:10px 12px;margin-bottom:12px;'>
+          <div style='font-size:11px;font-weight:700;color:#e65100;margin-bottom:5px;'>&#x26A0;&#xFE0F; গুরুত্বপূর্ণ সতর্কতা</div>
+          <div style='font-size:11px;color:#555;line-height:1.7;'>
+            এই ডায়াগনোসিস ইসলামিক রুকইয়াহ পদ্ধতিতে পরিচালিত — মেডিকেল ডায়াগনোসিস নয়। প্রতিটি লক্ষণের মেডিকেল কারণ আগে বাতিল করুন। চূড়ান্ত নিশ্চিতকরণের জন্য অভিজ্ঞ রাকির সাথে সরাসরি যোগাযোগ করুন।
+          </div>
+        </div>
+        <!-- শুরু করুন বাটন -->
+        <button onclick='startDiagnosis()' style='width:100%;padding:13px;background:#1a5c3a;color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Arial,sans-serif;' type='button'>
+          <i class='fas fa-stethoscope'></i>
+          ডায়াগনোসিস শুরু করুন
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<!-- ===== RESULT OVERLAY ===== -->
+<div class='result-overlay' id='resultOverlay'>
+ <div class='result-card'>
+  <div class='result-header' id='resultHeader' style='background:#1a5c3a;'>
+   <div>
+    <div class='result-header-title' id='resultTitle'>ডায়াগনোসিস ফলাফল</div>
+    <div class='result-header-sub' id='resultSub'></div>
+   </div>
+   <button onclick='closeResult()' style='background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;' type='button'>&#x2715;</button>
+  </div>
+  <div class='result-body' id='resultBody'></div>
+ </div>
+</div>
+
+<!-- ===== DIAGNOSIS POPUP ===== -->
+<div class='popup-overlay' id='diagPopup'>
+ <div class='popup-card'>
+  <div class='popup-header' id='popupHeader'>
+   <div>
+    <div class='popup-header-title' id='popupTitle'></div>
+    <div class='popup-header-sub' id='popupStepInfo'>আপনার যে সমস্যাগুলো আছে সেগুলো মার্ক করুন</div>
+   </div>
+   <button class='popup-close' onclick='closeDiagnosis()' type='button'>&#x2715;</button>
+  </div>
+  <div class='popup-body' id='popupBody'>
+   <div class='popup-count' id='diagCount'>&#x2714; ০টি সমস্যা নির্বাচিত</div>
+   <div id='chkList'></div>
+  </div>
+  <div class='popup-footer'>
+   <button class='popup-submit' id='popupNextBtn' onclick='sendDiagnosis()' type='button'>
+    <i class='fas fa-arrow-right'></i>
+    পরবর্তী ধাপ
+   </button>
+   <button class='popup-clear' onclick='clearAll()' type='button'>সব মার্ক বাদ দাও</button>
+  </div>
+ </div>
+</div>
+
+<!-- ===== EFFECT DIAGNOSIS OVERLAY ===== -->
+<div class='effect-overlay' id='effectOverlay'>
+ <div class='effect-card'>
+  <div class='effect-header' id='effectHeader' style='background:#1a3a5c;'>
+   <div class='effect-header-icon' id='effectHeaderIcon'>&#x1F4D6;</div>
+   <div class='effect-header-text'>
+    <div class='effect-header-title' id='effectHeaderTitle'>ইফেক্ট ডায়াগনোসিস</div>
+    <div class='effect-header-sub' id='effectHeaderSub'>আয়াত পড়ুন এবং ইফেক্ট নির্বাচন করুন</div>
+   </div>
+   <button onclick='closeEffectDiag()' style='background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;' type='button'>&#x2715;</button>
+  </div>
+  <div class='effect-step-bar' id='effectStepBar' style='background:#1a3a5c;'></div>
+  <div class='effect-body' id='effectBody'></div>
+  <div class='effect-footer'>
+   <button class='effect-next-btn' id='effectNextBtn' onclick='effectNext()' type='button'>
+    <i class='fas fa-arrow-right'></i> পরবর্তী
+   </button>
+   <button class='effect-skip-btn' onclick='effectSkip()' type='button'>এই ধাপ এড়িয়ে যাও</button>
+  </div>
+ </div>
+</div>
+
+<!-- ===== EFFECT RESULT OVERLAY ===== -->
+<div class='eff-result-overlay' id='effResultOverlay'>
+ <div class='eff-result-card'>
+  <div id='effResultHeader' style='background:#1a5c3a;padding:16px;display:flex;align-items:center;justify-content:space-between;'>
+   <div>
+    <div style='font-size:16px;font-weight:800;color:#fff;'>&#x1F3AF; ইফেক্ট ডায়াগনোসিস ফলাফল</div>
+    <div style='font-size:11px;color:rgba(255,255,255,0.82);margin-top:3px;' id='effResultSub'></div>
+   </div>
+   <button onclick='closeEffResult()' style='background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;' type='button'>&#x2715;</button>
+  </div>
+  <div style='padding:14px;' id='effResultBody'></div>
+ </div>
+</div>
+
+<div style='text-align:center;padding:18px 0 24px;font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:0.3px;'>
+  Powered by <strong style='color:rgba(255,255,255,0.75);'>Raqi Alamgir Abdullah</strong>
+</div>
+
+<script type='text/javascript'>
+//<![CDATA[
+
+/* ===== UTILITY ===== */
+function fmt(d){
+  if(!d)return '';
+  var p=d.split('-');
+  return p[2]+'.'+p[1]+'.'+p[0].slice(2);
+}
+
+function getWAPhone(){
+  var v = document.getElementById('centerPhone').value.trim().replace(/[^0-9]/g,'');
+  if(v.length >= 10) return '88' + v.replace(/^88/,'');
+  return '8801938327130';
+}
+
+function loadHtml2Canvas(cb){
+  if(window.html2canvas){ cb(); return; }
+  var s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+  s.onload = cb;
+  document.head.appendChild(s);
+}
+
+function htmlToImage(html, fileName){
+  loadHtml2Canvas(function(){
+    var iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:794px;height:1123px;border:none;visibility:hidden;';
+    document.body.appendChild(iframe);
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(html);
+    iframe.contentDocument.close();
+    setTimeout(function(){
+      var body = iframe.contentDocument.body;
+      var actualH = Math.max(body.scrollHeight, body.offsetHeight, 1123);
+      iframe.style.height = actualH + 'px';
+      setTimeout(function(){
+        html2canvas(body, {
+          scale: 2, useCORS: true, allowTaint: true,
+          width: 794, height: actualH,
+          windowWidth: 794, windowHeight: actualH,
+          scrollX: 0, scrollY: 0, backgroundColor: '#ffffff'
+        }).then(function(canvas){
+          document.body.removeChild(iframe);
+          var link = document.createElement('a');
+          link.download = (fileName||'document').replace(/\s+/g,'_') + '.png';
+          link.href = canvas.toDataURL('image/png', 1.0);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }).catch(function(){
+          document.body.removeChild(iframe);
+          alert('Image তৈরি করা যায়নি। PDF ব্যবহার করুন।');
+        });
+      }, 200);
+    }, 800);
+  });
+}
+
+function openPDFTab(html, fileName, patPhone, centerPhoneRaw, waMsg){
+  var safeFile = (fileName || 'document').replace(/\s+/g,'_');
+  try {
+    var w = window.open('','_blank');
+    if(w){ w.document.open(); w.document.write(html); w.document.close(); }
+    else { alert('পপআপ ব্লক হয়েছে। Browser-এ Allow করুন।'); }
+  } catch(e){ alert('পপআপ ব্লক হয়েছে। Browser-এ Allow করুন।'); }
+  if(!waMsg) return;
+  var encodedMsg = encodeURIComponent(waMsg);
+  var delay = 1200;
+  if(patPhone){
+    var pRaw = patPhone.replace(/[^0-9]/g,'');
+    if(pRaw.length >= 10){
+      var pNum = '88' + pRaw.replace(/^88/,'');
+      setTimeout(function(){
+        window.open('https://api.whatsapp.com/send?phone='+pNum+'&text='+encodedMsg,'_blank');
+      }, delay);
+      delay += 800;
+    }
+  }
+  if(centerPhoneRaw){
+    var cRaw = centerPhoneRaw.replace(/[^0-9]/g,'');
+    if(cRaw.length >= 10){
+      var cNum = '88' + cRaw.replace(/^88/,'');
+      setTimeout(function(){
+        window.open('https://api.whatsapp.com/send?phone='+cNum+'&text='+encodedMsg,'_blank');
+      }, delay);
+    }
+  }
+}
+
+/* ===== DIAGNOSIS DATA ===== */
+var diagData = {
+
+  bodnazar: {
+    title: '&#128065;&#65039; বদনজর ডায়াগনোসিস',
+    color: '#5c3a1a',
+    maxScore: 60,
+    items: [
+      /* ── সাধারণ লক্ষণ ── */
+      {text:'প্রায়সময় কাজ, নামায, যিকর, ক্লাসে মন না বসা।', w:3},
+      {text:'আত্মীয়-স্বজন বা বন্ধুদের সাথে দেখা হলেই ভালো না লাগা।', w:3},
+      {text:'অহেতুক মেজাজ বিগড়ে থাকা।', w:2},
+      {text:'পেটে প্রচুর গ্যাস হওয়া।', w:2},
+      {text:'চেহারা ধূসর/হলুদ হয়ে যাওয়া।', w:3},
+      {text:'কোনো কারণ ছাড়াই কান্না আসা।', w:2},
+      {text:'প্রায়শই শরীর দুর্বল থাকা, ক্ষুধামন্দা, বমি বমি ভাব লাগা।', w:2},
+      {text:'অতিরিক্ত চুল পড়া। শ্যাম্পুতে কাজ না করা।', w:2},
+      {text:'কোন কারণ ছাড়া প্রায়ই দীর্ঘশ্বাস ফেলা, অতিরিক্ত হাই উঠা।', w:2},
+      {text:'হাত-পায়ে মাঝেমধ্যেই ব্যথা করা, পুরো শরীরে ব্যথা দৌড়ে বেড়ানো।', w:2},
+      {text:'মাথাব্যথা হওয়া — মাথার এক প্রান্ত থেকে আরেক প্রান্তে সরতে থাকে, তবে ঔষধ খেলে সাময়িক উপকার হয়।', w:2},
+      {text:'শরীরে জ্বর থাকা কিন্তু থার্মোমিটারে না উঠা।', w:3},
+      {text:'কুরআন তেলাওয়াত করলে বারবার হাই আসে, ঘুম পায়।', w:3},
+      {text:'আপনি যে কাজে অভিজ্ঞ সেটা করতে গেলেই ঝামেলা বাধা।', w:3},
+      {text:'বুক ধড়ফড় করা, দমবন্ধ, অস্বস্তি লাগা।', w:2},
+      {text:'হাত-পায়ে ঠান্ডা লাগা বা শিরশির করা, বিনা কারণে।', w:2},
+      {text:'মাঝেমাঝে হঠাৎ প্রচণ্ড গরম লাগা বা ঘাম হওয়া।', w:2},
+      {text:'চোখে কারণ ছাড়াই পানি আসা, বিশেষত কুরআন তেলাওয়াত বা ইবাদতের সময়।', w:2},
+      {text:'হঠাৎ অতিরিক্ত ঘাম হওয়া বা প্রস্রাব বেড়ে যাওয়া, কোনো মেডিকেল কারণ নেই।', w:2},
+      /* ── প্রশংসা/সাফল্যের পরবর্তী (Isabah/Hasad indicator) ── */
+      {text:'কেউ প্রশংসা করার পর বা আপনার কোনো ভালো বিষয় দেখার পর হঠাৎ শরীর খারাপ লাগতে শুরু করেছে।', w:3},
+      {text:'সম্পদ, সন্তান, বিয়ে বা সাফল্যের পরপরই হঠাৎ সব ভেঙে পড়েছে।', w:3},
+      {text:'কোনো ফটো বা ভিডিও সোশ্যাল মিডিয়ায় শেয়ার করার পরপরই সমস্যা শুরু হয়েছে।', w:3},
+      {text:'বিশেষ কোনো মানুষের সাথে দেখা হলে বা ফোনে কথা বললেই শরীর খারাপ লাগে।', w:3},
+      /* ── মানসিক/আবেগীয় ── */
+      {text:'কোনো কারণ ছাড়াই সামাজিক অনুষ্ঠান বা মানুষের ভিড় এড়িয়ে চলতে ইচ্ছা হয়।', w:2},
+      {text:'নিজের সম্পর্কে নেগেটিভ চিন্তা বা হীনম্মন্যতা বেড়ে গেছে।', w:2}
+    ]
+  },
+
+  jadu: {
+    title: '&#x1FA84; জাদু ডায়াগনোসিস',
+    color: '#2d1a5c',
+    maxScore: 120,
+    groups: [
+      {
+        label: '&#x1F9EA; সাধারণ জাদুর লক্ষণ (সব প্রকারে প্রযোজ্য)',
+        items: [
+          {text:'কোন কারণ ছাড়াই শরীর গরম থাকে বা হঠাৎ গরম লাগে।', w:2},
+          {text:'তীব্র মাথা ব্যথা — ঔষধ খেয়েও তেমন লাভ হয় না।', w:2},
+          {text:'দীর্ঘদিন চিকিৎসা করেও কোনো রোগ ভালো হচ্ছে না।', w:3},
+          {text:'বুকে তীব্র চাপ বা সংকোচ অনুভব হয়, বিশেষত রাতে।', w:3},
+          {text:'ঠিকমত ঘুমাতে না পারা। ঘুমালেও ভয়ংকর স্বপ্ন দেখা।', w:2},
+          {text:'শরীরের বিভিন্ন জয়েন্টে অতিরিক্ত ব্যথা হয়।', w:2},
+          {text:'বিকেল থেকে রাত পর্যন্ত খুব অস্বস্তিতে ভুগেন অথবা মেজাজ খারাপ থাকে।', w:2},
+          {text:'ঘরে ঢুকলে মন খারাপ হয়ে যায়, বাইরে গেলে স্বাভাবিক লাগে।', w:2}
+        ]
+      },
+      {
+        label: '&#x1F37D;&#xFE0F; সিহর মাকুল — খাওয়ানো জাদুর লক্ষণ',
+        items: [
+          {text:'পেটে স্থায়ী ব্যথা বা অস্বস্তি আছে, মেডিকেলি কারণ নেই।', w:3},
+          {text:'রুকইয়াহর সময় পেটে ব্যথা বা চাপ বেড়ে যায়।', w:3},
+          {text:'পেটে অনেক গ্যাস, ফোলাভাব বা পেটের মধ্যে কিছু একটা নড়াচড়া করছে মনে হয়।', w:3},
+          {text:'বমি বমি ভাব বা বমি হওয়া, বিশেষত রুকইয়াহর সময়।', w:3},
+          {text:'মুখ থেকে দুর্গন্ধ আসে, বিশেষত রুকইয়াহর সময়।', w:2},
+          {text:'খাবারে অরুচি বা হঠাৎ খাওয়া বন্ধ হয়ে গেছে।', w:2},
+          {text:'দীর্ঘমেয়াদি কোষ্ঠকাঠিন্য বা পাতলা পায়খানা, চিকিৎসায় ভালো হচ্ছে না।', w:2},
+          {text:'চোখের দৃষ্টি হঠাৎ কমে গেছে, মেডিকেলি কারণ পাওয়া যাচ্ছে না।', w:2},
+          {text:'পেটে বা পায়ুপথে তীব্র জ্বালা বা চাপ অনুভব হয়।', w:3},
+          {text:'হাত বা পায়ে ফোলাভাব বা অদ্ভুত দাগ দেখা দিয়েছে।', w:2}
+        ]
+      },
+      {
+        label: '&#x1F494; সিহর তাফরিক — বিচ্ছেদের জাদু',
+        items: [
+          {text:'স্বামী/স্ত্রীর প্রতি হঠাৎ তীব্র ঘৃণা বা বিতৃষ্ণা অনুভব হচ্ছে, অথচ আগে ভালো সম্পর্ক ছিল।', w:3},
+          {text:'স্বামী/স্ত্রীকে দেখতে কুৎসিত বা বিরক্তিকর লাগছে, যদিও বাস্তবে তা নয়।', w:3},
+          {text:'ছোটখাটো বিষয়ে স্বামী/স্ত্রীর সাথে বারবার ঝগড়া হচ্ছে, কোনো কারণ ছাড়াই।', w:3},
+          {text:'পরিবার, বাসা, সমাজের প্রতি তীব্র বিতৃষ্ণা আছে।', w:3},
+          {text:'কোন কারণ ছাড়াই বাড়ি থেকে বের হয়ে যেতে ইচ্ছা হয়।', w:3},
+          {text:'বন্ধু বা পরিবারের সাথে হঠাৎ সম্পর্ক নষ্ট হয়ে যাচ্ছে।', w:2}
+        ]
+      },
+      {
+        label: '&#x1F517; সিহর রাবত — দাম্পত্য বাধার জাদু',
+        items: [
+          {text:'দাম্পত্য জীবনে শারীরিক সম্পর্কে অস্বাভাবিক সমস্যা হচ্ছে, ডাক্তার কারণ খুঁজে পাচ্ছেন না।', w:3},
+          {text:'ব্যাকপেইন — বিশেষত মেরুদণ্ডের নিচের দিকে ব্যথা।', w:3},
+          {text:'(মহিলাদের) অনিয়মিত মাসিক বা মাসিকে অস্বাভাবিক ব্যথা — (পুরুষদের) প্রস্রাবে ইনফেকশন।', w:3},
+          {text:'সন্তান হচ্ছে না, ডাক্তারি কোনো কারণ নেই।', w:3},
+          {text:'বিয়ে বারবার ঠিক হয়েও ভেঙে যাচ্ছে, কোনো যুক্তিসংগত কারণ নেই।', w:3}
+        ]
+      },
+      {
+        label: '&#x1F52E; সিহর মাহাব্বাহ — আসক্তির জাদু',
+        items: [
+          {text:'হঠাৎ করে কোনো বিশেষ মানুষের প্রতি তীব্র আসক্তি বা ভালোলাগা অনুভব হচ্ছে।', w:3},
+          {text:'সেই মানুষটিকে না দেখলে বা কথা না বললে অস্থির লাগে।', w:3},
+          {text:'পরিবারকে ছেড়ে সেই মানুষের কাছে চলে যেতে ইচ্ছা হয়।', w:3},
+          {text:'স্বপ্নে বারবার সেই বিশেষ মানুষকে দেখছেন।', w:2}
+        ]
+      },
+      {
+        label: '&#x1F6AB; সিহর মানে — জীবনে বাধার জাদু',
+        items: [
+          {text:'চাকরি, ব্যবসা বা পড়াশোনায় বারবার বাধা আসছে, যথেষ্ট চেষ্টা করেও ফলাফল নেই।', w:2},
+          {text:'প্রতিটি ভালো সুযোগ শেষ মুহূর্তে হাতছাড়া হয়ে যাচ্ছে।', w:2},
+          {text:'অর্থনৈতিক অবস্থা বারবার খারাপ হয়, উন্নতি হচ্ছে না।', w:2}
+        ]
+      },
+      {
+        label: '&#x1F300; সিহর জুনুন — মানসিক জাদু',
+        items: [
+          {text:'কথাবার্তা মাঝে মাঝে অসংলগ্ন হয়ে যায়, নিজের পরিচয় বা কথা ভুলে যান।', w:3},
+          {text:'উদ্দেশ্যহীনভাবে এক জায়গায় বসে থাকেন বা ঘুরে বেড়ান, কোথায় যাচ্ছেন জানেন না।', w:3},
+          {text:'নিজের যত্ন নেওয়া বন্ধ করে দিয়েছেন, পরিষ্কার-পরিচ্ছন্নতা বা খাওয়া নিয়ে উদাসীন।', w:2},
+          {text:'হঠাৎ করে মানুষ থেকে বিচ্ছিন্ন হয়ে যেতে চান, একা থাকতে চান।', w:2},
+          {text:'অতিরিক্ত ভুলে যাওয়া, মনোযোগ দিতে না পারা।', w:2}
+        ]
+      },
+      {
+        label: '&#x1F50A; সিহর হাওয়াতিফ — কণ্ঠস্বর ও দুঃস্বপ্নের জাদু',
+        items: [
+          {text:'ঘুমের মধ্যে মনে হয় কেউ ডাকছে, কিন্তু কাউকে দেখা যাচ্ছে না।', w:3},
+          {text:'জেগে থাকা অবস্থায় অস্পষ্ট কণ্ঠস্বর শোনা যায়, উৎস বোঝা যায় না।', w:3},
+          {text:'বারবার দুঃস্বপ্ন দেখা। বিশেষত — কেউ ধাওয়া করছে বা পড়ে যাচ্ছেন।', w:2},
+          {text:'স্বপ্নে নিজেকে উঁচু জায়গা থেকে পড়ে যেতে দেখেন।', w:2},
+          {text:'স্বপ্নে ফাঁকা বাড়ি, মরুভূমি বা গোরস্থানে হাঁটতে দেখেন।', w:3},
+          {text:'স্বপ্নে আগুন জ্বলতে বা কিছু পোড়াতে দেখেন।', w:3},
+          {text:'স্বপ্নে নিজেকে উড়তে দেখেন বা পাখি/বড় গাছ দেখেন।', w:2},
+          {text:'স্বপ্নে বিশেষ একজন পরিচিত মানুষকে বারবার দেখছেন।', w:2},
+          {text:'স্বপ্নে পানি দেখেন — সাগর, নদী, পুকুর ইত্যাদি।', w:2},
+          {text:'পরিচিত মানুষদের সম্পর্কে অতিরিক্ত সন্দেহ করেন।', w:2}
+        ]
+      },
+      {
+        label: '&#x1FA79; সিহর মারাদ — রোগের জাদু',
+        items: [
+          {text:'শরীরের কোনো একটি অংশে স্থায়ী ব্যথা, মেডিকেলি কারণ নেই।', w:3},
+          {text:'মৃগীরোগের মতো খিঁচুনি হয় — ডাক্তারি পরীক্ষায় কিছু আসে না।', w:3},
+          {text:'শরীরের কোনো অঙ্গ আংশিক বা সম্পূর্ণ অবশ হয়ে গেছে, কারণ নেই।', w:3},
+          {text:'কোনো ইন্দ্রিয় (দৃষ্টি, শ্রবণ, কথা) হঠাৎ দুর্বল হয়েছে বিনা কারণে।', w:3}
+        ]
+      },
+      {
+        label: '&#x1F7E5; সিহর নাজিফ — রক্তক্ষরণের জাদু (শুধু মহিলাদের ক্ষেত্রে)',
+        items: [
+          {text:'মাসিকের বাইরে অস্বাভাবিক সময়ে রক্তপাত হচ্ছে, গাইনি ডাক্তার কারণ পাচ্ছেন না।', w:3},
+          {text:'মাসিক চলাকালীন অস্বাভাবিক বেশি রক্তপাত হচ্ছে এবং দীর্ঘদিন ধরে চলছে।', w:3},
+          {text:'মাসিক বহুদিন ধরে বন্ধ হয়ে গেছে, হরমোন পরীক্ষায় কিছু আসছে না।', w:3}
+        ]
+      },
+      {
+        label: '&#x1F634; সিহর খুমুল — অলসতার জাদু',
+        items: [
+          {text:'সারাদিন অস্বাভাবিক ক্লান্তি ও দুর্বলতা — পর্যাপ্ত ঘুমের পরও যায় না।', w:3},
+          {text:'কোনো কাজে উদ্যম নেই, সব কিছু করতে অনীহা লাগে।', w:2},
+          {text:'সামাজিকভাবে নিজেকে গুটিয়ে নিচ্ছেন, মানুষের সাথে মিশতে ইচ্ছা হয় না।', w:2},
+          {text:'চিন্তায় ঘনঘন মাথাব্যথা এবং ক্রমাগত ক্লান্তি।', w:2}
+        ]
+      }
+    ]
+  },
+
+  jinn: {
+    title: '&#128123; জিন ডায়াগনোসিস',
+    color: '#1a3a5c',
+    maxScore: 100,
+    groups: [
+      {
+        label: '&#x1F9BF; শারীরিক লক্ষণ',
+        items: [
+          {text:'মেডিক্যালি কোনো ব্যাখ্যা ছাড়াই শরীরের কোনো জায়গায় স্থির ব্যথা থাকে।', w:3},
+          {text:'হঠাৎ শরীরের কোনো অঙ্গ অবশ/বিকল হয়ে গেছে — ডাক্তাররা কোনো সমস্যা খুঁজে পান না।', w:3},
+          {text:'শরীরে বিশেষত হাতে-পায়ে লাল/নীল/হলুদ দাগ দেখা যায়; ঘুম থেকে উঠে আঁচড়ের দাগ পান।', w:3},
+          {text:'মৃগীরোগ আছে বা হঠাৎ খিঁচুনি হয়।', w:3},
+          {text:'শরীরে অস্বাভাবিক শক্তি চলে আসে — রাগের সময় বা রুকইয়াহর সময়।', w:3},
+          {text:'রুকইয়াহর সময় শরীর কাঁপে, অজ্ঞান হয়ে যান বা বমি হয়।', w:3},
+          {text:'হঠাৎ উচ্চস্বরে চিৎকার করেন বা অদ্ভুত কণ্ঠে কথা বলেন।', w:3},
+          {text:'ঘুম থেকে উঠার পর অনেক ক্লান্ত লাগে — ঘুম বিশ্রাম দিচ্ছে না।', w:2}
+        ]
+      },
+      {
+        label: '&#x1F4AD; মানসিক ও আচরণগত লক্ষণ',
+        items: [
+          {text:'ইবাদত বিমুখতা — নামাজ পড়তে, কুরআন পড়তে ইচ্ছা হয় না।', w:3},
+          {text:'কুরআন তেলাওয়াত শুনতে বা পড়তে অস্বস্তি বা রাগ লাগে।', w:3},
+          {text:'অন্ধকারে থাকতে ভালো লাগে, আলো অসহ্য লাগে।', w:3},
+          {text:'কোনো কারণ ছাড়াই হাসাহাসি বা কান্নাকাটি করেন।', w:2},
+          {text:'সবসময় দুঃশ্চিন্তা, উদ্বেগ, ভয়ভয় ভাব।', w:2},
+          {text:'প্রায়ই মেজাজ বিক্ষিপ্ত থাকে, অকারণে রাগ লাগে।', w:2},
+          {text:'অতিরিক্ত ঘুম এবং ব্যাপক অলসতা।', w:2},
+          {text:'অতিরিক্ত গান-বাজনা শোনার প্রবণতা, ইবাদতের পরিবেশে অস্বস্তি।', w:1},
+          {text:'নিজের পরিচর্যায় অবহেলা — পরিষ্কার-পরিচ্ছন্নতায় উদাসীনতা।', w:2},
+          {text:'মানুষ থেকে সরে গিয়ে একা থাকতে চাওয়া।', w:2}
+        ]
+      },
+      {
+        label: '&#x1F6CF;&#xFE0F; ঘুম সংক্রান্ত লক্ষণ',
+        items: [
+          {text:'রাতে ঘুমাতে গেলে সারারাত ঘুমে না ধরা।', w:2},
+          {text:'ঘন ঘন বোবায় ধরার সমস্যা — কেউ চেপে ধরেছে মনে হয়, নড়তে পারছেন না।', w:3},
+          {text:'ঘুমের মাঝে হাঁটাহাঁটি করেন।', w:3},
+          {text:'ঘুমের মাঝে চিৎকার, গোঙানো, হাসি-কান্না করেন।', w:3},
+          {text:'বিছানায় কেউ জড়িয়ে ধরেছে বা পাশে শুয়ে আছে এমন অনুভূতি হয়।', w:3},
+          {text:'স্বপ্নে সাপ, কুকুর, কালো ছায়া বা ভয়ঙ্কর প্রাণী ধাওয়া করে।', w:2},
+          {text:'স্বপ্নে কেউ ডাকছে বা অন্ধকার স্থানে হাঁটছেন।', w:2}
+        ]
+      },
+      {
+        label: '&#x1F440; অতিপ্রাকৃত অনুভূতি',
+        items: [
+          {text:'কেউ বিছানায় পাশে শুয়ে আছে অথবা কেউ আপনাকে ফলো করছে মনে হয়।', w:3},
+          {text:'এমন আওয়াজ শোনেন যার উৎস বোঝা যায় না।', w:3},
+          {text:'জেগে থাকা অবস্থায় স্বপ্নের মতো অদ্ভুত কল্পনা বা দৃশ্য দেখেন।', w:3},
+          {text:'এমন কিছু দেখেন বা শোনেন যা অন্য কেউ দেখে না বা শোনে না।', w:3},
+          {text:'বাথরুম, পরিত্যক্ত জায়গা বা কবরস্থানের কাছে গেলে লক্ষণ বেড়ে যায়।', w:2},
+          {text:'রাতে একা থাকলে তীব্র ভয় লাগে, অস্বাভাবিক উপস্থিতি অনুভব হয়।', w:2}
+        ]
+      }
+    ]
+  },
+
+  waswasa: {
+    title: '&#x1F9E0; ওয়াসওয়াসা ডায়াগনোসিস',
+    color: '#4a1a5c',
+    maxScore: 55,
+    groups: [
+      {
+        label: '&#x1F6BF; তাহারাহ ও ইবাদত সংক্রান্ত',
+        items: [
+          {text:'সালাত বা ওযু নিয়ে বেশি দ্বিধাদ্বন্দ্বে আছেন — বারবার মনে হচ্ছে ঠিকমতো হচ্ছে না।', w:3},
+          {text:'ওযু-গোসল বা ইস্তিঞ্জার সময় এক অঙ্গ বারবার ধুচ্ছেন, তবুও মনে হচ্ছে ধোয়া হয়নি।', w:3},
+          {text:'বারবার মনে হচ্ছে ওযু ভেঙে যাচ্ছে — প্রস্রাবের ফোঁটা পড়ছে বা বায়ু বের হচ্ছে — নিশ্চিত হতে পারছেন না।', w:3},
+          {text:'পরিষ্কার-পরিচ্ছন্নতা বা পরনের কাপড় নিয়ে অতিরিক্ত চিন্তা করছেন।', w:2},
+          {text:'অপ্রয়োজনে টয়লেট বা বাথরুমে অতিরিক্ত সময় ব্যয় করছেন।', w:2},
+          {text:'নামাজে রাকাত বা তাসবিহ গণনা নিয়ে বারবার সন্দেহ হয়, নামাজ বারবার শুরু থেকে দিতে হয়।', w:3}
+        ]
+      },
+      {
+        label: '&#x1F9E0; আকিদা ও ঈমান সংক্রান্ত',
+        items: [
+          {text:'আল্লাহ, রাসুল বা ইসলামের মৌলিক বিষয়ে অবমাননাকর চিন্তা মাথায় আসে।', w:3},
+          {text:'কানে ফিসফিস করে শোনা যাচ্ছে কুফরের দিকে ধাবিত হচ্ছেন।', w:3},
+          {text:'নামাজে সিজদায় যেতে গেলে অশ্লীল ছবি বা দেবদেবীর মূর্তি মনে ভাসে।', w:3},
+          {text:'মুরব্বি বা উস্তাদের সামনে বসলে বেয়াদবির জন্য ভেতর থেকে উস্কানি দেওয়া হচ্ছে মনে হয়।', w:2},
+          {text:'ঈমান চলে গেছে কিনা এই ভয়ে সর্বদা আতঙ্কিত থাকেন।', w:3}
+        ]
+      },
+      {
+        label: '&#x1F62A; আবেগীয় ও মানসিক',
+        items: [
+          {text:'কারণে-অকারণে চিন্তিত ও উদ্বিগ্ন থাকছেন।', w:2},
+          {text:'হঠাৎ উদাসীন হয়ে গেছেন, কিছুই ভালো লাগছে না।', w:3},
+          {text:'প্রিয় মানুষটিকে নিয়ে বাজে স্বপ্ন দেখছেন, যা ভয় ও চিন্তায় রাখছে।', w:3},
+          {text:'মাথায় বিক্ষিপ্ত চিন্তা ঘোরে — সালাত, ইবাদত, যিকরে মন বসছে না।', w:2},
+          {text:'বারবার একই কাজ করে নিশ্চিত হচ্ছেন — দরজা বন্ধ, চুলা বন্ধ — তবু সন্দেহ যাচ্ছে না।', w:3},
+          {text:'ভবিষ্যৎ নিয়ে অতিরিক্ত চিন্তা করেন, ক্ষতির আশঙ্কায় থাকেন সবসময়।', w:2}
+        ]
+      }
+    ]
+  },
+
+  bachcha: {
+    title: '&#128118; বাচ্চাদের ডায়াগনোসিস',
+    color: '#1a5c4a',
+    groups: [
+      {
+        label: '&#x1F37C; ০–২ বছর বয়সী শিশু',
+        items: [
+          {text:'বুকের দুধ খায় না?', w:3},
+          {text:'রাতে ঘুমায় না (ঘুমালেও খুব সামান্য)?', w:3},
+          {text:'শুধু কান্না-কাটি করে?', w:2},
+          {text:'গায়ের রঙ পরিবর্তন হয়ে যায় হুট করে?', w:3},
+          {text:'মার কোলে গেলেই কান্না করে?', w:2},
+          {text:'অসুখ-বিসুখ লেগেই থাকে?', w:2},
+          {text:'ঘুমের মধ্যে দাঁত কিড়মিড় করে?', w:3},
+          {text:'আযান বা কুরআন তেলাওয়াত শুনলে অস্বাভাবিক কান্না বা অস্থিরতা শুরু হয়?', w:3}
+        ]
+      },
+      {
+        label: '&#x1F9D2; ২–১২ বছর বয়সী শিশু',
+        items: [
+          {text:'খাওয়া-দাওয়া করতে চায় না?', w:2},
+          {text:'অসুস্থতা লেগেই থাকে?', w:2},
+          {text:'কথা শোনে না, বেয়াদবি করে?', w:1},
+          {text:'হুট করে অনেক অসুস্থ হয়ে যায়?', w:3},
+          {text:'বয়সের তুলনায় কথা বলতে পারে না?', w:2},
+          {text:'আগে ভালোভাবে কথা বললেও এখন তোতলায়?', w:3},
+          {text:'অকারণে ভয় পায়, দুঃস্বপ্ন দেখে?', w:3},
+          {text:'ঘরের কোনও কোণায় বা দেয়ালের দিকে তাকিয়ে থাকে? একা একা কথা বলে, হাসে, খেলে?', w:3},
+          {text:'রাগ-জিদ বেশি?', w:1},
+          {text:'মাত্রাতিরিক্ত দুষ্টামি করে?', w:1},
+          {text:'অটিজমে আক্রান্ত?', w:2},
+          {text:'রেগে গেলে শরীরে অস্বাভাবিক শক্তি চলে আসে?', w:3},
+          {text:'মাঝে মাঝে বড়দের মত কণ্ঠে কথা বলে?', w:3},
+          {text:'মাঝে মাঝে চিন্তা-ভাবনা পূর্ণ বয়স্কদের মত করে?', w:3},
+          {text:'কুরুচিপূর্ণ কথা বলা অভ্যাস?', w:2},
+          {text:'আযান শুনলে ভয় পায়?', w:3},
+          {text:'মাঝেমাঝে চোখের মণি বড় হয়ে যায়?', w:3},
+          {text:'একই ভুল বার বার করে (কেউ যেন উস্কে দিচ্ছে)?', w:2},
+          {text:'যৌনতা সম্পর্কে চিন্তা-ভাবনা বা আচরণ, এমনকি মা/বাবার গায়ে হাত দেওয়া?', w:3},
+          {text:'কাল্পনিক বন্ধুর নির্দিষ্ট নাম বলে এবং সেই বন্ধুর সাথে নিয়মিত কথা বলে?', w:3},
+          {text:'রাতে বাইরে যেতে চায়, ঘরে ফিরতে চায় না বা ঘরে এলে অস্বাভাবিক আচরণ করে?', w:2}
+        ]
+      }
+    ]
+  }
+
+};
+
+/* ===== DIAGNOSIS STEP SYSTEM ===== */
+var diagStepOrder = ['bodnazar','jadu','jinn','waswasa'];
+var diagStepIndex = 0;
+var diagAllResults = {};
+var diagPatientInfo = {};
+
+/* ===== DIAGNOSIS FOR — SIMPLE DROPDOWN ===== */
+var _diagAgeSelected = '';
+
+function onDiagForChange(){
+  var forVal = document.getElementById('diagFor').value;
+  var ageSel = document.getElementById('diagAgeSelect');
+  if(!ageSel) return;
+  ageSel.innerHTML = '<option value="">-- সিলেক্ট --</option>';
+  if(forVal === 'self'){
+    ageSel.innerHTML += '<option value="adult">&#x1F9D1; ১২+ বছর</option>';
+    ageSel.value = 'adult';
+    _applyDiagAge('adult');
+  } else if(forVal === 'other'){
+    ageSel.innerHTML += '<option value="infant">&#x1F37C; ০ – ২ বছর</option>';
+    ageSel.innerHTML += '<option value="child">&#x1F9D2; ২ – ১২ বছর</option>';
+    ageSel.innerHTML += '<option value="adult">&#x1F9D1; ১২+ বছর</option>';
+  } else {
+    document.getElementById('diagPersonType').value = '';
+    document.getElementById('diagChildAge').value   = '';
+    document.getElementById('diagAge').value        = '';
+  }
+}
+
+function onDiagAgeSelectChange(){
+  var val = document.getElementById('diagAgeSelect').value;
+  _diagAgeSelected = val;
+  if(val) _applyDiagAge(val);
+  else {
+    document.getElementById('diagPersonType').value = '';
+    document.getElementById('diagChildAge').value   = '';
+    document.getElementById('diagAge').value        = '';
+  }
+}
+
+function _applyDiagAge(group){
+  if(group === 'infant'){
+    document.getElementById('diagPersonType').value = 'child';
+    document.getElementById('diagChildAge').value   = 'infant';
+    document.getElementById('diagAge').value        = 'infant';
+  } else if(group === 'child'){
+    document.getElementById('diagPersonType').value = 'child';
+    document.getElementById('diagChildAge').value   = 'child';
+    document.getElementById('diagAge').value        = 'child';
+  } else {
+    document.getElementById('diagPersonType').value = 'adult';
+    document.getElementById('diagChildAge').value   = '';
+    document.getElementById('diagAge').value        = '';
+  }
+}
+
+function selectDiagAge(group){ _diagAgeSelected = group; _applyDiagAge(group); }
+
+function startDiagnosis(){
+  var name    = (document.getElementById('diagName')||{}).value.trim();
+  var phone   = (document.getElementById('diagPhone')||{}).value.trim();
+  var diagFor = (document.getElementById('diagFor')||{}).value;
+  if(!name){ alert('নাম লিখুন'); document.getElementById('diagName').focus(); return; }
+  if(!phone){ alert('WhatsApp নম্বর লিখুন'); document.getElementById('diagPhone').focus(); return; }
+  if(!diagFor){ alert('ডায়াগনোসিস কার জন্য সিলেক্ট করুন'); return; }
+  var ageSelEl = document.getElementById('diagAgeSelect');
+  if(ageSelEl && ageSelEl.value) _diagAgeSelected = ageSelEl.value;
+  if(!_diagAgeSelected){ alert('বয়স গ্রুপ সিলেক্ট করুন'); return; }
+
+  /* Hidden compat fields আপডেট করো */
+  var cNameEl = document.getElementById('cName');
+  var cPhEl   = document.getElementById('cPhone');
+  if(cNameEl) cNameEl.value = name;
+  if(cPhEl)   cPhEl.value   = phone;
+
+  var age = '';
+  var personType = 'adult';
+  if(_diagAgeSelected === 'adult'){ personType = 'adult'; age = ''; }
+  else if(_diagAgeSelected === 'infant'){ personType = 'child'; age = 'infant'; }
+  else if(_diagAgeSelected === 'child'){ personType = 'child'; age = 'child'; }
+
+  diagPatientInfo = { name:name, phone:phone, diagFor:diagFor, age:age, personType:personType };
+  diagAllResults = {};
+  diagStepIndex = 0;
+  alreadyCheckedTexts = [];
+
+  if(personType === 'child'){
+    diagStepOrder = ['bachcha'];
+  } else {
+    diagStepOrder = ['bodnazar','jadu','jinn','waswasa'];
+  }
+  openNextDiagStep();
+}
+
+function openNextDiagStep(){
+  if(diagStepIndex >= diagStepOrder.length){
+    showFinalCombinedResult();
+    return;
+  }
+  var type = diagStepOrder[diagStepIndex];
+  openDiagnosis(type);
+}
+
+var currentDiagType = 'bodnazar';
+var diagSelected = {};
+
+var bnNum = ['','১','২','৩','৪','৫','৬','৭','৮','৯','১০','১১','১২','১৩','১৪','১৫','১৬','১৭','১৮','১৯','২০','২১','২২','২৩','২৪','২৫','২৬','২৭','২৮','২৯','৩০','৩১','৩২','৩৩','৩৪','৩৫','৩৬','৩৭','৩৮','৩৯','৪০'];
+
+function openDiagnosis(type){
+  currentDiagType = type || 'bodnazar';
+  diagSelected = {};
+  var d = diagData[currentDiagType];
+  document.getElementById('popupTitle').textContent = d.title;
+  document.getElementById('popupHeader').style.background = d.color;
+  document.getElementById('diagCount').innerHTML = '&#x2714; ০টি সমস্যা নির্বাচিত';
+
+  var list = document.getElementById('chkList');
+  list.innerHTML = '';
+
+  if(d.groups){
+    var idx = 0;
+    var groupsToShow = d.groups;
+    if(currentDiagType === 'bachcha'){
+      groupsToShow = d.groups.filter(function(grp){
+        if(_diagAgeSelected === 'infant'){
+          return grp.label.indexOf('০–২') > -1 || grp.label.indexOf('0–2') > -1 || grp.label.indexOf('০-২') > -1;
+        } else if(_diagAgeSelected === 'child'){
+          return grp.label.indexOf('২–১২') > -1 || grp.label.indexOf('2–12') > -1 || grp.label.indexOf('২-১২') > -1;
+        }
+        return true;
+      });
+    }
+    groupsToShow.forEach(function(grp){
+      var lbl = document.createElement('div');
+      lbl.style.cssText = 'font-size:12px;font-weight:700;color:'+d.color+';background:#e8f5eb;padding:7px 10px;border-radius:6px;margin:10px 0 6px;';
+      lbl.innerHTML = grp.label;
+      list.appendChild(lbl);
+      grp.items.forEach(function(item){
+        var txt = (item && item.text) ? item.text : item;
+        var wt  = (item && item.w) ? item.w : 1;
+        idx++;
+        if(!isAlreadyChecked(item)){
+          list.appendChild(makeChkItem(idx, txt, d.color, wt));
+        } else {
+          diagSelected[idx] = true;
+        }
+      });
+    });
+  } else {
+    var visibleIdx = 0;
+    d.items.forEach(function(item, i){
+      var txt = (item && item.text) ? item.text : item;
+      var wt  = (item && item.w) ? item.w : 1;
+      if(!isAlreadyChecked(item)){
+        visibleIdx++;
+        list.appendChild(makeChkItem(visibleIdx, txt, d.color, wt));
+        if(!window._idxMap) window._idxMap = {};
+        window._idxMap[visibleIdx] = i+1;
+      } else {
+        diagSelected[i+1] = true;
+      }
+    });
+  }
+
+  var stepInfo = document.getElementById('popupStepInfo');
+  if(stepInfo && diagStepOrder && diagStepOrder.length > 1){
+    var stepNum = diagStepIndex + 1;
+    var totalSteps = diagStepOrder.length;
+    stepInfo.textContent = 'ধাপ ' + stepNum + '/' + totalSteps + ' — সমস্যাগুলো মার্ক করুন';
+  } else if(stepInfo){
+    stepInfo.textContent = 'আপনার যে সমস্যাগুলো আছে সেগুলো মার্ক করুন';
+  }
+
+  var nextBtn = document.getElementById('popupNextBtn');
+  if(nextBtn && diagStepOrder){
+    var isLast = (diagStepIndex >= diagStepOrder.length - 1);
+    if(isLast){
+      nextBtn.innerHTML = '<i class="fas fa-check-circle"></i> ডায়াগনোসিস সম্পন্ন করুন';
+    } else {
+      nextBtn.innerHTML = '<i class="fas fa-arrow-right"></i> পরবর্তী ধাপ';
+    }
+  }
+
+  var popup = document.getElementById('diagPopup');
+  popup.classList.add('open');
+  popup.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+
+function makeChkItem(n, txt, color, wt){
+  var wBadge = '';
+  if(wt===3) wBadge = '<span style="font-size:9px;background:#c0392b;color:#fff;border-radius:3px;padding:1px 4px;margin-left:4px;vertical-align:middle;flex-shrink:0;">Strong</span>';
+  else if(wt===2) wBadge = '<span style="font-size:9px;background:#e67e22;color:#fff;border-radius:3px;padding:1px 4px;margin-left:4px;vertical-align:middle;flex-shrink:0;">Medium</span>';
+  else wBadge = '<span style="font-size:9px;background:#7f8c8d;color:#fff;border-radius:3px;padding:1px 4px;margin-left:4px;vertical-align:middle;flex-shrink:0;">Weak</span>';
+  var div = document.createElement('div');
+  div.className = 'chk-item';
+  div.id = 'di'+n;
+  div.setAttribute('onclick','toggleChk('+n+')');
+  div.innerHTML =
+    '<div class="chk-box" id="dib'+n+'"></div>'+
+    '<div class="chk-num">'+bnNum[n]+'.</div>'+
+    '<div class="chk-text" style="flex:1;">'+txt+wBadge+'</div>';
+  return div;
+}
+
+var alreadyCheckedTexts = [];
+
+function recordCheckedTexts(type){
+  var d = diagData[type];
+  var keys = Object.keys(diagSelected).map(Number);
+  keys.forEach(function(n){
+    var txt = getItemTextByType(type, n);
+    if(txt && alreadyCheckedTexts.indexOf(txt) === -1){
+      alreadyCheckedTexts.push(txt);
+    }
+  });
+}
+
+function isAlreadyChecked(item){
+  var txt = (item && item.text) ? item.text : item;
+  return alreadyCheckedTexts.indexOf(txt) > -1;
+}
+
+function closeDiagnosis(){
+  document.getElementById('diagPopup').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function toggleChk(n){
+  var item = document.getElementById('di'+n);
+  var box  = document.getElementById('dib'+n);
+  if(!item || !box) return;
+  if(diagSelected[n]){
+    delete diagSelected[n];
+    item.classList.remove('checked');
+    box.innerHTML = '';
+  } else {
+    diagSelected[n] = true;
+    item.classList.add('checked');
+    box.innerHTML = '&#x2714;';
+  }
+  updateCount();
+}
+
+function updateCount(){
+  var visible = document.querySelectorAll('#chkList .chk-item.checked').length;
+  document.getElementById('diagCount').innerHTML = '&#x2714; '+(bnNum[visible]||visible)+'টি সমস্যা নির্বাচিত';
+}
+
+function clearAll(){
+  var keys = Object.keys(diagSelected);
+  keys.forEach(function(n){
+    var item = document.getElementById('di'+n);
+    var box  = document.getElementById('dib'+n);
+    if(item) item.classList.remove('checked');
+    if(box)  box.innerHTML = '';
+  });
+  diagSelected = {};
+  updateCount();
+}
+
+function getItemText(n){
+  var items = getAllItems(currentDiagType);
+  var item = items[n-1];
+  return item ? (item.text||item) : '';
+}
+
+/* ── getAllItems: groups বা items থেকে flat array বের করে ── */
+function getAllItems(type){
+  var d = diagData[type];
+  if(!d) return [];
+  if(d.items) return d.items;
+  if(d.groups){
+    var all = [];
+    d.groups.forEach(function(g){ g.items.forEach(function(it){ all.push(it); }); });
+    return all;
+  }
+  return [];
+}
+
+function getWeightedScore(type, keys){
+  var items = getAllItems(type);
+  if(!items.length) return {score:0, max:0};
+  var d = diagData[type];
+  var max = d.maxScore || items.reduce(function(s,it){ return s+(it.w||1); },0);
+  var score = 0;
+  keys.forEach(function(n){
+    var item = items[n-1];
+    if(item) score += (item.w||1);
+  });
+  return {score:score, max:max};
+}
+
+/* ============================================================
+   RUQYAH DIAGNOSIS ENGINE — Anchor + Cluster + Threshold
+   Index references updated for new group-flat structure:
+
+   BODNAZAR flat (25 items):
+   1-নামাযে মন নেই  2-আত্মীয় দেখলে খারাপ  3-মেজাজ  4-গ্যাস
+   5-চেহারা  6-কান্না  7-দুর্বলতা  8-চুলপড়া  9-হাই
+   10-শরীর ব্যথা  11-মাথাব্যথা  12-অদৃশ্য জ্বর  13-তেলাওয়াতে হাই
+   14-কাজে ঝামেলা  15-বুক ধড়ফড়  16-হাতপা ঠান্ডা  17-গরম/ঘাম
+   18-চোখে পানি  19-প্রস্রাব  20-প্রশংসার পর অসুস্থ  21-সাফল্যের পর ভেঙে পড়া
+   22-সোশ্যাল মিডিয়া  23-বিশেষ মানুষ  24-সামাজিক এড়ানো  25-হীনম্মন্যতা
+
+   JADU groups-flat:
+   সাধারণ(1-8): 1-গরম 2-মাথাব্যথা 3-চিকিৎসায় ভালো না 4-বুকচাপ 5-ঘুম 6-জয়েন্ট 7-বিকেল 8-ঘরে মনখারাপ
+   মাকুল(9-18): 9-পেটব্যথা 10-রুকইয়াহতে বাড়া 11-গ্যাস/নড়া 12-বমি 13-মুখগন্ধ 14-অরুচি 15-কোষ্ঠ 16-দৃষ্টি 17-পায়ুজ্বালা 18-ফোলাভাব
+   তাফরিক(19-24): 19-স্বামী/স্ত্রী ঘৃণা 20-কুৎসিত 21-ঝগড়া 22-পরিবার বিতৃষ্ণা 23-বাড়ি থেকে 24-সম্পর্ক নষ্ট
+   মাহাব্বাহ(25-28): 25-আসক্তি 26-অস্থির 27-পরিবার ছেড়ে 28-স্বপ্নে দেখা
+   মানে(29-31): 29-বাধা 30-সুযোগ হাতছাড়া 31-অর্থনৈতিক
+   জুনুন(32-36): 32-অসংলগ্ন 33-উদ্দেশ্যহীন 34-পরিচর্যাহীন 35-বিচ্ছিন্ন 36-ভুলে যাওয়া
+   হাওয়াতিফ(37-46): 37-ডাক 38-কণ্ঠস্বর 39-দুঃস্বপ্ন 40-পড়ে যাওয়া 41-গোরস্থান 42-আগুন 43-উড়া 44-পরিচিত মানুষ 45-পানি 46-সন্দেহ
+   মারাদ(47-50): 47-স্থির ব্যথা 48-খিঁচুনি 49-অবশ 50-ইন্দ্রিয়
+   নাজিফ(51-53): 51-বাড়তি রক্তপাত 52-বেশি রক্তপাত 53-মাসিক বন্ধ
+   খুমুল(54-57): 54-ক্লান্তি 55-অনীহা 56-সামাজিক 57-মাথাব্যথা
+
+   JINN groups-flat:
+   শারীরিক(1-8): 1-স্থির ব্যথা 2-অবশ 3-দাগ 4-মৃগী 5-অস্বাভাবিক শক্তি 6-রুকইয়াহ রিঅ্যাকশন 7-চিৎকার 8-ক্লান্তি
+   মানসিক(9-18): 9-ইবাদত বিমুখ 10-কুরআনে অস্বস্তি 11-অন্ধকার 12-হাসি/কান্না 13-দুঃশ্চিন্তা 14-মেজাজ 15-অতি ঘুম 16-গান 17-পরিচর্যাহীন 18-একা থাকা
+   ঘুম(19-25): 19-ঘুম না ধরা 20-বোবায় ধরা 21-ঘুমে হাঁটা 22-চিৎকার/গোঙানো 23-জড়িয়ে ধরা 24-স্বপ্নে প্রাণী 25-স্বপ্নে ডাক
+   অতিপ্রাকৃত(26-31): 26-পাশে কেউ 27-অজানা আওয়াজ 28-কল্পনা 29-অন্যরা দেখে না 30-কবরস্থান 31-রাতে ভয়
+
+   WASWASA groups-flat:
+   তাহারাহ(1-6): 1-সালাত সন্দেহ 2-বারবার ধোয়া 3-ওযু ভাঙার ভয় 4-পরিষ্কার চিন্তা 5-বাথরুম 6-রাকাত
+   আকিদা(7-11): 7-অবমাননাকর চিন্তা 8-কুফরের ফিসফিস 9-সিজদায় ছবি 10-উস্তাদের সামনে 11-ঈমান ভয়
+   আবেগীয়(12-17): 12-চিন্তিত 13-উদাসীন 14-বাজে স্বপ্ন 15-বিক্ষিপ্ত 16-বারবার চেক 17-ভবিষ্যৎ চিন্তা
+   ============================================================ */
+var diagRules = {
+  bodnazar: {
+    anchors: [2,5,12,13,20,21],
+    clusters: [
+      {items:[1,9],   bonus:2, label:'মনোযোগহীনতা + হাই উঠা'},
+      {items:[7,8],   bonus:2, label:'শরীর দুর্বলতা + চুল পড়া'},
+      {items:[12,13], bonus:3, label:'অদৃশ্য জ্বর + তেলাওয়াতে হাই'},
+      {items:[20,21], bonus:3, label:'প্রশংসার পর + সাফল্যের পর সমস্যা (ইসাবাহ)'},
+      {items:[22,23], bonus:2, label:'সোশ্যাল মিডিয়া + বিশেষ মানুষ (হাসাদ সংকেত)'}
+    ],
+    minScore: 6,
+    sharedOnly: [1,3,6,9,11,15,24,25],
+    subtypes: [
+      {key:'hasad',  label:'&#x1F612; হাসাদ (হিংসামূলক বদনজর)',              desc:'কেউ ইচ্ছাকৃতভাবে হিংসার সাথে তাকিয়েছে। সবচেয়ে তীব্র প্রকার।',        color:'#8B0000', indicators:[20,21,22,23], minIndicators:2},
+      {key:'nazar',  label:'&#x1F441;&#xFE0F; আইনুন নাযর (অনিচ্ছাকৃত বদনজর)', desc:'অনিচ্ছাকৃতভাবে তাকানো থেকে হয়েছে। প্রশংসা বা মুগ্ধতা থেকেও হতে পারে।', color:'#B8860B', indicators:[2,5,11,12],  minIndicators:2},
+      {key:'isabah', label:'&#x2728; ইসাবাহ (প্রশংসার পরবর্তী নজর)',           desc:'প্রশংসা বা কোনো ভালো বিষয় দেখার পরপরই সমস্যা শুরু।',                color:'#556B2F', indicators:[20,21],      minIndicators:1}
+    ]
+  },
+  jadu: {
+    anchors: [9,10,11,19,20,25,37,47,48,51,54],
+    clusters: [
+      {items:[9,10,11,12], bonus:5, label:'পেটব্যথা + রুকইয়াহতে বাড়া + গ্যাস + বমি (সিহর মাকুল)'},
+      {items:[19,20,21],   bonus:4, label:'স্বামী/স্ত্রী ঘৃণা + কুৎসিত + ঝগড়া (সিহর তাফরিক)'},
+      {items:[25,26,27],   bonus:4, label:'আসক্তি + অস্থির + পরিবার ছেড়ে (সিহর মাহাব্বাহ)'},
+      {items:[37,38,41,42],bonus:4, label:'স্বপ্নে ডাক + কণ্ঠস্বর + গোরস্থান + আগুন (সিহর হাওয়াতিফ)'},
+      {items:[47,48,49],   bonus:4, label:'স্থির ব্যথা + খিঁচুনি + অবশ (সিহর মারাদ)'},
+      {items:[54,55,56],   bonus:3, label:'ক্লান্তি + অনীহা + সামাজিক বিচ্ছিন্নতা (সিহর খুমুল)'},
+      {items:[32,33,34],   bonus:3, label:'অসংলগ্ন + উদ্দেশ্যহীন + পরিচর্যাহীন (সিহর জুনুন)'}
+    ],
+    minScore: 10,
+    sharedOnly: [1,2,5,6,7,8,14,15,29,30,31,36,46],
+    subtypes: [
+      {key:'makul',    label:'&#x1F37D;&#xFE0F; সিহর মাকুল (খাওয়ানো জাদু)',       desc:'খাবার বা পানীয়ের মাধ্যমে দেওয়া জাদু — পেটে আটকে থাকে।',            color:'#7B3F00', indicators:[9,10,11,12,13,14,15,16,17,18], minIndicators:3},
+      {key:'tafriq',   label:'&#x1F494; সিহর তাফরিক (বিচ্ছেদের জাদু)',             desc:'স্বামী-স্ত্রী বা পরিবারের মধ্যে বিচ্ছেদ ঘটানোর জন্য করা জাদু।',      color:'#8B0000', indicators:[19,20,21,22,23,24],            minIndicators:2},
+      {key:'mahabbah', label:'&#x1F52E; সিহর মাহাব্বাহ (আসক্তির জাদু)',            desc:'কাউকে অস্বাভাবিকভাবে আকৃষ্ট করতে বা আসক্তি তৈরি করতে।',             color:'#4B0082', indicators:[25,26,27,28],                  minIndicators:2},
+      {key:'rabt',     label:'&#x1F517; সিহর রাবত (দাম্পত্য বাধার জাদু)',          desc:'দাম্পত্য জীবনে শারীরিক বা মানসিক বাধা সৃষ্টির জাদু।',               color:'#2F4F4F', indicators:[19,20,47,48,49,50,51,52,53],    minIndicators:2},
+      {key:'mane',     label:'&#x1F6AB; সিহর মানে (জীবনে বাধার জাদু)',              desc:'চাকরি, ব্যবসা, পড়াশোনায় বারবার বাধা দেওয়ার জাদু।',                color:'#8B4513', indicators:[29,30,31],                    minIndicators:2},
+      {key:'junun',    label:'&#x1F300; সিহর জুনুন (মস্তিষ্কের জাদু)',              desc:'মানসিক ভারসাম্য নষ্ট করা বা উদ্দেশ্যহীনতা তৈরির জাদু।',              color:'#483D8B', indicators:[32,33,34,35,36],              minIndicators:2},
+      {key:'hawatif',  label:'&#x1F50A; সিহর হাওয়াতিফ (কণ্ঠস্বর ও দুঃস্বপ্ন)',   desc:'রাতে কণ্ঠস্বর শোনা, বারবার দুঃস্বপ্ন, বিশেষ স্বপ্নের প্যাটার্ন।',   color:'#1C3A5C', indicators:[37,38,39,40,41,42,43,44,45],  minIndicators:2},
+      {key:'marad',    label:'&#x1FA79; সিহর মারাদ (রোগের জাদু)',                   desc:'শরীরে দীর্ঘমেয়াদি রোগ বা মেডিকেলি ব্যাখ্যাহীন সমস্যা।',             color:'#5C1A1A', indicators:[47,48,49,50],                  minIndicators:2},
+      {key:'nazif',    label:'&#x1F7E5; সিহর নাজিফ (রক্তক্ষরণের জাদু)',            desc:'মহিলাদের অস্বাভাবিক রক্তপাত — মাসিকের বাইরে বা অতিরিক্ত।',          color:'#8B0033', indicators:[51,52,53],                    minIndicators:1},
+      {key:'khumul',   label:'&#x1F634; সিহর খুমুল (অলসতার জাদু)',                 desc:'দীর্ঘমেয়াদি ক্লান্তি, অলসতা, জীবন থেকে আগ্রহ হারিয়ে ফেলা।',        color:'#3D3D3D', indicators:[54,55,56,57],                  minIndicators:2}
+    ]
+  },
+  jinn: {
+    anchors: [1,2,4,5,6,9,10,11,20,21,22,23,26,27,28,29],
+    clusters: [
+      {items:[20,23],   bonus:5, label:'বোবায় ধরা + জড়িয়ে ধরার অনুভূতি (সরাসরি জিন স্পর্শ)'},
+      {items:[27,29],   bonus:4, label:'অজানা আওয়াজ + অন্যরা দেখে না (ইন্দ্রিয় প্রকাশ)'},
+      {items:[1,2,4],   bonus:4, label:'স্থির ব্যথা + অবশ + মৃগী (শারীরিক আছর)'},
+      {items:[5,6,7],   bonus:4, label:'অস্বাভাবিক শক্তি + রুকইয়াহ রিঅ্যাকশন + চিৎকার (প্রকাশ্য আছর)'},
+      {items:[9,10,11], bonus:3, label:'ইবাদত বিমুখ + কুরআনে অস্বস্তি + অন্ধকার প্রিয়'}
+    ],
+    minScore: 8,
+    sharedOnly: [8,12,13,14,15,17,18,19,30,31],
+    subtypes: [
+      {key:'mass',    label:'&#x26A1; মাস (আছরগ্রস্ত — সরাসরি জিনের স্পর্শ)',       desc:'জিন সরাসরি শরীরে প্রবেশ করেছে বা শরীরে আছর করেছে।',                  color:'#8B0000', indicators:[5,6,7,20,21,22,23],      minIndicators:2},
+      {key:'marid',   label:'&#x1F319; মারিদ (স্বপ্নে আক্রমণকারী জিন)',              desc:'ঘুমের মধ্যে বা স্বপ্নে জিনের প্রভাব বেশি অনুভব হয়।',                 color:'#191970', indicators:[19,20,21,22,24,25],      minIndicators:2},
+      {key:'hamah',   label:'&#x1FAAB; হামাহ (শারীরিক লক্ষণের জিন)',                  desc:'জিনের প্রভাবে শারীরিক ব্যথা, অবশতা বা মেডিকেলি ব্যাখ্যাহীন সমস্যা।', color:'#2F4F2F', indicators:[1,2,3,4,5],            minIndicators:2},
+      {key:'ruhani',  label:'&#x1F9FF; রুহানি প্রভাব (আধ্যাত্মিক দুর্বলতায় জিন)',  desc:'ইবাদত বিমুখতা ও আধ্যাত্মিক দুর্বলতার কারণে জিনের প্রভাব বেড়েছে।',   color:'#556B2F', indicators:[9,10,11,16,17,18],      minIndicators:3},
+      {key:'khariji', label:'&#x1F47E; খারিজি (বাহ্যিক হয়রানিকারী জিন)',            desc:'জিন শরীরে প্রবেশ না করে বাইরে থেকে হয়রানি করছে।',                    color:'#4A235A', indicators:[26,27,28,29,30,31],      minIndicators:2}
+    ]
+  },
+  waswasa: {
+    anchors: [1,2,3,7,8,9,11],
+    clusters: [
+      {items:[1,2,3,6], bonus:5, label:'সালাত সন্দেহ + বারবার ধোয়া + ওযু ভাঙার ভয় + রাকাত সন্দেহ (তাহারাহ ওয়াসওয়াসা)'},
+      {items:[7,8,9],   bonus:4, label:'অবমাননাকর চিন্তা + কুফরের ফিসফিস + সিজদায় ছবি (আকিদা ওয়াসওয়াসা)'},
+      {items:[13,14,16],bonus:3, label:'উদাসীনতা + বাজে স্বপ্ন + বারবার চেক (আবেগীয় ওয়াসওয়াসা)'}
+    ],
+    minScore: 6,
+    sharedOnly: [4,5,12,15,17],
+    subtypes: [
+      {key:'taharah',  label:'&#x1F6BF; তাহারাহ ওয়াসওয়াসা (পবিত্রতায় সন্দেহ)', desc:'ওযু, গোসল ও নামাজ নিয়ে অতিরিক্ত সন্দেহ ও বারবার পুনরাবৃত্তি।', color:'#1A3A5C', indicators:[1,2,3,4,5,6], minIndicators:3},
+      {key:'aqidah',   label:'&#x1F9E0; আকিদা ওয়াসওয়াসা (ঈমানে সন্দেহ)',        desc:'আল্লাহ, রাসুল বা ইসলাম নিয়ে অবমাননাকর চিন্তা বা কুফরের ভয়।',  color:'#5C1A5C', indicators:[7,8,9,10,11],         minIndicators:2},
+      {key:'emotional',label:'&#x1F62A; আবেগীয় ওয়াসওয়াসা',                       desc:'উদ্বেগ, বাজে স্বপ্ন, উদাসীনতা ও বারবার কাজ চেক করার প্রবণতা।', color:'#3D1A5C', indicators:[12,13,14,15,16,17],   minIndicators:3}
+    ]
+  }
+};
+
+function evaluateDiagnosis(type, keys){
+  var rules = diagRules[type];
+  if(!rules) return {level:'none', label:'', clusters:[], anchorFound:false, score:0, pct:0};
+  var ws = getWeightedScore(type, keys);
+  var score = ws.score;
+  var pct = ws.max > 0 ? Math.round((score/ws.max)*100) : 0;
+  var anchorFound = rules.anchors.some(function(a){ return keys.indexOf(a) > -1; });
+  var nonShared = keys.filter(function(k){ return rules.sharedOnly.indexOf(k) === -1; });
+  var onlyShared = (nonShared.length === 0 && keys.length > 0);
+  var matchedClusters = [];
+  var clusterBonus = 0;
+  rules.clusters.forEach(function(cl){
+    var allMatch = cl.items.every(function(i){ return keys.indexOf(i) > -1; });
+    if(allMatch){ matchedClusters.push(cl.label); clusterBonus += cl.bonus; }
+  });
+  var effectiveScore = score + clusterBonus;
+  var level, label, color, advice;
+  if(onlyShared){
+    level='shared'; label='&#x26A0;&#xFE0F; অনিশ্চিত'; color='#7f8c8d';
+    advice='শুধু সাধারণ উপসর্গ পাওয়া গেছে যা একাধিক কারণে হতে পারে। এটি নিশ্চিত করে '+getDiagLabel(type)+' বলা যাচ্ছে না।';
+  } else if(!anchorFound || effectiveScore < rules.minScore){
+    level='weak'; label='&#x1F535; দুর্বল সংকেত'; color='#2980b9';
+    advice='কিছু লক্ষণ পাওয়া গেছে তবে নির্ণায়ক (Anchor) লক্ষণ নেই বা সংখ্যা যথেষ্ট নয়। এই মুহূর্তে '+getDiagLabel(type)+' নিশ্চিত বলা যাচ্ছে না। আরও পর্যবেক্ষণ দরকার।';
+  } else if(anchorFound && effectiveScore >= rules.minScore && matchedClusters.length === 0){
+    level='probable'; label='&#x1F7E1; সম্ভাবনা আছে'; color='#e67e22';
+    advice=getDiagLabel(type)+'-এর সম্ভাবনা আছে। একজন রাকির সাথে পরামর্শ করুন এবং নিয়মিত রুকইয়াহ শুরু করুন।';
+  } else if(anchorFound && matchedClusters.length >= 1 && effectiveScore >= rules.minScore + 3){
+    level='confirmed'; label='&#x1F534; নিশ্চিত সম্ভাবনা'; color='#c0392b';
+    advice='একাধিক নির্ণায়ক লক্ষণ ও ক্লাস্টার পাওয়া গেছে। '+getDiagLabel(type)+'-এর শক্তিশালী সম্ভাবনা আছে। দ্রুত একজন অভিজ্ঞ রাকির সাথে যোগাযোগ করুন।';
+  } else {
+    level='probable'; label='&#x1F7E1; সম্ভাবনা আছে'; color='#e67e22';
+    advice=getDiagLabel(type)+'-এর সম্ভাবনা আছে। একজন রাকির সাথে পরামর্শ করুন এবং নিয়মিত রুকইয়াহ শুরু করুন।';
+  }
+  return {level:level, label:label, color:color, advice:advice, clusters:matchedClusters,
+          anchorFound:anchorFound, score:effectiveScore, rawScore:score, pct:pct,
+          subtypes:detectSubtypes(type, keys)};
+}
+
+function detectSubtypes(type, keys){
+  var rules = diagRules[type];
+  if(!rules || !rules.subtypes || keys.length === 0) return [];
+  var matched = [];
+  rules.subtypes.forEach(function(st){
+    var count = st.indicators.filter(function(i){ return keys.indexOf(i) > -1; }).length;
+    if(count >= st.minIndicators){
+      matched.push({key:st.key, label:st.label, desc:st.desc, color:st.color, matchCount:count, total:st.indicators.length});
+    }
+  });
+  matched.sort(function(a,b){ return b.matchCount - a.matchCount; });
+  return matched;
+}
+
+function getDiagLabel(type){
+  var labels = {bodnazar:'বদনজর', jadu:'জাদু', jinn:'জিন', waswasa:'ওয়াসওয়াসা', bachcha:'বাচ্চাদের সমস্যা'};
+  return labels[type]||type;
+}
+
+function getDiagColor(key){
+  var colors = {bodnazar:'#5c3a1a', jadu:'#2d1a5c', jinn:'#1a3a5c', waswasa:'#4a1a5c'};
+  return colors[key]||'#1a5c3a';
+}
+
+function sendDiagnosis(){
+  var keys = Object.keys(diagSelected).map(Number).sort(function(a,b){return a-b;});
+  if(keys.length===0){alert('অন্তত একটি সমস্যা মার্ক করুন।');return;}
+  var d    = diagData[currentDiagType];
+  var name = diagPatientInfo.name || '';
+  var phone= diagPatientInfo.phone || '';
+  var m = '';
+  m += d.title + ' রিপোর্ট\n';
+  m += '━━━━━━━━━━━━━━━━━━━━\n';
+  m += '&#x1F3E2; *প্রতিষ্ঠান:* Ruqyah Haven\n';
+  if(name)  m += '&#x1F464; *নাম:* ' + name + '\n';
+  if(phone) m += '&#x1F4F1; *ফোন:* ' + phone + '\n';
+  m += '━━━━━━━━━━━━━━━━━━━━\n';
+  m += '*চিহ্নিত সমস্যাসমূহ (' + keys.length + 'টি):*\n\n';
+  keys.forEach(function(n){
+    var txt = getItemTextByType(currentDiagType, n);
+    m += '&#x2705; ' + bnNum[n] + '. ' + txt + '\n';
+  });
+  m += '━━━━━━━━━━━━━━━━━━━━\n';
+  diagAllResults[currentDiagType] = { keys: keys, d: d, msg: m };
+  recordCheckedTexts(currentDiagType);
+  closeDiagnosis();
+  diagStepIndex++;
+  openNextDiagStep();
+}
+
+function sendResultWA(btn){
+  var encoded = btn.getAttribute('data-msg');
+  var m = decodeURIComponent(encoded);
+  m += '\n&#x1F932; اللهم اشفه وعافه — আল্লাহুম্মাশফিহি ওয়া আফিহি।';
+  window.open('https://api.whatsapp.com/send?phone='+getWAPhone()+'&text='+encodeURIComponent(m),'_blank');
+}
+
+function closeResult(){
+  document.getElementById('resultOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function getItemTextByType(type, n){
+  var d = diagData[type];
+  if(!d) return '';
+  /* bachcha: বয়স অনুযায়ী filter */
+  if(type === 'bachcha' && d.groups){
+    var groupsToUse = d.groups.filter(function(grp){
+      if(_diagAgeSelected === 'infant'){
+        return grp.label.indexOf('০–২') > -1 || grp.label.indexOf('0–2') > -1 || grp.label.indexOf('০-২') > -1;
+      } else if(_diagAgeSelected === 'child'){
+        return grp.label.indexOf('২–১২') > -1 || grp.label.indexOf('2–12') > -1 || grp.label.indexOf('২-১২') > -1;
+      }
+      return true;
+    });
+    var idx=0;
+    for(var g=0;g<groupsToUse.length;g++){
+      for(var i=0;i<groupsToUse[g].items.length;i++){
+        idx++;
+        if(idx===n){ var it=groupsToUse[g].items[i]; return it?(it.text||it):''; }
+      }
+    }
+    return '';
+  }
+  /* সব অন্য type: getAllItems ব্যবহার করো */
+  var items = getAllItems(type);
+  var item = items[n-1];
+  return item ? (item.text||item) : '';
+}
+
+function showFinalCombinedResult(){
+  var info = diagPatientInfo;
+  var today = new Date();
+  var dateStr = String(today.getDate()).padStart(2,'0')+'.'+String(today.getMonth()+1).padStart(2,'0')+'.'+String(today.getFullYear()).slice(2);
+  var diagColors = {bodnazar:'#5c3a1a', jadu:'#2d1a5c', jinn:'#1a3a5c', waswasa:'#4a1a5c', bachcha:'#1a5c4a'};
+  var diagEmoji  = {bodnazar:'&#x1F441;&#xFE0F;', jadu:'&#x1FA84;', jinn:'&#x1F47B;', waswasa:'&#x1F9E0;', bachcha:'&#x1F476;'};
+  var diagLabel  = {bodnazar:'বদনজর', jadu:'জাদু', jinn:'জিন', waswasa:'ওয়াসওয়াসা', bachcha:'বাচ্চাদের'};
+  var title = document.getElementById('resultTitle');
+  var sub   = document.getElementById('resultSub');
+  var body  = document.getElementById('resultBody');
+  var header= document.getElementById('resultHeader');
+  if(title) title.textContent = '&#x1F4CB; সম্পূর্ণ ডায়াগনোসিস রিপোর্ট';
+  if(sub)   sub.textContent   = info.name + ' | ' + dateStr;
+  if(header) header.style.background = '#1a5c3a';
+  var html = '';
+  html += '<div style="background:#f0faf2;border:1px solid #b2dbb9;border-radius:10px;padding:12px;margin-bottom:12px;">';
+  html += '<div style="font-size:12px;font-weight:700;color:#1a5c3a;margin-bottom:8px;text-transform:uppercase;">&#x1F464; রোগীর তথ্য</div>';
+  html += '<div style="font-size:13px;color:#333;line-height:1.8;">';
+  html += '&#x1F4CC; নাম: <strong>'+info.name+'</strong><br>';
+  html += '&#x1F4F1; নম্বর: <strong>'+info.phone+'</strong><br>';
+  if(info.age) html += '&#x1F382; বয়স: <strong>'+(info.age==='infant'?'০–২ বছর':info.age==='child'?'২–১২ বছর':info.age+' বছর')+'</strong><br>';
+  html += '&#x1F4DD; ডায়াগনোসিস: <strong>'+(info.diagFor==='self'?'নিজের জন্য':'অন্যের জন্য')+'</strong>';
+  html += '</div></div>';
+  var fullMsg = '&#x1F4CB; *সম্পূর্ণ ডায়াগনোসিস রিপোর্ট*\n';
+  fullMsg += '&#x1F464; নাম: *'+info.name+'* | &#x1F4F1; '+info.phone+'\n';
+  if(info.age) fullMsg += '&#x1F382; বয়স: '+(info.age==='infant'?'০–২ বছর':info.age==='child'?'২–১২ বছর':info.age+' বছর')+'\n';
+  fullMsg += '&#x1F4C5; তারিখ: '+dateStr+'\n';
+  fullMsg += '━━━━━━━━━━━━━━━━━━━━\n\n';
+  var totalSymptoms = 0;
+  var evalResults = {};
+  diagStepOrder.forEach(function(type){
+    var res = diagAllResults[type];
+    var keys = res ? res.keys : [];
+    totalSymptoms += keys.length;
+    evalResults[type] = evaluateDiagnosis(type, keys);
+  });
+  html += '<div style="margin-bottom:12px;">';
+  html += '<div style="font-size:12px;font-weight:700;color:#1a5c3a;text-transform:uppercase;margin-bottom:8px;">&#x1F4CA; ডায়াগনোসিস বিশ্লেষণ</div>';
+  var hasConfirmed = false;
+  var hasProbable  = false;
+  var topAdvice    = [];
+  diagStepOrder.forEach(function(type){
+    var res   = diagAllResults[type];
+    var ev    = evalResults[type];
+    var color = diagColors[type]||'#1a5c3a';
+    var emoji = diagEmoji[type]||'&#x1F50D;';
+    var label = diagLabel[type]||type;
+    var keys  = res ? res.keys : [];
+    if(ev.level==='confirmed') hasConfirmed = true;
+    if(ev.level==='probable')  hasProbable  = true;
+    if(ev.level==='confirmed'||ev.level==='probable') topAdvice.push({label:label, ev:ev, color:color, emoji:emoji});
+    html += '<div style="background:#fff;border:2px solid '+(ev.level==='confirmed'?'#c0392b':ev.level==='probable'?'#e67e22':ev.level==='weak'?'#2980b9':'#ccc')+';border-radius:10px;padding:10px 12px;margin-bottom:8px;">';
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">';
+    html += '<span style="font-size:13px;font-weight:700;color:'+color+';">'+emoji+' '+label+'</span>';
+    html += '<span style="font-size:11px;font-weight:700;color:#fff;background:'+(ev.level==='confirmed'?'#c0392b':ev.level==='probable'?'#e67e22':ev.level==='weak'?'#2980b9':'#95a5a6')+';border-radius:12px;padding:2px 9px;">'+ev.label+'</span>';
+    html += '</div>';
+    var barColor = ev.level==='confirmed'?'#c0392b':ev.level==='probable'?'#e67e22':ev.level==='weak'?'#2980b9':'#95a5a6';
+    html += '<div style="background:#f0f0f0;border-radius:4px;height:7px;overflow:hidden;margin-bottom:5px;">';
+    html += '<div style="background:'+barColor+';width:'+ev.pct+'%;height:100%;border-radius:4px;"></div>';
+    html += '</div>';
+    html += '<div style="font-size:11px;color:#666;">স্কোর: '+ev.rawScore+' পয়েন্ট | লক্ষণ: '+keys.length+'টি | '+ev.pct+'%</div>';
+    if(ev.clusters && ev.clusters.length > 0){
+      html += '<div style="margin-top:6px;">';
+      ev.clusters.forEach(function(cl){
+        html += '<div style="font-size:10px;background:#fff3e0;color:#e65100;border-radius:4px;padding:2px 7px;margin-top:3px;display:inline-block;margin-right:4px;">&#x1F517; '+cl+'</div>';
+      });
+      html += '</div>';
+    }
+    if(ev.subtypes && ev.subtypes.length > 0 && (ev.level==='confirmed'||ev.level==='probable')){
+      html += '<div style="margin-top:8px;border-top:1px dashed #ddd;padding-top:7px;">';
+      html += '<div style="font-size:10px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px;">&#x1F50E; সম্ভাব্য প্রকার</div>';
+      ev.subtypes.forEach(function(st, idx){
+        var opacity = idx === 0 ? '1' : '0.75';
+        html += '<div style="background:#f9f9f9;border-left:3px solid '+st.color+';border-radius:0 6px 6px 0;padding:6px 10px;margin-bottom:5px;opacity:'+opacity+';">';
+        html += '<div style="font-size:12px;font-weight:700;color:'+st.color+';margin-bottom:2px;">'+st.label+'</div>';
+        html += '<div style="font-size:11px;color:#555;line-height:1.5;">'+st.desc+'</div>';
+        html += '<div style="font-size:10px;color:#999;margin-top:3px;">'+st.matchCount+'টি সূচক মিলেছে</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
+    if(!ev.anchorFound && keys.length > 0){
+      html += '<div style="font-size:10px;color:#999;margin-top:5px;">&#x26A0;&#xFE0F; নির্ণায়ক লক্ষণ (Anchor) পাওয়া যায়নি</div>';
+    }
+    html += '</div>';
+    fullMsg += emoji+' *'+label+'* — '+ev.label+'\n';
+    if(ev.subtypes && ev.subtypes.length > 0 && (ev.level==='confirmed'||ev.level==='probable')){
+      fullMsg += '   &#x1F50E; সম্ভাব্য প্রকার: '+ev.subtypes[0].label+'\n';
+    }
+    if(keys.length > 0){
+      var fmItems = getAllItems(type);
+      keys.forEach(function(n,i){
+        var d2 = diagData[type];
+        var item2 = fmItems[n-1];
+        var txt2 = item2 ? (item2.text||item2) : getItemTextByType(type, n);
+        fullMsg += '  '+(i+1)+'. '+txt2+'\n';
+      });
+    }
+    fullMsg += '\n';
+  });
+  html += '</div>';
+  html += '<div style="background:#fff8e1;border:1px solid #f9a825;border-radius:10px;padding:12px 14px;margin-bottom:12px;">';
+  html += '<div style="font-size:12px;font-weight:700;color:#e65100;margin-bottom:8px;">&#x1F932; রাকির পরামর্শ</div>';
+  if(topAdvice.length === 0){
+    html += '<div style="font-size:13px;color:#333;line-height:1.7;">আপনার চিহ্নিত লক্ষণগুলো থেকে কোনো নির্দিষ্ট রুহানি সমস্যার শক্তিশালী ইঙ্গিত পাওয়া যাচ্ছে না। নিয়মিত সকাল-সন্ধ্যার আযকার, কুরআন তিলাওয়াত এবং পাঁচ ওয়াক্ত নামাজ অব্যাহত রাখুন। সমস্যা অব্যাহত থাকলে একজন অভিজ্ঞ রাকির পরামর্শ নিন।</div>';
+  } else {
+    topAdvice.forEach(function(ta){
+      html += '<div style="border-left:3px solid '+ta.color+';padding-left:10px;margin-bottom:8px;">';
+      html += '<div style="font-size:12px;font-weight:700;color:'+ta.color+';margin-bottom:3px;">'+ta.emoji+' '+ta.label+'</div>';
+      html += '<div style="font-size:12px;color:#333;line-height:1.6;">'+ta.ev.advice+'</div>';
+      if(ta.ev.clusters && ta.ev.clusters.length > 0){
+        html += '<div style="font-size:11px;color:#888;margin-top:4px;">সক্রিয় ক্লাস্টার: '+ta.ev.clusters.join(' | ')+'</div>';
+      }
+      html += '</div>';
+    });
+    if(hasConfirmed){
+      html += '<div style="background:#fdecea;border-radius:6px;padding:8px 10px;margin-top:6px;font-size:12px;color:#c0392b;font-weight:700;">&#x26A1; দ্রুত একজন অভিজ্ঞ রাকির সাথে সশরীরে যোগাযোগ করুন। আল্লাহ সুবহানাহু ওয়া তাআলা শিফা দান করুন। আমীন।</div>';
+    }
+  }
+  html += '</div>';
+  html += '<div style="font-size:12px;font-weight:700;color:#555;text-transform:uppercase;margin-bottom:8px;">&#x1F4CB; বিস্তারিত লক্ষণ তালিকা</div>';
+  diagStepOrder.forEach(function(type){
+    var res   = diagAllResults[type];
+    var ev    = evalResults[type];
+    var color = diagColors[type]||'#1a5c3a';
+    var emoji = diagEmoji[type]||'&#x1F50D;';
+    var label = diagLabel[type]||type;
+    var keys  = res ? res.keys : [];
+    if(keys.length === 0) return;
+    var d = diagData[type];
+    var allItemsFlat = getAllItems(type);
+    html += '<div style="border-radius:9px;overflow:hidden;margin-bottom:8px;border:1px solid #e0e0e0;">';
+    html += '<div style="background:'+color+';color:#fff;padding:8px 12px;font-size:13px;font-weight:700;">'+emoji+' '+label+'</div>';
+    html += '<div style="background:#fff;padding:6px 10px;">';
+    keys.forEach(function(n,i){
+      var item = allItemsFlat[n-1];
+      var txt  = item ? (item.text||item) : getItemTextByType(type,n);
+      var wt   = item ? (item.w||1) : 1;
+      var dot  = wt===3?'&#x1F534;':wt===2?'&#x1F7E0;':'&#x1F7E1;';
+      var isAnchor = diagRules[type] && diagRules[type].anchors && diagRules[type].anchors.indexOf(n) > -1;
+      html += '<div style="padding:4px 0;border-bottom:1px solid #f5f5f5;font-size:11px;color:#333;display:flex;gap:5px;align-items:flex-start;">';
+      html += '<span style="color:'+color+';font-weight:700;min-width:16px;">'+(i+1)+'.</span>';
+      html += '<span style="flex:1;">'+(isAnchor?'<strong>':'')+txt+(isAnchor?'</strong>':'')+'</span>';
+      html += '<span>'+dot+'</span>';
+      if(isAnchor) html += '<span style="font-size:9px;background:'+color+';color:#fff;border-radius:3px;padding:1px 4px;flex-shrink:0;">Anchor</span>';
+      html += '</div>';
+    });
+    html += '</div></div>';
+  });
+  fullMsg += '━━━━━━━━━━━━━━━━━━━━\n';
+  fullMsg += '&#x1F522; মোট লক্ষণ: *'+totalSymptoms+'টি*\n';
+  fullMsg += '&#x1F932; اللهم اشفه وعافه — আল্লাহুম্মাশফিহি ওয়া আফিহি।';
+  html += '<div style="background:#fff3e0;border:1.5px solid #ff9800;border-radius:10px;padding:10px 13px;margin-bottom:12px;">';
+  html += '<div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:4px;">&#x26A0;&#xFE0F; গুরুত্বপূর্ণ</div>';
+  html += '<div style="font-size:11px;color:#444;line-height:1.7;">এটি ইসলামিক রুকইয়াহ পদ্ধতিতে পরিচালিত সম্ভাবনামূলক ডায়াগনোসিস — মেডিকেল ডায়াগনোসিস নয়। প্রতিটি লক্ষণের মেডিকেল কারণ আগে বাতিল করুন। নিশ্চিতকরণের জন্য ইফেক্ট ডায়াগনোসিস করুন এবং অভিজ্ঞ রাকির পরামর্শ নিন।</div>';
+  html += '</div>';
+  /* ইফেক্ট ডায়াগনোসিস বাটন */
+  var hasEff = diagStepOrder.some(function(type){
+    var res = diagAllResults[type];
+    var ev  = evaluateDiagnosis(type, res ? res.keys : []);
+    return ev.level === 'confirmed' || ev.level === 'probable';
+  });
+  if(hasEff){
+    html += '<div style="background:#e8f0ff;border:1.5px solid #3a5cc0;border-radius:10px;padding:12px 14px;margin-bottom:10px;">';
+    html += '<div style="font-size:13px;font-weight:700;color:#1a3a8c;margin-bottom:5px;">&#x1F3AF; ইফেক্ট ডায়াগনোসিস করুন</div>';
+    html += '<div style="font-size:12px;color:#444;line-height:1.6;margin-bottom:10px;">সিম্পটম ডায়াগনোসিসের ফলাফল ১০০% নিশ্চিত করতে নির্দিষ্ট আয়াত পড়ুন এবং ইফেক্ট রিপোর্ট করুন।</div>';
+    html += '<button onclick="closeResult();startEffectDiagnosis();" style="width:100%;padding:12px;background:#1a3a8c;color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Arial,sans-serif;" type="button"><i class="fas fa-flask"></i> ইফেক্ট ডায়াগনোসিস শুরু করুন</button>';
+    html += '</div>';
+  }
+  html += '<button class="result-wa-btn" onclick="sendResultWA(this)" data-msg="'+encodeURIComponent(fullMsg)+'"><i class="fab fa-whatsapp"></i> সম্পূর্ণ রিপোর্ট WhatsApp-এ পাঠাও</button>';
+  html += '<button class="result-next-btn" onclick="downloadFullDiagPDF()" style="background:#1a5c3a;margin-top:8px;"><i class="fas fa-file-pdf"></i> সম্পূর্ণ রিপোর্ট PDF ডাউনলোড করুন</button>';
+  html += '<button class="result-close-btn" onclick="closeResult()">বন্ধ করুন</button>';
+  body.innerHTML = html;
+  document.getElementById('resultOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function downloadFullDiagPDF(imageMode){
+  var info = diagPatientInfo;
+  var logoSrc = 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjkqW16IAtma1Fy_fpqZgoWBRNtBQFY1q22oqu4asfBgfajkOEw5p1NvRprOcz2scN7zVo0RJ3tmnGnMz3N3S37XSJzpAEfcKL1XZRndeqtquwYIUcVGiK_F9FRj62QzDg5gRhaD7Must_HvhiKYynIT3LRCz1x4iDG10jC29JT8i4c4vLR9nEIsbC35BJ7/s1600/IMG-20260526-WA0002.jpg';
+  var today = new Date();
+  var dateStr = String(today.getDate()).padStart(2,'0')+'.'+String(today.getMonth()+1).padStart(2,'0')+'.'+String(today.getFullYear()).slice(2);
+  var diagColors2 = {bodnazar:'#5c3a1a', jadu:'#2d1a5c', jinn:'#1a3a5c', waswasa:'#4a1a5c', bachcha:'#1a5c4a'};
+  var diagLabel2  = {bodnazar:'বদনজর', jadu:'জাদু', jinn:'জিন', waswasa:'ওয়াসওয়াসা', bachcha:'বাচ্চাদের'};
+  var allRows = '';
+  var totalCount = 0;
+  diagStepOrder.forEach(function(type){
+    var res = diagAllResults[type];
+    var color = diagColors2[type]||'#1a5c3a';
+    var label = diagLabel2[type]||type;
+    var count = res ? res.keys.length : 0;
+    totalCount += count;
+    allRows += '<tr><td colspan="2" style="background:'+color+';color:#fff;padding:7px 10px;font-size:12px;font-weight:700;">'+label+' ডায়াগনোসিস — '+count+'টি লক্ষণ</td></tr>';
+    if(!res || res.keys.length === 0){
+      allRows += '<tr><td colspan="2" style="padding:6px 10px;font-size:12px;color:#888;border:1px solid #ccc;">কোনো লক্ষণ চিহ্নিত হয়নি।</td></tr>';
+    } else {
+      var pdfItems = getAllItems(type);
+      res.keys.forEach(function(n, idx){
+        var txt = pdfItems[n-1] ? (pdfItems[n-1].text || pdfItems[n-1]) : getItemTextByType(type, n);
+        var bg = (idx%2===0)?'#fff':'#f9f9f9';
+        allRows += '<tr style="background:'+bg+';">'
+          +'<td style="padding:6px 8px;border:1px solid #ccc;text-align:center;font-size:12px;width:36px;">'+(idx+1)+'</td>'
+          +'<td style="padding:6px 10px;border:1px solid #ccc;font-size:12px;">'+txt+'</td>'
+          +'</tr>';
+      });
+    }
+  });
+  var ageDisplay = '';
+  if(info.age){ ageDisplay = info.age==='infant'?'০–২ বছর':info.age==='child'?'২–১২ বছর':info.age+' বছর'; }
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>সম্পূর্ণ ডায়াগনোসিস রিপোর্ট</title>'
+    +'<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Arial,sans-serif;}'
+    +'.page{width:210mm;min-height:297mm;margin:0 auto;padding:10mm 8mm 14mm;}'
+    +'.box{border:2px solid #333;}'
+    +'.title{text-align:center;padding:8px;border-bottom:2px solid #333;font-size:16px;font-weight:800;letter-spacing:1px;}'
+    +'.hrow{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;border-bottom:2px solid #333;}'
+    +'.hl{font-size:11px;line-height:1.9;} .hl strong{font-size:13px;display:block;margin-bottom:2px;}'
+    +'.hc img{width:58px;height:58px;object-fit:contain;}'
+    +'.hr{text-align:right;font-size:11px;line-height:1.8;}'
+    +'table{width:100%;border-collapse:collapse;}'
+    +'.footer{text-align:center;padding:10px;font-size:11px;color:#555;border-top:1px solid #ccc;}'
+    +'@media print{body{margin:0;}.page{width:100%;padding:8mm;}@page{size:A4 portrait;margin:10mm;}}'
+    +'</style></head><body>'
+    +'<div class="page"><div class="box">'
+    +'<div class="title">&#x1F4CB; সম্পূর্ণ ডায়াগনোসিস রিপোর্ট</div>'
+    +'<div class="hrow">'
+      +'<div class="hl"><strong>Ruqyah Haven — Cupping &amp; Ruqyah Center</strong>'
+        +'নাম: '+(info.name||'—')+'<br>'
+        +'ফোন: '+(info.phone||'—')+'<br>'
+        +(ageDisplay?'বয়স: '+ageDisplay+'<br>':'')
+        +(info.diagFor==='self'?'নিজের জন্য':'অন্যের জন্য')
+      +'</div>'
+      +'<div class="hc"><img src="'+logoSrc+'"/></div>'
+      +'<div class="hr"><strong>তারিখ: '+dateStr+'</strong><br>মোট লক্ষণ: <strong>'+totalCount+'টি</strong></div>'
+    +'</div>'
+    +'<table><tbody>'+allRows+'</tbody></table>'
+    +'<div class="footer">Ruqyah Haven | আল্লাহ সুবহানাহু ওয়া তাআলা শিফা দান করুন।</div>'
+    +'</div>'
+    +'<script>window.onload=function(){setTimeout(function(){window.print();},800);};<\/script>'
+    +'</body></html>';
+  var fullDiagFileName = (info.name||'Patient') + '_Diagnosis';
+  var fullDiagWAMsg = '&#x1F4CB; *সম্পূর্ণ ডায়াগনোসিস রিপোর্ট*\n'
+    +(info.name?'&#x1F464; নাম: *'+info.name+'*\n':'')
+    +(info.phone?'&#x1F4F1; ফোন: '+info.phone+'\n':'')
+    +(ageDisplay?'&#x1F382; বয়স: '+ageDisplay+'\n':'')
+    +'&#x1F4C5; তারিখ: '+dateStr+'\n'
+    +'&#x1F522; মোট লক্ষণ: *'+totalCount+'টি*\n'
+    +'\n&#x1F4CE; ফাইল: *'+fullDiagFileName+'.html*\n'
+    +'&#x1F932; اللهم اشفه وعافه — আল্লাহুম্মাশফিহি ওয়া আফিহি।';
+  var fullDiagCenterRaw = (document.getElementById('centerPhone')||{value:''}).value
+    || (document.getElementById('apptBizWA')||{value:''}).value;
+  if(imageMode){
+    var imgHtml = html.replace(/<script>window\.onload[\s\S]*?<\/script>/,'');
+    htmlToImage(imgHtml, fullDiagFileName);
+  } else {
+    openPDFTab(html, fullDiagFileName, info.phone, fullDiagCenterRaw, fullDiagWAMsg);
+  }
+}
+
+
+
+/* ===================================================
+   EFFECT DIAGNOSIS SYSTEM v2.0 — পূর্ণাঙ্গ ৩-স্তরের গাইডলাইন
+   ভিত্তি: Practical Self Ruqya 101 Principles +
+           Life With Allah + Sincerity Ruqyah Centre
+   ===================================================
+   গুরুত্বপূর্ণ নীতি:
+   ১. রুকইয়াহ ডায়াগনোসিসই একমাত্র নিশ্চিত পদ্ধতি
+   ২. শুধু সিম্পটম দিয়ে কখনো নিশ্চিত হওয়া যায় না
+   ৩. ডায়াগনোসিসে রিঅ্যাকশন না আসা = সুস্থতার প্রমাণ
+   ৪. গুনাহ ও অসততা রিঅ্যাকশন কমিয়ে দেয়
+   ৫. চূড়ান্ত নিশ্চিতকরণে অভিজ্ঞ রাকি প্রয়োজন
+   =================================================== */
+
+/* ── শেয়ারড ইফেক্ট অপশন (সব ধাপে যোগ হবে) ── */
+var BODY_EFFECTS = [
+  { text: 'শরীরের যেকোনো জায়গায় মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+  { text: 'শরীরে ঝিমঝিম বা শিরশির অনুভব হল', w: 4, type: 'pos' },
+  { text: 'শরীরে চুলকানি হল (হাত, পা, মাথা, পিঠ)', w: 3, type: 'pos' },
+  { text: 'রগে বা মাংসপেশিতে টান লাগল বা খিঁচ ধরল', w: 4, type: 'pos' },
+  { text: 'চোখের পাতা কাঁপল বা বারবার কাঁপতে থাকল', w: 4, type: 'pos' },
+  { text: 'শরীরের যেকোনো জায়গায় হঠাৎ ব্যথা হল বা বাড়ল', w: 4, type: 'pos' },
+  { text: 'বারবার হাই উঠল (শক্তিশালী রুকইয়াহ সংকেত)', w: 5, type: 'pos' },
+  { text: 'বমি ভাব, ঢেঁকুর বা গলায় কিছু উঠে আসার অনুভূতি', w: 4, type: 'pos' },
+  { text: 'প্রস্রাবের বা পায়খানার চাপ অনুভব হল', w: 3, type: 'pos' },
+  { text: 'ঘাম হল, শরীর গরম হল বা জ্বর জ্বর লাগল', w: 3, type: 'pos' },
+  { text: 'কান্না এল বা অনিচ্ছাকৃত আবেগ উঠল', w: 3, type: 'pos' },
+  { text: 'পড়তে ইচ্ছা করল না, বিরক্তি বা রাগ এল', w: 3, type: 'pos' }
+];
+
+/* ── গাইডলাইন পেজ HTML ── */
+var EFFECT_GUIDELINES = {
+  bodnazar: `
+<div style="font-size:13px;color:#333;line-height:1.9;">
+<div style="background:#5c3a1a;color:#fff;padding:10px 14px;border-radius:8px;margin-bottom:12px;font-weight:700;font-size:14px;">&#x1F441;&#xFE0F; বদনজর ইফেক্ট ডায়াগনোসিস — সম্পূর্ণ গাইডলাইন</div>
+
+<div style="background:#fff8f0;border-left:4px solid #5c3a1a;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:12px;">
+<div style="font-weight:700;color:#5c3a1a;margin-bottom:6px;">&#x1F4CB; শুরু করার আগে — প্রস্তুতি</div>
+<div>১. ওযু করুন এবং পরিষ্কার জায়গায় কিবলামুখী বসুন<br>
+২. এক গ্লাস পানি সামনে রাখুন (পড়া শেষে পান করবেন)<br>
+৩. ৫-১০ মিনিট চুপ করে বসুন — শরীরের স্বাভাবিক অবস্থা বুঝুন<br>
+৪. মনে মনে নিয়ত করুন: <em>"ইয়া আল্লাহ, আমাকে দেখাও আমার কী সমস্যা আছে"</em><br>
+৫. ফোন বন্ধ রাখুন, শান্ত পরিবেশে থাকুন</div>
+</div>
+
+<div style="background:#fff8f0;border-left:4px solid #e67e22;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:12px;">
+<div style="font-weight:700;color:#e67e22;margin-bottom:6px;">&#x26A0;&#xFE0F; রিঅ্যাকশন চেনার নিয়ম</div>
+<div><strong>শক্তিশালী সংকেত:</strong> মাথায় চাপ, চোখে জ্বালা বা পানি, হাই ওঠা, শরীরে কাঁপন বা মাংস লাফানো<br>
+<strong>মাঝারি সংকেত:</strong> ঝিমঝিম, শিরশির, চুলকানি, রগে টান, চোখের পাতা কাঁপা<br>
+<strong>দুর্বল সংকেত:</strong> হালকা অস্বস্তি, মন অস্থির, পড়তে ইচ্ছা না করা<br>
+<strong>নিরপেক্ষ:</strong> কিছুই না হওয়া — এর অর্থ সমস্যা নেই <em>অথবা</em> গুনাহ/ওষুধ কারণ</div>
+</div>
+
+<div style="font-weight:700;color:#5c3a1a;margin-bottom:6px;">&#x1F4D6; ৩ স্তরের ডায়াগনোসিস পদ্ধতি:</div>
+<div style="background:#f9f0e8;border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+<strong>স্তর ১ — পূর্ণ আয়াত:</strong> সূরা কালাম ৫১ (৭ বার) + সূরা ফালাক (৭ বার)<br>
+<strong>স্তর ২ — শক্তিশালী শব্দাংশ:</strong> <span style="direction:rtl;font-size:15px;">حَاسِدٍ إِذَا حَسَدَ</span> — এই অংশ ৩৩ বার পড়ুন<br>
+<strong>স্তর ৩ — পানি ও ফুঁ:</strong> গ্লাসের পানিতে পড়ে পান করুন, তারপর শরীরে মাসেহ করুন
+</div>
+<div style="font-size:11px;color:#888;background:#f5f5f5;padding:8px 10px;border-radius:6px;">প্রতিটি স্তরে রিঅ্যাকশন হলে বদনজর আছে। যে স্তরে বেশি রিঅ্যাকশন — সেটাই মূল সংকেত। সুস্থ হওয়ার লক্ষণ: ডায়াগনোসিসে রিঅ্যাকশন আর আসছে না।</div>
+</div>`,
+
+  jadu: `
+<div style="font-size:13px;color:#333;line-height:1.9;">
+<div style="background:#2d1a5c;color:#fff;padding:10px 14px;border-radius:8px;margin-bottom:12px;font-weight:700;font-size:14px;">&#x1FA84; জাদু ইফেক্ট ডায়াগনোসিস — সম্পূর্ণ গাইডলাইন</div>
+
+<div style="background:#f5f0ff;border-left:4px solid #2d1a5c;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:12px;">
+<div style="font-weight:700;color:#2d1a5c;margin-bottom:6px;">&#x1F4CB; শুরু করার আগে — প্রস্তুতি</div>
+<div>১. ফরজ গোসল থাকলে প্রথমে গোসল করুন, তারপর ওযু করুন<br>
+২. দুটো গ্লাস পানি নিন — একটি খাওয়ার জন্য, একটি গোসলের জন্য<br>
+৩. জলপাই তেল থাকলে সামনে রাখুন — পড়া শেষে পেটে ও পিঠে মাখবেন<br>
+৪. ৫-১০ মিনিট চুপ করে বসুন, শরীরের স্বাভাবিক অবস্থা নোট করুন<br>
+৫. নিয়ত: <em>"ইয়া আল্লাহ, যদি আমার উপর জাদু থাকে তা প্রকাশ করো"</em></div>
+</div>
+
+<div style="background:#f5f0ff;border-left:4px solid #e67e22;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:12px;">
+<div style="font-weight:700;color:#e67e22;margin-bottom:6px;">&#x26A0;&#xFE0F; জাদুর রিঅ্যাকশন চেনার নিয়ম</div>
+<div><strong>পেট/পিঠ রিঅ্যাকশন:</strong> সিহর মাকুল (খাওয়ানো জাদু) — সবচেয়ে সাধারণ<br>
+<strong>মাথা/মেরুদণ্ড:</strong> সিহর মারাদ বা সিহর রাবত<br>
+<strong>বমি/ঢেঁকুর:</strong> শক্তিশালী সিহর মাকুলের সংকেত<br>
+<strong>ঘুমের টান:</strong> সিহর খুমুল বা সিহর জুনুনের সংকেত<br>
+<strong>রাগ/বিরক্তি:</strong> সিহর তাফরিকের সংকেত</div>
+</div>
+
+<div style="font-weight:700;color:#2d1a5c;margin-bottom:6px;">&#x1F4D6; ৩ স্তরের ডায়াগনোসিস পদ্ধতি:</div>
+<div style="background:#f0ebff;border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+<strong>স্তর ১ — পূর্ণ আয়াত:</strong> সূরা আরাফ ১১৭-১১৯ (৭ বার) + সূরা ইউনুস ৮১-৮২ (৭ বার)<br>
+<strong>স্তর ২ — শক্তিশালী শব্দাংশ:</strong> <span style="direction:rtl;font-size:15px;">إِنَّ اللَّهَ سَيُبْطِلُهُ</span> — এই অংশ ৪১ বার পড়ুন<br>
+<strong>স্তর ৩ — পানি ও তেল:</strong> পানিতে পড়ে পান করুন, তেলে পড়ে পেট ও পিঠে মাখুন
+</div>
+<div style="font-size:11px;color:#888;background:#f5f5f5;padding:8px 10px;border-radius:6px;">খাওয়ানো জাদু নিশ্চিত করতে: সূরা ফাতিহা ৭ বার পড়ে পানিতে ফুঁ দিয়ে পান করুন — পেটে নড়াচড়া বা বমিভাব হলে নিশ্চিত।</div>
+</div>`,
+
+  jinn: `
+<div style="font-size:13px;color:#333;line-height:1.9;">
+<div style="background:#1a3a5c;color:#fff;padding:10px 14px;border-radius:8px;margin-bottom:12px;font-weight:700;font-size:14px;">&#x1F47B; জিন ইফেক্ট ডায়াগনোসিস — সম্পূর্ণ গাইডলাইন</div>
+
+<div style="background:#f0f5ff;border-left:4px solid #1a3a5c;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:12px;">
+<div style="font-weight:700;color:#1a3a5c;margin-bottom:6px;">&#x1F4CB; শুরু করার আগে — প্রস্তুতি</div>
+<div>১. ওযু করুন — ওযু না থাকলে জিন ডায়াগনোসিস দুর্বল হয়<br>
+২. একা শান্ত ঘরে বসুন — অন্ধকার নয়, স্বাভাবিক আলোতে<br>
+৩. ৫ মিনিট চুপ থাকুন — শরীরে কোনো স্বাভাবিক অনুভূতি আছে কিনা নোট করুন<br>
+৪. নিয়ত: <em>"ইয়া আল্লাহ, যদি জিন থাকে তা প্রকাশ করো"</em><br>
+৫. সতর্কতা: যদি আগে জিনের প্রকাশ্য লক্ষণ থাকে — একা না করে কারো সাথে করুন</div>
+</div>
+
+<div style="background:#f0f5ff;border-left:4px solid #e67e22;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:12px;">
+<div style="font-weight:700;color:#e67e22;margin-bottom:6px;">&#x26A0;&#xFE0F; জিনের রিঅ্যাকশন চেনার নিয়ম</div>
+<div><strong>মাথায় চাপ/কম্পন:</strong> জিনের সরাসরি উপস্থিতির সংকেত (মাস)<br>
+<strong>রাগ/পড়তে না চাওয়া:</strong> জিন পড়া বন্ধ করতে চাইছে — জোর করে পড়ুন<br>
+<strong>ঘুমের টান:</strong> জিন ঘুম পাড়িয়ে রুকইয়াহ থামাতে চাইছে<br>
+<strong>শরীরে নাড়াচাড়া:</strong> জিনের অবস্থান পরিবর্তন<br>
+<strong>কান্না/হাসি:</strong> জিনের আবেগীয় প্রতিক্রিয়া</div>
+</div>
+
+<div style="font-weight:700;color:#1a3a5c;margin-bottom:6px;">&#x1F4D6; ৩ স্তরের ডায়াগনোসিস পদ্ধতি:</div>
+<div style="background:#e8f0ff;border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+<strong>স্তর ১ — পূর্ণ আয়াত:</strong> আয়াতুল কুরসি (৩ বার উচ্চস্বরে) + সূরা নাস (৭ বার)<br>
+<strong>স্তর ২ — শক্তিশালী শব্দাংশ:</strong> <span style="direction:rtl;font-size:15px;">اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ</span> — ৩৩ বার পড়ুন<br>
+<strong>স্তর ৩ — সূরা জিন:</strong> সূরা জিন ১-৯ পড়ুন, তারপর ২ মিনিট চোখ বন্ধ করুন
+</div>
+<div style="font-size:11px;color:#888;background:#f5f5f5;padding:8px 10px;border-radius:6px;">জিন ডায়াগনোসিসে রিঅ্যাকশন না হওয়া মানে জিন নেই — অথবা জিন অনেক শক্তিশালী। দ্বিতীয় ক্ষেত্রে বারবার ডায়াগনোসিস করতে হবে।</div>
+</div>`,
+
+  waswasa: `
+<div style="font-size:13px;color:#333;line-height:1.9;">
+<div style="background:#4a1a5c;color:#fff;padding:10px 14px;border-radius:8px;margin-bottom:12px;font-weight:700;font-size:14px;">&#x1F9E0; ওয়াসওয়াসা ইফেক্ট ডায়াগনোসিস — সম্পূর্ণ গাইডলাইন</div>
+
+<div style="background:#f8f0ff;border-left:4px solid #4a1a5c;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:12px;">
+<div style="font-weight:700;color:#4a1a5c;margin-bottom:6px;">&#x1F4CB; শুরু করার আগে — প্রস্তুতি</div>
+<div>১. ওযু করুন এবং কিবলামুখী বসুন<br>
+২. ওযু নিয়ে সন্দেহ হলেও পড়তে থাকুন — ওয়াসওয়াসার এটাই ফাঁদ<br>
+৩. মনে মনে বলুন: <em>"আমার ওযু আছে, আমার ঈমান আছে"</em><br>
+৪. ৫ মিনিট চুপ থাকুন — মাথায় কতটুকু চিন্তা আসছে নোট করুন<br>
+৫. নিয়ত: <em>"ইয়া আল্লাহ, শয়তানের কুমন্ত্রণা প্রকাশ করো"</em></div>
+</div>
+
+<div style="background:#f8f0ff;border-left:4px solid #e67e22;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:12px;">
+<div style="font-weight:700;color:#e67e22;margin-bottom:6px;">&#x26A0;&#xFE0F; ওয়াসওয়াসার রিঅ্যাকশন চেনার নিয়ম</div>
+<div><strong>মাথায় বেশি চিন্তা আসা:</strong> শয়তান আরও কুমন্ত্রণা দিচ্ছে — ভালো সংকেত<br>
+<strong>পড়তে ভুল হওয়া:</strong> শয়তান বাধা দিচ্ছে — জোর করে পড়তে থাকুন<br>
+<strong>হাই ওঠা:</strong> ওয়াসওয়াসা কমছে — ইতিবাচক লক্ষণ<br>
+<strong>মাথায় চাপ:</strong> শয়তান প্রতিরোধ করছে<br>
+<strong>মন শান্ত হওয়া:</strong> রুকইয়াহ কাজ করছে</div>
+</div>
+
+<div style="font-weight:700;color:#4a1a5c;margin-bottom:6px;">&#x1F4D6; ৩ স্তরের ডায়াগনোসিস পদ্ধতি:</div>
+<div style="background:#f0e8ff;border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+<strong>স্তর ১ — পূর্ণ আয়াত:</strong> সূরা আরাফ ২০০ (১১ বার) + সূরা ফালাক-নাস (৩ বার করে)<br>
+<strong>স্তর ২ — শক্তিশালী শব্দাংশ:</strong> <span style="direction:rtl;font-size:15px;">أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ</span> — ১০০ বার পড়ুন<br>
+<strong>স্তর ৩ — আয়াতুল কুরসি:</strong> ১০ বার পড়ুন, প্রতিটির পর মাথায় হাত রাখুন
+</div>
+<div style="font-size:11px;color:#888;background:#f5f5f5;padding:8px 10px;border-radius:6px;">ওয়াসওয়াসায় সুস্থতার লক্ষণ: মাথায় বাজে চিন্তা আসা কমে গেছে এবং নামাজে মনোযোগ বাড়ছে।</div>
+</div>`,
+
+  bachcha: `
+<div style="font-size:13px;color:#333;line-height:1.9;">
+<div style="background:#1a5c4a;color:#fff;padding:10px 14px;border-radius:8px;margin-bottom:12px;font-weight:700;font-size:14px;">&#x1F476; বাচ্চাদের ইফেক্ট ডায়াগনোসিস — সম্পূর্ণ গাইডলাইন</div>
+
+<div style="background:#f0fff8;border-left:4px solid #1a5c4a;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:12px;">
+<div style="font-weight:700;color:#1a5c4a;margin-bottom:6px;">&#x1F4CB; শুরু করার আগে — প্রস্তুতি</div>
+<div>১. যিনি পড়বেন তিনি ওযু করুন<br>
+২. বাচ্চাকে পরিষ্কার কাপড়ে কোলে বা পাশে রাখুন<br>
+৩. বাচ্চার স্বাভাবিক অবস্থা আগে দেখুন — কতটুকু শান্ত বা অস্থির<br>
+৪. পড়ার সময় বাচ্চার চোখ, হাত, পা ও মুখ লক্ষ্য করুন<br>
+৫. অন্য কেউ পাশে থাকুন যদি বাচ্চার প্রকাশ্য লক্ষণ থাকে</div>
+</div>
+
+<div style="background:#f0fff8;border-left:4px solid #e67e22;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:12px;">
+<div style="font-weight:700;color:#e67e22;margin-bottom:6px;">&#x26A0;&#xFE0F; বাচ্চার রিঅ্যাকশন চেনার নিয়ম</div>
+<div><strong>কান্না/চিৎকার:</strong> রুকইয়াহর প্রতিক্রিয়া — থামবেন না, পড়তে থাকুন<br>
+<strong>ঘুমিয়ে পড়া:</strong> জিন বা বদনজর থেকে শান্তি পাচ্ছে — ইতিবাচক<br>
+<strong>হাত/মাথা সরানো:</strong> বাধা দেওয়ার চেষ্টা — আলতোভাবে ধরুন<br>
+<strong>চোখ উল্টানো:</strong> শক্তিশালী রিঅ্যাকশন — পড়তে থাকুন<br>
+<strong>শান্ত ও হাসা:</strong> রুকইয়াহ কাজ করছে</div>
+</div>
+
+<div style="font-weight:700;color:#1a5c4a;margin-bottom:6px;">&#x1F4D6; ৩ স্তরের ডায়াগনোসিস পদ্ধতি:</div>
+<div style="background:#e8fff4;border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+<strong>স্তর ১ — মাথায় হাত রেখে পড়া:</strong> রুকইয়াহ দুআ (৩ বার) + আয়াতুল কুরসি (৩ বার)<br>
+<strong>স্তর ২ — কানে পড়া:</strong> ইবনু আব্বাসের দুআ ডান কানে (৩ বার ফুঁ দিয়ে)<br>
+<strong>স্তর ৩ — পানিতে পড়া:</strong> সূরা ফালাক-নাস পড়া পানি খাওয়ান ও গায়ে দিন
+</div>
+<div style="font-size:11px;color:#888;background:#f5f5f5;padding:8px 10px;border-radius:6px;">বাচ্চার সুস্থতার লক্ষণ: রুকইয়াহতে রিঅ্যাকশন কমে যাচ্ছে এবং ঘুম ও খাওয়া স্বাভাবিক হচ্ছে।</div>
+</div>`
+};
+
+var effectData = {
+
+  bodnazar: {
+    label: 'বদনজর',
+    color: '#5c3a1a',
+    icon: '&#x1F441;&#xFE0F;',
+    guideline: EFFECT_GUIDELINES.bodnazar,
+    steps: [
+      {
+        layer: 1,
+        layerLabel: 'স্তর ১ — পূর্ণ আয়াত',
+        ayat: {
+          arabic: 'وَإِن يَكَادُ الَّذِينَ كَفَرُوا لَيُزْلِقُونَكَ بِأَبْصَارِهِمْ لَمَّا سَمِعُوا الذِّكْرَ وَيَقُولُونَ إِنَّهُ لَمَجْنُونٌ',
+          bangla: 'আর যারা কাফির তারা যখন কুরআন শোনে তখন তারা দৃষ্টি দিয়ে তোমাকে পিছলে দিতে চায় এবং বলে: নিশ্চয় সে পাগল।',
+          ref: 'সূরা আল-কালাম ৫১ — বদনজরের জন্য বিশেষভাবে অবতীর্ণ আয়াত'
+        },
+        count: '৭ বার পড়ুন → প্রতিটির পর বুকে ফুঁ দিন',
+        instruction: 'ওযু করে কিবলামুখী বসুন। চোখ বন্ধ রাখুন। ৭ বার মনোযোগ দিয়ে পড়ুন। প্রতিটি পড়ার পর দুই হাতে ফুঁ দিয়ে মুখে ও বুকে মাসেহ করুন। শরীরে যা অনুভব হচ্ছে মনে রাখুন।',
+        question: '৭ বার পড়ার পর কী অনুভব হল?',
+        options: [
+          { text: 'চোখে পানি এল, জ্বালা করল বা চোখ ভারী হল', w: 5, type: 'pos' },
+          { text: 'মাথায় চাপ, টনটন বা ব্যথা অনুভব হল', w: 5, type: 'pos' },
+          { text: 'বুকে চাপ, ধড়ফড় বা শ্বাসে অস্বস্তি', w: 4, type: 'pos' },
+          { text: 'হঠাৎ দুর্বলতা বা মাথা ঘুরানো', w: 3, type: 'pos' },
+          { text: 'শরীরের যেকোনো জায়গায় মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরে ঝিমঝিম বা শিরশির অনুভব হল', w: 4, type: 'pos' },
+          { text: 'শরীরে চুলকানি হল (হাত, পা, মাথা, পিঠ)', w: 3, type: 'pos' },
+          { text: 'রগে বা মাংসপেশিতে টান লাগল বা খিঁচ ধরল', w: 4, type: 'pos' },
+          { text: 'চোখের পাতা কাঁপল বা বারবার কাঁপতে থাকল', w: 4, type: 'pos' },
+          { text: 'শরীরের যেকোনো জায়গায় হঠাৎ ব্যথা হল বা বাড়ল', w: 4, type: 'pos' },
+          { text: 'বারবার হাই উঠল (শক্তিশালী রুকইয়াহ সংকেত)', w: 5, type: 'pos' },
+          { text: 'বমি ভাব, ঢেঁকুর বা গলায় কিছু উঠে আসার অনুভূতি', w: 4, type: 'pos' },
+          { text: 'পড়তে মন চাইল না, বিরক্তি বা রাগ এল', w: 3, type: 'pos' },
+          { text: 'কিছুই অনুভব হয়নি, সম্পূর্ণ স্বাভাবিক', w: 0, type: 'neg' }
+        ]
+      },
+      {
+        layer: 2,
+        layerLabel: 'স্তর ২ — শক্তিশালী শব্দাংশ (কেন্দ্রীয় শব্দ)',
+        ayat: {
+          arabic: 'حَاسِدٍ إِذَا حَسَدَ',
+          bangla: 'হিংসুকের অনিষ্ট থেকে যখন সে হিংসা করে।',
+          ref: 'সূরা আল-ফালাক ৫ — হাসাদ (হিংসাজনিত বদনজর) এর কেন্দ্রীয় শব্দাংশ'
+        },
+        count: '৩৩ বার ধীরে ধীরে পড়ুন — মাথায় ও বুকে হাত রাখুন',
+        instruction: 'এই ছোট্ট শব্দাংশটি ৩৩ বার পড়ুন। প্রতিটি পড়ার সময় "حَاسِدٍ" শব্দে একটু জোর দিন। একটি হাত মাথায়, অপরটি বুকে রাখুন। মনে কোনো মানুষের চেহারা আসে কিনা লক্ষ্য করুন।',
+        question: '৩৩ বার পড়ার সময় কী হল?',
+        options: [
+          { text: 'মাথায় চাপ বা ব্যথা বাড়ল বা নতুন ব্যথা শুরু হল', w: 6, type: 'pos' },
+          { text: 'কোনো বিশেষ মানুষের চেহারা মনে ভেসে উঠল', w: 6, type: 'pos' },
+          { text: 'মন অস্থির হল, উঠে যেতে ইচ্ছা করল', w: 5, type: 'pos' },
+          { text: 'চোখ জ্বলল বা পানি এল', w: 5, type: 'pos' },
+          { text: 'শরীরের যেকোনো জায়গায় মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরে ঝিমঝিম বা শিরশির অনুভব হল', w: 4, type: 'pos' },
+          { text: 'রগে বা মাংসপেশিতে টান লাগল বা খিঁচ ধরল', w: 4, type: 'pos' },
+          { text: 'চোখের পাতা কাঁপল বা বারবার কাঁপতে থাকল', w: 4, type: 'pos' },
+          { text: 'শরীরে চুলকানি হল', w: 3, type: 'pos' },
+          { text: 'বারবার হাই উঠল', w: 5, type: 'pos' },
+          { text: 'পড়তে পড়তে ভুল হল বা মনোযোগ ভাঙল', w: 3, type: 'pos' },
+          { text: 'কিছুই হয়নি, শান্ত ছিলাম', w: 0, type: 'neg' }
+        ]
+      },
+      {
+        layer: 3,
+        layerLabel: 'স্তর ৩ — পানিতে পড়া + মাসেহ',
+        ayat: {
+          arabic: 'بِسْمِ اللَّهِ أَرْقِيكَ مِن كُلِّ شَيْءٍ يُؤْذِيكَ وَمِن شَرِّ كُلِّ نَفْسٍ أَوْ عَيْنِ حَاسِدٍ اللَّهُ يَشْفِيكَ بِسْمِ اللَّهِ أَرْقِيكَ',
+          bangla: 'আল্লাহর নামে তোমাকে ঝাড়-ফুঁক করছি — প্রতিটি কষ্টদায়ক বিষয় ও হিংসুকের চোখের অনিষ্ট থেকে। আল্লাহ তোমাকে সুস্থ করুন।',
+          ref: 'জিবরাঈল (আ.) নবী ﷺকে পড়ে দিয়েছিলেন — সহিহ মুসলিম ২১৮৬'
+        },
+        count: 'পানির গ্লাসে ৭ বার পড়ুন → পান করুন → শরীরে মাসেহ করুন',
+        instruction: 'এক গ্লাস পানি সামনে রাখুন। মুখ গ্লাসের কাছে এনে ৭ বার পড়ুন এবং প্রতিবার হালকা ফুঁ দিন। তারপর পানি পান করুন। অবশিষ্ট পানি মাথায়, মুখে ও বুকে দিন। পড়ার সময় এবং পান করার পরে কী অনুভব হচ্ছে লক্ষ্য করুন।',
+        question: 'পানি পান করার পর কী অনুভব হল?',
+        options: [
+          { text: 'পেটে নড়াচড়া, ব্যথা বা চাপ অনুভব হল (খাওয়ানো জাদুর সংকেতও)', w: 6, type: 'pos' },
+          { text: 'বমি ভাব বা ঢেঁকুর উঠল', w: 5, type: 'pos' },
+          { text: 'মাথায় হালকা বা ভারী লাগল', w: 4, type: 'pos' },
+          { text: 'মন হঠাৎ অস্থির বা অস্বস্তি লাগল', w: 4, type: 'pos' },
+          { text: 'শরীরের যেকোনো জায়গায় মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরে ঝিমঝিম বা শিরশির অনুভব হল', w: 4, type: 'pos' },
+          { text: 'রগে বা মাংসপেশিতে টান লাগল বা খিঁচ ধরল', w: 4, type: 'pos' },
+          { text: 'চোখের পাতা কাঁপল', w: 4, type: 'pos' },
+          { text: 'বারবার হাই উঠল', w: 5, type: 'pos' },
+          { text: 'মন শান্ত হল, পানি স্বাভাবিক লাগল', w: 0, type: 'neg' },
+          { text: 'কোনো পরিবর্তন হয়নি', w: 0, type: 'neg' }
+        ]
+      }
+    ]
+  },
+
+  jadu: {
+    label: 'জাদু',
+    color: '#2d1a5c',
+    icon: '&#x1FA84;',
+    guideline: EFFECT_GUIDELINES.jadu,
+    steps: [
+      {
+        layer: 1,
+        layerLabel: 'স্তর ১ — জাদু বাতিলের পূর্ণ আয়াত',
+        ayat: {
+          arabic: 'وَأَوْحَيْنَا إِلَىٰ مُوسَىٰ أَنْ أَلْقِ عَصَاكَ ۖ فَإِذَا هِيَ تَلْقَفُ مَا يَأْفِكُونَ ﴿١١٧﴾ فَوَقَعَ الْحَقُّ وَبَطَلَ مَا كَانُوا يَعْمَلُونَ ﴿١١٨﴾ فَغُلِبُوا هُنَالِكَ وَانقَلَبُوا صَاغِرِينَ ﴿١١٩﴾',
+          bangla: 'আমি মূসাকে ওহি পাঠালাম: লাঠি নিক্ষেপ করো। তখন সেটি তাদের মিথ্যা কারসাজি গিলে নিল। সত্য প্রতিষ্ঠিত হল, তাদের কাজ বাতিল হল। তারা পরাজিত ও লাঞ্ছিত হল।',
+          ref: 'সূরা আল-আরাফ ১১৭-১১৯ — জাদু বাতিলের প্রধান আয়াত'
+        },
+        count: '৭ বার পড়ুন — ডান হাত পেটে রাখুন',
+        instruction: 'ওযু করুন। ডান হাত পেটের উপর রাখুন। ৭ বার মনোযোগ দিয়ে পড়ুন। পড়ার পর এক গ্লাস পানি পান করুন। পেটে, পিঠে বা মেরুদণ্ডে কী অনুভব হচ্ছে বিশেষভাবে লক্ষ্য করুন।',
+        question: '৭ বার পড়ার সময় বা পরে কী অনুভব হল?',
+        options: [
+          { text: 'পেটে নড়াচড়া, চাপ বা ব্যথা হল (সিহর মাকুলের শক্তিশালী সংকেত)', w: 7, type: 'pos' },
+          { text: 'পিঠে বা কোমরে টান বা ব্যথা বাড়ল', w: 6, type: 'pos' },
+          { text: 'মাথা ভারী হল বা তীব্র মাথাব্যথা শুরু হল', w: 5, type: 'pos' },
+          { text: 'বুকে চাপ বা শ্বাস নিতে কষ্ট', w: 4, type: 'pos' },
+          { text: 'বমি ভাব, ঢেঁকুর বা গলায় কিছু উঠে আসার অনুভূতি', w: 6, type: 'pos' },
+          { text: 'শরীরের যেকোনো জায়গায় মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরে ঝিমঝিম বা শিরশির অনুভব হল', w: 4, type: 'pos' },
+          { text: 'শরীরে চুলকানি হল', w: 3, type: 'pos' },
+          { text: 'রগে বা মাংসপেশিতে টান লাগল বা খিঁচ ধরল', w: 4, type: 'pos' },
+          { text: 'চোখের পাতা কাঁপল বা বারবার কাঁপতে থাকল', w: 4, type: 'pos' },
+          { text: 'শরীরের যেকোনো জায়গায় হঠাৎ ব্যথা হল বা বাড়ল', w: 4, type: 'pos' },
+          { text: 'বারবার হাই উঠল', w: 5, type: 'pos' },
+          { text: 'পড়তে কষ্ট হল বা রাগ এল', w: 3, type: 'pos' },
+          { text: 'কিছুই অনুভব হয়নি', w: 0, type: 'neg' }
+        ]
+      },
+      {
+        layer: 2,
+        layerLabel: 'স্তর ২ — শক্তিশালী শব্দাংশ (কেন্দ্রীয় শব্দ)',
+        ayat: {
+          arabic: 'إِنَّ اللَّهَ سَيُبْطِلُهُ',
+          bangla: 'নিশ্চয়ই আল্লাহ এটা বাতিল করে দেবেন।',
+          ref: 'সূরা ইউনুস ৮১ — জাদু বাতিলের কেন্দ্রীয় বাক্য'
+        },
+        count: '৪১ বার পড়ুন — পেটে ও মেরুদণ্ডে হাত রাখুন',
+        instruction: 'এই ছোট্ট বাক্যটি ৪১ বার পড়ুন। দৃঢ় বিশ্বাস রাখুন — আল্লাহ অবশ্যই জাদু বাতিল করবেন। একটি হাত পেটে, অপরটি পিঠে রাখুন। শরীরের ভেতরে যেকোনো অনুভূতি লক্ষ্য করুন।',
+        question: '৪১ বার পড়ার সময় কী হল?',
+        options: [
+          { text: 'পেটে কিছু নড়ল বা পেটে চাপ বাড়ল', w: 7, type: 'pos' },
+          { text: 'মেরুদণ্ড, কোমর বা পিঠে ব্যথা বা অস্বস্তি বাড়ল', w: 6, type: 'pos' },
+          { text: 'মাথার পিছনে বা গলায় ব্যথা বা টান লাগল', w: 5, type: 'pos' },
+          { text: 'হাত-পায়ে ঝিনঝিন করল বা অবশ লাগল', w: 4, type: 'pos' },
+          { text: 'শরীরের যেকোনো জায়গায় মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরে ঝিমঝিম বা শিরশির অনুভব হল', w: 4, type: 'pos' },
+          { text: 'রগে বা মাংসপেশিতে টান লাগল বা খিঁচ ধরল', w: 4, type: 'pos' },
+          { text: 'চোখের পাতা কাঁপল বা বারবার কাঁপতে থাকল', w: 4, type: 'pos' },
+          { text: 'শরীরে চুলকানি হল', w: 3, type: 'pos' },
+          { text: 'বারবার হাই উঠল বা ঘুমের টান এল', w: 5, type: 'pos' },
+          { text: 'পড়ার মাঝে বারবার ভুল হল', w: 3, type: 'pos' },
+          { text: 'কিছুই হয়নি, স্বাভাবিক ছিলাম', w: 0, type: 'neg' }
+        ]
+      },
+      {
+        layer: 3,
+        layerLabel: 'স্তর ৩ — পানি ও তেলে পড়া',
+        ayat: {
+          arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿١﴾ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ... إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ﴿٥﴾ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ',
+          bangla: 'সূরা আল-ফাতিহা — নবী ﷺ: "এটি সকল রোগের নিরাময়"। জাদু নিশ্চিতকরণে সবচেয়ে কার্যকর।',
+          ref: 'সূরা আল-ফাতিহা — ইবনু মাজাহ, খাওয়ানো জাদুর জন্য সবচেয়ে কার্যকর'
+        },
+        count: 'পানিতে ৭ বার পড়ুন → পান করুন। জলপাই তেলে ৩ বার → পেট ও পিঠে মাখুন',
+        instruction: 'প্রথমে পানির গ্লাসে সূরা ফাতিহা ৭ বার পড়ুন ও ফুঁ দিন — পান করুন। তারপর জলপাই তেলে ৩ বার পড়ুন ও ফুঁ দিন — পেট, পিঠ ও কোমরে মাখুন। পান করার পর এবং মাখানোর পর কী অনুভব হচ্ছে লক্ষ্য করুন।',
+        question: 'পানি পান ও তেল মাখানোর পর কী হল?',
+        options: [
+          { text: 'পেটে তীব্র নড়াচড়া, ব্যথা বা বমি হল (সিহর মাকুল নিশ্চিত সংকেত)', w: 8, type: 'pos' },
+          { text: 'পিঠে বা কোমরে ব্যথা বাড়ল বা গরম লাগল', w: 6, type: 'pos' },
+          { text: 'মাথায় চাপ বা ব্যথা বাড়ল', w: 5, type: 'pos' },
+          { text: 'মন অস্থির হল বা উঠে যেতে ইচ্ছা করল', w: 4, type: 'pos' },
+          { text: 'শরীরের যেকোনো জায়গায় মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরে ঝিমঝিম বা শিরশির অনুভব হল', w: 4, type: 'pos' },
+          { text: 'রগে বা মাংসপেশিতে টান লাগল বা খিঁচ ধরল', w: 4, type: 'pos' },
+          { text: 'চোখের পাতা কাঁপল', w: 4, type: 'pos' },
+          { text: 'বারবার হাই উঠল', w: 5, type: 'pos' },
+          { text: 'মন শান্ত হল, পেট স্বাভাবিক লাগল', w: 0, type: 'neg' },
+          { text: 'কোনো পরিবর্তন হয়নি', w: 0, type: 'neg' }
+        ]
+      }
+    ]
+  },
+
+  jinn: {
+    label: 'জিন',
+    color: '#1a3a5c',
+    icon: '&#x1F47B;',
+    guideline: EFFECT_GUIDELINES.jinn,
+    steps: [
+      {
+        layer: 1,
+        layerLabel: 'স্তর ১ — আয়াতুল কুরসি (উচ্চস্বরে)',
+        ayat: {
+          arabic: 'اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ',
+          bangla: 'আল্লাহ — তিনি ছাড়া কোনো ইলাহ নেই। চিরঞ্জীব, সর্বসত্তার ধারক। তাঁকে তন্দ্রা বা ঘুম স্পর্শ করে না।',
+          ref: 'আয়াতুল কুরসি — সহিহ বুখারি: "জিনের বিরুদ্ধে সবচেয়ে বড় সুরক্ষা"'
+        },
+        count: '৩ বার উচ্চস্বরে পড়ুন',
+        instruction: 'উচ্চস্বরে ৩ বার পড়ুন। পড়ার সময় রাগ এলে বা থামতে ইচ্ছা করলে — জোর করে পড়তে থাকুন। জিন সবসময় পড়া বন্ধ করাতে চায়। মাথা ও কানে কী অনুভব হচ্ছে বিশেষভাবে লক্ষ্য করুন।',
+        question: 'আয়াতুল কুরসি পড়ার সময় কী হল?',
+        options: [
+          { text: 'মাথায় তীব্র চাপ, ঝিমঝিম বা ব্যথা শুরু হল', w: 7, type: 'pos' },
+          { text: 'শরীরে কোথাও নাড়াচাড়া বা কম্পন অনুভব হল', w: 7, type: 'pos' },
+          { text: 'হঠাৎ রাগ, বিরক্তি এল বা পড়া বন্ধ করতে ইচ্ছা করল', w: 6, type: 'pos' },
+          { text: 'বুকে চাপ বা শ্বাস নিতে কষ্ট লাগল', w: 5, type: 'pos' },
+          { text: 'কানে চাপ বা ভোঁভোঁ শব্দ', w: 5, type: 'pos' },
+          { text: 'শরীরের যেকোনো জায়গায় মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরে ঝিমঝিম বা শিরশির অনুভব হল', w: 4, type: 'pos' },
+          { text: 'শরীরে চুলকানি হল', w: 3, type: 'pos' },
+          { text: 'রগে বা মাংসপেশিতে টান লাগল বা খিঁচ ধরল', w: 4, type: 'pos' },
+          { text: 'চোখের পাতা কাঁপল বা বারবার কাঁপতে থাকল', w: 4, type: 'pos' },
+          { text: 'শরীরের যেকোনো জায়গায় হঠাৎ ব্যথা হল বা বাড়ল', w: 4, type: 'pos' },
+          { text: 'বারবার হাই উঠল বা ঘুমের টান এল', w: 5, type: 'pos' },
+          { text: 'শান্তি অনুভব হল — কোনো কষ্ট নেই', w: 0, type: 'neg' }
+        ]
+      },
+      {
+        layer: 2,
+        layerLabel: 'স্তর ২ — শক্তিশালী শব্দাংশ (কেন্দ্রীয় শব্দ)',
+        ayat: {
+          arabic: 'اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ',
+          bangla: 'আল্লাহ — তিনি ছাড়া কোনো ইলাহ নেই। তিনি চিরঞ্জীব, সর্বসত্তার ধারক।',
+          ref: 'আয়াতুল কুরসির প্রথম অংশ — জিনের উপর সবচেয়ে শক্তিশালী প্রভাব ফেলে'
+        },
+        count: '৩৩ বার পড়ুন — প্রতিটি পড়ার পর মাথায় হাত রাখুন',
+        instruction: 'প্রতিটি পড়ার পর মাথায় হাত রাখুন এবং ৩ সেকেন্ড চোখ বন্ধ রাখুন। মাথার ভেতরে কোনো চাপ বা নাড়াচাড়া অনুভব হচ্ছে কিনা লক্ষ্য করুন। ৩৩ বার শেষে কানে ফুঁ দিন।',
+        question: '৩৩ বার পড়ার সময় কী হল?',
+        options: [
+          { text: 'মাথার ভেতরে কিছু একটার নড়াচড়া অনুভব হল', w: 7, type: 'pos' },
+          { text: 'কানে অদ্ভুত শব্দ বা চাপ অনুভব হল', w: 6, type: 'pos' },
+          { text: 'ঘাড়ে বা মাথার পিছনে ব্যথা বা টান লাগল', w: 5, type: 'pos' },
+          { text: 'মন অস্থির হল বা উঠে যেতে ইচ্ছা করল', w: 5, type: 'pos' },
+          { text: 'শরীরের যেকোনো জায়গায় মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরে ঝিমঝিম বা শিরশির অনুভব হল', w: 4, type: 'pos' },
+          { text: 'রগে বা মাংসপেশিতে টান লাগল বা খিঁচ ধরল', w: 4, type: 'pos' },
+          { text: 'চোখের পাতা কাঁপল', w: 4, type: 'pos' },
+          { text: 'বারবার হাই উঠল বা ঘুমের টান এল', w: 5, type: 'pos' },
+          { text: 'কান্না এল বা অদ্ভুত আবেগ উঠল', w: 3, type: 'pos' },
+          { text: 'কিছুই হয়নি, শান্ত ছিলাম', w: 0, type: 'neg' }
+        ]
+      },
+      {
+        layer: 3,
+        layerLabel: 'স্তর ৩ — সূরা জিন + দীর্ঘ নীরবতা',
+        ayat: {
+          arabic: 'قُلْ أُوحِيَ إِلَيَّ أَنَّهُ اسْتَمَعَ نَفَرٌ مِّنَ الْجِنِّ فَقَالُوا إِنَّا سَمِعْنَا قُرْآنًا عَجَبًا ﴿١﴾ يَهْدِي إِلَى الرُّشْدِ فَآمَنَّا بِهِ ۖ وَلَن نُّشْرِكَ بِرَبِّنَا أَحَدًا ﴿٢﴾',
+          bangla: 'বলুন: আমার কাছে ওহি এসেছে যে একদল জিন মনোযোগ দিয়ে শুনেছে এবং বলেছে: আমরা এক বিস্ময়কর কুরআন শুনেছি — যা সত্যপথে পরিচালিত করে।',
+          ref: 'সূরা আল-জিন ১-২ — এই আয়াত জিনের উপর প্রবল প্রভাব ফেলে'
+        },
+        count: '৩ বার পড়ুন → ২ মিনিট চোখ বন্ধ করে থাকুন',
+        instruction: '৩ বার পড়ুন এবং তারপর ২ মিনিট সম্পূর্ণ নীরবে চোখ বন্ধ করে বসুন। শরীরে ভারীভাব, কম্পন বা হঠাৎ ঘুম আসে কিনা লক্ষ্য করুন। মাথা থেকে পায়ের আঙুল পর্যন্ত প্রতিটি অনুভূতি মনে রাখুন।',
+        question: '২ মিনিট নীরবে থাকার সময় কী হল?',
+        options: [
+          { text: 'হঠাৎ ঘুমের টান এল বা চোখ বন্ধ হয়ে গেল', w: 7, type: 'pos' },
+          { text: 'শরীরে ভারীভাব বা কোনো অঙ্গ অবশ লাগল', w: 7, type: 'pos' },
+          { text: 'কোনো কল্পনা, ছবি বা দৃশ্য মনে ভাসল', w: 5, type: 'pos' },
+          { text: 'হঠাৎ ভয় বা অস্বস্তি এল', w: 5, type: 'pos' },
+          { text: 'শরীরের যেকোনো জায়গায় মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরে ঝিমঝিম বা শিরশির অনুভব হল', w: 4, type: 'pos' },
+          { text: 'রগে বা মাংসপেশিতে টান লাগল বা খিঁচ ধরল', w: 4, type: 'pos' },
+          { text: 'চোখের পাতা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরের কোথাও ব্যথা বা জ্বালা অনুভব হল', w: 4, type: 'pos' },
+          { text: 'বারবার হাই উঠল', w: 5, type: 'pos' },
+          { text: 'মন শান্ত ও স্বাভাবিক থাকল', w: 0, type: 'neg' }
+        ]
+      }
+    ]
+  },
+
+  waswasa: {
+    label: 'ওয়াসওয়াসা',
+    color: '#4a1a5c',
+    icon: '&#x1F9E0;',
+    guideline: EFFECT_GUIDELINES.waswasa,
+    steps: [
+      {
+        layer: 1,
+        layerLabel: 'স্তর ১ — পূর্ণ আয়াত',
+        ayat: {
+          arabic: 'وَإِمَّا يَنزَغَنَّكَ مِنَ الشَّيْطَانِ نَزْغٌ فَاسْتَعِذْ بِاللَّهِ ۚ إِنَّهُ سَمِيعٌ عَلِيمٌ',
+          bangla: 'যদি শয়তানের পক্ষ থেকে কোনো প্ররোচনা তোমাকে উত্তেজিত করে, তাহলে আল্লাহর আশ্রয় প্রার্থনা করো। নিশ্চয়ই তিনি সর্বশ্রোতা, সর্বজ্ঞ।',
+          ref: 'সূরা আল-আরাফ ২০০ — শয়তানের প্ররোচনার বিরুদ্ধে'
+        },
+        count: '১১ বার পড়ুন — মাথার দুই পাশে হাত রাখুন',
+        instruction: 'মাথার দুই পাশে হাত রাখুন। ১১ বার মনোযোগ দিয়ে পড়ুন। প্রতিটি পড়ার মাঝে ৩ সেকেন্ড চুপ থাকুন। পড়ার সময় মাথায় কী ধরনের চিন্তা আসছে লক্ষ্য করুন।',
+        question: '১১ বার পড়ার পর মাথায় কী অনুভব হল?',
+        options: [
+          { text: 'মাথায় চাপ বা ব্যথা বাড়ল', w: 5, type: 'pos' },
+          { text: 'নামাজ বা ওযু নিয়ে নতুন সন্দেহের চিন্তা এল', w: 6, type: 'pos' },
+          { text: 'অশ্লীল বা অপ্রাসঙ্গিক চিন্তা মনে এল', w: 5, type: 'pos' },
+          { text: 'পড়তে পড়তে বারবার ভুল হল', w: 5, type: 'pos' },
+          { text: 'শরীরের যেকোনো জায়গায় মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরে ঝিমঝিম বা শিরশির অনুভব হল', w: 4, type: 'pos' },
+          { text: 'রগে বা মাংসপেশিতে টান লাগল বা খিঁচ ধরল', w: 4, type: 'pos' },
+          { text: 'চোখের পাতা কাঁপল বা বারবার কাঁপতে থাকল', w: 4, type: 'pos' },
+          { text: 'বারবার হাই উঠল', w: 4, type: 'pos' },
+          { text: 'চোখে পানি এল বা জ্বালা করল', w: 3, type: 'pos' },
+          { text: 'মন শান্ত হল, চিন্তা কমে গেল', w: 1, type: 'neg' },
+          { text: 'কিছুই হয়নি', w: 0, type: 'neg' }
+        ]
+      },
+      {
+        layer: 2,
+        layerLabel: 'স্তর ২ — শক্তিশালী শব্দাংশ (১০০ বার)',
+        ayat: {
+          arabic: 'أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ',
+          bangla: 'আমি বিতাড়িত শয়তান থেকে আল্লাহর আশ্রয় চাই।',
+          ref: 'আউযুবিল্লাহ — ওয়াসওয়াসার বিরুদ্ধে নবীজির নির্দেশিত প্রধান দুআ'
+        },
+        count: '১০০ বার পড়ুন — তাসবিহ বা হাতের আঙুলে গণনা করুন',
+        instruction: 'তাসবিহ বা হাতের আঙুলে গণনা করে ১০০ বার পড়ুন। পড়ার সময় মাথায় কতটুকু বাজে চিন্তা আসছে গণনা করুন। ৫০ বারের পর আর ১০০ বারের পর আলাদাভাবে নোট করুন — চিন্তা কমছে নাকি বাড়ছে।',
+        question: '১০০ বার পড়ার পর মন ও মাথা কেমন?',
+        options: [
+          { text: 'বাজে চিন্তা বাড়ল বা নতুন ধরনের চিন্তা এল', w: 6, type: 'pos' },
+          { text: 'মাথায় চাপ বা ভারীভাব বাড়ল', w: 5, type: 'pos' },
+          { text: 'বারবার একই কথা মাথায় ঘুরতে লাগল', w: 5, type: 'pos' },
+          { text: 'শরীরের যেকোনো জায়গায় মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরে ঝিমঝিম বা শিরশির অনুভব হল', w: 4, type: 'pos' },
+          { text: 'রগে বা মাংসপেশিতে টান লাগল বা খিঁচ ধরল', w: 4, type: 'pos' },
+          { text: 'চোখের পাতা কাঁপল', w: 4, type: 'pos' },
+          { text: 'বারবার হাই উঠল', w: 4, type: 'pos' },
+          { text: 'মন হালকা হল, চিন্তা কমে গেছে', w: 0, type: 'neg' },
+          { text: 'কোনো পরিবর্তন নেই', w: 0, type: 'neg' }
+        ]
+      },
+      {
+        layer: 3,
+        layerLabel: 'স্তর ৩ — আয়াতুল কুরসি + দীর্ঘ নীরবতা',
+        ayat: {
+          arabic: 'اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ',
+          bangla: 'আল্লাহ — তিনি ছাড়া কোনো ইলাহ নেই। তিনি চিরঞ্জীব। তাঁকে তন্দ্রা বা ঘুম স্পর্শ করে না।',
+          ref: 'আয়াতুল কুরসির শুরু — শয়তানের কুমন্ত্রণা বন্ধের সবচেয়ে কার্যকর অংশ'
+        },
+        count: '১০ বার পড়ুন → প্রতিটির পর মাথায় হাত রাখুন → ৩ মিনিট নীরব থাকুন',
+        instruction: '১০ বার পড়ুন। প্রতিটির পর মাথায় হাত রেখে ৫ সেকেন্ড চুপ থাকুন। ১০ বার শেষে ৩ মিনিট চোখ বন্ধ করে থাকুন। নিজেকে জিজ্ঞেস করুন: মাথা হালকা নাকি ভারী? চিন্তা কমছে নাকি বাড়ছে?',
+        question: '৩ মিনিট নীরবে থাকার পর মন কেমন?',
+        options: [
+          { text: 'মাথা আরও ভারী বা মাথাব্যথা বাড়ল', w: 5, type: 'pos' },
+          { text: 'নামাজ বা ওযু নিয়ে নতুন সন্দেহ মাথায় এল', w: 7, type: 'pos' },
+          { text: 'মন আরও অস্থির হল', w: 5, type: 'pos' },
+          { text: 'শরীরের যেকোনো জায়গায় মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরে ঝিমঝিম বা শিরশির অনুভব হল', w: 4, type: 'pos' },
+          { text: 'রগে বা মাংসপেশিতে টান লাগল বা খিঁচ ধরল', w: 4, type: 'pos' },
+          { text: 'চোখের পাতা কাঁপল', w: 4, type: 'pos' },
+          { text: 'বারবার হাই উঠল', w: 4, type: 'pos' },
+          { text: 'মন হালকা হল, চিন্তা কমে গেছে', w: 0, type: 'neg' },
+          { text: 'কোনো পরিবর্তন নেই', w: 0, type: 'neg' }
+        ]
+      }
+    ]
+  },
+
+  bachcha: {
+    label: 'বাচ্চাদের সমস্যা',
+    color: '#1a5c4a',
+    icon: '&#x1F476;',
+    guideline: EFFECT_GUIDELINES.bachcha,
+    steps: [
+      {
+        layer: 1,
+        layerLabel: 'স্তর ১ — মাথায় হাত রেখে পড়া',
+        ayat: {
+          arabic: 'بِسْمِ اللَّهِ أَرْقِيكَ مِن كُلِّ شَيْءٍ يُؤْذِيكَ وَمِن شَرِّ كُلِّ نَفْسٍ أَوْ عَيْنِ حَاسِدٍ اللَّهُ يَشْفِيكَ بِسْمِ اللَّهِ أَرْقِيكَ',
+          bangla: 'আল্লাহর নামে তোমাকে ঝাড়-ফুঁক করছি — প্রতিটি কষ্টদায়ক বিষয় ও হিংসুকের চোখের অনিষ্ট থেকে। আল্লাহ তোমাকে সুস্থ করুন।',
+          ref: 'জিবরাঈল (আ.) নবী ﷺ-এর জন্য পড়েছিলেন — সহিহ মুসলিম ২১৮৬'
+        },
+        count: 'বাচ্চার মাথায় হাত রেখে ৩ বার পড়ুন',
+        instruction: 'বাচ্চাকে কোলে নিন। মাথায় আলতো হাত রাখুন। ৩ বার পড়ুন। পড়ার সময় বাচ্চার চোখ, হাত, পা ও মুখের ভাব লক্ষ্য করুন। অন্য কেউ পাশে থেকে বাচ্চার আচরণ দেখুন।',
+        question: 'দুআ পড়ার সময় বাচ্চা কী করল?',
+        options: [
+          { text: 'হঠাৎ কান্না শুরু করল বা অস্থির হয়ে গেল', w: 6, type: 'pos' },
+          { text: 'হাত বা মাথা সরিয়ে দিতে চাইল', w: 6, type: 'pos' },
+          { text: 'চিৎকার করল বা রেগে গেল', w: 6, type: 'pos' },
+          { text: 'শরীর শক্ত হল বা কাঁপল', w: 6, type: 'pos' },
+          { text: 'চোখ উল্টে গেল বা অস্বাভাবিক তাকাল', w: 7, type: 'pos' },
+          { text: 'ঘুমিয়ে পড়ল হঠাৎ', w: 5, type: 'pos' },
+          { text: 'শরীরে মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরে ঝিমঝিম বা শিরশির হল', w: 4, type: 'pos' },
+          { text: 'রগে টান বা খিঁচ ধরল', w: 4, type: 'pos' },
+          { text: 'শান্ত হল বা হাসল', w: 0, type: 'neg' },
+          { text: 'কোনো পরিবর্তন হয়নি', w: 0, type: 'neg' }
+        ]
+      },
+      {
+        layer: 2,
+        layerLabel: 'স্তর ২ — কানে পড়া',
+        ayat: {
+          arabic: 'أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّةِ مِن كُلِّ شَيْطَانٍ وَهَامَّةٍ وَمِن كُلِّ عَيْنٍ لَامَّةٍ',
+          bangla: 'আমি আল্লাহর পূর্ণ কালিমাসমূহের মাধ্যমে প্রতিটি শয়তান, বিষাক্ত প্রাণী এবং প্রতিটি ক্ষতিকর দৃষ্টি থেকে আশ্রয় চাই।',
+          ref: 'নবী ﷺ হাসান-হুসাইনকে এই দুআ দিয়ে রক্ষা করতেন — সহিহ বুখারি'
+        },
+        count: 'ডান কানে ৩ বার পড়ে ফুঁ দিন',
+        instruction: 'বাচ্চার ডান কানে মুখ নিয়ে ধীরে ৩ বার পড়ুন — প্রতিবার হালকা ফুঁ দিন। তারপর বাম কানেও একবার পড়ুন। বাচ্চার মুখের ভাব, চোখ ও শরীর পরিবর্তন লক্ষ্য করুন।',
+        question: 'কানে পড়ার পর বাচ্চার কী পরিবর্তন হল?',
+        options: [
+          { text: 'অস্থিরতা বাড়ল বা মাথা সরিয়ে দিল', w: 6, type: 'pos' },
+          { text: 'কাঁদল বা চিৎকার করল', w: 5, type: 'pos' },
+          { text: 'চোখ উল্টে গেল বা অস্বাভাবিক তাকাল', w: 7, type: 'pos' },
+          { text: 'ঘুমিয়ে পড়ল হঠাৎ বা ঝিমিয়ে পড়ল', w: 5, type: 'pos' },
+          { text: 'শরীর ঠান্ডা বা গরম হয়ে গেল', w: 4, type: 'pos' },
+          { text: 'শরীরে মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরে ঝিমঝিম বা শিরশির হল', w: 4, type: 'pos' },
+          { text: 'রগে টান বা খিঁচ ধরল', w: 4, type: 'pos' },
+          { text: 'শান্ত হল, হাসল বা স্বাভাবিক থাকল', w: 0, type: 'neg' },
+          { text: 'কোনো পরিবর্তন নেই', w: 0, type: 'neg' }
+        ]
+      },
+      {
+        layer: 3,
+        layerLabel: 'স্তর ৩ — পানিতে পড়া + বাচ্চাকে খাওয়ানো',
+        ayat: {
+          arabic: 'قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ... قُلْ أَعُوذُ بِرَبِّ النَّاسِ مَلِكِ النَّاسِ',
+          bangla: 'সূরা ফালাক + সূরা নাস — বাচ্চাদের রুকইয়াহতে সবচেয়ে কার্যকর।',
+          ref: 'সহিহ বুখারি ৫০১৭ — নবী ﷺ প্রতিদিন এই সূরাদ্বয় পড়তেন'
+        },
+        count: 'পানিতে ৭ বার করে পড়ুন → বাচ্চাকে পান করান → গায়ে দিন',
+        instruction: 'এক গ্লাস পানিতে সূরা ফালাক ৭ বার ও সূরা নাস ৭ বার পড়ুন, প্রতিটি পড়ার পর ফুঁ দিন। বাচ্চাকে পানি পান করান। বাকি পানি মাথায়, পেটে ও পিঠে দিন। পানি খাওয়ানোর সময় ও পরে কী হয় লক্ষ্য করুন।',
+        question: 'পানি খাওয়ানোর পর বাচ্চার কী হল?',
+        options: [
+          { text: 'পানি খেতে চাইল না বা মুখ ফিরিয়ে নিল', w: 5, type: 'pos' },
+          { text: 'পানি খাওয়ার পর কান্না শুরু হল', w: 5, type: 'pos' },
+          { text: 'বমি করল বা মুখ দিয়ে ফেলে দিল', w: 6, type: 'pos' },
+          { text: 'শান্ত হয়ে গেল বা ঘুমিয়ে পড়ল', w: 4, type: 'pos' },
+          { text: 'শরীরে মাংস লাফাল বা কাঁপল', w: 4, type: 'pos' },
+          { text: 'শরীরে ঝিমঝিম বা শিরশির হল', w: 4, type: 'pos' },
+          { text: 'স্বাভাবিকভাবে পানি খেল, কোনো পরিবর্তন নেই', w: 0, type: 'neg' }
+        ]
+      }
+    ]
+  }
+};
+
+/* ===== EFFECT DIAGNOSIS STATE ===== */
+var effState = {
+  types: [],
+  typeIndex: 0,
+  stepIndex: 0,
+  selectedOpts: {},
+  scores: {},
+  stepResults: []
+};
+
+function startEffectDiagnosis(){
+  var confirmedTypes = [];
+  diagStepOrder.forEach(function(type){
+    var res = diagAllResults[type];
+    var ev  = evaluateDiagnosis(type, res ? res.keys : []);
+    if(ev.level === 'confirmed' || ev.level === 'probable'){
+      confirmedTypes.push(type);
+    }
+  });
+  if(confirmedTypes.length === 0){
+    closeResult();
+    return;
+  }
+  effState.types      = confirmedTypes;
+  effState.typeIndex  = 0;
+  effState.stepIndex  = 0;
+  effState.selectedOpts = {};
+  effState.scores     = {};
+  effState.stepResults= [];
+  effState._onGuidelinePage = false;
+  _effGuidelineSeen   = {};
+  confirmedTypes.forEach(function(t){ effState.scores[t] = 0; });
+  renderEffectStep();
+  document.getElementById('effectOverlay').classList.add('open');
+  document.getElementById('effectOverlay').scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+
+/* গাইডলাইন দেখা হয়েছে কিনা ট্র্যাক */
+var _effGuidelineSeen = {};
+
+function showEffectGuideline(){
+  var type  = effState.types[effState.typeIndex];
+  var eData = effectData[type];
+  if(!eData) return;
+  var body = document.getElementById('effectBody');
+  var html = '';
+  html += '<div style="margin-bottom:10px;">';
+  html += eData.guideline || '';
+  html += '</div>';
+  html += '<div style="background:#e8f5eb;border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:12px;color:#1a5c3a;line-height:1.7;">';
+  html += '&#x2705; গাইডলাইন পড়া শেষ হলে নিচের বাটনে চাপুন এবং ডায়াগনোসিস শুরু করুন।';
+  html += '</div>';
+  if(body) body.innerHTML = html;
+  _effGuidelineSeen[type] = true;
+  var nextBtn = document.getElementById('effectNextBtn');
+  if(nextBtn) nextBtn.innerHTML = '<i class="fas fa-play-circle"></i> ডায়াগনোসিস শুরু করুন';
+  var skipBtn = document.querySelector('.effect-skip-btn');
+  if(skipBtn) skipBtn.style.display = 'none';
+  effState._onGuidelinePage = true;
+}
+
+function renderEffectStep(){
+  var type  = effState.types[effState.typeIndex];
+  var eData = effectData[type];
+  if(!eData){ effNextType(); return; }
+  var steps = eData.steps;
+  var si    = effState.stepIndex;
+  if(si >= steps.length){ effNextType(); return; }
+  var step  = steps[si];
+  var header = document.getElementById('effectHeader');
+  var hTitle = document.getElementById('effectHeaderTitle');
+  var hSub   = document.getElementById('effectHeaderSub');
+  var hIcon  = document.getElementById('effectHeaderIcon');
+  var stepBar= document.getElementById('effectStepBar');
+  if(header){ header.style.background = eData.color; stepBar.style.background = eData.color; }
+  if(hIcon)  hIcon.innerHTML  = eData.icon;
+  if(hTitle) hTitle.textContent = eData.label + ' — ইফেক্ট ডায়াগনোসিস';
+
+  /* গাইডলাইন পেজ — প্রতিটি রোগের প্রথম ধাপে একবার */
+  if(!_effGuidelineSeen[type] && eData.guideline){
+    if(hSub) hSub.textContent = 'শুরু করার আগে গাইডলাইন পড়ুন';
+    if(stepBar){
+      var gDots = '';
+      for(var gi=0;gi<steps.length;gi++) gDots += '<div class="effect-step-dot"></div>';
+      stepBar.innerHTML = gDots;
+    }
+    showEffectGuideline();
+    return;
+  }
+  effState._onGuidelinePage = false;
+  var skipBtn = document.querySelector('.effect-skip-btn');
+  if(skipBtn) skipBtn.style.display = '';
+
+  if(hSub) hSub.textContent = (step.layerLabel || ('ধাপ '+(si+1)+'/'+steps.length)) + ' — ইফেক্ট নির্বাচন করুন';
+  if(stepBar){
+    var dots = '';
+    for(var i=0;i<steps.length;i++){
+      var cls = i < si ? 'done' : i === si ? 'active' : '';
+      dots += '<div class="effect-step-dot '+cls+'"></div>';
+    }
+    stepBar.innerHTML = dots;
+  }
+
+  var body = document.getElementById('effectBody');
+  var html = '';
+
+  /* স্তর ব্যাজ */
+  if(step.layerLabel){
+    html += '<div style="background:'+eData.color+';color:#fff;font-size:11px;font-weight:700;padding:5px 10px;border-radius:6px;margin-bottom:10px;display:inline-block;">'+step.layerLabel+'</div>';
+  }
+
+  /* আয়াত বক্স */
+  html += '<div class="effect-ayat-box">';
+  html += '<div class="effect-ayat-title">&#x1F4D6; '+step.ayat.ref+'</div>';
+  html += '<div class="effect-ayat-arabic">'+step.ayat.arabic+'</div>';
+  html += '<div class="effect-ayat-bangla">'+step.ayat.bangla+'</div>';
+  html += '</div>';
+
+  /* পড়ার নির্দেশ */
+  html += '<div class="effect-count-box">';
+  html += '<div class="effect-count-icon">&#x1F4FF;</div>';
+  html += '<div><div class="effect-count-text">'+step.count+'</div>';
+  html += '<div class="effect-count-sub">এই নির্দেশ অনুযায়ী পড়ুন, তারপর ইফেক্ট নির্বাচন করুন</div></div>';
+  html += '</div>';
+
+  /* বিস্তারিত নির্দেশনা */
+  html += '<div class="effect-inst">&#x1F4CC; '+step.instruction+'</div>';
+
+  /* প্রশ্ন */
+  html += '<div class="effect-q">'+step.question+'</div>';
+  html += '<div style="font-size:11px;color:#888;margin-bottom:8px;">&#x2714;&#xFE0F; একাধিক অপশন সিলেক্ট করতে পারবেন</div>';
+
+  /* অপশনগুলো — মাল্টি-সিলেক্ট */
+  effState.selectedOpts = {};
+  step.options.forEach(function(opt, idx){
+    var badge = opt.w >= 6 ? '<span class="effect-opt-badge" style="background:#8B0000;">সর্বোচ্চ</span>'
+              : opt.w >= 4 ? '<span class="effect-opt-badge" style="background:#c0392b;">শক্তিশালী</span>'
+              : opt.w >= 2 ? '<span class="effect-opt-badge" style="background:#e67e22;">মাঝারি</span>'
+              : opt.w === 1 ? '<span class="effect-opt-badge" style="background:#27ae60;">দুর্বল</span>'
+              : '<span class="effect-opt-badge" style="background:#7f8c8d;">নিরপেক্ষ</span>';
+    html += '<div class="effect-opt" id="eopt'+idx+'" onclick="toggleEffOpt('+idx+','+opt.w+',\''+opt.type+'\')">';
+    html += '<div class="effect-opt-dot" id="eoptd'+idx+'"></div>';
+    html += '<div class="effect-opt-label">'+opt.text+badge+'</div>';
+    html += '</div>';
+  });
+
+  if(body) body.innerHTML = html;
+
+  /* পরবর্তী বাটন লেবেল */
+  var nextBtn = document.getElementById('effectNextBtn');
+  var totalSteps = 0;
+  effState.types.forEach(function(t){ totalSteps += (effectData[t]?effectData[t].steps.length:0); });
+  var doneSteps = 0;
+  for(var ti=0;ti<effState.typeIndex;ti++){
+    doneSteps += (effectData[effState.types[ti]]?effectData[effState.types[ti]].steps.length:0);
+  }
+  doneSteps += si;
+  var isLast = (doneSteps >= totalSteps - 1);
+  if(nextBtn){
+    nextBtn.innerHTML = isLast
+      ? '<i class="fas fa-check-circle"></i> ইফেক্ট ডায়াগনোসিস সম্পন্ন'
+      : '<i class="fas fa-arrow-right"></i> পরবর্তী ধাপ';
+  }
+}
+
+var _effStepScore = 0;
+var _effStepType  = '';
+
+function toggleEffOpt(idx, w, type){
+  var el  = document.getElementById('eopt'+idx);
+  var dot = document.getElementById('eoptd'+idx);
+  if(!el) return;
+  /* neg অপশন সিলেক্ট হলে সব pos বাতিল করে শুধু neg রাখো */
+  if(type === 'neg'){
+    if(el.classList.contains('sel-neg')){
+      el.classList.remove('sel-neg');
+      if(dot) dot.innerHTML = '';
+      delete effState.selectedOpts[idx];
+    } else {
+      /* সব pos বাতিল */
+      Object.keys(effState.selectedOpts).forEach(function(k){
+        var oel = document.getElementById('eopt'+k);
+        var odb = document.getElementById('eoptd'+k);
+        if(oel){ oel.classList.remove('sel','sel-neg'); }
+        if(odb){ odb.innerHTML = ''; }
+      });
+      effState.selectedOpts = {};
+      el.classList.add('sel-neg');
+      if(dot) dot.innerHTML = '&#x2714;';
+      effState.selectedOpts[idx] = {w:w, type:'neg'};
+    }
+    return;
+  }
+  /* pos অপশন — মাল্টি-সিলেক্ট, কিন্তু neg বাতিল করো */
+  Object.keys(effState.selectedOpts).forEach(function(k){
+    if(effState.selectedOpts[k].type === 'neg'){
+      var nel = document.getElementById('eopt'+k);
+      var ndb = document.getElementById('eoptd'+k);
+      if(nel){ nel.classList.remove('sel-neg'); }
+      if(ndb){ ndb.innerHTML = ''; }
+      delete effState.selectedOpts[k];
+    }
+  });
+  if(el.classList.contains('sel')){
+    el.classList.remove('sel');
+    if(dot) dot.innerHTML = '';
+    delete effState.selectedOpts[idx];
+  } else {
+    el.classList.add('sel');
+    if(dot) dot.innerHTML = '&#x2714;';
+    effState.selectedOpts[idx] = {w:w, type:'pos'};
+  }
+  updateEffCount();
+}
+
+function updateEffCount(){
+  var cnt = Object.keys(effState.selectedOpts).filter(function(k){
+    return effState.selectedOpts[k].type === 'pos';
+  }).length;
+  /* বাটন লেবেলে count দেখাও */
+  var nextBtn = document.getElementById('effectNextBtn');
+  if(nextBtn && cnt > 0 && !effState._onGuidelinePage){
+    var cur = nextBtn.innerHTML;
+    if(cur.indexOf('সম্পন্ন') === -1){
+      /* count badge */
+    }
+  }
+}
+
+function effectNext(){
+  /* গাইডলাইন পেজে থাকলে ডায়াগনোসিসে যাও */
+  if(effState._onGuidelinePage){
+    effState._onGuidelinePage = false;
+    renderEffectStep();
+    document.getElementById('effectOverlay').scrollTop = 0;
+    return;
+  }
+  /* কোনো অপশন না বাছলে সতর্কতা */
+  var keys = Object.keys(effState.selectedOpts);
+  if(keys.length === 0){ alert('অন্তত একটি অপশন নির্বাচন করুন।'); return; }
+  var type = effState.types[effState.typeIndex];
+  /* স্কোর যোগ করো */
+  keys.forEach(function(k){
+    var opt = effState.selectedOpts[k];
+    if(opt.type === 'pos') effState.scores[type] = (effState.scores[type]||0) + opt.w;
+  });
+  effState.stepResults.push({type:type, step:effState.stepIndex, opts:effState.selectedOpts});
+  effState.stepIndex++;
+  effState.selectedOpts = {};
+  var steps = (effectData[type]||{steps:[]}).steps;
+  if(effState.stepIndex >= steps.length){
+    effNextType();
+  } else {
+    renderEffectStep();
+    document.getElementById('effectOverlay').scrollTop = 0;
+  }
+}
+
+function effectSkip(){
+  if(effState._onGuidelinePage){
+    effState._onGuidelinePage = false;
+    _effGuidelineSeen[effState.types[effState.typeIndex]] = true;
+    renderEffectStep();
+    document.getElementById('effectOverlay').scrollTop = 0;
+    return;
+  }
+  var type = effState.types[effState.typeIndex];
+  effState.stepResults.push({type:type, step:effState.stepIndex, opts:{skip:true}});
+  effState.stepIndex++;
+  var steps = (effectData[type]||{steps:[]}).steps;
+  if(effState.stepIndex >= steps.length){
+    effNextType();
+  } else {
+    renderEffectStep();
+    document.getElementById('effectOverlay').scrollTop = 0;
+  }
+}
+
+function effNextType(){
+  effState.typeIndex++;
+  effState.stepIndex = 0;
+  if(effState.typeIndex >= effState.types.length){
+    closeEffectDiag();
+    showEffectResult();
+    return;
+  }
+  renderEffectStep();
+  document.getElementById('effectOverlay').scrollTop = 0;
+}
+
+function closeEffectDiag(){
+  document.getElementById('effectOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function showEffectResult(){
+  var info = diagPatientInfo;
+  var today = new Date();
+  var dateStr = String(today.getDate()).padStart(2,'0')+'.'+String(today.getMonth()+1).padStart(2,'0')+'.'+String(today.getFullYear()).slice(2);
+  var diagColors3 = {bodnazar:'#5c3a1a', jadu:'#2d1a5c', jinn:'#1a3a5c', waswasa:'#4a1a5c', bachcha:'#1a5c4a'};
+  var maxScores = {bodnazar:54, jadu:72, jinn:66, waswasa:60, bachcha:42};
+  var sub = document.getElementById('effResultSub');
+  if(sub) sub.textContent = info.name + ' | ' + dateStr;
+  var body = document.getElementById('effResultBody');
+  var html = '';
+  /* ─── গুরুত্বপূর্ণ সতর্কতা ─── */
+  html += '<div style="background:#fff3e0;border:1.5px solid #ff9800;border-radius:10px;padding:10px 13px;margin-bottom:12px;">';
+  html += '<div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:5px;">&#x26A0;&#xFE0F; জরুরি জ্ঞাতব্য</div>';
+  html += '<div style="font-size:11px;color:#444;line-height:1.7;">• প্রতিক্রিয়া না হওয়া মানেই সমস্যা নেই — এমন নয়। শক্তিশালী জিন, অধিক গুনাহ বা ওষুধের প্রভাবে প্রতিক্রিয়া কম হতে পারে।<br>• প্রতিক্রিয়া হলেই নিশ্চিত নয় — কিছু প্রতিক্রিয়া মনস্তাত্ত্বিকও হতে পারে।<br>• <strong>চূড়ান্ত নিশ্চিতকরণের জন্য একজন অভিজ্ঞ রাকির সাথে সশরীরে সেশন করুন।</strong></div>';
+  html += '</div>';
+  html += '<div style="background:#e8f5eb;border:1px solid #b2dbb9;border-radius:10px;padding:12px 14px;margin-bottom:12px;">';
+  html += '<div style="font-size:12px;font-weight:700;color:#1a5c3a;text-transform:uppercase;margin-bottom:8px;">&#x1F4CA; ইফেক্ট স্কোর বিশ্লেষণ</div>';
+  var fullMsg = '&#x1F3AF; *ইফেক্ট ডায়াগনোসিস রিপোর্ট*\n';
+  fullMsg += '&#x1F464; নাম: *'+info.name+'*\n';
+  fullMsg += '&#x1F4C5; তারিখ: '+dateStr+'\n';
+  fullMsg += '━━━━━━━━━━━━━━━━━━━━\n\n';
+  effState.types.forEach(function(type){
+    var score   = effState.scores[type] || 0;
+    var maxS    = maxScores[type] || 20;
+    var pct     = Math.min(100, Math.round((score/maxS)*100));
+    var color   = diagColors3[type]||'#1a5c3a';
+    var eData   = effectData[type];
+    var label   = eData ? eData.label : type;
+    var icon    = eData ? eData.icon : '';
+    var level, levelLabel, levelColor, advice;
+    if(pct >= 70){
+      level='high'; levelLabel='&#x1F534; উচ্চ নিশ্চিততা ('+pct+'%)'; levelColor='#c0392b';
+      advice='ইফেক্ট ডায়াগনোসিসে শক্তিশালী প্রতিক্রিয়া পাওয়া গেছে। সিম্পটম ডায়াগনোসিসের ফলাফল নিশ্চিত হয়েছে।';
+    } else if(pct >= 40){
+      level='medium'; levelLabel='&#x1F7E1; মাঝারি নিশ্চিততা ('+pct+'%)'; levelColor='#e67e22';
+      advice='কিছু প্রতিক্রিয়া পাওয়া গেছে। সম্ভাবনা আছে তবে আরও রুকইয়াহ ও পর্যবেক্ষণ প্রয়োজন।';
+    } else if(pct >= 15){
+      level='low'; levelLabel='&#x1F535; দুর্বল সংকেত ('+pct+'%)'; levelColor='#2980b9';
+      advice='সামান্য প্রতিক্রিয়া পাওয়া গেছে। এই মুহূর্তে নিশ্চিত বলা কঠিন।';
+    } else {
+      level='none'; levelLabel='&#x26AA; প্রতিক্রিয়া নেই ('+pct+'%)'; levelColor='#7f8c8d';
+      advice='ইফেক্ট ডায়াগনোসিসে বিশেষ প্রতিক্রিয়া পাওয়া যায়নি।';
+    }
+    var barW = Math.max(2, pct);
+    var barC = pct >= 70 ? '#c0392b' : pct >= 40 ? '#e67e22' : pct >= 15 ? '#2980b9' : '#95a5a6';
+    html += '<div style="margin-bottom:10px;">';
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">';
+    html += '<span style="font-size:13px;font-weight:700;color:'+color+';">'+icon+' '+label+'</span>';
+    html += '<span style="font-size:11px;font-weight:700;color:'+levelColor+';">'+levelLabel+'</span>';
+    html += '</div>';
+    html += '<div style="background:#e0e0e0;border-radius:5px;height:10px;overflow:hidden;margin-bottom:4px;">';
+    html += '<div style="background:'+barC+';width:'+barW+'%;height:100%;border-radius:5px;transition:width 0.5s;"></div>';
+    html += '</div>';
+    html += '<div style="font-size:11px;color:#555;">'+advice+'</div>';
+    html += '</div>';
+    fullMsg += icon+' *'+label+'* — '+levelLabel+'\n'+advice+'\n\n';
+  });
+  html += '</div>';
+  html += '<div style="background:#fff8e1;border:1px solid #f9a825;border-radius:10px;padding:12px 14px;margin-bottom:12px;">';
+  html += '<div style="font-size:12px;font-weight:700;color:#e65100;text-transform:uppercase;margin-bottom:8px;">&#x1F4CB; সম্মিলিত বিশ্লেষণ</div>';
+  var highCount = effState.types.filter(function(t){
+    var s = effState.scores[t]||0;
+    var m = maxScores[t]||20;
+    return (s/m) >= 0.70;
+  }).length;
+  var medCount = effState.types.filter(function(t){
+    var s = effState.scores[t]||0;
+    var m = maxScores[t]||20;
+    var p = s/m;
+    return p >= 0.40 && p < 0.70;
+  }).length;
+  var summaryHtml = '';
+  if(highCount > 0){
+    summaryHtml = '<div style="font-size:13px;color:#c0392b;font-weight:700;margin-bottom:6px;">&#x26A1; ইফেক্ট ডায়াগনোসিস নিশ্চিত করেছে!</div>';
+    summaryHtml += '<div style="font-size:12px;color:#333;line-height:1.7;">'+highCount+'টি রোগে শক্তিশালী ইফেক্ট পাওয়া গেছে। সিম্পটম ডায়াগনোসিসের ফলাফল এখন উচ্চ নিশ্চিততায় প্রমাণিত। দ্রুত একজন অভিজ্ঞ রাকির সাথে সশরীরে যোগাযোগ করুন।</div>';
+  } else if(medCount > 0){
+    summaryHtml = '<div style="font-size:13px;color:#e67e22;font-weight:700;margin-bottom:6px;">&#x1F7E1; মাঝারি সম্ভাবনা নিশ্চিত</div>';
+    summaryHtml += '<div style="font-size:12px;color:#333;line-height:1.7;">কিছু প্রতিক্রিয়া পাওয়া গেছে। নিয়মিত রুকইয়াহ শুরু করুন এবং ১ সপ্তাহ পর পুনরায় ডায়াগনোসিস করুন।</div>';
+  } else {
+    summaryHtml = '<div style="font-size:13px;color:#2980b9;font-weight:700;margin-bottom:6px;">&#x1F535; সতর্কতার সাথে পর্যবেক্ষণ করুন</div>';
+    summaryHtml += '<div style="font-size:12px;color:#333;line-height:1.7;">ইফেক্ট ডায়াগনোসিসে বিশেষ প্রতিক্রিয়া পাওয়া যায়নি। নিয়মিত আযকার ও ইবাদত অব্যাহত রাখুন। সমস্যা থাকলে একজন রাকির পরামর্শ নিন।</div>';
+  }
+  html += summaryHtml;
+  html += '</div>';
+  fullMsg += '━━━━━━━━━━━━━━━━━━━━\n';
+  fullMsg += '&#x1F932; اللهم اشفه وعافه — আল্লাহুম্মাশফিহি ওয়া আফিহি।';
+  html += '<button class="result-wa-btn" onclick="sendEffResultWA(this)" data-msg="'+encodeURIComponent(fullMsg)+'" style="width:100%;padding:13px;background:#25D366;color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Arial,sans-serif;"><i class="fab fa-whatsapp"></i> রিপোর্ট WhatsApp-এ পাঠাও</button>';
+  html += '<button onclick="closeEffResult()" style="width:100%;padding:9px;background:none;color:#888;border:1px solid #ddd;border-radius:9px;font-size:13px;cursor:pointer;margin-top:8px;font-family:Arial,sans-serif;">বন্ধ করুন</button>';
+  if(body) body.innerHTML = html;
+  document.getElementById('effResultOverlay').classList.add('open');
+  document.getElementById('effResultOverlay').scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+
+function sendEffResultWA(btn){
+  var encoded = btn.getAttribute('data-msg');
+  var m = decodeURIComponent(encoded);
+  window.open('https://api.whatsapp.com/send?phone='+getWAPhone()+'&text='+encodeURIComponent(m),'_blank');
+}
+
+function closeEffResult(){
+  document.getElementById('effResultOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+//]]>
+</script>
+</body>
+</html>

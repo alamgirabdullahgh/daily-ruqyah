@@ -1,0 +1,2363 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:css='false' b:defaultmessages='false' b:responsive='true' b:templateUrl='indie' b:templateVersion='2.0.0' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+<meta charset='UTF-8'/>
+<meta content='width=device-width, initial-scale=1' name='viewport'/>
+<b:include data='blog' name='all-head-content'/>
+<title><data:blog.pageTitle/></title>
+<b:skin><![CDATA[body{margin:0;padding:0;}]]></b:skin>
+<style type='text/css'>
+*{box-sizing:border-box;margin:0;padding:0;}
+body,html{background:#0f2d25!important;font-family:Arial,sans-serif;min-height:100vh;}
+#page-wrap,#outer-wrapper,#wrapper,#header-wrapper,#header,#crosscol-wrapper,#crosscol,#main-wrapper,#sidebar-wrapper,#footer-wrapper,#footer,.navbar,.sidebar,.footer,#navbar,#blog-pager,.blog-pager,.post,.post-outer,.date-outer,h2.date-header,.post-footer,.widget.Blog,.widget.Profile,.widget.PageList,.widget.BlogArchive,.widget.Label,.widget.Attribution,.widget.ReportAbuse{display:none!important;height:0!important;overflow:hidden!important;}
+
+#app{position:fixed;top:0;left:0;width:100%;height:100%;background:#0f2d25;z-index:99999;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 12px 40px;}
+
+/* ===== TOP NAV TABS ===== */
+.nav-tabs{display:flex;gap:0;width:100%;max-width:500px;margin:0 auto 14px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.35);}
+.nav-tab{flex:1;padding:13px 6px;background:#1a3d2b;color:#a8d5b8;border:none;font-size:14px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:Arial,sans-serif;transition:all 0.18s;letter-spacing:0.3px;border-right:1px solid #0f2d25;}
+.nav-tab:last-child{border-right:none;}
+.nav-tab i{font-size:17px;}
+.nav-tab.active{background:#e7c873;color:#000;}
+.nav-tab:active{opacity:0.85;}
+
+/* ===== PANELS ===== */
+.panel{display:none;}
+.panel.active{display:block;}
+
+.card{background:#fff;border-radius:12px;width:100%;max-width:500px;margin:0 auto;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+
+/* ===== TOP HEADER ===== */
+
+/* ===== EDITABLE FIELDS IN HEADER ===== */
+
+/* ===== BILL TO SECTION ===== */
+.bill-to{padding:8px 12px;background:#f8fdf9;border-bottom:1px solid #e0ede3;}
+.bill-to-title{font-size:11px;font-weight:700;color:#1a5c3a;margin-bottom:7px;text-transform:uppercase;letter-spacing:0.5px;}
+.bill-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.fg{display:flex;flex-direction:column;gap:2px;}
+.fg label{font-size:9px;font-weight:700;color:#777;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fg input,.fg select,.fg textarea{padding:5px 7px;border:1px solid #ddd;border-radius:6px;font-size:13px;color:#222;background:#fff;outline:none;font-family:Arial,sans-serif;width:100%;}
+.fg input:focus,.fg select:focus{border-color:#1a5c3a;}
+.fg.full{grid-column:1/-1;}
+
+/* ===== ITEMS TABLE ===== */
+.items-section{padding:10px 14px;}
+.items-title{font-size:11px;font-weight:700;color:#1a5c3a;margin-bottom:7px;text-transform:uppercase;letter-spacing:0.5px;}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.tbl th{background:#1a5c3a;color:#fff;padding:6px 4px;text-align:center;font-size:11px;}
+.tbl th:nth-child(2){text-align:left;padding-left:6px;}
+.tbl td{padding:5px 4px;border-bottom:1px solid #e8f0e9;text-align:center;vertical-align:middle;}
+.tbl td:nth-child(2){text-align:left;}
+.tbl td input,.tbl td select{width:100%;border:1px solid #e0e0e0;border-radius:4px;padding:4px 4px;font-size:12px;text-align:center;background:#fafafa;font-family:Arial,sans-serif;outline:none;}
+.tbl td:nth-child(2) input{text-align:left;}
+.tbl td select{text-align:center;}
+.tbl .amt{font-weight:600;color:#1a5c3a;background:#f0faf2;}
+.tbl .amt input{font-weight:600;color:#1a5c3a;background:#f0faf2;border:none;}
+.add-row-btn{margin-top:8px;padding:6px 14px;background:#e8f5eb;color:#1a5c3a;border:1px dashed #1a5c3a;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600;}
+.del-btn{background:none;border:none;color:#e53935;font-size:15px;cursor:pointer;padding:0 3px;}
+
+/* ===== TOTALS ===== */
+.totals{padding:8px 14px 14px;}
+.tot-row{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:5px;}
+.tot-label{font-size:12px;color:#555;text-align:right;min-width:120px;}
+.tot-val{width:90px;padding:5px 7px;border:1px solid #ddd;border-radius:6px;font-size:13px;text-align:right;background:#fafafa;font-family:Arial,sans-serif;}
+.tot-val.auto{background:#f0faf2;color:#1a5c3a;font-weight:700;border-color:#b2dbb9;}
+.tot-row.payable .tot-label{font-weight:700;color:#1a5c3a;}
+.tot-row.payable .tot-val{font-weight:700;color:#1a5c3a;background:#e8f5eb;border-color:#1a5c3a;}
+.paid-section{background:#f8fdf9;border:1px solid #c8e6c9;border-radius:8px;padding:8px 10px;margin-top:8px;}
+.paid-title{font-size:11px;font-weight:700;color:#1a5c3a;margin-bottom:6px;}
+.paid-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
+
+/* ===== SUBMIT ===== */
+.submit-area{padding:0 14px 14px;}
+.sb{width:100%;padding:13px;background:#e7c873;color:#000;border:none;border-radius:9px;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Arial,sans-serif;}
+.sb:active{opacity:0.85;}
+
+.wf{position:fixed;bottom:16px;right:16px;background:#16a34a;color:#fff;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;text-decoration:none;box-shadow:0 3px 12px rgba(0,0,0,0.4);z-index:100000;}
+
+/* ===== DIAGNOSIS PANEL ===== */
+.diag-panel-card{background:#fff;border-radius:12px;width:100%;max-width:500px;margin:0 auto;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+.diag-panel-header{background:#1a5c3a;color:#fff;padding:16px 16px 12px;}
+.diag-panel-title{font-size:16px;font-weight:700;}
+.diag-panel-sub{font-size:11px;opacity:0.85;margin-top:3px;}
+.diag-btns-wrap{padding:14px;}
+.diag-btn{width:100%;padding:13px;color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Arial,sans-serif;margin-bottom:10px;}
+.diag-btn:last-child{margin-bottom:0;}
+.diag-btn:active{opacity:0.85;}
+
+/* ===== APPOINTMENT PANEL ===== */
+.appt-card{background:#fff;border-radius:12px;width:100%;max-width:500px;margin:0 auto;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+.appt-header{background:#1a5c3a;color:#fff;padding:0;}
+.appt-hdr-label{font-size:9px;color:rgba(255,255,255,0.7);display:block;margin-bottom:2px;text-transform:uppercase;}
+.appt-title-bar-text{font-size:13px;font-weight:700;color:#e7c873;letter-spacing:1px;text-transform:uppercase;}
+.appt-biz-box{display:flex;flex-direction:column;gap:3px;align-self:end;}
+.appt-hdr-input{width:100%;border:1px solid rgba(255,255,255,0.35);border-radius:5px;padding:4px 6px;font-size:11px;color:#fff;background:rgba(255,255,255,0.15);outline:none;font-family:Arial,sans-serif;}
+.appt-hdr-input::placeholder{color:rgba(255,255,255,0.55);}
+.appt-hdr-input:focus{border-color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.22);}
+.appt-hdr-date{width:110px;padding:4px 6px;border:1px solid rgba(255,255,255,0.35);border-radius:5px;font-size:11px;text-align:center;color:#fff;background:rgba(255,255,255,0.15);outline:none;font-family:Arial,sans-serif;}
+.appt-body{padding:0;}
+
+/* address drilldown single-box */
+.addr-drill-sheet{display:none;background:#f8fdf9;border-top:1px solid #d0e8d8;max-height:200px;overflow-y:auto;}
+.addr-drill-sheet.open{display:block;}
+.addr-drill-item{padding:9px 14px;font-size:13px;color:#222;border-bottom:1px solid #eee;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.addr-drill-item:last-child{border-bottom:none;}
+.addr-drill-item:active{background:#e8f5eb;}
+
+/* form sections */
+.appt-section{border-bottom:1px solid #e0ede3;}
+.appt-section-title{font-size:10px;font-weight:700;color:#fff;background:#1a5c3a;padding:5px 14px;text-transform:uppercase;letter-spacing:0.6px;}
+.appt-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.appt-form-grid .apf:nth-child(odd){border-right:1px solid #e0ede3;}
+.apf{display:flex;flex-direction:column;padding:6px 10px;border-bottom:1px solid #e8f0e9;}
+.apf.full{grid-column:1/-1;}
+.apf label{font-size:9px;font-weight:700;color:#1a5c3a;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.apf input,.apf select,.apf textarea{border:1.5px solid #d0e8d8;border-radius:6px;padding:5px 7px;font-size:13px;color:#222;background:#fff;outline:none;font-family:Arial,sans-serif;width:100%;}
+.apf input:focus,.apf select:focus,.apf textarea:focus{border-color:#1a5c3a;background:#f8fdf9;}
+.apf textarea{resize:none;line-height:1.5;}
+.apf select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231a5c3a'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 4px center;padding-right:18px;}
+
+/* serial / token box */
+.appt-token-input{width:70px;padding:5px 8px;border:1.5px solid #1a5c3a;border-radius:6px;font-size:14px;font-weight:700;text-align:center;color:#1a5c3a;background:#e8f5eb;outline:none;font-family:Arial,sans-serif;}
+
+/* complaint checkboxes */
+
+/* WhatsApp send button */
+.appt-send-btn{width:100%;padding:14px;background:#e7c873;color:#000;border:none;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Arial,sans-serif;}
+.appt-send-btn:active{opacity:0.85;}
+.appt-issue-box{text-align:right;align-self:end;}
+.appt-reset-btn{width:100%;padding:9px;background:none;color:#e53935;border:none;border-top:1px solid #f0e0e0;font-size:12px;font-weight:600;cursor:pointer;font-family:Arial,sans-serif;}
+.appt-reset-btn:active{opacity:0.7;}
+.appt-footer{padding:0;}
+
+/* ===== POPUP OVERLAY ===== */
+.popup-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:999999;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 12px 40px;}
+.popup-overlay.open{display:block;}
+.popup-card{background:#fff;border-radius:14px;width:100%;max-width:500px;margin:0 auto;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.5);}
+.popup-header{background:#1a5c3a;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
+.popup-header-title{font-size:15px;font-weight:700;line-height:1.3;}
+.popup-header-sub{font-size:11px;opacity:0.85;margin-top:3px;}
+.popup-close{background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.popup-body{padding:12px 14px;}
+.popup-count{font-size:12px;color:#1a5c3a;font-weight:700;background:#e8f5eb;border-radius:6px;padding:6px 10px;margin-bottom:10px;text-align:center;}
+
+/* ===== CHECKBOX ITEMS ===== */
+.chk-item{display:flex;align-items:flex-start;gap:10px;padding:9px 10px;border-radius:8px;margin-bottom:6px;cursor:pointer;border:1.5px solid #e8f0e9;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
+.chk-item:active{background:#f0faf2;}
+.chk-item.checked{background:#e8f5eb;border-color:#1a5c3a;}
+.chk-box{width:22px;height:22px;min-width:22px;border:2px solid #bbb;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;background:#fff;transition:all 0.15s;margin-top:1px;}
+.chk-item.checked .chk-box{background:#1a5c3a;border-color:#1a5c3a;}
+.chk-num{font-size:11px;font-weight:700;color:#888;min-width:20px;margin-top:3px;}
+.chk-item.checked .chk-num{color:#1a5c3a;}
+.chk-text{font-size:13px;color:#333;line-height:1.5;}
+.chk-item.checked .chk-text{color:#1a5c3a;font-weight:600;}
+
+/* ===== POPUP FOOTER ===== */
+.popup-footer{padding:10px 14px 16px;border-top:1px solid #e8f0e9;}
+.popup-submit{width:100%;padding:13px;background:#e7c873;color:#000;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Arial,sans-serif;}
+.popup-submit:active{opacity:0.85;}
+.popup-clear{width:100%;padding:9px;background:none;color:#e53935;border:1px solid #e53935;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;font-family:Arial,sans-serif;}
+.popup-clear:active{opacity:0.7;}
+/* ===== RESULT POPUP ===== */
+.result-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:9999999;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 12px 40px;}
+.result-overlay.open{display:block;}
+.result-card{background:#fff;border-radius:14px;width:100%;max-width:500px;margin:0 auto;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.5);}
+.result-header{padding:16px;display:flex;align-items:center;justify-content:space-between;}
+.result-header-title{font-size:16px;font-weight:800;color:#fff;line-height:1.3;}
+.result-header-sub{font-size:11px;color:rgba(255,255,255,0.85);margin-top:3px;}
+.result-body{padding:14px;}
+.result-section{background:#f8fdf9;border:1px solid #d0e8d8;border-radius:10px;padding:12px;margin-bottom:10px;}
+.result-section-title{font-size:12px;font-weight:700;color:#1a5c3a;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;}
+.result-prob-row{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:#fff;border-radius:7px;margin-bottom:6px;border:1px solid #e0ede3;}
+.result-prob-row:last-child{margin-bottom:0;}
+.result-prob-name{font-size:14px;font-weight:700;color:#222;}
+.result-prob-badge{font-size:12px;font-weight:700;color:#fff;background:#1a5c3a;border-radius:20px;padding:3px 10px;}
+.result-prob-badge.low{background:#e7c873;color:#000;}
+.result-next-btn{width:100%;padding:12px;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Arial,sans-serif;margin-bottom:8px;color:#fff;}
+.result-next-btn:active{opacity:0.85;}
+.result-appt-box{background:#e8f5eb;border:1px solid #b2dbb9;border-radius:10px;padding:12px;margin-bottom:10px;}
+.result-appt-title{font-size:14px;font-weight:700;color:#1a5c3a;margin-bottom:6px;}
+.result-appt-text{font-size:13px;color:#333;line-height:1.6;}
+.result-wa-btn{width:100%;padding:13px;background:#25D366;color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Arial,sans-serif;}
+.result-wa-btn:active{opacity:0.85;}
+.result-close-btn{width:100%;padding:9px;background:none;color:#888;border:1px solid #ddd;border-radius:9px;font-size:13px;cursor:pointer;margin-top:8px;font-family:Arial,sans-serif;}
+</style>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'/>
+</head>
+<body>
+
+<b:section class='header' id='header' maxwidgets='1' name='Header' showaddelement='false'>
+<b:widget id='Header1' locked='true' title='Raqi Store' type='Header' visible='false'/>
+</b:section>
+<b:section class='main' id='main' name='Blog' showaddelement='false'>
+<b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' visible='true'>
+<b:includable id='main' var='top'></b:includable>
+<b:includable id='postQuickEdit' var='post'></b:includable>
+<b:includable id='backlinks' var='post'></b:includable>
+<b:includable id='backlinkDeleteIcon' var='i'></b:includable>
+<b:includable id='comment' var='comment'></b:includable>
+<b:includable id='commentDeleteIcon' var='i'></b:includable>
+<b:includable id='comments' var='post'></b:includable>
+<b:includable id='feedLinks'></b:includable>
+<b:includable id='feedLinksBody' var='links'></b:includable>
+<b:includable id='nextprev' var='posts'></b:includable>
+<b:includable id='post' var='post'></b:includable>
+<b:includable id='status-message'></b:includable>
+</b:widget>
+</b:section>
+<b:section class='foot' id='footer' name='Footer' showaddelement='false'/>
+
+<div id='app'>
+
+  <!-- ===== TOP NAVIGATION TABS ===== -->
+  <div class='nav-tabs'>
+    <button class='nav-tab active' id='tab-diag' onclick='switchTab(&apos;diag&apos;)' type='button'>
+      <i class='fas fa-stethoscope'></i>
+      ডায়াগনোসিস
+    </button>
+    <button class='nav-tab' id='tab-appt' onclick='switchTab(&apos;appt&apos;)' type='button'>
+      <i class='fas fa-calendar-check'></i>
+      এপয়েন্টমেন্ট
+    </button>
+    <button class='nav-tab' id='tab-bill' onclick='switchTab(&apos;bill&apos;)' type='button'>
+      <i class='fas fa-file-invoice-dollar'></i>
+      বিলিং
+    </button>
+  </div>
+
+  <!-- ===== DIAGNOSIS PANEL ===== -->
+  <div class='panel active' id='panel-diag'>
+    <div class='diag-panel-card'>
+      <div class='diag-panel-header'>
+        <div style='display:flex;align-items:center;gap:10px;'>
+          <img src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjkqW16IAtma1Fy_fpqZgoWBRNtBQFY1q22oqu4asfBgfajkOEw5p1NvRprOcz2scN7zVo0RJ3tmnGnMz3N3S37XSJzpAEfcKL1XZRndeqtquwYIUcVGiK_F9FRj62QzDg5gRhaD7Must_HvhiKYynIT3LRCz1x4iDG10jC29JT8i4c4vLR9nEIsbC35BJ7/s1600/IMG-20260526-WA0002.jpg' alt='Logo' style='width:46px;height:46px;object-fit:contain;border-radius:8px;background:#fff;padding:2px;flex-shrink:0;'/>
+          <div>
+            <div class='diag-panel-title'>&#128297; ডায়াগনোসিস</div>
+            <div class='diag-panel-sub'>সমস্যার ধরন অনুযায়ী ডায়াগনোসিস করুন</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 1: রোগীর তথ্য ফর্ম -->
+      <div id='diagInfoForm' style='padding:14px;'>
+        <div style='font-size:12px;font-weight:700;color:#1a5c3a;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;'>&#x1F464; রোগীর তথ্য পূরণ করুন</div>
+
+        <!-- নাম -->
+        <div style='display:flex;flex-direction:column;gap:3px;margin-bottom:10px;'>
+          <label style='font-size:10px;font-weight:700;color:#777;text-transform:uppercase;'>নাম (Name) *</label>
+          <input id='diagName' type='text' placeholder='পূর্ণ নাম লিখুন' style='padding:8px 10px;border:1.5px solid #d0e8d8;border-radius:7px;font-size:13px;outline:none;font-family:Arial,sans-serif;'/>
+        </div>
+
+        <!-- নম্বর -->
+        <div style='display:flex;flex-direction:column;gap:3px;margin-bottom:10px;'>
+          <label style='font-size:10px;font-weight:700;color:#777;text-transform:uppercase;'>WhatsApp নম্বর *</label>
+          <input id='diagPhone' type='tel' placeholder='01XXXXXXXXX' style='padding:8px 10px;border:1.5px solid #d0e8d8;border-radius:7px;font-size:13px;outline:none;font-family:Arial,sans-serif;'/>
+        </div>
+
+        <!-- কার জন্য -->
+        <div style='display:flex;flex-direction:column;gap:3px;margin-bottom:10px;'>
+          <label style='font-size:10px;font-weight:700;color:#777;text-transform:uppercase;'>ডায়াগনোসিস কার জন্য?</label>
+          <select id='diagFor' onchange='onDiagForChange()' style='padding:8px 10px;border:1.5px solid #d0e8d8;border-radius:7px;font-size:13px;outline:none;font-family:Arial,sans-serif;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2710%27 height=%276%27%3E%3Cpath d=%27M0 0l5 6 5-6z%27 fill=%27%231a5c3a%27/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;'>
+            <option value=''>-- সিলেক্ট করুন --</option>
+            <option value='self'>নিজের জন্য</option>
+            <option value='other'>অন্যের জন্য</option>
+          </select>
+        </div>
+
+        <!-- বয়স (নিজের জন্য) -->
+        <div id='diagAgeWrap' style='display:none;flex-direction:column;gap:3px;margin-bottom:10px;'>
+          <label style='font-size:10px;font-weight:700;color:#777;text-transform:uppercase;'>বয়স (Age)</label>
+          <input id='diagAge' type='number' min='1' max='120' placeholder='বয়স লিখুন' style='padding:8px 10px;border:1.5px solid #d0e8d8;border-radius:7px;font-size:13px;outline:none;font-family:Arial,sans-serif;'/>
+        </div>
+
+        <!-- বয়স গ্রুপ (অন্যের জন্য - বাচ্চা) -->
+        <div id='diagChildAgeWrap' style='display:none;flex-direction:column;gap:3px;margin-bottom:10px;'>
+          <label style='font-size:10px;font-weight:700;color:#777;text-transform:uppercase;'>বাচ্চার বয়স গ্রুপ</label>
+          <select id='diagChildAge' onchange='onChildAgeChange()' style='padding:8px 10px;border:1.5px solid #d0e8d8;border-radius:7px;font-size:13px;outline:none;font-family:Arial,sans-serif;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2710%27 height=%276%27%3E%3Cpath d=%27M0 0l5 6 5-6z%27 fill=%27%231a5c3a%27/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;'>
+            <option value=''>-- বয়স সিলেক্ট করুন --</option>
+            <option value='infant'>০ – ২ বছর</option>
+            <option value='child'>২ – ১২ বছর</option>
+          </select>
+          <!-- বয়স যাচাই বার্তা -->
+          <div id='childAgeValidation' style='display:none;font-size:11px;color:#e53935;margin-top:3px;font-weight:600;'></div>
+        </div>
+
+        <!-- অন্যের বয়স (বাচ্চা ছাড়া) -->
+        <div id='diagOtherAgeWrap' style='display:none;flex-direction:column;gap:3px;margin-bottom:10px;'>
+          <label style='font-size:10px;font-weight:700;color:#777;text-transform:uppercase;'>তার বয়স (Age)</label>
+          <input id='diagOtherAge' type='number' min='1' max='120' placeholder='বয়স লিখুন' style='padding:8px 10px;border:1.5px solid #d0e8d8;border-radius:7px;font-size:13px;outline:none;font-family:Arial,sans-serif;'/>
+          <div id='otherAgeValidation' style='display:none;font-size:11px;color:#e53935;margin-top:3px;font-weight:600;'></div>
+        </div>
+
+        <!-- কার জন্য (অন্যের ক্ষেত্রে adult/child toggle) -->
+        <div id='diagPersonTypeWrap' style='display:none;flex-direction:column;gap:3px;margin-bottom:10px;'>
+          <label style='font-size:10px;font-weight:700;color:#777;text-transform:uppercase;'>কোন ধরনের সমস্যার জন্য?</label>
+          <select id='diagPersonType' onchange='onPersonTypeChange()' style='padding:8px 10px;border:1.5px solid #d0e8d8;border-radius:7px;font-size:13px;outline:none;font-family:Arial,sans-serif;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2710%27 height=%276%27%3E%3Cpath d=%27M0 0l5 6 5-6z%27 fill=%27%231a5c3a%27/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;'>
+            <option value=''>-- সিলেক্ট করুন --</option>
+            <option value='adult'>বড়দের (১২+ বছর)</option>
+            <option value='child'>বাচ্চাদের (০–১২ বছর)</option>
+          </select>
+        </div>
+
+        <button onclick='startDiagnosis()' style='width:100%;padding:13px;background:#1a5c3a;color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Arial,sans-serif;' type='button'>
+          <i class='fas fa-stethoscope'></i>
+          ডায়াগনোসিস শুরু করুন
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== APPOINTMENT PANEL ===== -->
+  <div class='panel' id='panel-appt'>
+    <div class='appt-card'>
+
+      <!-- APPOINTMENT HEADER -->
+      <div class='appt-header'>
+        <!-- হেডিং উপরে মাঝে -->
+        <div style='text-align:center;padding:10px 14px 8px;'>
+          <span class='appt-title-bar-text' style='font-size:20px;letter-spacing:2px;'>&#x1F4C5; অ্যাপয়েন্টমেন্ট</span>
+        </div>
+        <!-- হেডিং-এর নিচে: বাম বক্স | লোগো মাঝে | ডান বক্স -->
+        <div style='display:grid;grid-template-columns:1fr auto 1fr;gap:8px;padding:0 12px 10px;align-items:center;'>
+          <div class='appt-biz-box'>
+            <input class='appt-hdr-input' id='apptBizName' type='text' value='Ruqyah Haven' readonly='readonly' style='font-weight:700;color:#e7c873;background:rgba(255,255,255,0.1);'/>
+            <select class='appt-hdr-input' id='apptBizAddr' style='margin-top:4px;cursor:pointer;' onchange='onApptBranchChange(this)'>
+              <option value=''>-- ব্রাঞ্চ সিলেক্ট করুন --</option>
+              <option value='Narayanganj' data-phone='01883269615'>Narayanganj</option>
+              <option value='Halishahr' data-phone='01978004575'>Halishahr</option>
+              <option value='Cox&#39;s Bazar' data-phone='01813530359'>Cox&apos;s Bazar</option>
+              <option value='Jashore' data-phone='01577555921'>Jashore</option>
+            </select>
+            <select class='appt-hdr-input' id='apptBizWA' style='margin-top:4px;cursor:pointer;'>
+              <option value=''>-- ব্রাঞ্চ সিলেক্ট করুন --</option>
+              <option value='01883269615'>Narayanganj — 01883269615</option>
+              <option value='01978004575'>Halishahr — 01978004575</option>
+              <option value='01813530359'>Cox&apos;s Bazar — 01813530359</option>
+              <option value='01577555921'>Jashore — 01577555921</option>
+            </select>
+          </div>
+          <img alt='Logo' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjkqW16IAtma1Fy_fpqZgoWBRNtBQFY1q22oqu4asfBgfajkOEw5p1NvRprOcz2scN7zVo0RJ3tmnGnMz3N3S37XSJzpAEfcKL1XZRndeqtquwYIUcVGiK_F9FRj62QzDg5gRhaD7Must_HvhiKYynIT3LRCz1x4iDG10jC29JT8i4c4vLR9nEIsbC35BJ7/s1600/IMG-20260526-WA0002.jpg' style='width:54px;height:54px;object-fit:contain;border-radius:6px;background:#fff;padding:2px;flex-shrink:0;display:block;'/>
+          <div class='appt-issue-box'>
+            <span class='appt-hdr-label'>তারিখ</span>
+            <input class='appt-hdr-date' id='apptDate' type='date'/>
+            <span class='appt-hdr-label' style='margin-top:5px;'>&#2488;&#2495;&#2480;&#2495;&#2527;&#2494;&#2482; &#2472;&#2434;</span>
+            <input class='appt-token-input' id='apptToken' min='1' placeholder='০১' style='width:70px;margin-top:2px;background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.5);color:#fff;' type='number'/>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORM BODY -->
+      <div class='appt-body'>
+
+        <!-- PATIENT INFO SECTION -->
+        <div class='appt-section'>
+          <div class='appt-section-title'>&#128100; রোগীর তথ্য</div>
+          <div class='appt-form-grid'>
+            <div class='apf full'>
+              <label>নাম (Name)</label>
+              <input id='apptName' placeholder='পূর্ণ নাম লিখুন' type='text'/>
+            </div>
+            <div class='apf'>
+              <label>WhatsApp নম্বর</label>
+              <input id='apptPhone' placeholder='01XXXXXXXXX' type='tel'/>
+            </div>
+            <div class='apf'>
+              <label>বয়স (Age)</label>
+              <input id='apptAge' min='1' placeholder='বয়স' type='number'/>
+            </div>
+            <!-- ঠিকানা বাম পাশে, লিঙ্গ ডান পাশে -->
+            <div class='apf'>
+              <label>ঠিকানা</label>
+              <div class='addr-single-box' id='addrDrillBox'>
+                <div class='addr-single-row' id='addrSingleRow' onclick='addrSingleClick()' style='display:flex;align-items:center;gap:5px;border:1.5px solid #d0e8d8;border-radius:6px;padding:6px 8px;cursor:pointer;background:#fff;min-height:34px;'>
+                  <span style='font-size:12px;'>📍</span>
+                  <span id='addrSingleVal' style='font-size:12px;color:#bbb;flex:1;'>-- সিলেক্ট করুন --</span>
+                  <span style='font-size:10px;color:#ccc;'>▼</span>
+                </div>
+                <div class='addr-drill-sheet' id='addrSingleSheet' style='border:1.5px solid #d0e8d8;border-top:none;border-radius:0 0 6px 6px;max-height:180px;overflow-y:auto;display:none;'></div>
+              </div>
+              <input id='apptAddr' type='hidden' value=''/>
+              <input id='apptDivision' type='hidden' value=''/>
+            </div>
+            <div class='apf'>
+              <label>লিঙ্গ (Gender)</label>
+              <select id='apptGender'>
+                <option value=''>-- সিলেক্ট --</option>
+                <option value='পুরুষ (Male)'>পুরুষ (Male)</option>
+                <option value='মহিলা (Female)'>মহিলা (Female)</option>
+                <option value='অন্যান্য (Other)'>অন্যান্য (Other)</option>
+              </select>
+            </div>
+            <div class='apf full'>
+              <label>শিডিউল টাইম</label>
+              <select id='apptSchedule' style='padding:5px 8px;font-size:13px;'>
+                <option value=''>-- সময় সিলেক্ট করুন --</option>
+                <option value='১. সকাল ৯:০০ – ১০:০০'>১. সকাল ৯:০০ – ১০:০০</option>
+                <option value='২. সকাল ১০:০০ – ১১:০০'>২. সকাল ১০:০০ – ১১:০০</option>
+                <option value='৩. সকাল ১১:০০ – দুপুর ১২:০০'>৩. সকাল ১১:০০ – দুপুর ১২:০০</option>
+                <option value='৪. দুপুর ১২:০০ – ১:০০'>৪. দুপুর ১২:০০ – ১:০০</option>
+                <option value='৫. দুপুর ১:০০ – ২:০০'>৫. দুপুর ১:০০ – ২:০০</option>
+                <option value='৬. দুপুর ২:০০ – বিকাল ৩:০০'>৬. দুপুর ২:০০ – বিকাল ৩:০০</option>
+                <option value='৭. বিকাল ৩:০০ – ৪:০০'>৭. বিকাল ৩:০০ – ৪:০০</option>
+                <option value='৮. বিকাল ৪:০০ – ৫:০০'>৮. বিকাল ৪:০০ – ৫:০০</option>
+                <option value='৯. বিকাল ৫:০০ – সন্ধ্যা ৬:০০'>৯. বিকাল ৫:০০ – সন্ধ্যা ৬:০০</option>
+                <option value='১০. সন্ধ্যা ৬:০০ – ৭:০০'>১০. সন্ধ্যা ৬:০০ – ৭:০০</option>
+                <option value='১১. সন্ধ্যা ৭:০০ – রাত ৮:০০'>১১. সন্ধ্যা ৭:০০ – রাত ৮:০০</option>
+                <option value='১২. রাত ৮:০০ – ৯:০০'>১২. রাত ৮:০০ – ৯:০০</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- .appt-body -->
+
+      <!-- FOOTER BUTTONS -->
+      <div class='appt-footer'>
+        <button class='appt-send-btn' onclick='sendAppointment()' type='button'>
+          <i class='fab fa-whatsapp'></i>
+          অ্যাপয়েন্টমেন্ট কনফার্ম করুন
+        </button>
+        <button class='appt-send-btn' onclick='downloadApptPDF()' type='button' style='background:#1a5c3a;margin-top:8px;'>
+          <i class='fas fa-file-pdf'></i>
+          PDF ডাউনলোড করুন
+        </button>
+        <button class='appt-reset-btn' onclick='resetAppointment()' type='button'>
+          &#x21BA; ফর্ম রিসেট করুন
+        </button>
+      </div>
+
+    </div><!-- .appt-card -->
+  </div>
+
+  <!-- ===== BILLING PANEL ===== -->
+  <div class='panel' id='panel-bill'>
+   <div class='card'>
+
+    <!-- TOP HEADER -->
+    <div style='background:#1a5c3a;'>
+     <!-- হেডিং উপরে মাঝে -->
+     <div style='text-align:center;padding:10px 14px 8px;'>
+      <span style='font-size:20px;font-weight:800;color:#e7c873;letter-spacing:2px;text-shadow:0 1px 3px rgba(0,0,0,0.3);'>&#x1F9FE; Billing Invoice</span>
+     </div>
+     <!-- হেডিং-এর নিচে: বাম বক্স | লোগো মাঝে | ডান বক্স -->
+     <div style='display:grid;grid-template-columns:1fr auto 1fr;gap:8px;padding:0 12px 10px;align-items:center;'>
+      <div style='display:flex;flex-direction:column;gap:4px;'>
+       <input class='appt-hdr-input' id='bizName' type='text' value='Ruqyah Haven' readonly='readonly' style='font-weight:700;color:#e7c873;background:rgba(255,255,255,0.1);'/>
+       <select class='appt-hdr-input' id='bizAddr' style='cursor:pointer;' onchange='onBillBranchChange(this)'>
+         <option value=''>-- ব্রাঞ্চ সিলেক্ট করুন --</option>
+         <option value='Narayanganj' data-phone='01883269615'>Narayanganj</option>
+         <option value='Halishahr' data-phone='01978004575'>Halishahr</option>
+         <option value='Cox&#39;s Bazar' data-phone='01813530359'>Cox&apos;s Bazar</option>
+         <option value='Jashore' data-phone='01577555921'>Jashore</option>
+       </select>
+       <select class='appt-hdr-input' id='centerPhone' style='cursor:pointer;'>
+         <option value=''>-- ব্রাঞ্চ সিলেক্ট করুন --</option>
+         <option value='01883269615'>01883269615</option>
+         <option value='01978004575'>01978004575</option>
+         <option value='01813530359'>01813530359</option>
+         <option value='01577555921'>01577555921</option>
+       </select>
+      </div>
+      <img alt='Logo' id='logoImg' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjkqW16IAtma1Fy_fpqZgoWBRNtBQFY1q22oqu4asfBgfajkOEw5p1NvRprOcz2scN7zVo0RJ3tmnGnMz3N3S37XSJzpAEfcKL1XZRndeqtquwYIUcVGiK_F9FRj62QzDg5gRhaD7Must_HvhiKYynIT3LRCz1x4iDG10jC29JT8i4c4vLR9nEIsbC35BJ7/s1600/IMG-20260526-WA0002.jpg' style='width:54px;height:54px;object-fit:contain;border-radius:6px;background:#fff;padding:2px;flex-shrink:0;display:block;'/>
+      <div style='text-align:right;display:flex;flex-direction:column;gap:4px;align-items:flex-end;'>
+       <span style='font-size:9px;color:rgba(255,255,255,0.7);text-transform:uppercase;'>Issue Date</span>
+       <input id='issueDate' type='date' style='width:120px;border:1px solid rgba(255,255,255,0.35);border-radius:5px;padding:4px 6px;font-size:11px;color:#fff;background:rgba(255,255,255,0.15);outline:none;font-family:Arial,sans-serif;text-align:center;'/>
+      </div>
+     </div>
+    </div>
+
+    <!-- BILL TO -->
+    <div class='bill-to'>
+     <div class='bill-to-title'>Bill To</div>
+     <div class='bill-grid'>
+      <div class='fg'>
+       <label>&#2472;&#2494;&#2478; (Name)</label>
+       <input id='cName' placeholder='&#2480;&#2507;&#2455;&#2496;&#2480; &#2472;&#2494;&#2478;' type='text'/>
+      </div>
+      <div class='fg'>
+       <label>&#2475;&#2507;&#2472; (Phone)</label>
+       <input id='cPhone' placeholder='01XXXXXXXXX' type='tel' oninput='lookupAppt(this.value)'/>
+       <span id='apptFoundBadge' style='display:none;font-size:10px;color:#1a5c3a;font-weight:700;margin-top:3px;background:#e8f5eb;border-radius:4px;padding:2px 6px;'>✅ অ্যাপয়েন্টমেন্ট পাওয়া গেছে</span>
+      </div>
+      <div class='fg'>
+       <label>&#2476;&#2479;&#2492;&#2488; (Age)</label>
+       <input id='cAge' placeholder='25' type='number' min='1'/>
+      </div>
+      <div class='fg'>
+       <label>&#2482;&#2495;&#2457;&#2509;&#2455; (Gender)</label>
+       <select id='cGender'>
+        <option value=''>-- &#2488;&#2495;&#2482;&#2503;&#2453;&#2509;&#2463; --</option>
+        <option value='Male (M)'>Male (M)</option>
+        <option value='Female (F)'>Female (F)</option>
+        <option value='Other'>Other</option>
+       </select>
+      </div>
+      <div class='fg full'>
+       <label>&#2464;&#2495;&#2453;&#2494;&#2472;&#2494; (Address)</label>
+       <div id='billAddrBox' onclick='billAddrClick()' style='display:flex;align-items:center;gap:5px;border:1px solid #ddd;border-radius:6px;padding:6px 8px;cursor:pointer;background:#fff;min-height:36px;'>
+         <span style='font-size:12px;'>&#128205;</span>
+         <span id='billAddrVal' style='font-size:13px;color:#bbb;flex:1;'>-- সিলেক্ট করুন --</span>
+         <span style='font-size:10px;color:#ccc;'>&#9660;</span>
+       </div>
+       <div id='billAddrSheet' style='border:1px solid #ddd;border-top:none;border-radius:0 0 6px 6px;max-height:180px;overflow-y:auto;display:none;'></div>
+       <input id='cAddr' type='hidden' value=''/>
+      </div>
+     </div>
+    </div>
+
+    <!-- ITEMS TABLE -->
+    <div class='items-section'>
+     <div class='items-title'>Bill Items</div>
+     <table class='tbl'>
+      <thead>
+       <tr>
+        <th style='width:28px;'>#</th>
+        <th>Bill Item</th>
+        <th style='width:60px;'>Type</th>
+        <th style='width:38px;'>Qty</th>
+        <th style='width:58px;'>Rate</th>
+        <th style='width:62px;'>Amount</th>
+        <th style='width:22px;'></th>
+       </tr>
+      </thead>
+      <tbody id='itemsBody'></tbody>
+     </table>
+     <button class='add-row-btn' onclick='addRow()' type='button'>+ &#2438;&#2439;&#2463;&#2503;&#2478; &#2479;&#2507;&#2455; &#2453;&#2480;&#2497;&#2472;</button>
+    </div>
+
+    <!-- TOTALS -->
+    <div class='totals'>
+     <div class='tot-row'>
+      <span class='tot-label'>Sub Total</span>
+      <input class='tot-val auto' id='subTotal' readonly='readonly' type='text' value='0'/>
+     </div>
+     <div class='tot-row'>
+      <span class='tot-label'>Total Amount</span>
+      <input class='tot-val auto' id='totalAmt' readonly='readonly' type='text' value='0'/>
+     </div>
+     <div class='tot-row'>
+      <span class='tot-label'>Discount</span>
+      <input class='tot-val' id='discount' min='0' oninput='calcTotals()' type='number' value='0'/>
+     </div>
+     <div class='tot-row payable'>
+      <span class='tot-label'>Payable Amount</span>
+      <input class='tot-val' id='payable' readonly='readonly' type='text' value='0'/>
+     </div>
+
+     <!-- PAID SECTION -->
+     <div class='paid-section'>
+      <div class='paid-title'>Paid Amount</div>
+      <div class='paid-grid'>
+       <div class='fg'>
+        <label>&#2468;&#2494;&#2480;&#2495;&#2454;</label>
+        <input id='paidDate' type='date'/>
+       </div>
+       <div class='fg'>
+        <label>Transaction</label>
+        <select id='paidTxn'>
+         <option value='Cash'>Cash</option>
+         <option value='bKash'>bKash</option>
+         <option value='Nagad'>Nagad</option>
+         <option value='Rocket'>Rocket</option>
+        </select>
+       </div>
+       <div class='fg'>
+        <label>Amount</label>
+        <input id='paidAmt' min='0' placeholder='0' type='number' readonly='readonly' style='background:#f0faf2;color:#1a5c3a;font-weight:700;border-color:#b2dbb9;'/>
+       </div>
+      </div>
+     </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class='submit-area'>
+     <button class='sb' onclick='sendInvoice()' type='button'>
+      <i class='fab fa-whatsapp'></i>
+      বিল করুন
+     </button>
+     <button class='sb' onclick='downloadInvoicePDF()' type='button' style='margin-top:10px;background:#1a5c3a;color:#fff;'>
+      <i class='fas fa-file-pdf'></i>
+      PDF ডাউনলোড করুন
+     </button>
+    </div>
+
+   </div><!-- .card -->
+  </div><!-- #panel-bill -->
+
+</div><!-- #app -->
+
+<!-- ===== RESULT POPUP ===== -->
+<div class='result-overlay' id='resultOverlay'>
+ <div class='result-card'>
+  <div class='result-header' id='resultHeader' style='background:#1a5c3a;'>
+   <div>
+    <div class='result-header-title' id='resultTitle'>ডায়াগনোসিস ফলাফল</div>
+    <div class='result-header-sub' id='resultSub'></div>
+   </div>
+   <button onclick='closeResult()' style='background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;' type='button'>&#x2715;</button>
+  </div>
+  <div class='result-body' id='resultBody'></div>
+ </div>
+</div>
+
+<!-- ===== DIAGNOSIS POPUP ===== -->
+<div class='popup-overlay' id='diagPopup'>
+ <div class='popup-card'>
+  <div class='popup-header' id='popupHeader'>
+   <div>
+    <div class='popup-header-title' id='popupTitle'></div>
+    <div class='popup-header-sub' id='popupStepInfo'>আপনার যে সমস্যাগুলো আছে সেগুলো মার্ক করুন</div>
+   </div>
+   <button class='popup-close' onclick='closeDiagnosis()' type='button'>&#x2715;</button>
+  </div>
+  <div class='popup-body' id='popupBody'>
+   <div class='popup-count' id='diagCount'>&#x2714; ০টি সমস্যা নির্বাচিত</div>
+   <div id='chkList'></div>
+  </div>
+  <div class='popup-footer'>
+   <button class='popup-submit' id='popupNextBtn' onclick='sendDiagnosis()' type='button'>
+    <i class='fas fa-arrow-right'></i>
+    পরবর্তী ধাপ
+   </button>
+   <button class='popup-clear' onclick='clearAll()' type='button'>সব মার্ক বাদ দাও</button>
+  </div>
+ </div>
+</div>
+
+<a class='wf' href='https://api.whatsapp.com/send?phone=8801938327130' target='_blank'>
+ <i class='fab fa-whatsapp'></i>
+</a>
+
+<script type='text/javascript'>
+//<![CDATA[
+
+/* ===== APPOINTMENT MEMORY STORE ===== */
+/* Stores last appointment per phone number */
+var apptStore = {};
+
+function saveApptToStore(data){
+  /* data: {phone, name, age, gender, addr, schedule, token, date} */
+  if(data.phone){
+    var key = data.phone.replace(/[^0-9]/g,'');
+    apptStore[key] = data;
+  }
+}
+
+function lookupAppt(phone){
+  var key = phone.replace(/[^0-9]/g,'');
+  var badge = document.getElementById('apptFoundBadge');
+  if(key.length < 10){ if(badge) badge.style.display='none'; return; }
+  var data = apptStore[key];
+  if(!data){ if(badge) badge.style.display='none'; return; }
+  /* auto-fill billing fields */
+  var setV = function(id, val){ var el=document.getElementById(id); if(el && val) el.value=val; };
+  setV('cName',   data.name);
+  setV('cAge',    data.age);
+  setV('cAddr',   data.addr);
+  /* update billing address display */
+  var billVal = document.getElementById('billAddrVal');
+  if(billVal && data.addr){ billVal.style.color='#1a5c3a'; billVal.textContent=data.addr; }
+  var gen = document.getElementById('cGender');
+  if(gen && data.gender){
+    /* map appt gender values to billing gender values */
+    var gmap = {'পুরুষ (Male)':'Male (M)', 'মহিলা (Female)':'Female (F)', 'অন্যান্য (Other)':'Other'};
+    gen.value = gmap[data.gender] || '';
+  }
+  if(badge) badge.style.display='inline-block';
+}
+
+/* ---- Tab Switching ---- */
+function switchTab(tab){
+  var tabs = ['diag','appt','bill'];
+  tabs.forEach(function(t){
+    var btn = document.getElementById('tab-'+t);
+    var pnl = document.getElementById('panel-'+t);
+    if(t === tab){
+      btn.classList.add('active');
+      pnl.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+      pnl.classList.remove('active');
+    }
+  });
+}
+
+/* ---- today as default date ---- */
+(function(){
+  var t=new Date();
+  var d=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+  document.getElementById('issueDate').value=d;
+  document.getElementById('paidDate').value=d;
+})();
+
+var rowCount=0;
+
+/* ===== SERVICE MENU DATA ===== */
+var serviceMenu = {
+  'Ruqyah': [
+    {name:'Ruqyah Consultation & Diagnosis', rate:2500},
+    {name:'Ruqyah Treatment – Short Session', rate:2000},
+    {name:'Ruqyah Treatment – Long Session', rate:6000},
+    {name:'Ruqyah Short Package', rate:15000},
+    {name:'Ruqyah Full Package', rate:25000},
+    {name:'Ruqyah Home Service (Same District)', rate:12000},
+    {name:'Ruqyah Home Service (Other District)', rate:15000}
+  ],
+  'Hijamah': [
+    {name:'Hijamah Back Detox', rate:2500},
+    {name:'Hijamah Healing', rate:3500},
+    {name:'Hijamah Healing Pro', rate:5000}
+  ]
+};
+
+function addRow(){
+  rowCount++;
+  var tb=document.getElementById('itemsBody');
+  var tr=document.createElement('tr');
+  tr.id='row'+rowCount;
+  var rc=rowCount;
+
+  /* একটাই dropdown — সব সার্ভিস গ্রুপ করে */
+  var allOpts = '<option value="">-- সার্ভিস সিলেক্ট করুন --</option>';
+  Object.keys(serviceMenu).forEach(function(cat){
+    allOpts += '<optgroup label="'+cat+'">';
+    serviceMenu[cat].forEach(function(s,i){
+      allOpts += '<option value="'+cat+'|'+i+'">'+s.name+' (৳'+s.rate+')</option>';
+    });
+    allOpts += '</optgroup>';
+  });
+
+  tr.innerHTML=
+    '<td style="font-size:11px;color:#888;">'+rc+'</td>'
+   +'<td style="padding:4px 4px;">'
+      +'<select id="itemSel'+rc+'" onchange="onItemChange('+rc+')" style="width:100%;border:1px solid #e0e0e0;border-radius:4px;padding:4px 4px;font-size:12px;background:#fafafa;font-family:Arial,sans-serif;outline:none;">'+allOpts+'</select>'
+   +'</td>'
+   +'<td><select id="typeSel'+rc+'" onchange="calcTotals()" style="width:100%;border:1px solid #e0e0e0;border-radius:4px;padding:4px 2px;font-size:11px;background:#fafafa;font-family:Arial,sans-serif;outline:none;"><option>Service</option><option>Product</option><option>Medicine</option><option>Other</option></select></td>'
+   +'<td><input id="qtySel'+rc+'" type="number" value="1" min="1" oninput="calcTotals()" style="width:100%;"/></td>'
+   +'<td><input id="rateSel'+rc+'" type="number" value="0" min="0" oninput="calcTotals()" style="width:100%;"/></td>'
+   +'<td class="amt"><input class="tot-val auto" readonly="readonly" type="text" value="0" style="width:100%;border:none;background:#f0faf2;color:#1a5c3a;font-weight:700;"/></td>'
+   +'<td><button class="del-btn" onclick="delRow('+rc+')" type="button">&#x2715;</button></td>';
+  tb.appendChild(tr);
+  calcTotals();
+}
+
+function onItemChange(rc){
+  var val = document.getElementById('itemSel'+rc).value;
+  if(!val){ document.getElementById('rateSel'+rc).value=0; calcTotals(); return; }
+  var parts = val.split('|');
+  var cat = parts[0], idx = parseInt(parts[1]);
+  var item = (serviceMenu[cat]||[])[idx];
+  if(item) document.getElementById('rateSel'+rc).value = item.rate;
+  calcTotals();
+}
+
+function delRow(id){
+  var r=document.getElementById('row'+id);
+  if(r){r.remove();calcTotals();}
+}
+
+function calcTotals(){
+  var rows=document.getElementById('itemsBody').querySelectorAll('tr');
+  var sub=0;
+  rows.forEach(function(tr){
+    var inputs=tr.querySelectorAll('input[type=number]');
+    if(inputs.length>=2){
+      var qty=parseFloat(inputs[0].value)||0;
+      var rate=parseFloat(inputs[1].value)||0;
+      var amt=qty*rate;
+      sub+=amt;
+      var amtInput=tr.querySelector('td.amt input');
+      if(amtInput)amtInput.value=amt.toFixed(0)+'=';
+    }
+  });
+  document.getElementById('subTotal').value=sub.toFixed(0)+'=';
+  document.getElementById('totalAmt').value=sub.toFixed(0)+'=';
+  var disc=parseFloat(document.getElementById('discount').value)||0;
+  var pay=sub-disc;
+  if(pay<0)pay=0;
+  document.getElementById('payable').value=pay.toFixed(0)+'=';
+  var paidEl = document.getElementById('paidAmt');
+  if(paidEl) paidEl.value = pay.toFixed(0);
+}
+
+function fmt(d){
+  if(!d)return '';
+  var p=d.split('-');
+  return p[2]+'.'+p[1]+'.'+p[0].slice(2);
+}
+
+function sendInvoice(){
+  var biz  = document.getElementById('bizName').value.trim();
+  var bizA = document.getElementById('bizAddr').value.trim();
+  var iDate= fmt(document.getElementById('issueDate').value);
+  var cN   = document.getElementById('cName').value.trim();
+  var cPh  = document.getElementById('cPhone').value.trim();
+  var cAge = document.getElementById('cAge').value.trim();
+  var cGen = document.getElementById('cGender').value;
+  var cAd  = document.getElementById('cAddr').value.trim();
+  var disc = parseFloat(document.getElementById('discount').value)||0;
+  var subTotRaw = parseFloat((document.getElementById('subTotal').value||'0').replace(/[^0-9.]/g,''))||0;
+  var totalARaw = subTotRaw;
+  var payRaw    = totalARaw - disc; if(payRaw<0)payRaw=0;
+  var pAmt = document.getElementById('paidAmt').value||'0';
+  var pTxn = document.getElementById('paidTxn').value.trim()||'Cash';
+  var pDt  = fmt(document.getElementById('paidDate').value);
+
+  if(!cN){ alert('রোগীর নাম দিন'); document.getElementById('cName').focus(); return; }
+  if(!cPh){ alert('রোগীর ফোন নম্বর দিন'); document.getElementById('cPhone').focus(); return; }
+
+  var rows = document.getElementById('itemsBody').querySelectorAll('tr');
+  if(rows.length===0){ alert('অন্তত একটি আইটেম যোগ করুন'); return; }
+
+  /* ── build message ── */
+  var B = '────────────────────';
+  function box(content){ return '┌'+B+'\n│ '+content+'\n└'+B+'\n'; }
+  var m = '';
+
+  /* ── HEADER ── */
+  m += '🧾 *Billing Invoice*\n';
+  if(biz)  m += box('🏢 *'+ biz +'*');
+  if(bizA) m += box('📍 '+ bizA);
+  m += box('📅 Issue date: *'+ iDate +'*');
+  m += '\n';
+
+  /* ── BILL TO ── */
+  m += '👤 *Bill to*\n';
+  m += box('নাম      : '+ cN);
+  /* বয়স ও লিঙ্গ একই বক্সে */
+  if(cAge && cGen) m += box('বয়স : '+ cAge +'  |  লিঙ্গ : '+ cGen);
+  else if(cAge)    m += box('বয়স      : '+ cAge);
+  else if(cGen)    m += box('লিঙ্গ     : '+ cGen);
+  if(cAd)  m += box('ঠিকানা   : '+ cAd);
+  m += box('Phone    : '+ cPh);
+  m += '\n';
+
+  /* ── ITEMS ── */
+  m += '📋 *Bill Items*\n';
+  var idx = 1;
+  rows.forEach(function(tr){
+    var selects = tr.querySelectorAll('select');
+    var inputs  = tr.querySelectorAll('input[type=number]');
+    var cat      = selects[0] ? selects[0].value : '';
+    var itemSel  = selects[1];
+    var itemName = '';
+    if(cat && itemSel && itemSel.value !== ''){
+      var svcIdx = parseInt(itemSel.value);
+      var svc = (serviceMenu[cat]||[])[svcIdx];
+      itemName = svc ? svc.name : '';
+    }
+    if(!itemName && cat) itemName = cat;
+    var type = selects[2] ? selects[2].value : 'Service';
+    var qty  = inputs[0] ? inputs[0].value : '1';
+    var rate = inputs[1] ? inputs[1].value : '0';
+    var amtInput = tr.querySelector('td.amt input');
+    var amt = amtInput ? amtInput.value.replace(/[^0-9]/g,'') : '0';
+    m += box('#'+ idx +' *'+ itemName +'* | Type: '+ type);
+    m += box('Qty: '+ qty +'  |  Rate: '+ rate +'=  |  💰 '+ amt +'=');
+    m += '\n';
+    idx++;
+  });
+
+  /* ── TOTALS ── */
+  m += '🧮 *Summary*\n';
+  m += box('Sub Total : '+ subTotRaw.toFixed(0) +'=  |  Total : '+ totalARaw.toFixed(0) +'=');
+  m += box('Discount  : '+ disc.toFixed(0) +'=  |  ✅ *Payable : '+ payRaw.toFixed(0) +'=*');
+  m += '\n';
+
+  /* ── PAID ── */
+  m += '💳 *Paid Amount*\n';
+  m += box('💳 '+ pAmt +'=  |  '+ pTxn +'  |  '+ pDt);
+  m += '\n';
+
+  m += '🙏 ধন্যবাদ! আল্লাহ শেফা দিন। আমীন।\n';
+  m += '📎 বিস্তারিত Invoice PDF সংযুক্ত করা হয়েছে।';
+
+  /* ── সেন্টারের নম্বরে পাঠাও ── */
+  var centerRaw = (document.getElementById('centerPhone').value||'').replace(/[^0-9]/g,'');
+  if(centerRaw.length >= 10){
+    var centerNum = '88' + centerRaw.replace(/^88/,'');
+    window.open('https://api.whatsapp.com/send?phone='+ centerNum +'&text='+ encodeURIComponent(m), '_blank');
+  }
+
+  /* ── পেশেন্টের নম্বরে পাঠাও ── */
+  var rawPh = cPh.replace(/[^0-9]/g,'');
+  if(rawPh.length >= 10){
+    var waPhone = '88' + rawPh.replace(/^88/,'');
+    setTimeout(function(){
+      window.open('https://api.whatsapp.com/send?phone='+ waPhone +'&text='+ encodeURIComponent(m), '_blank');
+    }, 800);
+  }
+}
+
+/* ===== PDF DOWNLOAD ===== */
+function downloadInvoicePDF(){
+  var biz   = document.getElementById('bizName').value.trim() || 'Ruqyah Haven';
+  var bizA  = document.getElementById('bizAddr').value.trim();
+  var iDate = fmt(document.getElementById('issueDate').value);
+  var cN    = document.getElementById('cName').value.trim();
+  var cPh   = document.getElementById('cPhone').value.trim();
+  var cAge  = document.getElementById('cAge').value.trim();
+  var cGen  = document.getElementById('cGender').value;
+  var cAd   = document.getElementById('cAddr').value.trim();
+  var disc  = parseFloat(document.getElementById('discount').value)||0;
+  var subTotRaw = parseFloat((document.getElementById('subTotal').value||'0').replace(/[^0-9.]/g,''))||0;
+  var totalARaw = subTotRaw;
+  var payRaw    = totalARaw - disc; if(payRaw<0)payRaw=0;
+  var pAmt  = document.getElementById('paidAmt').value||'0';
+  var pTxn  = document.getElementById('paidTxn').value||'Cash';
+  var pDt   = fmt(document.getElementById('paidDate').value);
+  var logoSrc = document.getElementById('logoImg') ? document.getElementById('logoImg').src : '';
+
+  if(!cN){ alert('রোগীর নাম দিন'); document.getElementById('cName').focus(); return; }
+  var rows = document.getElementById('itemsBody').querySelectorAll('tr');
+  if(rows.length===0){ alert('অন্তত একটি আইটেম যোগ করুন'); return; }
+
+  /* ── address & phone maps ── */
+  var addrMap = {
+    'Narayanganj':'House# 254/17, 1st Floor,<br>Lokman Tower,<br>Mahmudnagar Signboard,<br>Dhaka 1361.<br>Signboard, Dhaka,<br>Bangladesh, 1361',
+    'Halishahr':'House# 1660, 2nd Floor,<br>Salam Avenue, P.C Road,<br>Nayabazar, Halishahr,<br>Chattogram.<br>(Opposite Halishahr Mart Supershop,<br>Abdul Khalek Sawdagar Bari)',
+    "Cox's Bazar":"Cox's Bazar Sadar",
+    'Jashore':'Ground Floor, House# A-17,<br>New Market (Inside the lane<br>adjacent to Hanif Bus Counter,<br>Opposite side of Steadfast<br>Courier Service Hub),<br>Jessore Sadar, Jessore - 7400'
+  };
+  var phoneMap = {'Narayanganj':'01883269615','Halishahr':'01978004575',"Cox's Bazar":'01813530359','Jashore':'01577555921'};
+  var centerAddr  = addrMap[bizA] || (bizA||'').replace(/\n/g,'<br>');
+  var centerPhone = phoneMap[bizA]||'';
+
+  /* ── items rows ── */
+  var itemsHTML = '';
+  var iIdx = 1;
+  rows.forEach(function(tr){
+    var itemSelEl = document.getElementById('itemSel'+iIdx);
+    var itemName  = '';
+    if(itemSelEl){
+      var opt = itemSelEl.options[itemSelEl.selectedIndex];
+      if(opt && opt.value) itemName = opt.text.replace(/\s*\(৳[0-9,]+\)/,'').trim();
+    }
+    if(!itemName) itemName = '-';
+    var allSel = tr.querySelectorAll('select');
+    var typeSel= document.getElementById('typeSel'+iIdx) || (allSel[allSel.length-1]);
+    var type   = typeSel ? typeSel.value : 'Service';
+    var allInp = tr.querySelectorAll('input[type=number]');
+    var qty    = allInp[0] ? allInp[0].value : '1';
+    var rate   = allInp[1] ? allInp[1].value : '0';
+    var amtInp = tr.querySelector('td.amt input');
+    var amt    = amtInp ? amtInp.value.replace(/[^0-9]/g,'') : '0';
+    var bg     = (iIdx%2===0) ? '#f9f9f9' : '#ffffff';
+    itemsHTML +=
+      '<tr style="background:'+bg+';">'
+      +'<td style="padding:7px 5px;text-align:center;border:1px solid #ccc;font-size:12px;">'+iIdx+'</td>'
+      +'<td style="padding:7px 6px;border:1px solid #ccc;font-size:12px;">'+itemName+'</td>'
+      +'<td style="padding:7px 5px;text-align:center;border:1px solid #ccc;font-size:12px;">'+type+'</td>'
+      +'<td style="padding:7px 5px;text-align:center;border:1px solid #ccc;font-size:12px;">'+qty+'</td>'
+      +'<td style="padding:7px 5px;text-align:right;border:1px solid #ccc;font-size:12px;">'+rate+'/=</td>'
+      +'<td style="padding:7px 8px;text-align:right;border:1px solid #ccc;font-size:12px;font-weight:700;">'+amt+'/=</td>'
+      +'</tr>';
+    iIdx++;
+  });
+
+  /* ── totals table rows ── */
+  function totRow(label,val,bold){
+    var s = bold ? 'font-weight:700;' : '';
+    return '<tr>'
+      +'<td colspan="4" style="padding:5px 8px;text-align:right;border:1px solid #ccc;font-size:12px;'+s+'">'+label+'</td>'
+      +'<td colspan="2" style="padding:5px 8px;text-align:right;border:1px solid #ccc;font-size:12px;'+s+'">'+val+'</td>'
+      +'</tr>';
+  }
+
+  /* ── paid rows ── */
+  /* ছবি অনুযায়ী: Paid amount | Transaction(উপরে)+তারিখ(নিচে) | amount */
+  var paidRows = '<tr>'
+    +'<td colspan="4" style="padding:7px 8px;text-align:right;border:1px solid #ccc;font-size:12px;font-weight:700;">Paid amount</td>'
+    +'<td style="padding:0;border:1px solid #ccc;text-align:center;vertical-align:middle;">'
+      +'<div style="font-size:10px;color:#555;padding:3px 4px 1px;">Transaction</div>'
+      +'<div style="font-size:10px;font-weight:600;padding:1px 4px 3px;border-top:1px solid #ddd;">'+pDt+'</div>'
+    +'</td>'
+    +'<td style="padding:7px 8px;text-align:right;border:1px solid #ccc;font-size:12px;font-weight:700;">'+pAmt+'/=</td>'
+    +'</tr>';
+
+  /* ── full HTML ── */
+  var html =
+    '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+    +'<title>Billing Invoice</title>'
+    +'<style>'
+    +'*{box-sizing:border-box;margin:0;padding:0;}'
+    +'body{font-family:Arial,sans-serif;background:#fff;}'
+    +'.page{width:210mm;min-height:297mm;margin:0 auto;padding:10mm 8mm 14mm;}'
+    +'.outer-border{border:2px solid #333;padding:0;}'
+    +'.inv-title-bar{text-align:center;padding:8px 0 6px;border-bottom:2px solid #333;}'
+    +'.inv-title-bar h2{font-size:16px;font-weight:800;letter-spacing:1px;}'
+    +'.header-row{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 14px 8px;border-bottom:1px solid #ccc;}'
+    +'.header-left{flex:0 0 38%;font-size:10.5px;line-height:1.85;word-break:keep-all;}'
+    +'.header-left strong{font-size:11.5px;display:block;margin-bottom:3px;line-height:1.6;}'
+    +'.header-center{flex:0 0 18%;display:flex;justify-content:center;align-items:center;}'
+    +'.header-center img{width:58px;height:58px;object-fit:contain;}'
+    +'.header-right{flex:0 0 44%;text-align:right;font-size:10.5px;}'
+    +'.divider-row{height:1px;background:#ccc;margin:0 14px;}'
+    +'.billto-row{display:flex;padding:7px 14px;border-bottom:1px solid #ccc;font-size:12px;gap:20px;}'
+    +'table{width:100%;border-collapse:collapse;}'
+    +'thead th{background:#1a5c3a;color:#fff;padding:7px 5px;font-size:12px;text-align:center;border:1px solid #1a5c3a;}'
+    +'thead th:nth-child(2){text-align:left;}'
+    +'@media print{'
+    +'  body{margin:0;}'
+    +'  .page{width:210mm;padding:12mm;}'
+    +'  @page{size:A4 portrait;margin:10mm;}'
+    +'}'
+    +'</style>'
+    +'</head><body>'
+    +'<div class="page"><div class="outer-border">'
+
+    /* title bar */
+    +'<div class="inv-title-bar"><h2>Billing Invoice</h2></div>'
+
+    /* header: left info | logo | issue date */
+    +'<div class="header-row">'
+      +'<div class="header-left">'
+        +'<strong>'+biz+':<br>Cupping &amp; Ruqyah Center<br>'+(bizA?'('+bizA+' Branch)':'')+'</strong>'
+        +(centerAddr ? centerAddr+'<br>' : '')
+        +(centerPhone ? 'Phone: '+centerPhone : '')
+      +'</div>'
+      +'<div class="header-center">'
+        +(logoSrc ? '<img src="'+logoSrc+'" alt="Logo"/>' : '')
+      +'</div>'
+      +'<div class="header-right">'
+        +'<strong>Issue date:'+iDate+'</strong>'
+      +'</div>'
+    +'</div>'
+
+    /* bill to row — exactly like image */
+    +'<div class="billto-row">'
+      +'<span>Bill to: <strong>'+cN+'.</strong></span>'
+      +(cAge ? '<span>Age:'+cAge+'.</span>' : '')
+      +(cGen ? '<span>Gender:'+cGen.replace('Male (M)','M').replace('Female (F)','F')+'</span>' : '')
+    +'</div>'
+    +'<div class="billto-row" style="border-bottom:2px solid #333;">'
+      +(cAd ? '<span>Address: '+cAd+'.</span>' : '')
+      +(cPh ? '<span>Phone: '+cPh+'</span>' : '')
+    +'</div>'
+
+    /* items table */
+    +'<table>'
+    +'<thead><tr>'
+      +'<th style="width:32px;">#</th>'
+      +'<th>Bill item</th>'
+      +'<th style="width:70px;">Type</th>'
+      +'<th style="width:38px;">Qty</th>'
+      +'<th style="width:65px;">Rate</th>'
+      +'<th style="width:70px;">Amount</th>'
+    +'</tr></thead>'
+    +'<tbody>'
+      +itemsHTML
+      +totRow('Sub Total', subTotRaw.toFixed(0)+'/=', false)
+      +totRow('Total amount', totalARaw.toFixed(0)+'/=', false)
+      +totRow('Discount', disc.toFixed(0)+'/=', false)
+      +totRow('Payable Amount', payRaw.toFixed(0)+'/=', true)
+      +paidRows
+    +'</tbody>'
+    +'</table>'
+
+    +'</div></div>'
+    +'<script>'
+    +'window.onload=function(){'
+    +'  setTimeout(function(){window.print();},800);'
+    +'};'
+    +'<\/script>'
+    +'</body></html>';
+
+  /* Android-safe: data URI পদ্ধতিতে নতুন ট্যাবে খোলো */
+  try {
+    var newWin = window.open('', '_blank');
+    if(newWin){
+      newWin.document.open();
+      newWin.document.write(html);
+      newWin.document.close();
+    } else {
+      /* popup blocked — fallback: data URI */
+      var encoded = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
+      var a = document.createElement('a');
+      a.href = encoded;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  } catch(e){
+    alert('পপআপ ব্লক হয়েছে। ব্রাউজার সেটিংসে পপআপ Allow করুন।');
+  }
+}
+
+/* start with one row */
+addRow();
+
+/* ===== DIAGNOSIS DATA ===== */
+var diagData = {
+
+  basic: {
+    title: '🩺 বেসিক ডায়াগনোসিস',
+    color: '#1a5c3a',
+    items: [
+      'পেটে প্রচুর গ্যাস হওয়া।',
+      'অতিরিক্ত চুল পড়া। শ্যাম্পুতে কাজ না করা।',
+      'শরীরে জ্বর থাকা কিন্তু থার্মোমিটারে না উঠা।',
+      'কোরআন তেলাওয়াত করলে বারবার হাই আসে, ঘুম পায়।',
+      'আপনি যে কাজে অভিজ্ঞ সেটা করতে গেলেই ঝামেলা বাধা।',
+      'প্রায়শই শরীর দুর্বল থাকা, ক্ষুধামন্দা, বমি বমি ভাব লাগা।',
+      'নামাজে সিজদার সময় মনের মধ্যে বিভিন্ন অশ্লীল ছবি কিংবা দেবদেবীর মূর্তি ভেসে উঠছে?',
+      'আল্লাহ, রাসুল অথবা ইসলামের মৌলিক ব্যাপারে অবমাননাকর চিন্তা মাথায় আসে?',
+      'ওযু-গোসল বা ইস্তিঞ্জার সময় এক অঙ্গ বারবার ধুচ্ছেন, তবুও মনে হয় ধোয়া হয়নি ঠিকমতো?',
+      'আপনি হঠাৎ পরিবর্তন হয়ে গেছেন? কেমন যেন উদাসীন ভাব চলে এসেছে, কিছুই ভালো লাগছে না?',
+      'মাথায় বিক্ষিপ্ত চিন্তা ঘোরাঘুরির কারণে দৈনন্দিন কাজকর্ম, ইবাদত, যিকির, তিলাওয়াত ইত্যাদিতে মন বসছে না?',
+      'কোরআন তেলাওয়াত শুনতে আপনার খারাপ লাগে?',
+      'কোন কারণ ছাড়াই হাসাহাসি/কান্নাকাটি করেন?',
+      'ঘন ঘন বোবায় ধরার সমস্যা হয়? মনে হয় যে কেউ চেপে ধরেছে, নড়তে পারছেন না?',
+      'আপনি ঘুমন্ত অবস্থায় হাটাহাটি করেন? (sleepwalking)',
+      'হঠাৎ আপনার শরীরের কোন অঙ্গ অবশ/বিকল হয়ে গেছে? ডাক্তাররা কোন সমস্যা খুঁজে পায় না।',
+      'মেডিক্যালি কোনো ব্যাখ্যা ছাড়াই অনেকদিন যাবত শরীরের কোনো জায়গায় স্থির ব্যথা আছে?',
+      'আপনার শরীরে কোন কারণ ছাড়াই লাল, নীল, হলুদ দাগ অথবা আঘাতের চিহ্ন দেখা যায়?',
+      'আপনার কি মনে হয়, বিছানায় কেউ আপনার পাশে শুয়ে আছে অথবা কেউ আপনাকে ফলো করছে?',
+      'আপনি কি মাঝেমাঝে এমন কিছু জিনিস শোনেন বা দেখেন যা অন্য কেউ দেখে না?',
+      'স্বপ্নে নিজেকে অনেক উঁচু কোনো জায়গা থেকে পড়ে যেতে দেখেন?',
+      'স্বপ্নে কোনো প্রাণিকে আক্রমণ করতে বা ধাওয়া করতে দেখেন? বিশেষতঃ কুকুর, বিড়াল, গরু, সিংহ, সাপ।',
+      'ঘুমের মাঝে প্রায়শই চিৎকার, গোঙানো, হাসি-কান্নাকাটি করেন?',
+      'ঘুম থেকে ওঠার পর অনেক ক্লান্ত লাগে?',
+      'মৃগীরোগ আছে আপনার?',
+      'ব্যাকপেইন। বিশেষত মেরুদণ্ডের নিচের দিকে ব্যথা করা।',
+      '(মহিলাদের ক্ষেত্রে) অনিয়মিত মাসিক — (পুরুষদের ক্ষেত্রে) প্রস্রাবে ইনফেকশনের সমস্যা আছে?',
+      'দীর্ঘদিন চিকিৎসা করেও কোন রোগ ভালো হচ্ছে না?',
+      'তীব্র মাথা ব্যথা, ঔষধ খেয়েও তেমন লাভ হয়না?',
+      'হঠাৎ করে কারো প্রতি তীব্র ঘৃণা বা তীব্র ভালোলাগা অনুভব হয়?',
+      'বিকেল থেকে রাত পর্যন্ত খুব অস্বস্তি লাগে বা মেজাজ খারাপ থাকে?',
+      'কোন কারণ ছাড়াই বাড়ি থেকে দৌড় দিয়ে বের হয়ে যেতে ইচ্ছা হয়?'
+    ]
+  },
+
+  bodnazar: {
+    title: '👁️ বদনজর ডায়াগনোসিস',
+    color: '#5c3a1a',
+    items: [
+      'প্রায়সময় কাজ, নামায, যিকর, ক্লাসে মন না বসা।',
+      'আত্মীয়-স্বজন বা বন্ধুদের সাথে দেখা হলেই ভালো না লাগা।',
+      'অহেতুক মেজাজ বিগড়ে থাকা।',
+      'পেটে প্রচুর গ্যাস হওয়া।',
+      'চেহারা ধূসর/হলুদ হয়ে যাওয়া।',
+      'কোনো কারণ ছাড়াই কান্না আসা।',
+      'প্রায়শই শরীর দুর্বল থাকা, ক্ষুধামন্দা, বমি বমি ভাব লাগা।',
+      'অতিরিক্ত চুল পড়া। শ্যাম্পুতে কাজ না করা।',
+      'কোন কারণ ছাড়া প্রায়ই দীর্ঘশ্বাস ফেলা, অতিরিক্ত হাই উঠা।',
+      'হাত-পায়ে মাঝেমধ্যেই ব্যথা করা, পুরো শরীরে ব্যথা দৌড়ে বেড়ানো।',
+      'মাথাব্যথা হওয়া। তবে ঔষধ খেলে উপকার হওয়া।',
+      'শরীরে জ্বর থাকা কিন্তু থার্মোমিটারে না উঠা।',
+      'কুরআন তেলাওয়াত করলে বারবার হাই আসে, ঘুম পায়।',
+      'আপনি যে কাজে অভিজ্ঞ সেটা করতে গেলেই ঝামেলা বাধা।',
+      'বুক ধড়ফড় করা, দমবন্ধ, অস্বস্তি লাগা।',
+      'স্বপ্নে নিজেকে অনেক উঁচু কোনো জায়গা থেকে পড়ে যেতে দেখেন?'
+    ]
+  },
+
+  jadu: {
+    title: '🪄 জাদু ডায়াগনোসিস',
+    color: '#2d1a5c',
+    items: [
+      'প্রায়সময় কাজ, নামায, যিকর, ক্লাসে মন না বসা।',
+      'কোন কারণ ছাড়াই আপনার শরীর গরম থাকে?',
+      'ব্যাকপেইন। বিশেষত মেরুদণ্ডের নিচের দিকে ব্যথা করা।',
+      '(মহিলাদের ক্ষেত্রে) অনিয়মিত মাসিক — (পুরুষদের ক্ষেত্রে) প্রসাবে ইনফেকশনের সমস্যা আছে?',
+      'প্রায়সময় পেট ব্যথা থাকে?',
+      'দীর্ঘদিন চিকিৎসা করেও কোন রোগ ভালো হচ্ছে না?',
+      'তীব্র মাথা ব্যথা, ঔষধ খেয়েও তেমন লাভ হয়না?',
+      'হঠাৎ করে কারো প্রতি তীব্র ঘৃণা বা তীব্র ভালোলাগা অনুভব হয়?',
+      'পরিবার, বাসা, সমাজের প্রতি আপনার তীব্র বিতৃষ্ণা আছে?',
+      'বিকেল থেকে রাত পর্যন্ত খুব অস্বস্তিতে ভুগেন অথবা মেজাজ খারাপ থাকে?',
+      'কোন কারণ ছাড়াই বাড়ি থেকে দৌড় দিয়ে বের হয়ে যেতে ইচ্ছা হয়?',
+      'শরীরের বিভিন্ন জয়েন্টে অতিরিক্ত ব্যথা হয়?',
+      'ঠিকমত ঘুমাতে না পারা। ঘুমালেও ভয়ংকর স্বপ্ন দেখা।',
+      'স্বপ্নে কোনো গাড়ি বা প্রাণীকে আক্রমণ করতে বা ধাওয়া করতে দেখেন?',
+      'স্বপ্নে কোন ফাঁকা বাড়ি, মরুভূমি বা গোরস্থানে হাঁটাহাঁটি করতে দেখেন?',
+      'স্বপ্নে বিভিন্ন জায়গায় পানি দেখেন? (যেমন সাগর, নদী, পুকুর, ইত্যাদি)',
+      'স্বপ্নে ঘনঘন কোথাও আগুন জ্বলতে বা কিছু পোড়াতে দেখেন?',
+      'স্বপ্নে নিজেকে উড়তে দেখেন? বা কোন পাখি অথবা বড়বড় গাছ দেখেন?',
+      'মৃগীরোগ আছে আপনার?',
+      'কোরআন তেলাওয়াত শুনতে আপনার খারাপ লাগে?',
+      'স্বপ্নে নিজেকে অনেক উঁচু কোনো জায়গা থেকে পড়ে যেতে দেখেন?',
+      'ঘুমের মাঝে প্রায়শই চিৎকার, গোঙানো, হাসি-কান্নাকাটি করেন?',
+      'ঘুম থেকে ওঠার পর অনেক ক্লান্ত লাগে?',
+      'আপনার শরীরে কোন কারণ ছাড়াই লাল, নীল, হলুদ দাগ অথবা আঘাতের চিহ্ন দেখা যায়?'
+    ]
+  },
+
+  jinn: {
+    title: '👻 জিন ডায়াগনোসিস',
+    color: '#1a3a5c',
+    items: [
+      'ইবাদত বিমুখতা আছে আপনার? যেমন, নামাজ পড়তে ইচ্ছা হয় না।',
+      'রাতে ঘুমাতে গেলে সারারাত ঘুমে না ধরা এমন সমস্যা হয় আপনার?',
+      'কোরআন তেলাওয়াত শুনতে আপনার খারাপ লাগে?',
+      'আপনি অতিরিক্ত গান শুনেন?',
+      'আপনি সবসময় দুঃশ্চিন্তা করেন, উদ্বিগ্ন থাকেন?',
+      'প্রায়ই আপনার মেজাজ বিক্ষিপ্ত হয়ে থাকে?',
+      'আপনি অতিরিক্ত ঘুমান? ব্যাপক অলসতা হয়?',
+      'অন্ধকারে থাকতে আপনার ভালো লাগে?',
+      'কোন কারণ ছাড়াই হাসাহাসি/কান্নাকাটি করেন?',
+      'ঘন ঘন বোবায় ধরার সমস্যা হয়? মনে হয় যে কেউ চেপে ধরেছে, নড়তে পারছেন না?',
+      'আপনি ঘুমন্ত অবস্থায় হাটাহাটি করেন?',
+      'হঠাৎ আপনার শরীরের কোন অঙ্গ অবশ/বিকল হয়ে গেছে? ডাক্তাররা যেখানে কোন সমস্যা খুঁজে পায় না।',
+      'মেডিক্যালি কোনো ব্যাখ্যা ছাড়াই আপনার শরীরের কোনো জায়গায় স্থির ব্যথা থাকে?',
+      'আপনার শরীরের বিশেষতঃ হাতে পায়ে লাল অথবা নীল অথবা হলুদ দাগ দেখা যায়?',
+      'আপনার কি মনে হয় যে কেউ বিছানায় আপনার পাশে শুয়ে আছে অথবা কেউ আপনাকে ফলো করছে?',
+      'বিছানায় কেউ আপনাকে জড়িয়ে ধরেছে এমন অনুভূতি হয়?',
+      'আপনি এমন কোন আওয়াজ শুনতে পান যে কে কথা বলছে বুঝতে পারছেন না?',
+      'জেগে থাকা অবস্থায় স্বপ্নের মত বিভিন্ন অদ্ভুত কল্পনা ভাসতে দেখেন?',
+      'স্বপ্নে নিজেকে অনেক উঁচু কোনো জায়গা থেকে পড়ে যেতে দেখেন?',
+      'স্বপ্নে কোনো প্রাণীকে আক্রমণ করতে বা ধাওয়া করতে দেখেন? বিশেষতঃ কুকুর, বিড়াল, ইঁদুর, উট, সিংহ, শিয়াল, সাপ।',
+      'ঘুমের মাঝে প্রায়শই চিৎকার, গোঙানো, হাসি-কান্নাকাটি করেন?',
+      'ঘুম থেকে উঠার পর অনেক ক্লান্ত লাগে?',
+      'স্বপ্নে নিজেকে উড়তে দেখেন?',
+      'মৃগীরোগ আছে আপনার?',
+      'আপনি কি মাঝেমাঝে এমন কিছু জিনিস শোনেন বা দেখেন যা অন্য কেউ দেখে না বা শোনে না?'
+    ]
+  },
+
+  waswasa: {
+    title: '🧠 ওয়াসওয়াসা ডায়াগনোসিস',
+    color: '#4a1a5c',
+    items: [
+      'আপনি ইদানীং কারণে-অকারণে চিন্তিত থাকছেন?',
+      'আপনি হঠাৎ পরিবর্তন হয়ে গেছেন? কেমন যেন উদাসীন ভাব চলে এসেছে, কিছুই ভালো লাগছে না?',
+      'সালাত বা ওযু নিয়ে বেশি দ্বিধাদ্বন্দ্বে আছেন? বারবার মনে হচ্ছে ঠিকমতো ওযু হচ্ছে না, নামাজের এই অংশটা ঠিকমত হল না?',
+      'পরিষ্কার পরিচ্ছন্নতা অথবা পরনের কাপড় নিয়ে আপনি কি অতিরিক্ত চিন্তা করছেন?',
+      'আপনি কি অপ্রয়োজনে টয়লেট বা বাথরুমে অতিরিক্ত সময় ব্যয় করছেন?',
+      'আপনি কি আপনার প্রিয় মানুষটিকে নিয়ে বাজে স্বপ্ন দেখছেন? যা আপনাকে ভীত করছে?',
+      'আপনার কানে কি ফিসফিস করে শোনা যাচ্ছে আপনি কুফরের দিকে ধাবিত হচ্ছেন?',
+      'আপনি কি ওযু-গোসল বা ইস্তিঞ্জার সময় এক অঙ্গ বারবার ধুচ্ছেন? তবুও মনে হচ্ছে ধোয়া হয়নি ঠিকমতো।',
+      'আপনার বারবার মনে হচ্ছে যে, ওযু ভেঙে যাচ্ছে? প্রসাবের ফোঁটা পড়ছে, অথবা বায়ু বের হয়ে যাচ্ছে? কিন্তু নিশ্চিত হতে পারছেন না।',
+      'আল্লাহ, রাসুল অথবা ঈমানের ব্যাপারে, ইসলামের মৌলিক ব্যাপারে অবমাননাকর চিন্তা মাথায় আসে?',
+      'মুরব্বি, উস্তায বা বয়োজ্যেষ্ঠদের সামনে বসলে ভেতর থেকে কেউ বারবার বেয়াদবির জন্য উস্কে দিতে চায়?',
+      'আপনি কি কোন অদ্ভুত শব্দ বা কণ্ঠ শুনতে পাচ্ছেন? কারো সাথে এটা নিয়ে আলোচনা করলে ভাবছে আপনি পাগল হয়ে যাচ্ছেন?',
+      'নামাজে সিজদা করতে গেলে মনের মধ্যে বিভিন্ন অশ্লীল ছবি কিংবা দেবদেবীর মূর্তি ভেসে উঠছে?',
+      'মাথায় বিক্ষিপ্ত চিন্তা ঘোরাঘুরি করার কারণে দৈনন্দিন কাজ, সালাত, ইবাদত, যিকির, তিলাওয়াত ইত্যাদিতে মন বসছে না?',
+      'নামাজে সিজদার সময় মনের মধ্যে বিভিন্ন অশ্লীল ছবি কিংবা দেবদেবীর মূর্তি ভেসে উঠছে?'
+    ]
+  },
+
+  bachcha: {
+    title: '👶 বাচ্চাদের ডায়াগনোসিস',
+    color: '#1a5c4a',
+    groups: [
+      {
+        label: '🍼 ০–২ বছর বয়সী শিশু',
+        items: [
+          'বুকের দুধ খায় না?',
+          'রাতে ঘুমায় না (ঘুমালেও খুব সামান্য)?',
+          'শুধু কান্না-কাটি করে?',
+          'গায়ের রঙ পরিবর্তন হয়ে যায় হুট করে?',
+          'মার কোলে গেলেই কান্না করে?',
+          'অসুখ-বিসুখ লেগেই থাকে?'
+        ]
+      },
+      {
+        label: '🧒 ২–১২ বছর বয়সী শিশু',
+        items: [
+          'খাওয়া-দাওয়া করতে চায় না?',
+          'অসুস্থতা লেগেই থাকে?',
+          'কথা শোনে না, বেয়াদবি করে?',
+          'হুট করে অনেক অসুস্থ হয়ে যায়?',
+          'বয়সের তুলনায় কথা বলতে পারে না?',
+          'আগে ভালোভাবে কথা বললেও এখন তোতলায়?',
+          'অকারণে ভয় পায়, দুঃস্বপ্ন দেখে?',
+          'ঘরের কোনও কোণায় বা দেয়ালের দিকে তাকিয়ে থাকে? একা একা কথা বলে, হাসে, খেলে?',
+          'রাগ-জিদ বেশি?',
+          'মাত্রাতিরিক্ত দুষ্টামি করে?',
+          'অটিজমে আক্রান্ত?',
+          'রেগে গেলে শরীরে অস্বাভাবিক শক্তি চলে আসে?',
+          'মাঝে মাঝে বড়দের মত কণ্ঠে কথা বলে?',
+          'মাঝে মাঝে চিন্তা-ভাবনা পূর্ণ বয়স্কদের মত করে?',
+          'কুরুচিপূর্ণ কথা বলা অভ্যাস?',
+          'আযান শুনলে ভয় পায়?',
+          'মাঝেমাঝে চোখের মণি বড় হয়ে যায়?',
+          'একই ভুল বার বার করে (কেউ যেন উস্কে দিচ্ছে)?',
+          'যৌনতা সম্পর্কে চিন্তা-ভাবনা বা আচরণ, এমনকি মা/বাবার গায়ে হাত দেওয়া?'
+        ]
+      }
+    ]
+  }
+
+};
+
+/* ===== DIAGNOSIS STEP SYSTEM ===== */
+var diagStepOrder = ['bodnazar','jadu','jinn','waswasa']; /* adult order */
+var diagStepIndex = 0;
+var diagAllResults = {};
+var diagPatientInfo = {};
+
+function onDiagForChange(){
+  var val = document.getElementById('diagFor').value;
+  var ageWrap = document.getElementById('diagAgeWrap');
+  var personTypeWrap = document.getElementById('diagPersonTypeWrap');
+  var childAgeWrap = document.getElementById('diagChildAgeWrap');
+  var otherAgeWrap = document.getElementById('diagOtherAgeWrap');
+
+  /* hide all first */
+  [ageWrap, personTypeWrap, childAgeWrap, otherAgeWrap].forEach(function(el){ if(el) el.style.display='none'; });
+
+  if(val === 'self'){
+    if(ageWrap) ageWrap.style.display='flex';
+  } else if(val === 'other'){
+    if(personTypeWrap) personTypeWrap.style.display='flex';
+  }
+}
+
+function onPersonTypeChange(){
+  var val = document.getElementById('diagPersonType').value;
+  var childAgeWrap = document.getElementById('diagChildAgeWrap');
+  var otherAgeWrap = document.getElementById('diagOtherAgeWrap');
+
+  if(childAgeWrap) childAgeWrap.style.display = (val==='child') ? 'flex' : 'none';
+  if(otherAgeWrap) otherAgeWrap.style.display = (val==='adult') ? 'flex' : 'none';
+}
+
+function onChildAgeChange(){
+  var sel = document.getElementById('diagChildAge');
+  var val = sel ? sel.value : '';
+  /* no manual input here, just dropdown — no bypass possible */
+}
+
+function startDiagnosis(){
+  var name  = (document.getElementById('diagName')||{}).value.trim();
+  var phone = (document.getElementById('diagPhone')||{}).value.trim();
+  var diagFor = (document.getElementById('diagFor')||{}).value;
+
+  if(!name){ alert('নাম লিখুন'); document.getElementById('diagName').focus(); return; }
+  if(!phone){ alert('WhatsApp নম্বর লিখুন'); document.getElementById('diagPhone').focus(); return; }
+  if(!diagFor){ alert('ডায়াগনোসিস কার জন্য সিলেক্ট করুন'); return; }
+
+  var age = '';
+  var personType = 'adult';
+
+  if(diagFor === 'self'){
+    age = (document.getElementById('diagAge')||{}).value.trim();
+  } else {
+    var pType = (document.getElementById('diagPersonType')||{}).value;
+    if(!pType){ alert('ব্যক্তির ধরন সিলেক্ট করুন'); return; }
+    personType = pType;
+    if(pType === 'child'){
+      var childAgeGroup = (document.getElementById('diagChildAge')||{}).value;
+      if(!childAgeGroup){ alert('বাচ্চার বয়স গ্রুপ সিলেক্ট করুন'); return; }
+      age = childAgeGroup; /* 'infant' or 'child' */
+    } else {
+      var otherAge = (document.getElementById('diagOtherAge')||{}).value.trim();
+      age = otherAge;
+    }
+  }
+
+  diagPatientInfo = { name:name, phone:phone, diagFor:diagFor, age:age, personType:personType };
+  diagAllResults = {};
+  diagStepIndex = 0;
+  alreadyCheckedTexts = [];
+
+  if(personType === 'child'){
+    /* বাচ্চাদের জন্য শুধু bachcha ডায়াগনোসিস */
+    diagStepOrder = ['bachcha'];
+  } else {
+    diagStepOrder = ['bodnazar','jadu','jinn','waswasa'];
+  }
+
+  openNextDiagStep();
+}
+
+function openNextDiagStep(){
+  if(diagStepIndex >= diagStepOrder.length){
+    showFinalCombinedResult();
+    return;
+  }
+  var type = diagStepOrder[diagStepIndex];
+  openDiagnosis(type);
+}
+
+var currentDiagType = 'basic';
+var diagSelected = {};
+
+var bnNum = ['','১','২','৩','৪','৫','৬','৭','৮','৯','১০','১১','১২','১৩','১৪','১৫','১৬','১৭','১৮','১৯','২০','২১','২২','২৩','২৪','২৫','২৬','২৭','২৮','২৯','৩০','৩১','৩২','৩৩','৩৪','৩৫','৩৬','৩৭','৩৮','৩৯','৪০'];
+
+function getWAPhone(){
+  var v = document.getElementById('centerPhone').value.trim().replace(/[^0-9]/g,'');
+  if(v.length >= 10) return '88' + v.replace(/^88/,'');
+  return '8801938327130';
+}
+
+function openDiagnosis(type){
+  currentDiagType = type || 'basic';
+  diagSelected = {};
+  var d = diagData[currentDiagType];
+  document.getElementById('popupTitle').textContent = d.title;
+  document.getElementById('popupHeader').style.background = d.color;
+  document.getElementById('diagCount').innerHTML = '&#x2714; ০টি সমস্যা নির্বাচিত';
+
+  var list = document.getElementById('chkList');
+  list.innerHTML = '';
+
+  if(d.groups){
+    var idx = 0;
+    d.groups.forEach(function(grp){
+      var lbl = document.createElement('div');
+      lbl.style.cssText = 'font-size:12px;font-weight:700;color:'+d.color+';background:#e8f5eb;padding:7px 10px;border-radius:6px;margin:10px 0 6px;';
+      lbl.textContent = grp.label;
+      list.appendChild(lbl);
+      grp.items.forEach(function(txt){
+        idx++;
+        /* Smart Skip: আগের ধাপে টিক দেওয়া হলে দেখাবে না */
+        if(!isAlreadyChecked(txt)){
+          list.appendChild(makeChkItem(idx, txt, d.color));
+        } else {
+          /* silent count — diagSelected এ যোগ করো */
+          diagSelected[idx] = true;
+        }
+      });
+    });
+  } else {
+    /* নতুন নম্বরিং — শুধু না-দেখানো আইটেম গণনা করো */
+    var visibleIdx = 0;
+    d.items.forEach(function(txt, i){
+      if(!isAlreadyChecked(txt)){
+        visibleIdx++;
+        list.appendChild(makeChkItem(visibleIdx, txt, d.color));
+        /* original index ম্যাপিং রাখো */
+        if(!window._idxMap) window._idxMap = {};
+        window._idxMap[visibleIdx] = i+1;
+      } else {
+        /* আগে টিক দেওয়া — সাইলেন্টলি কাউন্ট করো */
+        diagSelected[i+1] = true;
+      }
+    });
+  }
+
+  /* Show step progress */
+  var stepInfo = document.getElementById('popupStepInfo');
+  if(stepInfo && diagStepOrder && diagStepOrder.length > 1){
+    var stepNum = diagStepIndex + 1;
+    var totalSteps = diagStepOrder.length;
+    stepInfo.textContent = 'ধাপ ' + stepNum + '/' + totalSteps + ' — সমস্যাগুলো মার্ক করুন';
+  } else if(stepInfo){
+    stepInfo.textContent = 'আপনার যে সমস্যাগুলো আছে সেগুলো মার্ক করুন';
+  }
+
+  /* Update next button text */
+  var nextBtn = document.getElementById('popupNextBtn');
+  if(nextBtn && diagStepOrder){
+    var isLast = (diagStepIndex >= diagStepOrder.length - 1);
+    if(isLast){
+      nextBtn.innerHTML = '<i class="fas fa-check-circle"></i> ডায়াগনোসিস সম্পন্ন করুন';
+    } else {
+      nextBtn.innerHTML = '<i class="fas fa-arrow-right"></i> পরবর্তী ধাপ';
+    }
+  }
+
+  document.getElementById('diagPopup').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function makeChkItem(n, txt, color){
+  var div = document.createElement('div');
+  div.className = 'chk-item';
+  div.id = 'di'+n;
+  div.setAttribute('onclick','toggleChk('+n+')');
+  div.innerHTML =
+    '<div class="chk-box" id="dib'+n+'"></div>'+
+    '<div class="chk-num">'+bnNum[n]+'.</div>'+
+    '<div class="chk-text">'+txt+'</div>';
+  return div;
+}
+
+/* আগের সব ধাপে টিক দেওয়া সিম্পটমের টেক্সট সংরক্ষণ */
+var alreadyCheckedTexts = [];
+
+function recordCheckedTexts(type){
+  var d = diagData[type];
+  var keys = Object.keys(diagSelected).map(Number);
+  keys.forEach(function(n){
+    var txt = getItemTextByType(type, n);
+    if(txt && alreadyCheckedTexts.indexOf(txt) === -1){
+      alreadyCheckedTexts.push(txt);
+    }
+  });
+}
+
+function isAlreadyChecked(txt){
+  return alreadyCheckedTexts.indexOf(txt) > -1;
+}
+
+function closeDiagnosis(){
+  document.getElementById('diagPopup').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function toggleChk(n){
+  var item = document.getElementById('di'+n);
+  var box  = document.getElementById('dib'+n);
+  if(!item || !box) return;
+  if(diagSelected[n]){
+    delete diagSelected[n];
+    item.classList.remove('checked');
+    box.innerHTML = '';
+  } else {
+    diagSelected[n] = true;
+    item.classList.add('checked');
+    box.innerHTML = '&#x2714;';
+  }
+  updateCount();
+}
+
+function updateCount(){
+  /* শুধু এই ধাপে ব্যবহারকারী নিজে টিক দেওয়া কাউন্ট দেখাও */
+  var visible = document.querySelectorAll('#chkList .chk-item.checked').length;
+  document.getElementById('diagCount').innerHTML = '&#x2714; '+(bnNum[visible]||visible)+'টি সমস্যা নির্বাচিত';
+}
+
+function clearAll(){
+  var keys = Object.keys(diagSelected);
+  keys.forEach(function(n){
+    var item = document.getElementById('di'+n);
+    var box  = document.getElementById('dib'+n);
+    if(item) item.classList.remove('checked');
+    if(box)  box.innerHTML = '';
+  });
+  diagSelected = {};
+  updateCount();
+}
+
+function getItemText(n){
+  var d = diagData[currentDiagType];
+  if(d.groups){
+    var idx=0;
+    for(var g=0;g<d.groups.length;g++){
+      for(var i=0;i<d.groups[g].items.length;i++){
+        idx++;
+        if(idx===n) return d.groups[g].items[i];
+      }
+    }
+    return '';
+  }
+  return d.items[n-1]||'';
+}
+
+function analyzeSuggestion(keys){
+  var score = {bodnazar:0, jadu:0, jinn:0, waswasa:0};
+  [1,2,3,4,5,6].forEach(function(n){ if(keys.indexOf(n)>-1) score.bodnazar++; });
+  [26,27,28,29,30,31,32].forEach(function(n){ if(keys.indexOf(n)>-1) score.jadu++; });
+  [14,15,16,17,18,19,20,21,22,23,24,25].forEach(function(n){ if(keys.indexOf(n)>-1) score.jinn++; });
+  [7,8,9,10,11,12].forEach(function(n){ if(keys.indexOf(n)>-1) score.waswasa++; });
+
+  var names = {
+    bodnazar: {bn:'বদনজর', emoji:'👁️'},
+    jadu:     {bn:'জাদু',   emoji:'🪄'},
+    jinn:     {bn:'জিন',    emoji:'👻'},
+    waswasa:  {bn:'ওয়াসওয়াসা', emoji:'🧠'}
+  };
+
+  var suggested = [];
+  Object.keys(score).forEach(function(k){
+    if(score[k]>=2) suggested.push({key:k, score:score[k], info:names[k]});
+  });
+  suggested.sort(function(a,b){return b.score-a.score;});
+  return suggested;
+}
+
+function sendDiagnosis(){
+  var keys = Object.keys(diagSelected).map(Number).sort(function(a,b){return a-b;});
+  if(keys.length===0){alert('অন্তত একটি সমস্যা মার্ক করুন।');return;}
+
+  var d    = diagData[currentDiagType];
+  var cN   = document.getElementById('cName').value.trim();
+  var cPh  = document.getElementById('cPhone').value.trim();
+  var cAge = document.getElementById('cAge').value.trim();
+  var cGen = document.getElementById('cGender').value;
+  var iDate= fmt(document.getElementById('issueDate').value);
+  var biz  = document.getElementById('bizName').value.trim();
+
+  /* ── WhatsApp message ── */
+  var m = '';
+  m += d.title + ' রিপোর্ট\n';
+  m += '━━━━━━━━━━━━━━━━━━━━\n';
+  if(biz) m += '🏢 *প্রতিষ্ঠান:* ' + biz + '\n';
+  if(cN)  m += '👤 *নাম:* ' + cN + '\n';
+  if(cAge)m += '*বয়স:* ' + cAge + (cGen?' | *লিঙ্গ:* '+cGen:'') + '\n';
+  if(cPh) m += '📱 *ফোন:* ' + cPh + '\n';
+  if(iDate) m += '📅 *তারিখ:* ' + iDate + '\n';
+  m += '━━━━━━━━━━━━━━━━━━━━\n';
+  m += '*চিহ্নিত সমস্যাসমূহ (' + keys.length + 'টি):*\n\n';
+  keys.forEach(function(n){
+    m += '✅ ' + bnNum[n] + '. ' + getItemText(n) + '\n';
+  });
+  m += '━━━━━━━━━━━━━━━━━━━━\n';
+
+  /* ── Store results and go to next step ── */
+  diagAllResults[currentDiagType] = { keys: keys, d: d, msg: m };
+  /* এই ধাপের টিক দেওয়া সিম্পটম রেকর্ড করো */
+  recordCheckedTexts(currentDiagType);
+  closeDiagnosis();
+  diagStepIndex++;
+  openNextDiagStep();
+}
+
+function showBasicResult(keys, suggested, waMsg){
+  var body = document.getElementById('resultBody');
+  var title = document.getElementById('resultTitle');
+  var sub = document.getElementById('resultSub');
+  title.textContent = '🔍 বেসিক ডায়াগনোসিস ফলাফল';
+  sub.textContent = keys.length + 'টি সমস্যা চিহ্নিত হয়েছে';
+
+  var html = '';
+
+  if(suggested.length === 0){
+    html += '<div class="result-section">';
+    html += '<div class="result-section-title">📊 ফলাফল</div>';
+    html += '<div style="text-align:center;padding:14px;font-size:14px;color:#555;">আপনার মধ্যে নির্দিষ্ট কোনো সমস্যার স্পষ্ট লক্ষণ পাওয়া যায়নি। তবে সমস্যা অনুভব করলে বিশেষজ্ঞের পরামর্শ নিন।</div>';
+    html += '</div>';
+  } else {
+    html += '<div class="result-section">';
+    html += '<div class="result-section-title">📊 সম্ভাব্য সমস্যাসমূহ</div>';
+    suggested.forEach(function(s){
+      var strong = s.score >= 4;
+      html += '<div class="result-prob-row">';
+      html += '<span class="result-prob-name">'+s.info.emoji+' '+s.info.bn+'</span>';
+      html += '<span class="result-prob-badge'+(strong?'':' low')+'">'+s.score+'টি লক্ষণ</span>';
+      html += '</div>';
+    });
+    html += '</div>';
+
+    html += '<div class="result-section">';
+    html += '<div class="result-section-title">📋 পরবর্তী করণীয়</div>';
+    html += '<div style="font-size:13px;color:#333;line-height:1.7;margin-bottom:10px;">নিচের ডায়াগনোসিসগুলো করুন নিশ্চিত হতে:</div>';
+    var diagMap = {bodnazar:'bodnazar', jadu:'jadu', jinn:'jinn', waswasa:'waswasa'};
+    suggested.forEach(function(s){
+      html += '<button class="result-next-btn" onclick="closeResult();openDiagnosis(&quot;'+diagMap[s.key]+'&quot;)" style="background:'+getDiagColor(s.key)+';">';
+      html += '<i class="fas fa-arrow-right"></i> '+s.info.emoji+' '+s.info.bn+' ডায়াগনোসিস করুন';
+      html += '</button>';
+    });
+    html += '</div>';
+  }
+
+  /* WA send button */
+  html += '<button class="result-wa-btn" onclick="sendResultWA(this)" data-msg="'+encodeURIComponent(waMsg)+'"><i class="fab fa-whatsapp"></i> WhatsApp-এ পাঠাও</button>';
+  html += '<button class="result-close-btn" onclick="closeResult()">বন্ধ করুন</button>';
+
+  body.innerHTML = html;
+  document.getElementById('resultOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function showFinalResult(d, keys, waMsg){
+  var body = document.getElementById('resultBody');
+  var title = document.getElementById('resultTitle');
+  var sub = document.getElementById('resultSub');
+  title.textContent = d.title + ' ফলাফল';
+  sub.textContent = keys.length + 'টি সমস্যা চিহ্নিত হয়েছে';
+
+  var apptPhone = (document.getElementById('apptBizWA')||{value:''}).value.trim();
+  var bizName = document.getElementById('bizName').value.trim() || document.getElementById('apptBizName').value.trim() || 'রাকি সেন্টার';
+
+  var html = '';
+  html += '<div class="result-appt-box">';
+  html += '<div class="result-appt-title">✅ ডায়াগনোসিস সম্পন্ন হয়েছে</div>';
+  html += '<div class="result-appt-text">';
+  html += 'আপনার মধ্যে <strong>'+keys.length+'টি লক্ষণ</strong> পাওয়া গেছে।<br><br>';
+  html += '🗓️ <strong>এখনই অ্যাপয়েন্টমেন্ট নিন</strong><br>';
+  html += 'দ্রুত সুস্থতার জন্য বিশেষজ্ঞ রাকির সাথে পরামর্শ করুন।<br><br>';
+  html += '📌 <strong>কীভাবে অ্যাপয়েন্টমেন্ট নেবেন:</strong><br>';
+  html += '১. উপরের <em>এপয়েন্টমেন্ট</em> ট্যাবে যান<br>';
+  html += '২. আপনার তথ্য পূরণ করুন<br>';
+  html += '৩. সময় ও তারিখ বেছে নিন<br>';
+  html += '৪. "অ্যাপয়েন্টমেন্ট কনফার্ম করুন" বাটনে চাপুন';
+  html += '</div>';
+  html += '</div>';
+
+  html += '<button class="result-next-btn" onclick="closeResult();switchTab(&quot;appt&quot;)" style="background:#1a5c3a;">';
+  html += '<i class="fas fa-calendar-check"></i> এপয়েন্টমেন্ট নিন';
+  html += '</button>';
+  html += '<button class="result-wa-btn" onclick="sendResultWA(this)" data-msg="'+encodeURIComponent(waMsg)+'"><i class="fab fa-whatsapp"></i> WhatsApp-এ পাঠাও</button>';
+  html += '<button class="result-close-btn" onclick="closeResult()">বন্ধ করুন</button>';
+
+  body.innerHTML = html;
+  document.getElementById('resultOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function getDiagColor(key){
+  var colors = {bodnazar:'#5c3a1a', jadu:'#2d1a5c', jinn:'#1a3a5c', waswasa:'#4a1a5c'};
+  return colors[key]||'#1a5c3a';
+}
+
+function sendResultWA(btn){
+  var encoded = btn.getAttribute('data-msg');
+  var m = decodeURIComponent(encoded);
+  m += '\n🙏 আল্লাহ শেফা দিন। আমীন।';
+  window.open('https://api.whatsapp.com/send?phone='+getWAPhone()+'&text='+encodeURIComponent(m),'_blank');
+}
+
+function showFinalCombinedResult(){
+  var info = diagPatientInfo;
+  var today = new Date();
+  var dateStr = String(today.getDate()).padStart(2,'0')+'.'+String(today.getMonth()+1).padStart(2,'0')+'.'+String(today.getFullYear()).slice(2);
+
+  var diagColors = {bodnazar:'#5c3a1a', jadu:'#2d1a5c', jinn:'#1a3a5c', waswasa:'#4a1a5c', bachcha:'#1a5c4a'};
+  var diagEmoji  = {bodnazar:'👁️', jadu:'🪄', jinn:'👻', waswasa:'🧠', bachcha:'👶'};
+  var diagLabel  = {bodnazar:'বদনজর', jadu:'জাদু', jinn:'জিন', waswasa:'ওয়াসওয়াসা', bachcha:'বাচ্চাদের'};
+
+  var title = document.getElementById('resultTitle');
+  var sub   = document.getElementById('resultSub');
+  var body  = document.getElementById('resultBody');
+  var header = document.getElementById('resultHeader');
+
+  if(title) title.textContent = '📋 সম্পূর্ণ ডায়াগনোসিস রিপোর্ট';
+  if(sub)   sub.textContent   = info.name + ' | ' + dateStr;
+  if(header) header.style.background = '#1a5c3a';
+
+  var html = '';
+
+  /* Patient info box */
+  html += '<div style="background:#f0faf2;border:1px solid #b2dbb9;border-radius:10px;padding:12px;margin-bottom:12px;">';
+  html += '<div style="font-size:12px;font-weight:700;color:#1a5c3a;margin-bottom:8px;text-transform:uppercase;">👤 রোগীর তথ্য</div>';
+  html += '<div style="font-size:13px;color:#333;line-height:1.8;">';
+  html += '📌 নাম: <strong>'+info.name+'</strong><br>';
+  html += '📱 নম্বর: <strong>'+info.phone+'</strong><br>';
+  if(info.age) html += '🎂 বয়স: <strong>'+(info.age==='infant'?'০–২ বছর':info.age==='child'?'২–১২ বছর':info.age+' বছর')+'</strong><br>';
+  html += '📝 ডায়াগনোসিস: <strong>'+(info.diagFor==='self'?'নিজের জন্য':'অন্যের জন্য')+'</strong>';
+  html += '</div></div>';
+
+  /* Combined WA message */
+  var fullMsg = '📋 *সম্পূর্ণ ডায়াগনোসিস রিপোর্ট*\n';
+  fullMsg += '👤 নাম: *'+info.name+'* | 📱 '+info.phone+'\n';
+  if(info.age) fullMsg += '🎂 বয়স: '+(info.age==='infant'?'০–২ বছর':info.age==='child'?'২–১২ বছর':info.age+' বছর')+'\n';
+  fullMsg += '📅 তারিখ: '+dateStr+'\n';
+  fullMsg += '━━━━━━━━━━━━━━━━━━━━\n\n';
+
+  var totalSymptoms = 0;
+
+  diagStepOrder.forEach(function(type){
+    var res = diagAllResults[type];
+    var color = diagColors[type]||'#1a5c3a';
+    var emoji = diagEmoji[type]||'🔍';
+    var label = diagLabel[type]||type;
+    var count = res ? res.keys.length : 0;
+    totalSymptoms += count;
+
+    html += '<div style="border-radius:10px;overflow:hidden;margin-bottom:10px;border:1px solid #e0e0e0;">';
+    html += '<div style="background:'+color+';color:#fff;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">';
+    html += '<span style="font-size:14px;font-weight:700;">'+emoji+' '+label+' ডায়াগনোসিস</span>';
+    html += '<span style="background:rgba(255,255,255,0.25);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:700;">'+count+'টি লক্ষণ</span>';
+    html += '</div>';
+
+    if(!res || res.keys.length === 0){
+      html += '<div style="padding:10px 14px;font-size:13px;color:#888;background:#fff;">কোনো লক্ষণ চিহ্নিত হয়নি।</div>';
+      fullMsg += emoji+' *'+label+' ডায়াগনোসিস* — কোনো লক্ষণ নেই\n\n';
+    } else {
+      html += '<div style="background:#fff;padding:8px 12px;">';
+      fullMsg += emoji+' *'+label+' ডায়াগনোসিস* ('+count+'টি লক্ষণ):\n';
+      res.keys.forEach(function(n, idx){
+        var txt = getItemTextByType(type, n);
+        html += '<div style="padding:5px 0;border-bottom:1px solid #f0f0f0;font-size:12px;color:#333;display:flex;gap:6px;">';
+        html += '<span style="color:'+color+';font-weight:700;min-width:18px;">'+(idx+1)+'.</span>';
+        html += '<span>'+txt+'</span></div>';
+        fullMsg += (idx+1)+'. '+txt+'\n';
+      });
+      html += '</div>';
+      fullMsg += '\n';
+    }
+    html += '</div>';
+  });
+
+  fullMsg += '━━━━━━━━━━━━━━━━━━━━\n';
+  fullMsg += '🔢 মোট লক্ষণ: *'+totalSymptoms+'টি*\n';
+  fullMsg += '🙏 আল্লাহ শেফা দিন। আমীন।';
+
+  /* summary badge */
+  html += '<div style="background:#1a5c3a;color:#fff;border-radius:9px;padding:10px 14px;text-align:center;margin-bottom:10px;font-size:14px;font-weight:700;">মোট চিহ্নিত লক্ষণ: '+totalSymptoms+'টি</div>';
+
+  html += '<button class="result-wa-btn" onclick="sendResultWA(this)" data-msg="'+encodeURIComponent(fullMsg)+'"><i class="fab fa-whatsapp"></i> সম্পূর্ণ রিপোর্ট WhatsApp-এ পাঠাও</button>';
+  html += '<button class="result-next-btn" onclick="downloadFullDiagPDF()" style="background:#1a5c3a;margin-top:8px;"><i class="fas fa-file-pdf"></i> সম্পূর্ণ রিপোর্ট PDF ডাউনলোড করুন</button>';
+  html += '<button class="result-next-btn" onclick="closeResult();switchTab(&quot;appt&quot;)" style="background:#155e40;margin-top:8px;"><i class="fas fa-calendar-check"></i> এপয়েন্টমেন্ট নিন</button>';
+  html += '<button class="result-close-btn" onclick="closeResult()">বন্ধ করুন</button>';
+
+  body.innerHTML = html;
+  document.getElementById('resultOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function getItemTextByType(type, n){
+  var d = diagData[type];
+  if(!d) return '';
+  if(d.groups){
+    var idx=0;
+    for(var g=0;g<d.groups.length;g++){
+      for(var i=0;i<d.groups[g].items.length;i++){
+        idx++;
+        if(idx===n) return d.groups[g].items[i];
+      }
+    }
+    return '';
+  }
+  return d.items[n-1]||'';
+}
+
+function downloadFullDiagPDF(){
+  var info = diagPatientInfo;
+  var logoSrc = document.getElementById('logoImg')?document.getElementById('logoImg').src:'';
+  var today = new Date();
+  var dateStr = String(today.getDate()).padStart(2,'0')+'.'+String(today.getMonth()+1).padStart(2,'0')+'.'+String(today.getFullYear()).slice(2);
+
+  var diagColors = {bodnazar:'#5c3a1a', jadu:'#2d1a5c', jinn:'#1a3a5c', waswasa:'#4a1a5c', bachcha:'#1a5c4a'};
+  var diagLabel  = {bodnazar:'বদনজর', jadu:'জাদু', jinn:'জিন', waswasa:'ওয়াসওয়াসা', bachcha:'বাচ্চাদের'};
+
+  var allRows = '';
+  var totalCount = 0;
+
+  diagStepOrder.forEach(function(type){
+    var res = diagAllResults[type];
+    var color = diagColors[type]||'#1a5c3a';
+    var label = diagLabel[type]||type;
+    var count = res ? res.keys.length : 0;
+    totalCount += count;
+
+    /* Section header row */
+    allRows += '<tr>'
+      +'<td colspan="2" style="background:'+color+';color:#fff;padding:7px 10px;font-size:12px;font-weight:700;">'+label+' ডায়াগনোসিস — '+count+'টি লক্ষণ</td>'
+      +'</tr>';
+
+    if(!res || res.keys.length === 0){
+      allRows += '<tr><td colspan="2" style="padding:6px 10px;font-size:12px;color:#888;border:1px solid #ccc;">কোনো লক্ষণ চিহ্নিত হয়নি।</td></tr>';
+    } else {
+      res.keys.forEach(function(n, idx){
+        var txt = getItemTextByType(type, n);
+        var bg = (idx%2===0)?'#fff':'#f9f9f9';
+        allRows += '<tr style="background:'+bg+';">'
+          +'<td style="padding:6px 8px;border:1px solid #ccc;text-align:center;font-size:12px;width:36px;">'+(idx+1)+'</td>'
+          +'<td style="padding:6px 10px;border:1px solid #ccc;font-size:12px;">'+txt+'</td>'
+          +'</tr>';
+      });
+    }
+  });
+
+  var ageDisplay = '';
+  if(info.age){
+    ageDisplay = info.age==='infant'?'০–২ বছর':info.age==='child'?'২–১২ বছর':info.age+' বছর';
+  }
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>সম্পূর্ণ ডায়াগনোসিস রিপোর্ট</title>'
+    +'<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Arial,sans-serif;}'
+    +'.page{width:210mm;min-height:297mm;margin:0 auto;padding:10mm 8mm 14mm;}'
+    +'.box{border:2px solid #333;}'
+    +'.title{text-align:center;padding:8px;border-bottom:2px solid #333;font-size:16px;font-weight:800;letter-spacing:1px;}'
+    +'.hrow{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;border-bottom:2px solid #333;}'
+    +'.hl{font-size:11px;line-height:1.9;}'
+    +'.hl strong{font-size:13px;display:block;margin-bottom:2px;}'
+    +'.hc img{width:58px;height:58px;object-fit:contain;}'
+    +'.hr{text-align:right;font-size:11px;line-height:1.8;}'
+    +'table{width:100%;border-collapse:collapse;}'
+    +'.footer{text-align:center;padding:10px;font-size:11px;color:#555;border-top:1px solid #ccc;}'
+    +'@media print{body{margin:0;}.page{width:100%;padding:8mm;}@page{size:A4 portrait;margin:10mm;}}'
+    +'</style></head><body>'
+    +'<div class="page"><div class="box">'
+    +'<div class="title">📋 সম্পূর্ণ ডায়াগনোসিস রিপোর্ট</div>'
+    +'<div class="hrow">'
+      +'<div class="hl"><strong>Ruqyah Haven — Cupping &amp; Ruqyah Center</strong>'
+        +'নাম: '+( info.name||'—')+'<br>'
+        +'ফোন: '+(info.phone||'—')+'<br>'
+        +(ageDisplay?'বয়স: '+ageDisplay+'<br>':'')
+        +(info.diagFor==='self'?'নিজের জন্য':'অন্যের জন্য')
+      +'</div>'
+      +'<div class="hc">'+(logoSrc?'<img src="'+logoSrc+'"/>':'')+'</div>'
+      +'<div class="hr"><strong>তারিখ: '+dateStr+'</strong><br>মোট লক্ষণ: <strong>'+totalCount+'টি</strong></div>'
+    +'</div>'
+    +'<table><tbody>'+allRows+'</tbody></table>'
+    +'<div class="footer">Ruqyah Haven | আল্লাহ শেফা দিন। আমীন।</div>'
+    +'</div></div>'
+    +'<script>window.onload=function(){setTimeout(function(){window.print();},800);};<\/script>'
+    +'</body></html>';
+
+  openPDFTab(html);
+}
+
+function closeResult(){
+  document.getElementById('resultOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ===== FULL ADDRESS DRILLDOWN DATA ===== */
+var bdData = {
+  divisions: ['ঢাকা','চট্টগ্রাম','রাজশাহী','খুলনা','বরিশাল','সিলেট','রংপুর','ময়মনসিংহ'],
+  districts: {
+    'ঢাকা':['ঢাকা','ফরিদপুর','গাজীপুর','গোপালগঞ্জ','কিশোরগঞ্জ','মাদারীপুর','মানিকগঞ্জ','মুন্সীগঞ্জ','নারায়ণগঞ্জ','নরসিংদী','রাজবাড়ী','শরীয়তপুর','টাঙ্গাইল'],
+    'চট্টগ্রাম':['চট্টগ্রাম','বান্দরবান','ব্রাহ্মণবাড়িয়া','চাঁদপুর','কুমিল্লা','কক্সবাজার','ফেনী','খাগড়াছড়ি','লক্ষ্মীপুর','নোয়াখালী','রাঙামাটি'],
+    'রাজশাহী':['রাজশাহী','বগুড়া','চাঁপাইনবাবগঞ্জ','জয়পুরহাট','নওগাঁ','নাটোর','পাবনা','সিরাজগঞ্জ'],
+    'খুলনা':['খুলনা','বাগেরহাট','চুয়াডাঙ্গা','যশোর','ঝিনাইদহ','কুষ্টিয়া','মাগুরা','মেহেরপুর','নড়াইল','সাতক্ষীরা'],
+    'বরিশাল':['বরিশাল','বরগুনা','ভোলা','ঝালকাঠি','পটুয়াখালী','পিরোজপুর'],
+    'সিলেট':['সিলেট','হবিগঞ্জ','মৌলভীবাজার','সুনামগঞ্জ'],
+    'রংপুর':['রংপুর','দিনাজপুর','গাইবান্ধা','কুড়িগ্রাম','লালমনিরহাট','নীলফামারী','পঞ্চগড়','ঠাকুরগাঁও'],
+    'ময়মনসিংহ':['ময়মনসিংহ','জামালপুর','নেত্রকোণা','শেরপুর']
+  },
+  posts: {},
+  villages: {}
+};
+
+/* state */
+var addrState = {div:'', dist:'', thana:'', post:'', village:''};
+
+/* ===== SINGLE-ROW ADDRESS DRILLDOWN ===== */
+var addrPhase = 'div'; /* 'div' or 'dist' */
+
+function addrSingleClick(){
+  var sh = document.getElementById('addrSingleSheet');
+  if(!sh) return;
+  if(sh.style.display === 'block'){
+    sh.style.display = 'none';
+  } else {
+    /* always refill with current phase items */
+    if(addrPhase === 'div'){
+      addrFillItems(bdData.divisions, function(div){
+        addrState = {div:div, dist:''};
+        addrPhase = 'dist';
+        var valEl = document.getElementById('addrSingleVal');
+        if(valEl){ valEl.style.color='#1a5c3a'; valEl.textContent = div + ',  \u2015 \u099c\u09c7\u09b2\u09be \u09b8\u09bf\u09b2\u09c7\u0995\u09cd\u099f \u2015'; }
+        document.getElementById('apptDivision').value = div;
+        document.getElementById('apptAddr').value = div;
+        /* immediately fill districts and keep open */
+        addrFillItems(bdData.districts[div]||[], function(dist){
+          addrState.dist = dist;
+          var valEl2 = document.getElementById('addrSingleVal');
+          if(valEl2){ valEl2.style.color='#1a5c3a'; valEl2.textContent = div + ', ' + dist; }
+          document.getElementById('apptAddr').value = div + ', ' + dist;
+          var sh2 = document.getElementById('addrSingleSheet');
+          if(sh2) sh2.style.display = 'none';
+        }, true);
+        /* keep sheet open showing districts */
+        var sh2 = document.getElementById('addrSingleSheet');
+        if(sh2) sh2.style.display = 'block';
+      });
+    }
+    sh.style.display = 'block';
+  }
+}
+
+function addrFillItems(items, onSelect, isDistrict){
+  var sh = document.getElementById('addrSingleSheet');
+  if(!sh) return;
+  sh.innerHTML = '';
+  /* রিসেট / ব্যাক বাটন */
+  var resetRow = document.createElement('div');
+  resetRow.className = 'addr-drill-item';
+  resetRow.style.cssText = 'color:#e53935;font-weight:700;background:#fff5f5;border-bottom:1px solid #fdd;';
+  resetRow.textContent = isDistrict ? '← বিভাগে ফিরে যাও' : '✕ বাতিল করুন';
+  resetRow.addEventListener('click', function(e){
+    e.stopPropagation();
+    if(isDistrict){
+      /* ব্যাক: আবার বিভাগ দেখাও */
+      addrPhase = 'div';
+      addrFillItems(bdData.divisions, function(div){
+        addrState = {div:div, dist:''};
+        addrPhase = 'dist';
+        var valEl = document.getElementById('addrSingleVal');
+        if(valEl){ valEl.style.color='#1a5c3a'; valEl.textContent = div + ', — জেলা সিলেক্ট —'; }
+        document.getElementById('apptDivision').value = div;
+        document.getElementById('apptAddr').value = div;
+        addrFillItems(bdData.districts[div]||[], function(dist){
+          addrState.dist = dist;
+          var valEl2 = document.getElementById('addrSingleVal');
+          if(valEl2){ valEl2.style.color='#1a5c3a'; valEl2.textContent = div + ', ' + dist; }
+          document.getElementById('apptAddr').value = div + ', ' + dist;
+          var sh2 = document.getElementById('addrSingleSheet');
+          if(sh2) sh2.style.display='none';
+        }, true);
+        var sh2 = document.getElementById('addrSingleSheet');
+        if(sh2) sh2.style.display='block';
+      }, false);
+      sh.style.display='block';
+    } else {
+      /* বাতিল: পুরো রিসেট */
+      initDrilldown();
+    }
+  });
+  sh.appendChild(resetRow);
+  items.forEach(function(item){
+    var d = document.createElement('div');
+    d.className = 'addr-drill-item';
+    d.textContent = item;
+    d.addEventListener('click', function(e){
+      e.stopPropagation();
+      onSelect(item);
+    });
+    sh.appendChild(d);
+  });
+}
+
+function initDrilldown(){
+  addrPhase = 'div';
+  var valEl = document.getElementById('addrSingleVal');
+  if(valEl){ valEl.style.color='#bbb'; valEl.textContent='-- সিলেক্ট করুন --'; }
+  var sh = document.getElementById('addrSingleSheet');
+  if(sh){ sh.style.display='none'; sh.innerHTML=''; }
+}
+
+/* ===== BILLING ADDRESS DROPDOWN ===== */
+var billAddrPhase = 'div';
+var billAddrState = {div:'', dist:''};
+
+function billAddrClick(){
+  var sh = document.getElementById('billAddrSheet');
+  if(!sh) return;
+  if(sh.style.display === 'block'){ sh.style.display='none'; return; }
+  billAddrPhase = 'div';
+  billFillItems(bdData.divisions, function(div){
+    billAddrState = {div:div, dist:''};
+    billAddrPhase = 'dist';
+    var valEl = document.getElementById('billAddrVal');
+    if(valEl){ valEl.style.color='#1a5c3a'; valEl.textContent = div + ',  \u2015 \u099c\u09c7\u09b2\u09be \u09b8\u09bf\u09b2\u09c7\u0995\u09cd\u099f \u2015'; }
+    document.getElementById('cAddr').value = div;
+    billFillItems(bdData.districts[div]||[], function(dist){
+      billAddrState.dist = dist;
+      var valEl2 = document.getElementById('billAddrVal');
+      if(valEl2){ valEl2.style.color='#1a5c3a'; valEl2.textContent = div + ', ' + dist; }
+      document.getElementById('cAddr').value = div + ', ' + dist;
+      var sh2 = document.getElementById('billAddrSheet');
+      if(sh2) sh2.style.display='none';
+    }, true);
+    var sh2 = document.getElementById('billAddrSheet');
+    if(sh2) sh2.style.display='block';
+  });
+  sh.style.display='block';
+}
+
+function billFillItems(items, onSelect, isDistrict){
+  var sh = document.getElementById('billAddrSheet');
+  if(!sh) return;
+  sh.innerHTML = '';
+  /* রিসেট / ব্যাক বাটন */
+  var resetRow = document.createElement('div');
+  resetRow.className = 'addr-drill-item';
+  resetRow.style.cssText = 'color:#e53935;font-weight:700;background:#fff5f5;border-bottom:1px solid #fdd;';
+  resetRow.textContent = isDistrict ? '← বিভাগে ফিরে যাও' : '✕ বাতিল করুন';
+  resetRow.addEventListener('click', function(e){
+    e.stopPropagation();
+    if(isDistrict){
+      /* ব্যাক: আবার বিভাগ দেখাও */
+      billAddrPhase = 'div';
+      billFillItems(bdData.divisions, function(div){
+        billAddrState = {div:div, dist:''};
+        billAddrPhase = 'dist';
+        var valEl = document.getElementById('billAddrVal');
+        if(valEl){ valEl.style.color='#1a5c3a'; valEl.textContent = div + ', — জেলা সিলেক্ট —'; }
+        document.getElementById('cAddr').value = div;
+        billFillItems(bdData.districts[div]||[], function(dist){
+          billAddrState.dist = dist;
+          var valEl2 = document.getElementById('billAddrVal');
+          if(valEl2){ valEl2.style.color='#1a5c3a'; valEl2.textContent = div + ', ' + dist; }
+          document.getElementById('cAddr').value = div + ', ' + dist;
+          var sh2 = document.getElementById('billAddrSheet');
+          if(sh2) sh2.style.display='none';
+        }, true);
+        var sh2 = document.getElementById('billAddrSheet');
+        if(sh2) sh2.style.display='block';
+      }, false);
+      sh.style.display='block';
+    } else {
+      /* বাতিল: পুরো রিসেট */
+      billAddrState = {div:'', dist:''};
+      billAddrPhase = 'div';
+      var valEl = document.getElementById('billAddrVal');
+      if(valEl){ valEl.style.color='#bbb'; valEl.textContent='-- সিলেক্ট করুন --'; }
+      document.getElementById('cAddr').value = '';
+      var sh2 = document.getElementById('billAddrSheet');
+      if(sh2){ sh2.style.display='none'; sh2.innerHTML=''; }
+    }
+  });
+  sh.appendChild(resetRow);
+  items.forEach(function(item){
+    var d = document.createElement('div');
+    d.className = 'addr-drill-item';
+    d.textContent = item;
+    d.addEventListener('click', function(e){
+      e.stopPropagation();
+      onSelect(item);
+    });
+    sh.appendChild(d);
+  });
+}
+
+/* run after DOM ready */
+(function(){
+  var t=new Date();
+  var d=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+  var el=document.getElementById('apptDate');
+  if(el) el.value=d;
+  initDrilldown();
+})();
+
+function sendAppointment(){
+  var name     = document.getElementById('apptName').value.trim();
+  var phone    = document.getElementById('apptPhone').value.trim();
+  var age      = document.getElementById('apptAge').value.trim();
+  var gender   = document.getElementById('apptGender').value;
+  var addr     = document.getElementById('apptAddr').value.trim();
+  var village  = document.getElementById('apptVillage') ? document.getElementById('apptVillage').value.trim() : '';
+  var schedule = document.getElementById('apptSchedule').value;
+  var token    = document.getElementById('apptToken').value.trim();
+  var date     = fmt(document.getElementById('apptDate').value);
+  var biz      = document.getElementById('apptBizName').value.trim();
+  var bizA     = document.getElementById('apptBizAddr').value.trim();
+  var bizWA    = document.getElementById('apptBizWA').value.trim().replace(/[^0-9]/g,'');
+
+  if(!name){alert('রোগীর নাম দিন');document.getElementById('apptName').focus();return;}
+  if(!phone){alert('WhatsApp নম্বর দিন');document.getElementById('apptPhone').focus();return;}
+
+  /* ---- appointment memory store ---- */
+  saveApptToStore({
+    phone:    phone,
+    name:     name,
+    age:      age,
+    gender:   gender,
+    addr:     addr || '',
+    schedule: schedule,
+    token:    token,
+    date:     date
+  });
+
+  var fullAddr = addr || '';
+  if(!fullAddr && village) fullAddr = village;
+
+  var B = '────────────────────';
+  function waBox(content){ return '┌'+B+'\n│ '+content+'\n└'+B+'\n'; }
+  var wa = '';
+  wa += '📅 *অ্যাপয়েন্টমেন্ট কনফার্মেশন*\n\n';
+
+  /* centre info */
+  if(biz || token || date || schedule){
+    wa += '🏢 *প্রতিষ্ঠান তথ্য*\n';
+    if(biz)      wa += waBox('প্রতিষ্ঠান  : ' + biz);
+    if(bizA)     wa += waBox('ঠিকানা    : ' + bizA);
+    /* সিরিয়াল ও তারিখ একই বক্সে */
+    if(token)    wa += waBox('সিরিয়াল নং: ' + token + '  |  তারিখ: ' + date);
+    else         wa += waBox('তারিখ     : ' + date);
+    if(schedule) wa += waBox('সময়       : ' + schedule);
+    wa += '\n';
+  }
+
+  /* patient info */
+  wa += '👤 *রোগীর তথ্য*\n';
+  wa += waBox('নাম       : ' + name);
+  wa += waBox('WhatsApp  : ' + phone);
+  /* বয়স ও লিঙ্গ একই বক্সে */
+  if(age && gender)  wa += waBox('বয়স : ' + age + '  |  লিঙ্গ : ' + gender);
+  else if(age)       wa += waBox('বয়স       : ' + age);
+  else if(gender)    wa += waBox('লিঙ্গ      : ' + gender);
+  if(fullAddr) wa += waBox('ঠিকানা    : ' + fullAddr);
+  wa += '\n';
+  wa += '🙏 আল্লাহ শেফা দিন। আমীন।';
+
+  /* ---- সেন্টারের নম্বর নির্ধারণ ---- */
+  var centerNum = bizWA.length >= 10 ? ('88' + bizWA.replace(/^88/,'')) : '8801938327130';
+
+  /* ---- রোগীর নম্বর নির্ধারণ ---- */
+  var patientRaw = phone.replace(/[^0-9]/g,'');
+  var patientNum = patientRaw.length >= 10 ? ('88' + patientRaw.replace(/^88/,'')) : '';
+
+  /* ---- সেন্টারে মেসেজ পাঠাও ---- */
+  window.open('https://api.whatsapp.com/send?phone=' + centerNum + '&text=' + encodeURIComponent(wa), '_blank');
+
+  /* ---- রোগীর নম্বরে মেসেজ পাঠাও (সামান্য দেরিতে যেন দুটো ট্যাব খোলে) ---- */
+  if(patientNum){
+    setTimeout(function(){
+      window.open('https://api.whatsapp.com/send?phone=' + patientNum + '&text=' + encodeURIComponent(wa), '_blank');
+    }, 800);
+  }
+}
+
+function resetAppointment(){
+  ['apptName','apptPhone','apptAge'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.value='';
+  });
+  /* ব্রাঞ্চ ড্রপডাউন রিসেট */
+  var brAddr=document.getElementById('apptBizAddr');
+  if(brAddr) brAddr.value='';
+  var brWA=document.getElementById('apptBizWA');
+  if(brWA) brWA.value='';
+  var gs=document.getElementById('apptGender');
+  if(gs) gs.value='';
+  addrState = {div:'', dist:''};
+  var valDiv=document.getElementById('addrSingleVal');
+  if(valDiv){ valDiv.textContent='-- সিলেক্ট করুন --'; valDiv.style.color='#bbb'; }
+  var sh=document.getElementById('addrSingleSheet');
+  if(sh){ sh.style.display='none'; }
+  var ad=document.getElementById('apptAddr');
+  if(ad) ad.value='';
+  var sc=document.getElementById('apptSchedule');
+  if(sc) sc.value='';
+  var tk=document.getElementById('apptToken');
+  if(tk) tk.value='';
+  initDrilldown();
+}
+/* ===== BRANCH SYNC HELPERS ===== */
+function onApptBranchChange(sel){
+  var ph = sel.options[sel.selectedIndex].getAttribute('data-phone') || '';
+  var waEl = document.getElementById('apptBizWA');
+  if(waEl) waEl.value = ph;
+}
+
+
+/* ===== SHARED PDF OPENER ===== */
+function openPDFTab(html){
+  try {
+    var w = window.open('','_blank');
+    if(w){ w.document.open(); w.document.write(html); w.document.close(); }
+    else {
+      var a=document.createElement('a');
+      a.href='data:text/html;charset=utf-8,'+encodeURIComponent(html);
+      a.target='_blank'; a.rel='noopener';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }
+  } catch(e){ alert('পপআপ ব্লক হয়েছে। Allow করুন।'); }
+}
+
+/* ===== APPOINTMENT PDF ===== */
+function downloadApptPDF(){
+  var biz    = (document.getElementById('apptBizName')||{}).value||'Ruqyah Haven';
+  var branch = (document.getElementById('apptBizAddr')||{}).value||'';
+  var date   = fmt(document.getElementById('apptDate').value);
+  var token  = document.getElementById('apptToken').value||'';
+  var name   = document.getElementById('apptName').value.trim();
+  var phone  = document.getElementById('apptPhone').value.trim();
+  var age    = document.getElementById('apptAge').value.trim();
+  var gender = document.getElementById('apptGender').value;
+  var addr   = document.getElementById('apptAddr').value.trim();
+  var sched  = document.getElementById('apptSchedule').value;
+  var logoSrc= document.getElementById('logoImg')?document.getElementById('logoImg').src:'';
+
+  if(!name){ alert('রোগীর নাম দিন'); return; }
+
+  var addrMap = {
+    'Narayanganj':'House# 254/17, 1st Floor,<br>Lokman Tower,<br>Mahmudnagar Signboard,<br>Dhaka 1361.<br>Signboard, Dhaka, Bangladesh, 1361',
+    'Halishahr':'House# 1660, 2nd Floor,<br>Salam Avenue, P.C Road,<br>Nayabazar, Halishahr, Chattogram.<br>(Opposite Halishahr Mart Supershop,<br>Abdul Khalek Sawdagar Bari)',
+    "Cox's Bazar":"Cox's Bazar Sadar",
+    'Jashore':'Ground Floor, House# A-17,<br>New Market (Inside the lane<br>adjacent to Hanif Bus Counter,<br>Opposite side of Steadfast<br>Courier Service Hub),<br>Jessore Sadar, Jessore - 7400'
+  };
+  var phoneMap={'Narayanganj':'01883269615','Halishahr':'01978004575',"Cox's Bazar":'01813530359','Jashore':'01577555921'};
+  var centerAddr  = addrMap[branch]||(branch||'');
+  var centerPhone = phoneMap[branch]||'';
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Appointment</title>'
+    +'<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Arial,sans-serif;}'
+    +'.page{width:210mm;min-height:297mm;margin:0 auto;padding:10mm 8mm 14mm;}'
+    +'.box{border:2px solid #333;}'
+    +'.title{text-align:center;padding:7px;border-bottom:2px solid #333;font-size:16px;font-weight:800;letter-spacing:1px;}'
+    +'.hrow{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 14px 8px;border-bottom:1px solid #ccc;}'
+    +'.hl{flex:0 0 45%;font-size:10.5px;line-height:1.85;}'
+    +'.hl strong{font-size:12px;display:block;margin-bottom:3px;}'
+    +'.hc{flex:0 0 15%;display:flex;justify-content:center;}'
+    +'.hc img{width:58px;height:58px;object-fit:contain;}'
+    +'.hr{flex:0 0 40%;text-align:right;font-size:11px;}'
+    +'.info-table{width:100%;border-collapse:collapse;margin-top:0;}'
+    +'.info-table td{padding:8px 12px;border:1px solid #ccc;font-size:12px;}'
+    +'.info-table .lbl{font-weight:700;background:#f5f5f5;width:35%;}'
+    +'.token-box{text-align:center;padding:14px;border-top:2px solid #333;margin-top:0;}'
+    +'.token-num{font-size:48px;font-weight:900;color:#1a5c3a;}'
+    +'.token-lbl{font-size:13px;color:#555;margin-bottom:4px;}'
+    +'@media print{body{margin:0;}.page{width:100%;padding:8mm;}@page{size:A4 portrait;margin:10mm;}}'
+    +'</style></head><body>'
+    +'<div class="page"><div class="box">'
+    +'<div class="title">📅 Appointment Slip</div>'
+    +'<div class="hrow">'
+      +'<div class="hl"><strong>'+biz+':<br>Cupping &amp; Ruqyah Center<br>'+(branch?'('+branch+' Branch)':'')+'</strong>'
+        +(centerAddr?centerAddr+'<br>':'')+(centerPhone?'Phone: '+centerPhone:'')
+      +'</div>'
+      +'<div class="hc">'+(logoSrc?'<img src="'+logoSrc+'"/>':'')+'</div>'
+      +'<div class="hr"><strong>Date: '+date+'</strong></div>'
+    +'</div>'
+    +'<table class="info-table">'
+      +'<tr><td class="lbl">নাম (Name)</td><td>'+name+'</td></tr>'
+      +'<tr><td class="lbl">ফোন (Phone)</td><td>'+phone+'</td></tr>'
+      +(age?'<tr><td class="lbl">বয়স (Age)</td><td>'+age+'</td></tr>':'')
+      +(gender?'<tr><td class="lbl">লিঙ্গ (Gender)</td><td>'+gender+'</td></tr>':'')
+      +(addr?'<tr><td class="lbl">ঠিকানা</td><td>'+addr+'</td></tr>':'')
+      +(sched?'<tr><td class="lbl">শিডিউল</td><td>'+sched+'</td></tr>':'')
+    +'</table>'
+    +'<div class="token-box">'
+      +'<div class="token-lbl">সিরিয়াল নম্বর</div>'
+      +'<div class="token-num">'+(token||'—')+'</div>'
+    +'</div>'
+    +'</div></div>'
+    +'<script>window.onload=function(){setTimeout(function(){window.print();},800);};<\/script>'
+    +'</body></html>';
+
+  openPDFTab(html);
+}
+
+/* ===== DIAGNOSIS PDF ===== */
+function downloadDiagPDF(){
+  /* collect selected symptoms from diagSelected object */
+  var keys = Object.keys(diagSelected).map(Number).sort(function(a,b){return a-b;});
+  if(keys.length===0){ alert('অন্তত একটি সমস্যা নির্বাচন করুন'); return; }
+
+  var logoSrc = document.getElementById('logoImg')?document.getElementById('logoImg').src:'';
+  var today   = new Date();
+  var dateStr = String(today.getDate()).padStart(2,'0')+'.'+String(today.getMonth()+1).padStart(2,'0')+'.'+String(today.getFullYear()).slice(2);
+
+  var d = diagData[currentDiagType];
+  var diagTitle = d ? d.title : 'ডায়াগনোসিস';
+  var patName  = diagPatientInfo.name || '';
+  var patPhone = diagPatientInfo.phone || '';
+
+  var rows = '';
+  keys.forEach(function(n, idx){
+    var label = getItemTextByType(currentDiagType, n);
+    var bg = (idx%2===0)?'#fff':'#f9f9f9';
+    rows += '<tr style="background:'+bg+';">'
+      +'<td style="padding:6px 8px;border:1px solid #ccc;text-align:center;font-size:12px;">'+(idx+1)+'</td>'
+      +'<td style="padding:6px 10px;border:1px solid #ccc;font-size:12px;">'+label+'</td>'
+      +'</tr>';
+  });
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Diagnosis Report</title>'
+    +'<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Arial,sans-serif;}'
+    +'.page{width:210mm;min-height:297mm;margin:0 auto;padding:10mm 8mm 14mm;}'
+    +'.box{border:2px solid #333;}'
+    +'.title{text-align:center;padding:7px;border-bottom:2px solid #333;font-size:16px;font-weight:800;letter-spacing:1px;}'
+    +'.hrow{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;border-bottom:2px solid #333;}'
+    +'.hl{font-size:11px;line-height:1.8;}'
+    +'.hl strong{font-size:13px;display:block;}'
+    +'.hc img{width:58px;height:58px;object-fit:contain;}'
+    +'.hr{text-align:right;font-size:11px;}'
+    +'table{width:100%;border-collapse:collapse;}'
+    +'thead th{background:#1a5c3a;color:#fff;padding:7px 8px;font-size:12px;text-align:left;border:1px solid #1a5c3a;}'
+    +'thead th:first-child{width:40px;text-align:center;}'
+    +'.footer{text-align:center;padding:10px;font-size:11px;color:#555;border-top:1px solid #ccc;margin-top:0;}'
+    +'@media print{body{margin:0;}.page{width:100%;padding:8mm;}@page{size:A4 portrait;margin:10mm;}}'
+    +'</style></head><body>'
+    +'<div class="page"><div class="box">'
+    +'<div class="title">🔬 '+diagTitle+' রিপোর্ট</div>'
+    +'<div class="hrow">'
+      +'<div class="hl"><strong>Ruqyah Haven</strong>Cupping &amp; Ruqyah Center'
+        +(patName?'<br>রোগী: '+patName:'')
+        +(patPhone?'<br>ফোন: '+patPhone:'')
+      +'</div>'
+      +'<div class="hc">'+(logoSrc?'<img src="'+logoSrc+'"/>':'')+'</div>'
+      +'<div class="hr"><strong>Date: '+dateStr+'</strong><br>চিহ্নিত: '+keys.length+'টি</div>'
+    +'</div>'
+    +'<table><thead><tr><th>#</th><th>সমস্যার বিবরণ</th></tr></thead>'
+    +'<tbody>'+rows+'</tbody></table>'
+    +'<div class="footer">Ruqyah Haven | আল্লাহ শেফা দিন। আমীন।</div>'
+    +'</div></div>'
+    +'<script>window.onload=function(){setTimeout(function(){window.print();},800);};<\/script>'
+    +'</body></html>';
+
+  openPDFTab(html);
+}
+
+function onBillBranchChange(sel){
+  var ph = sel.options[sel.selectedIndex].getAttribute('data-phone') || '';
+  var cpEl = document.getElementById('centerPhone');
+  if(cpEl) cpEl.value = ph;
+}
+//]]>
+</script>
+</body>
+</html>
