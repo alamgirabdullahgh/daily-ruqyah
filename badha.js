@@ -47,7 +47,8 @@
   return'<section class="bd-c bd-parts"><h3>ধাপ অনুযায়ী অডিও ও PDF</h3>'+PARTS.map(function(p,i){
    return'<div class="bd-pr"><div class="bd-pl"><b>'+esc(p.n)+'</b><span>'+esc(p.t)+'<small>'+esc(p.s)+'</small></span></div><span class="bd-pb">'+(p.pdf?BTN("ps",k,i,SVG.pd,"PDF","ধাপ "+p.n+" — PDF"):'')+BTN("pa",k,i,SVG.au,"অডিও","ধাপ "+p.n+" — অডিও")+'</span></div>'}).join("")+'</section>'}
 // PDF-র লেখা: পাতায় যেমন আছে হুবহু (সময়ের শিরোনাম, ধাপ, নির্দেশনা, আরবি, অনুবাদ, দোয়া); sn = কোন কোন ধাপ (নেই হলে পুরো আমল)
- function blocksOf(k,sn){var d=D[k],o=[];if(!sn&&d.when)o.push({k:"g",t:d.when});
+ function blocksOf(k,sn){var d=D[k],o=[];
+  if(!sn){o.push({k:"g",t:"আলামত"});d.sym.forEach(function(s){o.push({k:"h",t:s.h});s.l.forEach(function(x){o.push({k:"p",t:"• "+x})})});if(d.when)o.push({k:"g",t:d.when})}
   d.steps.forEach(function(s){if(sn&&sn.indexOf(s.n)<0)return;
    if(s.g)o.push({k:"g",t:s.g});
    o.push({k:"h",t:"ধাপ "+s.n+(s.h?" — "+s.h:"")});
@@ -55,6 +56,7 @@
    if(s.ar)o.push({k:"ar",t:s.ar});
    if(s.tr)s.tr.split("\n").forEach(function(x){o.push({k:"tr",t:x})});
    (s.m||[]).forEach(function(x){o.push({k:"m",t:x})})});
+  if(!sn){o.push({k:"g",t:d.sign.h});d.sign.l.forEach(function(x){o.push({k:"p",t:"• "+x})});if(d.note)o.push({k:"p",t:d.note})}
   return o}
  function short(t){return t.replace(/ দূর করার রুকইয়াহ$/,"")}
  function plain(k){
