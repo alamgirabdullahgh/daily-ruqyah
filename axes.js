@@ -113,7 +113,7 @@ function fit(R){const rows=[...R.querySelectorAll(".ax-g:not([hidden]) .ax-ro")]
 const SFX={resp:" · প্রতিক্রিয়া",treat:" · চিকিৎসা"},REPN={resp:11,treat:1};
 function regCell(gi,ci,oi,mode){const key=gi+"."+ci+"."+oi,C=DATA.cells[key];if(!C)return null;
  const seen=new Set(),ks=[];
- [...C.b.map(r=>[r[0],r[1]]),...(mode==="resp"?[]:C.m.map(v=>{const p=v.split(":").map(Number);return[p[0],p[1]]}))].forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);ks.push(k)}});
+ [...C.b.map(r=>[r[0],r[1],0,r[2],r[3]]),...(mode==="resp"?[]:C.m.map(v=>{const p=v.split(":").map(Number);return[p[0],p[1]]}))].forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);ks.push(k)}});
  return ks.length?{ks}:null}
 /* স্কোপ: "g0" = পুরো হেডিং · "r0.1" = একটি সারি (যেমন ধরন) · "c0.1.0" = একটি ঘর (যেমন মুগ্ধতা)। আয়াত-তালিকা ক্রমানুসারে, "উভয়" বাদ */
 function scope(id,sec,mode){const t=id[0],p=id.slice(1).split(".").map(Number),gi=p[0],G=DATA.axes[gi],plist=[],list=[],cells=[];let hasOrg=false;
