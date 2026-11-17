@@ -210,7 +210,7 @@ window.__drAxesFit=R=>fit(R);
 
 /* ===== মালিকের ✂ কাস্টমাইজ: আয়াতের মার্ক (কোন শব্দ থেকে কোন শব্দ) ও অডিও-কাট (শুরু/শেষ সেকেন্ড) অ্যাপ থেকেই ঠিক করা। শুধু লগইন করা (dr-unlocked) অবস্থায় দেখা যায়; বদল শুধু এই ফোনে জমে (localStorage drEd) ও সাথে সাথে অ্যাপে কাজ করে; "কপি" দিয়ে সব বদল নিয়ে রিপোতে স্থায়ী করা যায় ===== */
 (function(){
- if(!document.getElementById("edCss")){const s=document.createElement("style");s.id="edCss";s.textContent=".ed-btn{margin-top:6px;padding:7px 12px;border-radius:10px;border:1px solid #c9a227;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}body:not(.dr-unlocked) .ed-btn{display:none!important}.ed-m{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.55);overflow:auto;padding:10px}.ed-b{background:var(--card-bg,#fff);color:var(--text-main,#111);border-radius:16px;padding:14px;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px}.ed-b h4{margin:0;font-size:16px}.ed-ws{direction:rtl;line-height:2.3}.ed-w{display:inline-block;padding:2px 8px;margin:2px;border-radius:8px;border:1px solid #aaa;font-size:22px;cursor:pointer}.ed-w.on{background:#e8c25a;color:#000;border-color:#c9a227}.ed-r{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.ed-r b{min-width:48px}.ed-v{min-width:64px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}.ed-k{padding:7px 10px;border-radius:10px;border:1px solid #999;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}.ed-k.p{background:#2e7d32;color:#fff;border-color:#2e7d32}.ed-k.d{border-color:#c62828;color:#c62828}.ed-n{font-size:13px;opacity:.8}.ed-wv{position:relative;border-radius:10px;background:#1b1b1f;overflow:hidden;height:190px;touch-action:none;user-select:none;-webkit-user-select:none}.ed-wv canvas{display:block;width:100%;height:100%}.ed-live{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-variant-numeric:tabular-nums}.ed-cw{font-size:24px;direction:rtl;font-weight:700;min-width:80px;text-align:center}.ed-ct{font-weight:700;font-size:17px}.ed-wi{position:relative;height:100%}.ed-wi canvas{display:block;height:100%;touch-action:pan-x}.ed-h{position:absolute;top:14px;bottom:14px;width:30px;margin-left:-15px;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:ew-resize;z-index:3}.ed-h i{display:block;width:12px;height:100%;background:#fff;border-radius:6px;position:relative}.ed-h i:after{content:'';position:absolute;left:5px;top:36%;bottom:36%;width:2px;background:#555;border-radius:1px}.ed-ph{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:#fff;z-index:2;pointer-events:none}.ed-z{display:flex;gap:6px;align-items:center}";document.head.appendChild(s)}
+ if(!document.getElementById("edCss")){const s=document.createElement("style");s.id="edCss";s.textContent=".ed-btn{margin-top:6px;padding:7px 12px;border-radius:10px;border:1px solid #c9a227;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}body:not(.dr-unlocked) .ed-btn{display:none!important}.ed-m{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.55);overflow:auto;padding:10px}.ed-b{background:var(--card-bg,#fff);color:var(--text-main,#111);border-radius:16px;padding:14px;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px}.ed-b h4{margin:0;font-size:16px}.ed-ws{direction:rtl;line-height:2.3}.ed-w{display:inline-block;padding:2px 8px;margin:2px;border-radius:8px;border:1px solid #aaa;font-size:22px;cursor:pointer}.ed-w.on{background:#e8c25a;color:#000;border-color:#c9a227}.ed-r{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.ed-r b{min-width:48px}.ed-v{min-width:64px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}.ed-k{padding:7px 10px;border-radius:10px;border:1px solid #999;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}.ed-k.p{background:#2e7d32;color:#fff;border-color:#2e7d32}.ed-k.d{border-color:#c62828;color:#c62828}.ed-n{font-size:13px;opacity:.8}.ed-wv{position:relative;border-radius:10px;background:#1b1b1f;overflow:hidden;height:240px;touch-action:none;user-select:none;-webkit-user-select:none}.ed-wv canvas{display:block;width:100%;height:100%}.ed-live{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-variant-numeric:tabular-nums}.ed-cw{font-size:24px;direction:rtl;font-weight:700;min-width:80px;text-align:center}.ed-ct{font-weight:700;font-size:17px}.ed-wi{position:relative;height:100%}.ed-wi canvas{display:block;height:100%;touch-action:pan-x}.ed-h{position:absolute;top:14px;bottom:14px;width:30px;margin-left:-15px;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:ew-resize;z-index:3}.ed-h i{display:block;width:12px;height:100%;background:#fff;border-radius:6px;position:relative}.ed-h i:after{content:'';position:absolute;left:5px;top:36%;bottom:36%;width:2px;background:#555;border-radius:1px}.ed-ph{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:#fff;z-index:2;pointer-events:none}.ed-z{display:flex;gap:6px;align-items:center}";document.head.appendChild(s)}
  const DEF=()=>rsFetch(BASE+"audio-cuts.json?v=6").then(j=>j.cuts||{}).catch(()=>({}));
  const f3=x=>(Math.round(x*1000)/1000).toFixed(3);
  window.__drEditOpen=async function(o){
@@ -236,7 +236,7 @@ window.__drAxesFit=R=>fit(R);
   const pv=el("div","ed-r");const mk=(txt,mode)=>{const k=el("button","ed-k",txt);k.type="button";k.onclick=async()=>{if(!AB||T0==null||T1==null||T1<=T0){info.textContent="আগে শুরু ও শেষ বসান";return}try{const d=await window.__drCutPrev(AB,T0,T1,mode);info.textContent="▶ বাজছে ("+f3(d)+" সে.)"}catch(e){info.textContent="বাজানো যায়নি"}};return k};
   const stp=el("button","ed-k","⏹");stp.type="button";stp.onclick=()=>{window.__drCutStop&&window.__drCutStop();try{au.pause()}catch(e){}};
   pv.append(mk("▶ কাটা অংশ",""),mk("▶ শেষের ২ সেকেন্ড","tail"),mk("▶ শুরুর ২ সেকেন্ড","head"),stp);
-  b.append(info,au,wv,r0,r1,pv,el("div","ed-n","লাল দাগ মাঝে স্থির। রেখায় আঙুল রাখলেই বাজা থামে; আঙুল টানলে রেখা সরে আর সেই জায়গার শব্দ শোনা যায়। সাদা ফ্রেমের দুই পাশের হ্যান্ডেল টানলেও শব্দ শোনা যায় (শুরুর হ্যান্ডেলে তার ঠিক পরের শব্দ, শেষের হ্যান্ডেলে তার ঠিক আগের শব্দ)। দুই আঙুলে চিমটি কেটে জুম করুন। ওপরের সোনালি ঘরে বর্তমান শব্দ দেখায়। ⌖ চাপলে লাল দাগের জায়গা শুরু/শেষ হয়। ▶ বোতামগুলো হুবহু অ্যাপের কাটা-অডিও বাজায় (গতিসহ)।"));
+  b.append(info,au,wv,r0,r1,pv,el("div","ed-n","শুরুতে কাটা অংশ পুরোটা পর্দায় ধরে (⤢ চাপলে আবার সব দেখায়)। সাদা হ্যান্ডেল ধরে টানুন। লাল দাগ মাঝে স্থির: তরঙ্গ সরিয়ে লাল দাগ ঠিক জায়গায় আনুন, তারপর ✂ শুরু এখানে / ✂ শেষ এখানে চাপুন (ভিডিও-এডিটরের স্প্লিটের মতো)। রেখায় আঙুল রাখলেই বাজা থামে; আঙুল টানলে রেখা সরে আর সেই জায়গার শব্দ শোনা যায়। সাদা ফ্রেমের দুই পাশের হ্যান্ডেল টানলেও শব্দ শোনা যায় (শুরুর হ্যান্ডেলে তার ঠিক পরের শব্দ, শেষের হ্যান্ডেলে তার ঠিক আগের শব্দ)। দুই আঙুলে চিমটি কেটে জুম করুন। ওপরের সোনালি ঘরে বর্তমান শব্দ দেখায়। ⌖ চাপলে লাল দাগের জায়গা শুরু/শেষ হয়। ▶ বোতামগুলো হুবহু অ্যাপের কাটা-অডিও বাজায় (গতিসহ)।"));
   const act=el("div","ed-r"),sv=el("button","ed-k p","💾 সংরক্ষণ"),rs=el("button","ed-k d","↩ আগের অবস্থায়");sv.type=rs.type="button";
   const bump=()=>{try{localStorage.setItem("drEdV",Date.now().toString(36))}catch(e){}};
   sv.onclick=()=>{if(!f){alert("আগে শব্দে চেপে মার্ক ঠিক করুন");return}
@@ -261,6 +261,7 @@ window.__drAxesFit=R=>fit(R);
     const cv=document.createElement("canvas"),live=el("div","ed-live"),ct0=el("span","ed-ct","০.০০০"),cw=el("span","ed-cw","—"),cs=el("span","ed-n","");live.append(ct0,cw,cs);
     wv.append(live,el("div","ed-wv"));const box=wv.lastChild;box.append(cv);
     const zb=el("div","ed-z"),zi=el("button","ed-k","🔍＋"),zo=el("button","ed-k","🔍−"),pp=el("button","ed-k p","▶ চালাও / ⏸ থামাও"),zt=el("span","ed-n","");zi.type=zo.type=pp.type="button";zb.append(pp,zo,zi,zt);wv.append(zb);
+    const tb=el("div","ed-z"),bS=el("button","ed-k","✂ শুরু এখানে"),bE=el("button","ed-k","✂ শেষ এখানে"),bF=el("button","ed-k","⤢ সব দেখাও");bS.type=bE.type=bF.type="button";tb.append(bS,bE,bF);wv.append(tb);
     const strip=x=>x.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g,"");
     /* শব্দের আনুমানিক সময়: অক্ষর-সংখ্যার অনুপাতে, মার্ক+কাটা থেকে মাপ নিয়ে */
     const wtimes=()=>{const n=aw.length;if(!n)return[];const w=aw.map(x=>strip(x).length+.6),cum=[0];w.forEach((v,i)=>cum.push(cum[i]+v));
@@ -285,8 +286,8 @@ window.__drAxesFit=R=>fit(R);
      const sub=st/5;if(sub*pps>=7){g.fillStyle="#4a4a55";for(let k=Math.ceil(tL/sub);k*sub<=tR;k++){if(k<0)continue;const x=Math.round(X(k*sub));g.fillRect(x,0,1,5)}}
      for(let k=Math.ceil(tL/st);k*st<=tR;k++){if(k<0)continue;const tt=k*st,x=Math.round(X(tt));g.fillStyle="#8a8a96";g.fillRect(x,0,1,9);g.fillStyle="#b9b9c4";g.textAlign="left";g.fillText(tt.toFixed(st<.1?2:st<1?1:0),x+3,12)}
      /* শব্দের ফালি */
-     const wt=wtimes();g.textBaseline="middle";g.textAlign="center";const fam=getComputedStyle(ws).fontFamily;let curI=-1;
-     wt.forEach((r,i)=>{if(c>=r[0]&&c<r[1])curI=i;const x0=X(r[0]),x1=X(r[1]);if(x1<0||x0>W)return;const on=f&&i+1>=f&&i+1<=t,isC=i===curI;
+     const wt=wtimes();g.textBaseline="middle";g.textAlign="center";const fam=getComputedStyle(ws).fontFamily;let curI=-1;const pt=(mode==="h")?(which?T1:T0):c;
+     wt.forEach((r,i)=>{if(pt>=r[0]&&pt<r[1])curI=i;const x0=X(r[0]),x1=X(r[1]);if(x1<0||x0>W)return;const on=f&&i+1>=f&&i+1<=t,isC=i===curI;
       g.fillStyle=isC?"#c9a227":on?"#5b3b86":"#2e2e36";g.fillRect(x0+1,wy,Math.max(1,x1-x0-2),wh);g.fillStyle=isC?"#111":"#eee";g.font="19px "+fam;
       if(x1-x0>26)g.fillText(aw[i],(x0+x1)/2,wy+wh/2+1,x1-x0-4)});
      /* ক্লিপের সাদা ফ্রেম + দুই পাশে সাদা হ্যান্ডেল (ভিডিও-এডিটরের মতো) */
@@ -297,8 +298,8 @@ window.__drAxesFit=R=>fit(R);
      else{[[T0,"শুরু"],[T1,"শেষ"]].forEach(([v,lab])=>{if(v==null)return;const x=X(v);g.fillStyle="#fff";g.fillRect(x-1,my-6,2,mh+12);g.font="bold 11px sans-serif";g.textAlign="left";g.textBaseline="bottom";g.fillText(lab,x+3,my-6)})}
      /* মাঝের স্থির প্লেহেড */
      g.fillStyle="#ff4d4d";g.fillRect(cx0-1,0,2,H);g.beginPath();g.moveTo(cx0-7,0);g.lineTo(cx0+7,0);g.lineTo(cx0,9);g.fill();
-     ct0.textContent=fmt(c)+" / "+fmt(dur)+" সে.";cw.textContent=curI>=0?aw[curI]:"—";
-     cs.textContent=(curI>=0?"শব্দ "+bn2(curI+1)+" (আনুমানিক)":"শব্দের বাইরে/নীরবতা")+(hasR?(c<T0?" · কাটার আগে":c>T1?" · কাটার পরে":" · কাটার ভেতরে"):"");
+     ct0.textContent=(mode==="h"?(which?"শেষ ":"শুরু ")+fmt(pt):fmt(c))+" / "+fmt(dur)+" সে.";cw.textContent=curI>=0?aw[curI]:"—";
+     cs.textContent=(curI>=0?"শব্দ "+bn2(curI+1)+" (আনুমানিক)":"শব্দের বাইরে/নীরবতা")+(hasR?(pt<T0?" · কাটার আগে":pt>T1?" · কাটার পরে":" · কাটার ভেতরে"):"");
      zt.textContent="১ সে. = "+Math.round(pps)+"px";dirty=false;return};
     onT=()=>{dirty=true};
     /* স্ক্রাবিং-শব্দ: টানার সময়ই সেই জায়গার ছোট টুকরো বাজে (Web Audio) */
@@ -313,11 +314,11 @@ window.__drAxesFit=R=>fit(R);
     box.addEventListener("pointerdown",e=>{e.preventDefault();try{box.setPointerCapture(e.pointerId)}catch(x){}pts.set(e.pointerId,e.clientX);
      if(pts.size===2){const v=[...pts.values()];pd0=Math.abs(v[0]-v[1])||1;pps0=pps;if(mode==="s"){mode="z"}else if(mode==null){mode="z";wasPlay=!au.paused;if(wasPlay)au.pause();ct=curTime()}else if(mode==="h"){mode="z"}return}
      const R=box.getBoundingClientRect(),x=e.clientX-R.left,c=curTime(),X=v=>R.width/2+(v-c)*pps;
-     let best=null,bd=30;[[T0,0],[T1,1]].forEach(([v,i])=>{if(v==null)return;const d=Math.abs(X(v)+(i===0?-8:8)-x);if(d<bd){bd=d;best=i}});
+     let best=null,bd=40;[[T0,0],[T1,1]].forEach(([v,i])=>{if(v==null)return;const d=Math.abs(X(v)+(i===0?-8:8)-x);if(d<bd){bd=d;best=i}});
      wasPlay=!au.paused;if(wasPlay)au.pause();ct=c;scrub=true;lastX=e.clientX;moved=0;t0d=performance.now();sx=e.clientX;sc0=c;
      if(best!=null){mode="h";which=best;grain(which===0?T0:T1,which===1)}else{mode="s"}dirty=true});
     box.addEventListener("pointermove",e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,e.clientX);lastX=e.clientX;
-     if(mode==="z"&&pts.size>=2){const v=[...pts.values()];pps=Math.max(60,Math.min(4000,pps0*(Math.abs(v[0]-v[1])||1)/pd0));dirty=true;return}
+     if(mode==="z"&&pts.size>=2){const v=[...pts.values()];pps=Math.max(12,Math.min(4000,pps0*(Math.abs(v[0]-v[1])||1)/pd0));dirty=true;return}
      if(!mode)return;moved=Math.max(moved,Math.abs(e.clientX-sx));
      if(mode==="h")setH(e.clientX);
      else if(mode==="s"){ct=Math.max(0,Math.min(dur,sc0-(e.clientX-sx)/pps));try{au.currentTime=ct}catch(x){}grain(ct,false);dirty=true}});
@@ -327,12 +328,15 @@ window.__drAxesFit=R=>fit(R);
      scrub=false;mode=null;if(wasPlay)au.play().catch(()=>{});dirty=true};
     box.addEventListener("pointerup",up);box.addEventListener("pointercancel",up);
     box.addEventListener("wheel",e=>{e.preventDefault();ct=Math.max(0,Math.min(dur,curTime()+(e.deltaX||e.deltaY)/pps));try{au.currentTime=ct}catch(x){}grain(ct,false);dirty=true},{passive:false});
-    const zoom=k=>{pps=Math.max(60,Math.min(4000,pps*k));dirty=true};zi.onclick=()=>zoom(1.6);zo.onclick=()=>zoom(1/1.6);
+    const zoom=k=>{pps=Math.max(12,Math.min(4000,pps*k));dirty=true};zi.onclick=()=>zoom(1.6);zo.onclick=()=>zoom(1/1.6);
     pp.onclick=()=>{if(au.paused)au.play().catch(()=>{});else au.pause()};
     au.addEventListener("seeked",()=>{if(!scrub)ct=au.currentTime;dirty=true});au.addEventListener("pause",()=>{ct=au.currentTime;dirty=true});
     /* প্রতি ফ্রেমে: বাজলে তরঙ্গ নিজে সরে (প্লেহেড মাঝে স্থির) */
-    const loop=()=>{if(!alive||!document.body.contains(m)){alive=false;return}if(mode==="h"){const R=box.getBoundingClientRect(),x=lastX-R.left;let v=0;if(x<48)v=-(48-x);else if(x>R.width-48)v=x-(R.width-48);if(v){ct=Math.max(0,Math.min(dur,ct+v*.6/pps));setH(lastX)}}if(!au.paused||dirty)draw();requestAnimationFrame(loop)};
-    ct=T0!=null?Math.max(0,T1!=null?T1-1.2:T0):0;try{au.currentTime=ct}catch(e){}
+    let lastTs=0;const loop=ts=>{if(!alive||!document.body.contains(m)){alive=false;return}const dt=Math.min(.05,lastTs?(ts-lastTs)/1000:.016);lastTs=ts;if(mode==="h"){const R=box.getBoundingClientRect(),x=lastX-R.left,Z=36;let v=0;if(x<Z)v=-(Z-Math.max(0,x))/Z*200;else if(x>R.width-Z)v=(x-(R.width-Z))/Z*200;if(v){ct=Math.max(0,Math.min(dur,ct+v*dt/pps));setH(lastX)}}if(!au.paused||dirty)draw();requestAnimationFrame(loop)};
+    const fit=()=>{const W=Math.max(200,box.getBoundingClientRect().width||340);if(T0!=null&&T1!=null&&T1>T0){const sp=T1-T0;pps=Math.max(12,Math.min(900,(W-110)/sp));ct=(T0+T1)/2}else{pps=Math.max(12,Math.min(900,(W-60)/dur));ct=dur/2}ct=Math.max(0,Math.min(dur,ct));try{au.currentTime=ct}catch(e){}dirty=true};fit();
+    bF.onclick=()=>{au.pause();fit()};
+    bS.onclick=()=>{au.pause();const v=Math.max(0,Math.min(dur,curTime()));T0=v;if(T1!=null&&T1<=v+.05)T1=null;r0.__u();r1.__u();dirty=true};
+    bE.onclick=()=>{au.pause();const v=Math.max(0,Math.min(dur,curTime()));T1=v;if(T0!=null&&T0>=v-.05)T0=null;r0.__u();r1.__u();dirty=true};
     au.addEventListener("loadedmetadata",()=>{try{au.currentTime=ct}catch(e){}dirty=true});requestAnimationFrame(loop);
     window.addEventListener("resize",()=>{dirty=true})}catch(e){console.error(e);wv.append(el("div","ed-n","তরঙ্গ-রেখা আঁকা যায়নি — নিচের সংখ্যা ও ± বোতাম দিয়ে করুন"))}
 
