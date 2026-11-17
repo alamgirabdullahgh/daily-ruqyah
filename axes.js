@@ -47,7 +47,7 @@ let DATA=null;
 const load=async()=>DATA||(DATA=await rsFetch(BASE+"axis-ayat.json?v=2").catch(e=>{DATA=null;throw e}));
 /* "অবস্থান → শরীরে" ঘরের অডিওতে অঙ্গ ধরে ধরে আয়াত বাজে; অঙ্গের নাম ও আয়াত দৈনন্দিন রুকইয়াহর "শারীরিক → অঙ্গভিত্তিক" তালিকা (app.js এর ORG) থেকে আসে। শুধু দরকারের সময় লোড হয় */
 let ORGS=[],ORGP=null;
-const loadOrg=()=>ORGP||(ORGP=(async()=>{for(let i=0;i<40&&!window.__drOrgans;i++)await new Promise(r=>setTimeout(r,250));if(!window.__drOrgans)throw new Error("noorg");ORGS=(await window.__drOrgans()).filter(o=>o.keys.length)})().catch(e=>{console.error(e);ORGP=null}));
+const loadOrg=()=>Promise.resolve();/* অঙ্গ-প্রত্যঙ্গের তালিকা ও অঙ্গের আয়াত আর যোগ হয় না (ব্যবহারকারীর নির্দেশে বাদ); ORGS সব সময় খালি */
 const isBodyCell=(c,n)=>c.name==="অবস্থান"&&n==="শরীরে";
 const hasBody=id=>{const t=id[0];if(t==="g")return true;const p=id.slice(1).split(".").map(Number);return t==="r"?DATA.axes[p[0]].cols[p[1]].name==="অবস্থান":isBodyCell(DATA.axes[p[0]].cols[p[1]],DATA.axes[p[0]].cols[p[1]].opts[p[2]])};
 
@@ -141,7 +141,6 @@ const anchorOf=(sec,id)=>id[0]==="g"?sec.querySelector("h3"):rowEl(sec,id);
 /* অডিও: চাপলে সাথে সাথে এই পাতাতেই বাজে (নিজে ডাউনলোড হয় না); কোন ঘর বাজছে জ্বলজ্বলে ফোঁটায় দেখায়; প্লেয়ারের পাশে ⬇ ও শেয়ার */
 async function playSeq(R,id,sec,btn){const same=R.__pl&&R.__pl.id===id;stopPlay(R);if(same)return;
  if(!window.__drGroupAudio)return;
- if(hasBody(id)&&!ORGS.length){const m={id,stop:false,a:null};R.__pl=m;btn.classList.add("on");btn.textContent="⏳\nঅঙ্গ";await loadOrg();btn.classList.remove("on");btn.textContent=AUL;if(R.__pl!==m)return;R.__pl=null}
  const sc=scope(id,sec,R.__mode),{G,list,cells}=sc;
  if(!list.length)return;
  const st={id,stop:false,a:null};R.__pl=st;btn.classList.add("on");btn.textContent="⏹\nথামান";
@@ -169,7 +168,7 @@ async function playSeq(R,id,sec,btn){const same=R.__pl&&R.__pl.id===id;stopPlay(
  upd()}
 function openPdf(R,id,sec){const sc=scope(id,sec,R.__mode);window.__drHomePdf&&window.__drHomePdf("x",sc.cat,null)}
 /* অ্যাপ চালু হলে ব্যাকগ্রাউন্ডে সবকিছুর অডিও ও PDF আগে থেকে তৈরি: আগে প্রতিটি ঘর, তারপর সারি, শেষে পুরো হেডিং (আয়াতের এনকোড ভাগ হয়, তাই পরের দুটো দ্রুত) */
-window.__drAxPre=async()=>{await load();try{await loadOrg()}catch(e){console.error(e)}const sl=()=>new Promise(r=>setTimeout(r,300)),ids=[];
+window.__drAxPre=async()=>{await load();const sl=()=>new Promise(r=>setTimeout(r,300)),ids=[];
  DATA.axes.forEach((g,gi)=>{g.cols.forEach((c,ci)=>c.opts.forEach((n,oi)=>{if(n!=="উভয়")ids.push("c"+gi+"."+ci+"."+oi)}));g.cols.forEach((c,ci)=>ids.push("r"+gi+"."+ci));ids.push("g"+gi)});
  /* দুই পাতার (প্রতিক্রিয়া ভিত্তিক / চিকিৎসা) আলাদা আয়াত-তালিকা, তাই দুই রকমই আগে থেকে তৈরি */
  const all=[];["resp","treat"].forEach(m=>ids.forEach(id=>{const sc=scope(id,null,m);if(sc.list.length)all.push({id,sc,m})}));
@@ -178,7 +177,7 @@ window.__drAxPre=async()=>{await load();try{await loadOrg()}catch(e){console.err
  if(window.__drGroupAudio)for(const x of all.slice().sort((a,b)=>hasBody(a.id)-hasBody(b.id))){const t0=Date.now();try{await gMerge(x.id,x.sc).p}catch(e){console.error(e)}window.__drPreTick&&window.__drPreTick();if(Date.now()-t0>80)await sl()}
  if(window.__drHomePdfPre)for(const x of all){const t0=Date.now();try{await window.__drHomePdfPre(x.sc.cat)}catch(e){console.error(e)}window.__drPreTick&&window.__drPreTick();if(Date.now()-t0>80)await sl()}};
 /* হোমের প্রতিক্রিয়া/চিকিৎসা অডিও-PDF-এর আয়াত-তালিকা: kind = resp | treat; slug = nazar | jadu | jin | "" (তিন চার্ট পরপর)। প্রতিটি ঘর চার্টের ক্রমে */
-window.__drAxList=async(kind,slug)=>{await load();await loadOrg();if(!ORGS.length)throw new Error("noorg");const out=[];
+window.__drAxList=async(kind,slug)=>{await load();const out=[];
  DATA.axes.forEach((g,gi)=>{if(slug&&g.slug!==slug)return;scope("g"+gi,null,kind).list.forEach(k=>out.push(k))});return out};
 
 const SLUG={nazar:1,jadu:1,jin:1};
