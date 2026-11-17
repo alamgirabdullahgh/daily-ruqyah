@@ -1,7 +1,7 @@
 {
  "_doc": "বাধা দূর করার রুকইয়াহ-র দোয়ার অডিও। লেখা বদলে পুশ করলে Actions (.github/workflows/dua-tts.yml) Gemini TTS (Charon) দিয়ে আবার বানিয়ে dua/dN.mp3 কমিট করে। গতি ×১.২০।",
  "voice": "Charon",
- "style": "Read the following Bengali supplication slowly, calmly and humbly, in a sincere, soft, heartfelt tone of prayer:",
+ "style": "Recite the following Bengali supplication in a fierce, aggressive, wrathful voice, full of burning anger and fury against the evil, forceful, loud and intense, delivered fast and sharp with no softness at all, like a ruqyah recited in rage:",
  "models": [
   "gemini-2.5-pro-preview-tts",
   "gemini-2.5-flash-preview-tts"
