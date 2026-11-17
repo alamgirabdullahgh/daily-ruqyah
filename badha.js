@@ -10,14 +10,39 @@
   au:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>'};
  // প্রতিটি আইটেমের সব আয়াত একই: ফাতির ৩৫:২, ইউনুস ১০:৮১, আ‘রাফ ৭:১১৮, ফালাক ১১৩:৪, ইনশিরাহ ৯৪:৫-৬ (প্রতিটি ২১ বার)
  var KEYS=[[35,2],[10,81],[7,118],[113,4],[94,5],[94,6]],CAT=function(k){return"বাধা|"+D[k].t};
- // অডিওর ক্রম: ফাতির ২ ও ইউনুস ৮১ + আ‘রাফ ১১৮ প্রতিবার দোয়াসহ ২১ বার; ফালাক ৪ ও ইনশিরাহ ২১ বার; বাস্তব তালা: ৭ বার ও ৩ দোয়া; শেষে তাহাজ্জুদের দোয়া ১০০ বার। [সূরা,আয়াত,বার,শব্দ-শুরু,শব্দ-শেষ]; "dua" = dua/dN.mp3 (edge-tts)
+ // অডিও তিন পার্টে, চিকিৎসার ক্রম মেনে। [সূরা,আয়াত,বার,শব্দ-শুরু,শব্দ-শেষ]; ["dua","dN",বার] = dua/dN.mp3 (Gemini TTS)
+ // পার্ট ১ — তেল-পানি তৈরির সময় পড়া: পানি (ফাতির ২ ×৭); তেল (আয়াতুল কুরসি ×৭, ফালাক ×৭, নাস ×৭)
+ function SEQP(){var o=[],q,i;
+  o.push([35,2,7],[2,255,7]);
+  for(q=0;q<7;q++)for(i=1;i<=5;i++)o.push([113,i,1]);
+  for(q=0;q<7;q++)for(i=1;i<=6;i++)o.push([114,i,1]);
+  return o}
+ // পার্ট ২ — শুধু পড়া ও দোয়া (ধাপ ৩–৭): ফাতির ২ + দোয়া ২১; ইউনুস ৮১ + আ‘রাফ ১১৮ + দোয়া ২১; ফালাক ৪ ২১; ইনশিরাহ ৫-৬ জোড়ায় ২১; বাস্তব তালা
  function SEQ(){var o=[],q;
   for(q=0;q<21;q++)o.push([35,2,1],["dua","d1",1]);
   for(q=0;q<21;q++)o.push([10,81,1,5,11],[7,118,1],["dua","d2",1]);
-  o.push([113,4,21,1,5],[94,5,21],[94,6,21]);
+  o.push([113,4,21,1,5]);
+  for(q=0;q<21;q++)o.push([94,5,1],[94,6,1]);
   o.push([35,2,7],[10,81,7,5,11],["dua","d3",1],["dua","d4",1],["dua","d5",3]);
-  o.push(["dua","d6",100]);
   return o}
+ // পার্ট ৩ — তাহাজ্জুদের দোয়া ১০০ বার
+ function SEQT(){return[["dua","d6",100]]}
+ var PARTS=[{n:"১",t:"তেল-পানি তৈরি",s:"পানি: ফাতির ২ ×৭ · তেল: আয়াতুল কুরসি, ফালাক, নাস ×৭",f:SEQP},
+  {n:"২",t:"পড়া ও দোয়া",s:"ধাপ ৩–৭: ২১ বার ও ৭ বার, দোয়াসহ",f:SEQ},
+  {n:"৩",t:"তাহাজ্জুদ",s:"রাত ৩টায়: দোয়া ১০০ বার",f:SEQT}];
+ function parts(k){
+  if(document.getElementById("drPt"))return;
+  var c=CAT(k),w=document.createElement("div");w.id="drPt";w.className="dr-lg";
+  w.innerHTML='<div class="dr-lgb"><b>অডিওর পার্ট বেছে নিন</b>'+PARTS.map(function(p,i){return'<button type="button" data-i="'+i+'" style="display:block;width:100%;text-align:left;margin:6px 0;padding:10px 12px;border-radius:10px;border:1px solid currentColor;background:transparent;color:inherit;font:inherit"><b>পার্ট '+p.n+': '+esc(p.t)+'</b><br><small>'+esc(p.s)+'</small></button>'}).join("")+'<div class="dr-lgr"><button type="button" id="drPtC">বাতিল</button></div></div>';
+  document.body.appendChild(w);
+  var close=function(){w.remove()};
+  w.onclick=function(e){
+   if(e.target===w||(e.target.id==="drPtC")){close();return}
+   var bt=e.target.closest&&e.target.closest("button[data-i]");if(!bt)return;
+   var p=PARTS[+bt.getAttribute("data-i")],ca=c+" · পার্ট "+p.n+" "+p.t;
+   close();window.__drXKeys(ca,p.f());window.__drHomeAudio("x",ca);
+  };
+ }
  function short(t){return t.replace(/ দূর করার রুকইয়াহ$/,"")}
  function plain(k){
   var d=D[k],o=[d.t,"",d.sub,"","আলামত:"];
@@ -60,7 +85,7 @@
   if(!window.__drXKeys||!window.__drHomePdf||!window.__drHomeAudio){flash(b,"একটু পরে");return}
   var c=CAT(k);window.__drXKeys(c,KEYS);
   if(a==="pd"){window.__drHomePdf("x",c);return}
-  var ca=c+" · দোয়াসহ";window.__drXKeys(ca,SEQ());window.__drHomeAudio("x",ca);
+  parts(k);
  }
  var b64d=function(s){var r=atob(s),a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a};
  var b64e=function(a){var s="";a=new Uint8Array(a);for(var i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);return btoa(s)};
