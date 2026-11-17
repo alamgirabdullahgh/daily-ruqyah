@@ -44,7 +44,7 @@ async function verseCard(ref,isBase){const{s,a,f,t,w}=ref;
  box.append(tx,tb,ft);return box}
 
 let DATA=null;
-const load=async()=>DATA||(DATA=await rsFetch(BASE+"axis-ayat.json?v=1").catch(e=>{DATA=null;throw e}));
+const load=async()=>DATA||(DATA=await rsFetch(BASE+"axis-ayat.json?v=2").catch(e=>{DATA=null;throw e}));
 /* "অবস্থান → শরীরে" ঘরের অডিওতে অঙ্গ ধরে ধরে আয়াত বাজে; অঙ্গের নাম ও আয়াত দৈনন্দিন রুকইয়াহর "শারীরিক → অঙ্গভিত্তিক" তালিকা (app.js এর ORG) থেকে আসে। শুধু দরকারের সময় লোড হয় */
 let ORGS=[],ORGP=null;
 const loadOrg=()=>ORGP||(ORGP=(async()=>{for(let i=0;i<40&&!window.__drOrgans;i++)await new Promise(r=>setTimeout(r,250));if(!window.__drOrgans)throw new Error("noorg");ORGS=(await window.__drOrgans()).filter(o=>o.keys.length)})().catch(e=>{console.error(e);ORGP=null}));
