@@ -41,10 +41,15 @@ async function verseCard(ref,isBase){const{s,a,f,t,w}=ref;
  const bPort=f?bnPortion(al,[f,t],aw.length,bw.length):null;let bHit=null;if(w){const r=alRange(al,w);if(r)bHit=[r[0],Math.min(r[1],bw.length-1)]}
  paint(tx,aw,aPort,aHit);paint(tb,bw,bPort,bHit);
  const ft=el("div","rs-vf"),rf=el("div","rs-vr");rf.append("সূরা ",el("span","rs-ar",SN[s-1])," — "+bn2(s)+":"+bn2(a));ft.append(rf);
- box.append(tx,tb,ft);return box}
+ if(ref.ck&&window.__drEditOpen&&document.body.classList.contains("dr-unlocked")){const eb=el("button","ed-btn","✂ কাস্টমাইজ");eb.type="button";eb.onclick=()=>window.__drEditOpen({s,a,f:f||0,t:t||0,ck:ref.ck,id:ref.id,aw,cn:ref.cn});ft.append(eb)}
+  box.append(tx,tb,ft);return box}
 
 let DATA=null;
-const load=async()=>DATA||(DATA=await rsFetch(BASE+"axis-ayat.json?v=7").catch(e=>{DATA=null;throw e}));
+const EDO=()=>{try{return JSON.parse(localStorage.getItem("drEd")||"{}")||{}}catch(e){return{}}};
+/* মালিকের ✂ কাস্টমাইজে বদলানো মার্ক (শুধু এই ফোনে): cells[ঘর]["b|সূরা:আয়াত"] বা ["m|<m-এর লেখা>"] = [শুরু-শব্দ, শেষ-শব্দ] */
+function applyEd(D){const o=EDO().cells||{};for(const ck in o){const C=D.cells&&D.cells[ck];if(!C)continue;for(const id in o[ck]){const v=o[ck][id],ty=id[0],rest=id.slice(2);
+  if(ty==="b"){const p=rest.split(":").map(Number),r=C.b.find(x=>x[0]===p[0]&&x[1]===p[1]);if(r){r[2]=v[0];r[3]=v[1]}}else{C.mp=C.mp||{};C.mp[rest]=v}}}return D}
+const load=async()=>{if(DATA)return DATA;try{DATA=applyEd(await rsFetch(BASE+"axis-ayat.json?v=7"))}catch(e){DATA=null;throw e}return DATA};
 /* "অবস্থান → শরীরে" ঘরের অডিওতে অঙ্গ ধরে ধরে আয়াত বাজে; অঙ্গের নাম ও আয়াত দৈনন্দিন রুকইয়াহর "শারীরিক → অঙ্গভিত্তিক" তালিকা (app.js এর ORG) থেকে আসে। শুধু দরকারের সময় লোড হয় */
 let ORGS=[],ORGP=null;
 const loadOrg=()=>Promise.resolve();/* অঙ্গ-প্রত্যঙ্গের তালিকা ও অঙ্গের আয়াত আর যোগ হয় না (ব্যবহারকারীর নির্দেশে বাদ); ORGS সব সময় খালি */
@@ -70,9 +75,9 @@ async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").m
   act.append(bp,ba);pn.append(act,hp,ha)}
  if(!C){pn.appendChild(el("div","ax-n","এই ঘরের আয়াত এখনো যোগ হয়নি।"));return}
  const b=el("div","rs-v");pn.appendChild(b);
- for(const r of C.b){const c=await verseCard({s:r[0],a:r[1],f:r[2],t:r[3]},true).catch(()=>null);if(my!==R.__g)return;if(c)b.appendChild(c)}
+ for(const r of C.b){const c=await verseCard({s:r[0],a:r[1],f:r[2],t:r[3],ck:key,id:"b|"+r[0]+":"+r[1],cn:G.cols[ci].opts[oi]},true).catch(()=>null);if(my!==R.__g)return;if(c)b.appendChild(c)}
  if(R.__mode==="resp")return;/* প্রতিক্রিয়া ভিত্তিক: প্রতিটি অপশনে শুধু একটি মৌলিক আয়াত; "বাকি আয়াত" শুধু চিকিৎসায় */
- const more=C.m.map(v=>{const p=v.split(":").map(Number),q=C.mp&&C.mp[v];return{s:p[0],a:p[1],w:p[2]||0,f:q?q[0]:0,t:q?q[1]:0}});
+ const more=C.m.map(v=>{const p=v.split(":").map(Number),q=C.mp&&C.mp[v];return{s:p[0],a:p[1],w:p[2]||0,f:q?q[0]:0,t:q?q[1]:0,ck:key,id:"m|"+v,cn:G.cols[ci].opts[oi]}});
  pn.appendChild(el("div","ax-sh","বাকি আয়াত"+(more.length?" ("+bn2(more.length)+"টি)":"")));
  if(!more.length){pn.appendChild(el("div","ax-n","এই ঘরে মৌলিক আয়াতের বাইরে আর কোনো আয়াত নেই।"));return}
  const lst=el("div","rs-v"),btnMore=el("button","rs-more");btnMore.type="button";pn.append(lst,btnMore);
@@ -202,4 +207,54 @@ window.addEventListener("hashchange",()=>{if(!/^#(resp|treat|axes)/.test(locatio
 window.__drAxes=(slug,title,mode)=>mount($("axBody"),slug,true,title,mode);
 window.__drAxesMount=(R,slug)=>mount(R,slug,false);
 window.__drAxesFit=R=>fit(R);
+
+/* ===== মালিকের ✂ কাস্টমাইজ: আয়াতের মার্ক (কোন শব্দ থেকে কোন শব্দ) ও অডিও-কাট (শুরু/শেষ সেকেন্ড) অ্যাপ থেকেই ঠিক করা। শুধু লগইন করা (dr-unlocked) অবস্থায় দেখা যায়; বদল শুধু এই ফোনে জমে (localStorage drEd) ও সাথে সাথে অ্যাপে কাজ করে; "কপি" দিয়ে সব বদল নিয়ে রিপোতে স্থায়ী করা যায় ===== */
+(function(){
+ if(!document.getElementById("edCss")){const s=document.createElement("style");s.id="edCss";s.textContent=".ed-btn{margin-top:6px;padding:7px 12px;border-radius:10px;border:1px solid #c9a227;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}body:not(.dr-unlocked) .ed-btn{display:none!important}.ed-m{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.55);overflow:auto;padding:10px}.ed-b{background:var(--card-bg,#fff);color:var(--text-main,#111);border-radius:16px;padding:14px;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px}.ed-b h4{margin:0;font-size:16px}.ed-ws{direction:rtl;line-height:2.3}.ed-w{display:inline-block;padding:2px 8px;margin:2px;border-radius:8px;border:1px solid #aaa;font-size:22px;cursor:pointer}.ed-w.on{background:#e8c25a;color:#000;border-color:#c9a227}.ed-r{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.ed-r b{min-width:48px}.ed-v{min-width:64px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}.ed-k{padding:7px 10px;border-radius:10px;border:1px solid #999;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}.ed-k.p{background:#2e7d32;color:#fff;border-color:#2e7d32}.ed-k.d{border-color:#c62828;color:#c62828}.ed-n{font-size:13px;opacity:.8}";document.head.appendChild(s)}
+ const DEF=()=>rsFetch(BASE+"audio-cuts.json?v=6").then(j=>j.cuts||{}).catch(()=>({}));
+ const f3=x=>(Math.round(x*1000)/1000).toFixed(3);
+ window.__drEditOpen=async function(o){
+  if(!document.body.classList.contains("dr-unlocked"))return;
+  const{s,a,ck,id,aw}=o;let f=o.f||0,t=o.t||0;const f0=f,t0=t;
+  const ed0=EDO(),dc=await DEF(),key=()=>s+":"+a+":"+f+"-"+t;
+  let T0=null,T1=null;const loadT=()=>{const v=(ed0.cuts&&ed0.cuts[key()])||dc[key()];if(v){T0=v[0];T1=v[1]}};loadT();
+  const m=el("div","ed-m"),b=el("div","ed-b");m.appendChild(b);
+  const close=()=>{try{window.__drCutStop&&window.__drCutStop()}catch(e){}m.remove()};
+  const hd=el("div","ed-r");hd.append(el("h4",null,"✂ সূরা "+bn2(s)+":"+bn2(a)+(o.cn?" — "+o.cn:"")));const x=el("button","ed-k","✕");x.type="button";x.onclick=close;x.style.marginLeft="auto";hd.append(x);b.append(hd);
+  b.append(el("div","ed-n","১) মার্ক: শুরু-শব্দ ও শেষ-শব্দে চাপুন (দুটো আলাদা শব্দে চাপলে মাঝেরটুকু সোনালি)। ২) অডিও: শুনে শুরু ও শেষ ঠিক করুন।"));
+  const ws=el("div","ed-ws rs-ar");b.append(ws);const sel=el("div","ed-n");b.append(sel);
+  const paintW=()=>{ws.textContent="";aw.forEach((w,i)=>{const c=el("span","ed-w"+(f&&i+1>=f&&i+1<=t?" on":""),w);c.onclick=()=>{if(f&&t&&f===t&&i+1!==f){f=Math.min(f,i+1);t=Math.max(t,i+1)}else{f=t=i+1}loadT();paintW();paintT()};ws.append(c)});sel.textContent=f?"মার্ক: শব্দ "+bn2(f)+" থেকে "+bn2(t)+(f!==f0||t!==t0?" (বদলানো)":""):"এই আয়াতে এখনো মার্ক নেই — শব্দে চাপুন"};
+  const au=document.createElement("audio");au.controls=true;au.style.width="100%";let AB=null,OFF=false;
+  const info=el("div","ed-n","অডিও আনা হচ্ছে…");
+  const rowT=(lab,get,set)=>{const r=el("div","ed-r");const v=el("span","ed-v","—");r.append(el("b",null,lab));
+   [["−০.০৫",-.05],["−০.০১",-.01]].forEach(([n,d])=>{const k=el("button","ed-k",n);k.type="button";k.onclick=()=>{set(Math.max(0,(get()||0)+d));upd()};r.append(k)});r.append(v);
+   [["+০.০১",.01],["+০.০৫",.05]].forEach(([n,d])=>{const k=el("button","ed-k",n);k.type="button";k.onclick=()=>{set((get()||0)+d);upd()};r.append(k)});
+   const hr=el("button","ed-k","⌖ প্লেয়ারের এখানে");hr.type="button";hr.onclick=()=>{set(au.currentTime||0);upd()};r.append(hr);
+   const upd=()=>{v.textContent=get()==null?"—":f3(get())};upd();r.__u=upd;return r};
+  const r0=rowT("শুরু",()=>T0,v=>T0=v),r1=rowT("শেষ",()=>T1,v=>T1=v);
+  const paintT=()=>{r0.__u();r1.__u()};
+  const pv=el("div","ed-r");const mk=(txt,mode)=>{const k=el("button","ed-k",txt);k.type="button";k.onclick=async()=>{if(!AB||T0==null||T1==null||T1<=T0){info.textContent="আগে শুরু ও শেষ বসান";return}try{const d=await window.__drCutPrev(AB,T0,T1,mode);info.textContent="▶ বাজছে ("+f3(d)+" সে.)"}catch(e){info.textContent="বাজানো যায়নি"}};return k};
+  const stp=el("button","ed-k","⏹");stp.type="button";stp.onclick=()=>{window.__drCutStop&&window.__drCutStop();try{au.pause()}catch(e){}};
+  pv.append(mk("▶ কাটা অংশ",""),mk("▶ শেষের ২ সেকেন্ড","tail"),mk("▶ শুরুর ২ সেকেন্ড","head"),stp);
+  b.append(info,au,r0,r1,pv,el("div","ed-n","প্লেয়ার চালিয়ে ঠিক জায়গায় থামিয়ে ⌖ চাপলে সেখানের সময় বসে; ±বোতামে ০.০১ সেকেন্ড করে নড়ে। ▶ বোতামগুলো হুবহু অ্যাপের কাটা-অডিও বাজায় (গতিসহ)।"));
+  const act=el("div","ed-r"),sv=el("button","ed-k p","💾 সংরক্ষণ"),rs=el("button","ed-k d","↩ আগের অবস্থায়");sv.type=rs.type="button";
+  const bump=()=>{try{localStorage.setItem("drEdV",Date.now().toString(36))}catch(e){}};
+  sv.onclick=()=>{if(!f){alert("আগে শব্দে চেপে মার্ক ঠিক করুন");return}
+   const ed=EDO();ed.cuts=ed.cuts||{};ed.cells=ed.cells||{};
+   if(T0!=null&&T1!=null){if(T1-T0<0.1){alert("শেষ অবশ্যই শুরুর পরে হতে হবে");return}ed.cuts[key()]=[+f3(T0),+f3(T1)]}
+   if(f!==f0||t!==t0){ed.cells[ck]=ed.cells[ck]||{};ed.cells[ck][id]=[f,t]}
+   try{localStorage.setItem("drEd",JSON.stringify(ed))}catch(e){alert("ফোনে জমানো যায়নি");return}bump();alert("✓ সংরক্ষিত। অ্যাপ নতুন করে লোড হচ্ছে — এরপর সব অডিও-PDF-এ নতুন বদল কাজ করবে।");location.reload()};
+  rs.onclick=()=>{if(!confirm("এই আয়াতের আপনার বদল মুছে মূল অবস্থায় ফিরবে?"))return;const ed=EDO();if(ed.cuts)delete ed.cuts[key()];if(ed.cuts)delete ed.cuts[s+":"+a+":"+f0+"-"+t0];if(ed.cells&&ed.cells[ck])delete ed.cells[ck][id];try{localStorage.setItem("drEd",JSON.stringify(ed))}catch(e){}bump();location.reload()};
+  act.append(sv,rs);b.append(act);
+  const n=(Object.keys(ed0.cuts||{}).length)+(Object.values(ed0.cells||{}).reduce((q,c)=>q+Object.keys(c).length,0));
+  const ex=el("div","ed-r");const cp=el("button","ed-k","📋 সব বদল কপি ("+bn2(n)+"টি)"),dl=el("button","ed-k","⬇ ফাইল");cp.type=dl.type="button";
+  cp.onclick=async()=>{const j=JSON.stringify(EDO());try{await navigator.clipboard.writeText(j);cp.textContent="✓ কপি হয়েছে"}catch(e){const ta=document.createElement("textarea");ta.value=j;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");cp.textContent="✓ কপি হয়েছে"}catch(x){cp.textContent="কপি হয়নি"}ta.remove()}};
+  dl.onclick=()=>{const u=URL.createObjectURL(new Blob([JSON.stringify(EDO(),null,1)],{type:"application/json"})),A=document.createElement("a");A.href=u;A.download="dr-edits.json";A.click();setTimeout(()=>URL.revokeObjectURL(u),3000)};
+  ex.append(cp,dl);b.append(ex,el("div","ed-n","কপি করা লেখা আমাকে (Claude) পাঠালে আমি রিপোতে স্থায়ী করে দেব, তখন সবার অ্যাপে ঠিক হবে। এই বদল শুধু এই ফোনে থাকে।"));
+  document.body.appendChild(m);paintW();paintT();
+  try{const r=await window.__drEdAud(s,a);AB=r.ab;OFF=r.off;au.src=URL.createObjectURL(new Blob([AB.slice(0)],{type:"audio/mpeg"}));
+   info.textContent=OFF?"✓ অফলাইন অডিও প্যাক থেকে (অ্যাপের কাটার সময় এই অডিওর সাথেই মেলে)":"⚠ অফলাইন অডিও প্যাক চালু নেই — এটা ইন্টারনেটের অডিও, এর সময় অ্যাপের কাটার সময়ের সাথে মেলে না। আগে অডিও প্যাক নামান, তারপর সময় ঠিক করুন; মার্ক ঠিক করা যাবে।"}
+  catch(e){info.textContent="অডিও আনা যায়নি"}
+ }
+})();
 })();

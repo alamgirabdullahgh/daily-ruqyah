@@ -311,12 +311,20 @@ function smoothAyah(ch,sr){const n=ch.length;let pk=0;for(let i=0;i<n;i++){const
  let e=0;for(let i=a;i<b;i++)e+=ch[i]*ch[i];const rms=Math.sqrt(e/m)||0.1;let g=Math.max(0.6,Math.min(1.8,0.1/rms));g=Math.min(g,0.97/pk);
  const fi=Math.min(Math.round(sr*0.02),m>>1),fo=Math.min(Math.round(sr*0.04),m>>1),o=new Int16Array(m);
  for(let k=0;k<m;k++){let v=ch[a+k]*g;if(k<fi)v*=k/fi;else if(m-k<fo)v*=(m-k)/fo;v=Math.max(-1,Math.min(1,v));o[k]=v<0?v*32768:v*32767}return o}
-let CUTP=null;const loadCuts=()=>CUTP||(CUTP=rsFetch(BASE+"audio-cuts.json?v=6").then(j=>j.cuts||{}).catch(e=>{CUTP=null;throw e}));
+let CUTP=null;const loadCuts=()=>CUTP||(CUTP=rsFetch(BASE+"audio-cuts.json?v=6").then(j=>{const c=j.cuts||{};try{const e=(JSON.parse(localStorage.getItem("drEd")||"{}")||{}).cuts;if(e)Object.assign(c,e)}catch(x){}return c}).catch(e=>{CUTP=null;throw e}));
 /* কাটা টুকরো: শুধু ঠিক এই অংশ, সামনে-পিছনে ৬ মি.সে. মসৃণ ফেড (ক্লিক নেই), শূন্য ফাঁক; ভলিউম smoothAyah-এর মতোই সমান করা — তাই পরপর জোড়া লাগলে আলাদা বোঝা যায় না */
 function cutPcm(ch,sr){const n=ch.length;if(!n)return new Int16Array(0);let pk=0,e=0;for(let i=0;i<n;i++){const v=Math.abs(ch[i]);if(v>pk)pk=v;e+=ch[i]*ch[i]}
  if(pk<=0.0005)return new Int16Array(n);const rms=Math.sqrt(e/n)||0.1;let g=Math.max(0.6,Math.min(1.8,0.1/rms));g=Math.min(g,0.97/pk);
  const f=Math.min(Math.round(sr*0.006),n>>1),o=new Int16Array(n);
  for(let k=0;k<n;k++){let v=ch[k]*g;if(k<f)v*=0.5-0.5*Math.cos(Math.PI*k/f);else if(n-k<f)v*=0.5-0.5*Math.cos(Math.PI*(n-k)/f);v=Math.max(-1,Math.min(1,v));o[k]=v<0?v*32768:v*32767}return o}
+/* ===== মালিকের ✂ কাস্টমাইজ (UI: axes.js): ফোনের অফলাইন প্যাক-অডিও ও হুবহু অ্যাপের কাটার ফাংশন দিয়ে শোনা ===== */
+window.__drEdAud=async(s,a)=>{const ab=await fetchAud(s,a);return{ab,off:!!ab.__off}};
+let EDC=null,EDS=null;
+window.__drCutStop=()=>{if(EDS){try{EDS.stop()}catch(e){}EDS=null}};
+window.__drCutPrev=async(ab,t0,t1,mode)=>{const sr=22050,AC=window.AudioContext||window.webkitAudioContext;if(!EDC||EDC.state==="closed")EDC=new AC({sampleRate:sr});try{if(EDC.state==="suspended")await EDC.resume()}catch(e){}
+ window.__drCutStop();const d=await EDC.decodeAudioData(ab.slice(0));let ch=d.getChannelData(0);const a0=Math.max(0,Math.round(t0*sr)),b0=Math.min(ch.length,Math.round(t1*sr));if(b0-a0<sr*0.1)throw new Error("short");ch=ch.subarray(a0,b0);
+ const pcm=cutPcm(tsm(ch,sr,spdOf()),sr);let o=pcm;if(mode==="tail")o=pcm.subarray(Math.max(0,pcm.length-sr*2));else if(mode==="head")o=pcm.subarray(0,Math.min(pcm.length,sr*2));
+ const buf=EDC.createBuffer(1,o.length,sr),f=buf.getChannelData(0);for(let i=0;i<o.length;i++)f[i]=o[i]/32768;const src=EDC.createBufferSource();src.buffer=buf;src.connect(EDC.destination);src.start();EDS=src;return o.length/sr};
 async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=k=>k[2]||(opt&&opt.rep?opt.rep:repOf(k[0],k[1])),ST=()=>opt&&opt.set?opt.set:setAll();
  // কোনো সীমা নেই: প্রতিটি আয়াত নামিয়েই সাথে সাথে MP3-তে এনকোড হয়, মেমোরিতে শুধু ছোট MP3 টুকরো জমে — তাই হাজারো আয়াতেও একটাই ফাইল
  out.textContent="";let L=null;try{L=await loadLame()}catch(e){console.error(e)}
@@ -844,7 +852,7 @@ const homeRep=(kind,cat)=>kind==="x"&&/^বাধা\|/.test(String(cat))?{rep:2
 window.__drSfx={resp:SFX_R,treat:SFX_T};
 /* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */
 /* ===== স্থায়ী ভাণ্ডার: একবার বানানো অডিও/PDF ফোনের ভেতরে (Cache Storage) জমা থাকে। অ্যাপ বন্ধ করে আবার খুললেও আর নতুন করে বানাতে হয় না — বোতাম চাপলেই সাথে সাথে। কোড/তালিকা বদলালে PREV বাড়ালে পুরনোগুলো মুছে নতুন করে বানায়। ===== */
-const PREV="p15",PREC="dr-pre-"+PREV;
+const EDV=(()=>{try{return localStorage.getItem("drEdV")||""}catch(e){return""}})(),PREV="p15"+EDV,PREC="dr-pre-"+PREV; /* মালিকের সম্পাদনা (✂ কাস্টমাইজ) বদলালে drEdV বদলায় — তাই জমানো অডিও/PDF নতুন করে তৈরি হয় */
 const preUrl=(t,k)=>"https://dr.local/pre/"+t+"/"+encodeURIComponent(k);
 const PRE={
  async get(t,k){try{const c=await caches.open(PREC),r=await c.match(preUrl(t,k));if(!r)return null;const m=await c.match(preUrl(t,k)+"/meta");let meta={};try{meta=m?await m.json():{}}catch(e){}return{blob:await r.blob(),meta}}catch(e){return null}},
