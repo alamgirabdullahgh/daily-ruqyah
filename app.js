@@ -311,7 +311,7 @@ function smoothAyah(ch,sr){const n=ch.length;let pk=0;for(let i=0;i<n;i++){const
  let e=0;for(let i=a;i<b;i++)e+=ch[i]*ch[i];const rms=Math.sqrt(e/m)||0.1;let g=Math.max(0.6,Math.min(1.8,0.1/rms));g=Math.min(g,0.97/pk);
  const fi=Math.min(Math.round(sr*0.02),m>>1),fo=Math.min(Math.round(sr*0.04),m>>1),o=new Int16Array(m);
  for(let k=0;k<m;k++){let v=ch[a+k]*g;if(k<fi)v*=k/fi;else if(m-k<fo)v*=(m-k)/fo;v=Math.max(-1,Math.min(1,v));o[k]=v<0?v*32768:v*32767}return o}
-let CUTP=null;const loadCuts=()=>CUTP||(CUTP=rsFetch(BASE+"audio-cuts.json?v=5").then(j=>j.cuts||{}).catch(e=>{CUTP=null;throw e}));
+let CUTP=null;const loadCuts=()=>CUTP||(CUTP=rsFetch(BASE+"audio-cuts.json?v=6").then(j=>j.cuts||{}).catch(e=>{CUTP=null;throw e}));
 /* কাটা টুকরো: শুধু ঠিক এই অংশ, সামনে-পিছনে ৬ মি.সে. মসৃণ ফেড (ক্লিক নেই), শূন্য ফাঁক; ভলিউম smoothAyah-এর মতোই সমান করা — তাই পরপর জোড়া লাগলে আলাদা বোঝা যায় না */
 function cutPcm(ch,sr){const n=ch.length;if(!n)return new Int16Array(0);let pk=0,e=0;for(let i=0;i<n;i++){const v=Math.abs(ch[i]);if(v>pk)pk=v;e+=ch[i]*ch[i]}
  if(pk<=0.0005)return new Int16Array(n);const rms=Math.sqrt(e/n)||0.1;let g=Math.max(0.6,Math.min(1.8,0.1/rms));g=Math.min(g,0.97/pk);
@@ -844,7 +844,7 @@ const homeRep=(kind,cat)=>kind==="x"&&/^বাধা\|/.test(String(cat))?{rep:2
 window.__drSfx={resp:SFX_R,treat:SFX_T};
 /* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */
 /* ===== স্থায়ী ভাণ্ডার: একবার বানানো অডিও/PDF ফোনের ভেতরে (Cache Storage) জমা থাকে। অ্যাপ বন্ধ করে আবার খুললেও আর নতুন করে বানাতে হয় না — বোতাম চাপলেই সাথে সাথে। কোড/তালিকা বদলালে PREV বাড়ালে পুরনোগুলো মুছে নতুন করে বানায়। ===== */
-const PREV="p14",PREC="dr-pre-"+PREV;
+const PREV="p15",PREC="dr-pre-"+PREV;
 const preUrl=(t,k)=>"https://dr.local/pre/"+t+"/"+encodeURIComponent(k);
 const PRE={
  async get(t,k){try{const c=await caches.open(PREC),r=await c.match(preUrl(t,k));if(!r)return null;const m=await c.match(preUrl(t,k)+"/meta");let meta={};try{meta=m?await m.json():{}}catch(e){}return{blob:await r.blob(),meta}}catch(e){return null}},
