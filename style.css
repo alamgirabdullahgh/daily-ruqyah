@@ -456,7 +456,7 @@ body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
 .rs-num:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
 .rs-num-s{width:46px;min-height:26px;font-size:12px;border-radius:7px;margin-left:6px}
 
-html.kb .dr-ufl{display:none!important}/* নিচের নেভিগেশন বার কিবোর্ড খুললেও সব সময় দেখা যায় */
+html.kb .dr-bnav,html.kb .dr-ufl{display:none!important}html.kb body{padding-bottom:0}
 
 
 /* রোগ নির্ণয়: "প্রতিটি আয়াত / পুরো সেট / সব রোগের অডিও" এক লাইনে, ছোট ঘর */

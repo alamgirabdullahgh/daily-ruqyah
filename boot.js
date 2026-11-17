@@ -33,13 +33,20 @@
   addEventListener("online",check);
  })();
 
- /* কীবোর্ড খুললে নিচের বার ও ভাসমান বোতাম লুকায় (না হলে ওগুলো কীবোর্ডের ওপরে উঠে আসে) */
- var de=document.documentElement,base=0,txt=function(e){var t=e&&e.tagName;return t==="TEXTAREA"||(t==="INPUT"&&!/^(checkbox|radio|button|submit|range|file|color)$/.test(e.type))};
- function chk(){var h=window.visualViewport?visualViewport.height:innerHeight;base=Math.max(base,h,innerHeight);if(h<base-140&&txt(document.activeElement))de.classList.add("kb");else if(!txt(document.activeElement)||h>=base-140)de.classList.remove("kb")}
- addEventListener("resize",chk);if(window.visualViewport)visualViewport.addEventListener("resize",chk);
- addEventListener("orientationchange",function(){base=0;setTimeout(chk,400)});
- document.addEventListener("focusin",function(e){if(txt(e.target))de.classList.add("kb")});
- document.addEventListener("focusout",function(){setTimeout(function(){if(!txt(document.activeElement)){var h=window.visualViewport?visualViewport.height:innerHeight;if(h>=base-140)de.classList.remove("kb")}},200)});
+ /* কীবোর্ড খুললে নিচের বার ও ভাসমান বোতাম লুকায় (না হলে ওগুলো কীবোর্ডের ওপরে উঠে আসে); কীবোর্ড বন্ধ হলেই (ব্যাক চাপলে ঘরে ফোকাস থেকে গেলেও) আবার ফিরে আসে।
+    অবস্থা প্রতিবার মাপ থেকে হিসাব হয়, আটকে থাকে না: "কীবোর্ড খোলা" = কোনো লেখার ঘরে ফোকাস আছে এবং পর্দার উচ্চতা স্বাভাবিকের (ref) চেয়ে ১৪০px-এর বেশি কম।
+    ref = কোনো ঘরে ফোকাস না থাকা অবস্থায় সর্বশেষ মাপা উচ্চতা, তাই স্ট্যাটাস বার/ঘোরানো/অন্য কারণে মাপ বদলালেও ঠিক থাকে */
+ var de=document.documentElement,ref=0,txt=function(e){var t=e&&e.tagName;return t==="TEXTAREA"||(t==="INPUT"&&!/^(checkbox|radio|button|submit|range|file|color)$/.test(e.type))};
+ var vh=function(){return window.visualViewport?visualViewport.height:innerHeight};
+ function chk(){var h=vh(),a=document.activeElement,f=txt(a)&&a.isConnected&&a.getClientRects().length>0;
+  if(!ref)ref=Math.max(h,innerHeight);
+  if(!f){ref=h;de.classList.remove("kb");return}
+  if(h>ref)ref=h;
+  if(h<ref-140)de.classList.add("kb");else de.classList.remove("kb")}
+ ["resize","orientationchange","hashchange","pageshow","focusin","focusout","visibilitychange"].forEach(function(n){addEventListener(n,function(){if(n==="orientationchange")ref=0;setTimeout(chk,n==="focusout"||n==="orientationchange"?200:0);setTimeout(chk,600)})});
+ if(window.visualViewport)visualViewport.addEventListener("resize",chk);
+ setInterval(chk,400);
+ chk();
  var box=document.getElementById("drInst"),ev=null;
  var standalone=matchMedia("(display-mode: standalone)").matches||navigator.standalone;
  if(!box||standalone)return;
