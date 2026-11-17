@@ -210,7 +210,7 @@ window.__drAxesFit=R=>fit(R);
 
 /* ===== মালিকের ✂ কাস্টমাইজ: আয়াতের মার্ক (কোন শব্দ থেকে কোন শব্দ) ও অডিও-কাট (শুরু/শেষ সেকেন্ড) অ্যাপ থেকেই ঠিক করা। শুধু লগইন করা (dr-unlocked) অবস্থায় দেখা যায়; বদল শুধু এই ফোনে জমে (localStorage drEd) ও সাথে সাথে অ্যাপে কাজ করে; "কপি" দিয়ে সব বদল নিয়ে রিপোতে স্থায়ী করা যায় ===== */
 (function(){
- if(!document.getElementById("edCss")){const s=document.createElement("style");s.id="edCss";s.textContent=".ed-btn{margin-top:6px;padding:7px 12px;border-radius:10px;border:1px solid #c9a227;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}body:not(.dr-unlocked) .ed-btn{display:none!important}.ed-m{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.55);overflow:auto;padding:10px}.ed-b{background:var(--card-bg,#fff);color:var(--text-main,#111);border-radius:16px;padding:14px;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px}.ed-b h4{margin:0;font-size:16px}.ed-ws{direction:rtl;line-height:2.3}.ed-w{display:inline-block;padding:2px 8px;margin:2px;border-radius:8px;border:1px solid #aaa;font-size:22px;cursor:pointer}.ed-w.on{background:#e8c25a;color:#000;border-color:#c9a227}.ed-r{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.ed-r b{min-width:48px}.ed-v{min-width:64px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}.ed-k{padding:7px 10px;border-radius:10px;border:1px solid #999;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}.ed-k.p{background:#2e7d32;color:#fff;border-color:#2e7d32}.ed-k.d{border-color:#c62828;color:#c62828}.ed-n{font-size:13px;opacity:.8}.ed-wv{position:relative;border-radius:10px;background:#1b1b1f;overflow-x:auto;overflow-y:hidden;height:122px;-webkit-overflow-scrolling:touch}.ed-wi{position:relative;height:100%}.ed-wi canvas{display:block;height:100%;touch-action:pan-x}.ed-h{position:absolute;top:14px;bottom:14px;width:30px;margin-left:-15px;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:ew-resize;z-index:3}.ed-h i{display:block;width:12px;height:100%;background:#fff;border-radius:6px;position:relative}.ed-h i:after{content:'';position:absolute;left:5px;top:36%;bottom:36%;width:2px;background:#555;border-radius:1px}.ed-ph{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:#fff;z-index:2;pointer-events:none}.ed-z{display:flex;gap:6px;align-items:center}";document.head.appendChild(s)}
+ if(!document.getElementById("edCss")){const s=document.createElement("style");s.id="edCss";s.textContent=".ed-btn{margin-top:6px;padding:7px 12px;border-radius:10px;border:1px solid #c9a227;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}body:not(.dr-unlocked) .ed-btn{display:none!important}.ed-m{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.55);overflow:auto;padding:10px}.ed-b{background:var(--card-bg,#fff);color:var(--text-main,#111);border-radius:16px;padding:14px;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px}.ed-b h4{margin:0;font-size:16px}.ed-ws{direction:rtl;line-height:2.3}.ed-w{display:inline-block;padding:2px 8px;margin:2px;border-radius:8px;border:1px solid #aaa;font-size:22px;cursor:pointer}.ed-w.on{background:#e8c25a;color:#000;border-color:#c9a227}.ed-r{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.ed-r b{min-width:48px}.ed-v{min-width:64px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}.ed-k{padding:7px 10px;border-radius:10px;border:1px solid #999;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}.ed-k.p{background:#2e7d32;color:#fff;border-color:#2e7d32}.ed-k.d{border-color:#c62828;color:#c62828}.ed-n{font-size:13px;opacity:.8}.ed-wv{position:relative;border-radius:10px;background:#1b1b1f;overflow:hidden;height:190px;touch-action:none;user-select:none;-webkit-user-select:none}.ed-wv canvas{display:block;width:100%;height:100%}.ed-live{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-variant-numeric:tabular-nums}.ed-cw{font-size:24px;direction:rtl;font-weight:700;min-width:80px;text-align:center}.ed-ct{font-weight:700;font-size:17px}.ed-wi{position:relative;height:100%}.ed-wi canvas{display:block;height:100%;touch-action:pan-x}.ed-h{position:absolute;top:14px;bottom:14px;width:30px;margin-left:-15px;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:ew-resize;z-index:3}.ed-h i{display:block;width:12px;height:100%;background:#fff;border-radius:6px;position:relative}.ed-h i:after{content:'';position:absolute;left:5px;top:36%;bottom:36%;width:2px;background:#555;border-radius:1px}.ed-ph{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:#fff;z-index:2;pointer-events:none}.ed-z{display:flex;gap:6px;align-items:center}";document.head.appendChild(s)}
  const DEF=()=>rsFetch(BASE+"audio-cuts.json?v=6").then(j=>j.cuts||{}).catch(()=>({}));
  const f3=x=>(Math.round(x*1000)/1000).toFixed(3);
  window.__drEditOpen=async function(o){
@@ -236,7 +236,7 @@ window.__drAxesFit=R=>fit(R);
   const pv=el("div","ed-r");const mk=(txt,mode)=>{const k=el("button","ed-k",txt);k.type="button";k.onclick=async()=>{if(!AB||T0==null||T1==null||T1<=T0){info.textContent="আগে শুরু ও শেষ বসান";return}try{const d=await window.__drCutPrev(AB,T0,T1,mode);info.textContent="▶ বাজছে ("+f3(d)+" সে.)"}catch(e){info.textContent="বাজানো যায়নি"}};return k};
   const stp=el("button","ed-k","⏹");stp.type="button";stp.onclick=()=>{window.__drCutStop&&window.__drCutStop();try{au.pause()}catch(e){}};
   pv.append(mk("▶ কাটা অংশ",""),mk("▶ শেষের ২ সেকেন্ড","tail"),mk("▶ শুরুর ২ সেকেন্ড","head"),stp);
-  b.append(info,au,wv,r0,r1,pv,el("div","ed-n","প্লেয়ার চালিয়ে ঠিক জায়গায় থামিয়ে ⌖ চাপলে সেখানের সময় বসে; ±বোতামে ০.০১ সেকেন্ড করে নড়ে। ▶ বোতামগুলো হুবহু অ্যাপের কাটা-অডিও বাজায় (গতিসহ)।"));
+  b.append(info,au,wv,r0,r1,pv,el("div","ed-n","লাল দাগ মাঝে স্থির; রেখা আঙুলে টেনে সরান (বাজার সময়ও চলে)। সাদা শুরু/শেষ হ্যান্ডেল ধরে টানুন। ওপরের সোনালি ঘরে বর্তমান শব্দ দেখায়। ⌖ চাপলে লাল দাগের জায়গা শুরু/শেষ হয়। ▶ বোতামগুলো হুবহু অ্যাপের কাটা-অডিও বাজায় (গতিসহ)।"));
   const act=el("div","ed-r"),sv=el("button","ed-k p","💾 সংরক্ষণ"),rs=el("button","ed-k d","↩ আগের অবস্থায়");sv.type=rs.type="button";
   const bump=()=>{try{localStorage.setItem("drEdV",Date.now().toString(36))}catch(e){}};
   sv.onclick=()=>{if(!f){alert("আগে শব্দে চেপে মার্ক ঠিক করুন");return}
@@ -255,26 +255,66 @@ window.__drAxesFit=R=>fit(R);
   try{const r=await window.__drEdAud(s,a);AB=r.ab;OFF=r.off;au.src=URL.createObjectURL(new Blob([AB.slice(0)],{type:"audio/mpeg"}));
    /* তরঙ্গ-রেখা: সাদা হ্যান্ডেল টেনে শুরু/শেষ, রেখায় চাপলে প্লেয়ার সেখানে যায়, সাদা দাগ = এখন যেখানে বাজছে */
    try{const AC=window.AudioContext||window.webkitAudioContext,cx=new AC({sampleRate:22050}),dd=await cx.decodeAudioData(AB.slice(0));const ch=dd.getChannelData(0),sr=dd.sampleRate,dur=dd.duration;try{cx.close()}catch(e){}
-    let pps=150;const sc=el("div","ed-wv"),inn=el("div","ed-wi"),cv=document.createElement("canvas"),ph=el("div","ed-ph"),h0=el("div","ed-h"),h1=el("div","ed-h");h0.append(document.createElement("i"));h1.append(document.createElement("i"));inn.append(cv,ph,h0,h1);sc.append(inn);
-    const zb=el("div","ed-z"),zi=el("button","ed-k","🔍＋"),zo=el("button","ed-k","🔍−"),zt=el("span","ed-n","");zi.type=zo.type="button";zb.append(zo,zi,zt);wv.append(sc,zb);
-    const H=122,dpr=1;
-    const draw=()=>{const W=Math.max(300,Math.ceil(dur*pps));inn.style.width=W+"px";cv.width=W;cv.height=H;const g=cv.getContext("2d");g.fillStyle="#1b1b1f";g.fillRect(0,0,W,H);
-     const spp=sr/pps,mid=H/2,hasR=T0!=null&&T1!=null&&T1>T0,x0=hasR?T0*pps:-1,x1=hasR?T1*pps:-1;
-     for(let x=0;x<W;x++){const i0=Math.floor(x*spp),i1=Math.min(ch.length,Math.floor((x+1)*spp));let m=0;for(let i=i0;i<i1;i++){const v=ch[i]<0?-ch[i]:ch[i];if(v>m)m=v}const hh=Math.max(1,Math.min(1,Math.sqrt(m)*1.0)*(mid-14));g.fillStyle=(x>=x0&&x<=x1)?"#b07be0":"#5a5a66";g.fillRect(x,mid-hh,1,hh*2)}
-     g.fillStyle="#9a9aa5";g.font="11px sans-serif";const step=pps>=240?.5:pps>=100?1:2;for(let s=0;s<=dur;s+=step){const x=Math.round(s*pps);g.fillRect(x,0,1,6);g.fillText(s%1===0?String(s):s.toFixed(1),x+3,12)}
-     if(hasR){g.fillStyle="rgba(176,123,224,.18)";g.fillRect(x0,0,x1-x0,H)}
-     h0.style.left=(T0==null?0:T0*pps)+"px";h1.style.left=(T1==null?0:T1*pps)+"px";h0.style.display=T0==null?"none":"flex";h1.style.display=T1==null?"none":"flex";zt.textContent="মোট "+f3(dur)+" সে. · ১ সে. = "+Math.round(pps)+"px"};
-    const setPh=()=>{ph.style.left=(au.currentTime||0)*pps+"px"};
-    onT=()=>{draw();setPh()};
-    const drag=(hd,which)=>{hd.addEventListener("pointerdown",e=>{e.preventDefault();hd.setPointerCapture(e.pointerId);const r0x=sc.getBoundingClientRect();
-      const mv=ev=>{const x=ev.clientX-r0x.left+sc.scrollLeft,v=Math.max(0,Math.min(dur,x/pps));if(which===0)T0=v;else T1=v;h0.style.left=(T0==null?0:T0*pps)+"px";h1.style.left=(T1==null?0:T1*pps)+"px";r0.__u();r1.__u()};
-      const up=()=>{hd.removeEventListener("pointermove",mv);hd.removeEventListener("pointerup",up);hd.removeEventListener("pointercancel",up);draw()};
-      hd.addEventListener("pointermove",mv);hd.addEventListener("pointerup",up);hd.addEventListener("pointercancel",up)})};
-    drag(h0,0);drag(h1,1);
-    cv.addEventListener("click",e=>{const x=e.clientX-cv.getBoundingClientRect().left;try{au.currentTime=Math.max(0,Math.min(dur,x/pps))}catch(x2){}setPh()});
-    au.addEventListener("timeupdate",()=>{setPh();const px=au.currentTime*pps;if(px<sc.scrollLeft+20||px>sc.scrollLeft+sc.clientWidth-20)sc.scrollLeft=Math.max(0,px-sc.clientWidth/2)});au.addEventListener("seeked",setPh);
-    const zoom=k=>{const c=((au.currentTime||T0||0));pps=Math.max(30,Math.min(1600,pps*k));draw();setPh();sc.scrollLeft=Math.max(0,c*pps-sc.clientWidth/2)};zi.onclick=()=>zoom(1.6);zo.onclick=()=>zoom(1/1.6);
-    draw();setPh();if(T0!=null)sc.scrollLeft=Math.max(0,T0*pps-40)}catch(e){console.error(e);wv.append(el("div","ed-n","তরঙ্গ-রেখা আঁকা যায়নি — নিচের সংখ্যা ও ± বোতাম দিয়ে করুন"))}
+    /* ১ মিলিসেকেন্ডের শিখর-মান (দ্রুত আঁকার জন্য) */
+    const NB=Math.ceil(dur*1000)+1,pk=new Float32Array(NB),spm=sr/1000;for(let i=0;i<NB;i++){const i0=Math.floor(i*spm),i1=Math.min(ch.length,Math.floor((i+1)*spm));let m=0;for(let j=i0;j<i1;j++){const v=ch[j]<0?-ch[j]:ch[j];if(v>m)m=v}pk[i]=m}
+    let pps=320,ct=0,dirty=true,scrub=false,alive=true;
+    const cv=document.createElement("canvas"),live=el("div","ed-live"),ct0=el("span","ed-ct","০.০০০"),cw=el("span","ed-cw","—"),cs=el("span","ed-n","");live.append(ct0,cw,cs);
+    wv.append(live,el("div","ed-wv"));const box=wv.lastChild;box.append(cv);
+    const zb=el("div","ed-z"),zi=el("button","ed-k","🔍＋"),zo=el("button","ed-k","🔍−"),pp=el("button","ed-k p","▶ চালাও / ⏸ থামাও"),zt=el("span","ed-n","");zi.type=zo.type=pp.type="button";zb.append(pp,zo,zi,zt);wv.append(zb);
+    const strip=x=>x.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g,"");
+    /* শব্দের আনুমানিক সময়: অক্ষর-সংখ্যার অনুপাতে, মার্ক+কাটা থেকে মাপ নিয়ে */
+    const wtimes=()=>{const n=aw.length;if(!n)return[];const w=aw.map(x=>strip(x).length+.6),cum=[0];w.forEach((v,i)=>cum.push(cum[i]+v));
+     let rate,orig;if(f&&t>=f&&T0!=null&&T1!=null&&T1>T0){rate=(T1-T0)/(cum[t]-cum[f-1]);orig=T0-cum[f-1]*rate}else{rate=Math.max(.05,(dur-.4)/cum[n]);orig=.15}
+     return w.map((v,i)=>[orig+cum[i]*rate,orig+cum[i+1]*rate])};
+    const curTime=()=>(!au.paused&&!scrub)?au.currentTime:ct;
+    const stepFor=()=>{const L=[.01,.02,.05,.1,.2,.5,1,2,5];for(const v of L)if(v*pps>=64)return v;return 5};
+    const fmt=x=>(x<0?0:x).toFixed(3);
+    const draw=()=>{const R=box.getBoundingClientRect(),W=Math.max(200,Math.round(R.width)),H=Math.max(120,Math.round(R.height)),dp=Math.min(2,window.devicePixelRatio||1);
+     if(cv.width!==W*dp||cv.height!==H*dp){cv.width=W*dp;cv.height=H*dp}
+     const g=cv.getContext("2d");g.setTransform(dp,0,0,dp,0,0);g.fillStyle="#1b1b1f";g.fillRect(0,0,W,H);
+     const c=curTime(),cx0=W/2,tL=c-cx0/pps,tR=c+cx0/pps,X=x=>cx0+(x-c)*pps;
+     const TOP=30,WT=30,wy=TOP,wh=WT,my=TOP+WT+8,mh=H-my-6,mid=my+mh/2;
+     const hasR=T0!=null&&T1!=null&&T1>T0;
+     /* কাটা অংশের পেছনের রং */
+     if(hasR){g.fillStyle="rgba(176,123,224,.16)";g.fillRect(X(T0),my-4,X(T1)-X(T0),mh+8)}
+     /* তরঙ্গ */
+     for(let x=0;x<W;x++){const tt=tL+x/pps,tt2=tL+(x+1)/pps;let i0=Math.floor(tt*1000),i1=Math.max(i0+1,Math.ceil(tt2*1000));if(i1<0||i0>=NB)continue;let m=0;for(let i=Math.max(0,i0);i<Math.min(NB,i1);i++)if(pk[i]>m)m=pk[i];
+      const hh=Math.max(1,Math.sqrt(m)*(mh/2-2));const inr=hasR&&tt>=T0&&tt<=T1;g.fillStyle=inr?"#b07be0":"#6a6a76";g.fillRect(x,mid-hh,1,hh*2)}
+     /* সময়ের দাগ: বড় দাগে সংখ্যা, ছোট দাগে ধাপ */
+     const st=stepFor();g.font="11px sans-serif";g.textBaseline="top";
+     const sub=st/5;if(sub*pps>=7){g.fillStyle="#4a4a55";for(let k=Math.ceil(tL/sub);k*sub<=tR;k++){if(k<0)continue;const x=Math.round(X(k*sub));g.fillRect(x,0,1,5)}}
+     for(let k=Math.ceil(tL/st);k*st<=tR;k++){if(k<0)continue;const tt=k*st,x=Math.round(X(tt));g.fillStyle="#8a8a96";g.fillRect(x,0,1,9);g.fillStyle="#b9b9c4";g.textAlign="left";g.fillText(tt.toFixed(st<.1?2:st<1?1:0),x+3,12)}
+     /* শব্দের ফালি */
+     const wt=wtimes();g.textBaseline="middle";g.textAlign="center";const fam=getComputedStyle(ws).fontFamily;let curI=-1;
+     wt.forEach((r,i)=>{if(c>=r[0]&&c<r[1])curI=i;const x0=X(r[0]),x1=X(r[1]);if(x1<0||x0>W)return;const on=f&&i+1>=f&&i+1<=t,isC=i===curI;
+      g.fillStyle=isC?"#c9a227":on?"#5b3b86":"#2e2e36";g.fillRect(x0+1,wy,Math.max(1,x1-x0-2),wh);g.fillStyle=isC?"#111":"#eee";g.font="19px "+fam;
+      if(x1-x0>26)g.fillText(aw[i],(x0+x1)/2,wy+wh/2+1,x1-x0-4)});
+     /* শুরু/শেষ হ্যান্ডেল */
+     const H_=(v,lab)=>{if(v==null)return;const x=Math.round(X(v));g.fillStyle="#fff";g.fillRect(x-1,my-6,2,mh+12);g.beginPath();g.roundRect?g.roundRect(x-11,my+mh/2-16,22,32,6):g.rect(x-11,my+mh/2-16,22,32);g.fill();g.fillStyle="#222";g.fillRect(x-1,my+mh/2-8,2,16);g.fillStyle="#fff";g.font="bold 11px sans-serif";g.textAlign=lab==="শুরু"?"right":"left";g.textBaseline="top";g.fillText(lab,lab==="শুরু"?x-13:x+13,my-4)};
+     H_(T0,"শুরু");H_(T1,"শেষ");
+     /* মাঝের স্থির প্লেহেড */
+     g.fillStyle="#ff4d4d";g.fillRect(cx0-1,0,2,H);g.beginPath();g.moveTo(cx0-7,0);g.lineTo(cx0+7,0);g.lineTo(cx0,9);g.fill();
+     ct0.textContent=fmt(c)+" / "+fmt(dur)+" সে.";cw.textContent=curI>=0?aw[curI]:"—";
+     cs.textContent=(curI>=0?"শব্দ "+bn2(curI+1)+" (আনুমানিক)":"শব্দের বাইরে/নীরবতা")+(hasR?(c<T0?" · কাটার আগে":c>T1?" · কাটার পরে":" · কাটার ভেতরে"):"");
+     zt.textContent="১ সে. = "+Math.round(pps)+"px";dirty=false;return};
+    onT=()=>{dirty=true};
+    /* আঙুল: হ্যান্ডেলের কাছে হলে হ্যান্ডেল টানা, নইলে পুরো রেখা টেনে সরানো (বাজার সময়ও) */
+    let mode=null,sx=0,sc0=0,wasPlay=false,which=0;
+    const tOfX=x=>curTime()+(x-box.getBoundingClientRect().left-box.clientWidth/2)/pps;
+    box.addEventListener("pointerdown",e=>{e.preventDefault();box.setPointerCapture(e.pointerId);const R=box.getBoundingClientRect(),x=e.clientX-R.left,c=curTime(),X=v=>R.width/2+(v-c)*pps;
+     let best=null,bd=26;[[T0,0],[T1,1]].forEach(([v,i])=>{if(v==null)return;const d=Math.abs(X(v)-x);if(d<bd){bd=d;best=i}});
+     if(best!=null){mode="h";which=best}else{mode="s";scrub=true;wasPlay=!au.paused;if(wasPlay)au.pause();sx=e.clientX;sc0=c;ct=c}dirty=true});
+    box.addEventListener("pointermove",e=>{if(!mode)return;if(mode==="h"){const v=Math.max(0,Math.min(dur,tOfX(e.clientX)));if(which===0)T0=v;else T1=v;r0.__u();r1.__u()}else{ct=Math.max(0,Math.min(dur,sc0-(e.clientX-sx)/pps));try{au.currentTime=ct}catch(x){}}dirty=true});
+    const up=()=>{if(!mode)return;if(mode==="s"){scrub=false;if(wasPlay){au.play().catch(()=>{})}}mode=null;dirty=true};box.addEventListener("pointerup",up);box.addEventListener("pointercancel",up);
+    box.addEventListener("wheel",e=>{e.preventDefault();ct=Math.max(0,Math.min(dur,curTime()+(e.deltaX||e.deltaY)/pps));try{au.currentTime=ct}catch(x){}dirty=true},{passive:false});
+    const zoom=k=>{pps=Math.max(60,Math.min(4000,pps*k));dirty=true};zi.onclick=()=>zoom(1.6);zo.onclick=()=>zoom(1/1.6);
+    pp.onclick=()=>{if(au.paused)au.play().catch(()=>{});else au.pause()};
+    au.addEventListener("seeked",()=>{if(!scrub)ct=au.currentTime;dirty=true});au.addEventListener("pause",()=>{ct=au.currentTime;dirty=true});
+    /* প্রতি ফ্রেমে: বাজলে তরঙ্গ নিজে সরে (প্লেহেড মাঝে স্থির) */
+    const loop=()=>{if(!alive||!document.body.contains(m)){alive=false;return}if(!au.paused||dirty)draw();requestAnimationFrame(loop)};
+    ct=T0!=null?Math.max(0,T1!=null?T1-1.2:T0):0;try{au.currentTime=ct}catch(e){}
+    au.addEventListener("loadedmetadata",()=>{try{au.currentTime=ct}catch(e){}dirty=true});requestAnimationFrame(loop);
+    window.addEventListener("resize",()=>{dirty=true})}catch(e){console.error(e);wv.append(el("div","ed-n","তরঙ্গ-রেখা আঁকা যায়নি — নিচের সংখ্যা ও ± বোতাম দিয়ে করুন"))}
 
    info.textContent=OFF?"✓ অফলাইন অডিও প্যাক থেকে (অ্যাপের কাটার সময় এই অডিওর সাথেই মেলে)":"⚠ অফলাইন অডিও প্যাক চালু নেই — এটা ইন্টারনেটের অডিও, এর সময় অ্যাপের কাটার সময়ের সাথে মেলে না। আগে অডিও প্যাক নামান, তারপর সময় ঠিক করুন; মার্ক ঠিক করা যাবে।"}
   catch(e){info.textContent="অডিও আনা যায়নি"}
