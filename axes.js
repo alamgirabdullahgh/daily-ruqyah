@@ -210,7 +210,7 @@ window.__drAxesFit=R=>fit(R);
 
 /* ===== মালিকের ✂ কাস্টমাইজ: আয়াতের মার্ক (কোন শব্দ থেকে কোন শব্দ) ও অডিও-কাট (শুরু/শেষ সেকেন্ড) অ্যাপ থেকেই ঠিক করা। শুধু লগইন করা (dr-unlocked) অবস্থায় দেখা যায়; বদল শুধু এই ফোনে জমে (localStorage drEd) ও সাথে সাথে অ্যাপে কাজ করে; "কপি" দিয়ে সব বদল নিয়ে রিপোতে স্থায়ী করা যায় ===== */
 (function(){
- if(!document.getElementById("edCss")){const s=document.createElement("style");s.id="edCss";s.textContent=".ed-btn{margin-top:6px;padding:7px 12px;border-radius:10px;border:1px solid #c9a227;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}body:not(.dr-unlocked) .ed-btn{display:none!important}.ed-m{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.55);overflow:auto;padding:10px}.ed-b{background:var(--card-bg,#fff);color:var(--text-main,#111);border-radius:16px;padding:14px;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px}.ed-b h4{margin:0;font-size:16px}.ed-ws{direction:rtl;line-height:2.3}.ed-w{display:inline-block;padding:2px 8px;margin:2px;border-radius:8px;border:1px solid #aaa;font-size:22px;cursor:pointer}.ed-w.on{background:#e8c25a;color:#000;border-color:#c9a227}.ed-r{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.ed-r b{min-width:48px}.ed-v{min-width:64px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}.ed-k{padding:7px 10px;border-radius:10px;border:1px solid #999;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}.ed-k.p{background:#2e7d32;color:#fff;border-color:#2e7d32}.ed-k.d{border-color:#c62828;color:#c62828}.ed-n{font-size:13px;opacity:.8}";document.head.appendChild(s)}
+ if(!document.getElementById("edCss")){const s=document.createElement("style");s.id="edCss";s.textContent=".ed-btn{margin-top:6px;padding:7px 12px;border-radius:10px;border:1px solid #c9a227;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}body:not(.dr-unlocked) .ed-btn{display:none!important}.ed-m{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.55);overflow:auto;padding:10px}.ed-b{background:var(--card-bg,#fff);color:var(--text-main,#111);border-radius:16px;padding:14px;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px}.ed-b h4{margin:0;font-size:16px}.ed-ws{direction:rtl;line-height:2.3}.ed-w{display:inline-block;padding:2px 8px;margin:2px;border-radius:8px;border:1px solid #aaa;font-size:22px;cursor:pointer}.ed-w.on{background:#e8c25a;color:#000;border-color:#c9a227}.ed-r{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.ed-r b{min-width:48px}.ed-v{min-width:64px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}.ed-k{padding:7px 10px;border-radius:10px;border:1px solid #999;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}.ed-k.p{background:#2e7d32;color:#fff;border-color:#2e7d32}.ed-k.d{border-color:#c62828;color:#c62828}.ed-n{font-size:13px;opacity:.8}.ed-wv{position:relative;border-radius:10px;background:#1b1b1f;overflow-x:auto;overflow-y:hidden;height:122px;-webkit-overflow-scrolling:touch}.ed-wi{position:relative;height:100%}.ed-wi canvas{display:block;height:100%;touch-action:pan-x}.ed-h{position:absolute;top:14px;bottom:14px;width:30px;margin-left:-15px;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:ew-resize;z-index:3}.ed-h i{display:block;width:12px;height:100%;background:#fff;border-radius:6px;position:relative}.ed-h i:after{content:'';position:absolute;left:5px;top:36%;bottom:36%;width:2px;background:#555;border-radius:1px}.ed-ph{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:#fff;z-index:2;pointer-events:none}.ed-z{display:flex;gap:6px;align-items:center}";document.head.appendChild(s)}
  const DEF=()=>rsFetch(BASE+"audio-cuts.json?v=6").then(j=>j.cuts||{}).catch(()=>({}));
  const f3=x=>(Math.round(x*1000)/1000).toFixed(3);
  window.__drEditOpen=async function(o){
@@ -226,17 +226,17 @@ window.__drAxesFit=R=>fit(R);
   const paintW=()=>{ws.textContent="";aw.forEach((w,i)=>{const c=el("span","ed-w"+(f&&i+1>=f&&i+1<=t?" on":""),w);c.onclick=()=>{if(f&&t&&f===t&&i+1!==f){f=Math.min(f,i+1);t=Math.max(t,i+1)}else{f=t=i+1}loadT();paintW();paintT()};ws.append(c)});sel.textContent=f?"মার্ক: শব্দ "+bn2(f)+" থেকে "+bn2(t)+(f!==f0||t!==t0?" (বদলানো)":""):"এই আয়াতে এখনো মার্ক নেই — শব্দে চাপুন"};
   const au=document.createElement("audio");au.controls=true;au.style.width="100%";let AB=null,OFF=false;
   const info=el("div","ed-n","অডিও আনা হচ্ছে…");
-  const rowT=(lab,get,set)=>{const r=el("div","ed-r");const v=el("span","ed-v","—");r.append(el("b",null,lab));
-   [["−০.০৫",-.05],["−০.০১",-.01]].forEach(([n,d])=>{const k=el("button","ed-k",n);k.type="button";k.onclick=()=>{set(Math.max(0,(get()||0)+d));upd()};r.append(k)});r.append(v);
-   [["+০.০১",.01],["+০.০৫",.05]].forEach(([n,d])=>{const k=el("button","ed-k",n);k.type="button";k.onclick=()=>{set((get()||0)+d);upd()};r.append(k)});
-   const hr=el("button","ed-k","⌖ প্লেয়ারের এখানে");hr.type="button";hr.onclick=()=>{set(au.currentTime||0);upd()};r.append(hr);
+  let onT=()=>{};const rowT=(lab,get,set)=>{const r=el("div","ed-r");const v=el("span","ed-v","—");r.append(el("b",null,lab));
+   [["−০.০৫",-.05],["−০.০১",-.01]].forEach(([n,d])=>{const k=el("button","ed-k",n);k.type="button";k.onclick=()=>{set(Math.max(0,(get()||0)+d));upd();onT()};r.append(k)});r.append(v);
+   [["+০.০১",.01],["+০.০৫",.05]].forEach(([n,d])=>{const k=el("button","ed-k",n);k.type="button";k.onclick=()=>{set((get()||0)+d);upd();onT()};r.append(k)});
+   const hr=el("button","ed-k","⌖ প্লেয়ারের এখানে");hr.type="button";hr.onclick=()=>{set(au.currentTime||0);upd();onT()};r.append(hr);
    const upd=()=>{v.textContent=get()==null?"—":f3(get())};upd();r.__u=upd;return r};
   const r0=rowT("শুরু",()=>T0,v=>T0=v),r1=rowT("শেষ",()=>T1,v=>T1=v);
-  const paintT=()=>{r0.__u();r1.__u()};
+  const wv=el("div");const paintT=()=>{r0.__u();r1.__u();onT()};
   const pv=el("div","ed-r");const mk=(txt,mode)=>{const k=el("button","ed-k",txt);k.type="button";k.onclick=async()=>{if(!AB||T0==null||T1==null||T1<=T0){info.textContent="আগে শুরু ও শেষ বসান";return}try{const d=await window.__drCutPrev(AB,T0,T1,mode);info.textContent="▶ বাজছে ("+f3(d)+" সে.)"}catch(e){info.textContent="বাজানো যায়নি"}};return k};
   const stp=el("button","ed-k","⏹");stp.type="button";stp.onclick=()=>{window.__drCutStop&&window.__drCutStop();try{au.pause()}catch(e){}};
   pv.append(mk("▶ কাটা অংশ",""),mk("▶ শেষের ২ সেকেন্ড","tail"),mk("▶ শুরুর ২ সেকেন্ড","head"),stp);
-  b.append(info,au,r0,r1,pv,el("div","ed-n","প্লেয়ার চালিয়ে ঠিক জায়গায় থামিয়ে ⌖ চাপলে সেখানের সময় বসে; ±বোতামে ০.০১ সেকেন্ড করে নড়ে। ▶ বোতামগুলো হুবহু অ্যাপের কাটা-অডিও বাজায় (গতিসহ)।"));
+  b.append(info,au,wv,r0,r1,pv,el("div","ed-n","প্লেয়ার চালিয়ে ঠিক জায়গায় থামিয়ে ⌖ চাপলে সেখানের সময় বসে; ±বোতামে ০.০১ সেকেন্ড করে নড়ে। ▶ বোতামগুলো হুবহু অ্যাপের কাটা-অডিও বাজায় (গতিসহ)।"));
   const act=el("div","ed-r"),sv=el("button","ed-k p","💾 সংরক্ষণ"),rs=el("button","ed-k d","↩ আগের অবস্থায়");sv.type=rs.type="button";
   const bump=()=>{try{localStorage.setItem("drEdV",Date.now().toString(36))}catch(e){}};
   sv.onclick=()=>{if(!f){alert("আগে শব্দে চেপে মার্ক ঠিক করুন");return}
@@ -253,6 +253,29 @@ window.__drAxesFit=R=>fit(R);
   ex.append(cp,dl);b.append(ex,el("div","ed-n","কপি করা লেখা আমাকে (Claude) পাঠালে আমি রিপোতে স্থায়ী করে দেব, তখন সবার অ্যাপে ঠিক হবে। এই বদল শুধু এই ফোনে থাকে।"));
   document.body.appendChild(m);paintW();paintT();
   try{const r=await window.__drEdAud(s,a);AB=r.ab;OFF=r.off;au.src=URL.createObjectURL(new Blob([AB.slice(0)],{type:"audio/mpeg"}));
+   /* তরঙ্গ-রেখা: সাদা হ্যান্ডেল টেনে শুরু/শেষ, রেখায় চাপলে প্লেয়ার সেখানে যায়, সাদা দাগ = এখন যেখানে বাজছে */
+   try{const AC=window.AudioContext||window.webkitAudioContext,cx=new AC({sampleRate:22050}),dd=await cx.decodeAudioData(AB.slice(0));const ch=dd.getChannelData(0),sr=dd.sampleRate,dur=dd.duration;try{cx.close()}catch(e){}
+    let pps=150;const sc=el("div","ed-wv"),inn=el("div","ed-wi"),cv=document.createElement("canvas"),ph=el("div","ed-ph"),h0=el("div","ed-h"),h1=el("div","ed-h");h0.append(document.createElement("i"));h1.append(document.createElement("i"));inn.append(cv,ph,h0,h1);sc.append(inn);
+    const zb=el("div","ed-z"),zi=el("button","ed-k","🔍＋"),zo=el("button","ed-k","🔍−"),zt=el("span","ed-n","");zi.type=zo.type="button";zb.append(zo,zi,zt);wv.append(sc,zb);
+    const H=122,dpr=1;
+    const draw=()=>{const W=Math.max(300,Math.ceil(dur*pps));inn.style.width=W+"px";cv.width=W;cv.height=H;const g=cv.getContext("2d");g.fillStyle="#1b1b1f";g.fillRect(0,0,W,H);
+     const spp=sr/pps,mid=H/2,hasR=T0!=null&&T1!=null&&T1>T0,x0=hasR?T0*pps:-1,x1=hasR?T1*pps:-1;
+     for(let x=0;x<W;x++){const i0=Math.floor(x*spp),i1=Math.min(ch.length,Math.floor((x+1)*spp));let m=0;for(let i=i0;i<i1;i++){const v=ch[i]<0?-ch[i]:ch[i];if(v>m)m=v}const hh=Math.max(1,Math.min(1,Math.sqrt(m)*1.0)*(mid-14));g.fillStyle=(x>=x0&&x<=x1)?"#b07be0":"#5a5a66";g.fillRect(x,mid-hh,1,hh*2)}
+     g.fillStyle="#9a9aa5";g.font="11px sans-serif";const step=pps>=240?.5:pps>=100?1:2;for(let s=0;s<=dur;s+=step){const x=Math.round(s*pps);g.fillRect(x,0,1,6);g.fillText(s%1===0?String(s):s.toFixed(1),x+3,12)}
+     if(hasR){g.fillStyle="rgba(176,123,224,.18)";g.fillRect(x0,0,x1-x0,H)}
+     h0.style.left=(T0==null?0:T0*pps)+"px";h1.style.left=(T1==null?0:T1*pps)+"px";h0.style.display=T0==null?"none":"flex";h1.style.display=T1==null?"none":"flex";zt.textContent="মোট "+f3(dur)+" সে. · ১ সে. = "+Math.round(pps)+"px"};
+    const setPh=()=>{ph.style.left=(au.currentTime||0)*pps+"px"};
+    onT=()=>{draw();setPh()};
+    const drag=(hd,which)=>{hd.addEventListener("pointerdown",e=>{e.preventDefault();hd.setPointerCapture(e.pointerId);const r0x=sc.getBoundingClientRect();
+      const mv=ev=>{const x=ev.clientX-r0x.left+sc.scrollLeft,v=Math.max(0,Math.min(dur,x/pps));if(which===0)T0=v;else T1=v;h0.style.left=(T0==null?0:T0*pps)+"px";h1.style.left=(T1==null?0:T1*pps)+"px";r0.__u();r1.__u()};
+      const up=()=>{hd.removeEventListener("pointermove",mv);hd.removeEventListener("pointerup",up);hd.removeEventListener("pointercancel",up);draw()};
+      hd.addEventListener("pointermove",mv);hd.addEventListener("pointerup",up);hd.addEventListener("pointercancel",up)})};
+    drag(h0,0);drag(h1,1);
+    cv.addEventListener("click",e=>{const x=e.clientX-cv.getBoundingClientRect().left;try{au.currentTime=Math.max(0,Math.min(dur,x/pps))}catch(x2){}setPh()});
+    au.addEventListener("timeupdate",()=>{setPh();const px=au.currentTime*pps;if(px<sc.scrollLeft+20||px>sc.scrollLeft+sc.clientWidth-20)sc.scrollLeft=Math.max(0,px-sc.clientWidth/2)});au.addEventListener("seeked",setPh);
+    const zoom=k=>{const c=((au.currentTime||T0||0));pps=Math.max(30,Math.min(1600,pps*k));draw();setPh();sc.scrollLeft=Math.max(0,c*pps-sc.clientWidth/2)};zi.onclick=()=>zoom(1.6);zo.onclick=()=>zoom(1/1.6);
+    draw();setPh();if(T0!=null)sc.scrollLeft=Math.max(0,T0*pps-40)}catch(e){console.error(e);wv.append(el("div","ed-n","তরঙ্গ-রেখা আঁকা যায়নি — নিচের সংখ্যা ও ± বোতাম দিয়ে করুন"))}
+
    info.textContent=OFF?"✓ অফলাইন অডিও প্যাক থেকে (অ্যাপের কাটার সময় এই অডিওর সাথেই মেলে)":"⚠ অফলাইন অডিও প্যাক চালু নেই — এটা ইন্টারনেটের অডিও, এর সময় অ্যাপের কাটার সময়ের সাথে মেলে না। আগে অডিও প্যাক নামান, তারপর সময় ঠিক করুন; মার্ক ঠিক করা যাবে।"}
   catch(e){info.textContent="অডিও আনা যায়নি"}
  }
