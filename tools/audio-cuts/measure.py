@@ -30,23 +30,27 @@ def pick0(db,hop,p,rad=0.10):
     t=(lo+best.mean())*hop
     ctx=np.median(db[max(0,int((p-0.25)/hop)):int((p+0.25)/hop)])
     return t,m,ctx-m,(len(best))*hop
-def pick(db,hop,p,rad=0.10):
-    a=pick0(db,hop,p,0.10)
-    if a[2]<6:   # ±100 মি.সে.-এ গভীর ফাঁক না পেলে ±200 মি.সে. দেখি, আরও ৫ dB গভীর হলে সেটা
-        b=pick0(db,hop,p,0.20)
-        if b[2]>=a[2]+5: return b
-    return a
+def pick(db,hop,p,side):
+    # side: 'start' (পরের শব্দ শুরুর সীমা) বা 'end' (আয়াতাংশ শেষের সীমা)
+    # ১) ±৬০ মি.সে.-এ প্রকৃত বিরতি (≥১০ dB গভীর ফাঁক) থাকলে সেখানে
+    t,m,dep,wd=pick0(db,hop,p,0.06)
+    if dep>=10: return t,m,dep,wd,'gap'
+    # ২) নইলে (নাকি/জোড়া-লাগা ধ্বনি) শব্দ-সীমার কাছেই, ভেতরের দিকে ছোট জানালায়: শেষে পরের শব্দ পেরোবে না, শুরুতে আগের শব্দ ঢুকবে না
+    lo,hi=(p-0.03,p+0.005) if side=='end' else (p-0.005,p+0.03)
+    i0=max(0,int(lo/hop));i1=min(len(db),int(hi/hop)+1);seg=db[i0:i1];mn=seg.min()
+    idx=np.where(seg<=mn+1.0)[0];t=(i0+idx.mean())*hop
+    return t,mn,dep,len(idx)*hop,'edge'
 def cut(s,a,f,t):
     N=wcount(s,a);x=L.load(s,a);db,hop=prof(x);st,en=wtimes(s,a,N)
     r={}
     if f==1:
         on=np.where(db>-30)[0][0]*hop;r['start']=max(0,on-0.010);r['s_info']='onset'
     else:
-        p=(en[f-2]+st[f-1])/2;ts,m,dep,wd=pick(db,hop,p);r['start']=ts;r['s_info']=(round(ts-p,3),round(m,1),round(dep,1),round(wd*1000))
+        p=(en[f-2]+st[f-1])/2;ts,m,dep,wd,md=pick(db,hop,p,'start');r['start']=ts;r['s_info']=(round(ts-p,3),round(m,1),round(dep,1),md)
     if t==N:
         off=np.where(db>-30)[0][-1]*hop;r['end']=min(len(x)/L.SR,off+0.015);r['e_info']='offset'
     else:
-        p=(en[t-1]+st[t])/2;te,m,dep,wd=pick(db,hop,p);r['end']=te;r['e_info']=(round(te-p,3),round(m,1),round(dep,1),round(wd*1000))
+        p=(en[t-1]+st[t])/2;te,m,dep,wd,md=pick(db,hop,p,'end');r['end']=te;r['e_info']=(round(te-p,3),round(m,1),round(dep,1),md)
     return r
 if __name__=='__main__':
     old=json.load(open('/home/claude/daily-ruqyah/data/audio-cuts.json',encoding='utf-8'))['cuts']
