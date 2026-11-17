@@ -10,6 +10,14 @@
   au:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>'};
  // প্রতিটি আইটেমের সব আয়াত একই: ফাতির ৩৫:২, ইউনুস ১০:৮১, আ‘রাফ ৭:১১৮, ফালাক ১১৩:৪, ইনশিরাহ ৯৪:৫-৬ (প্রতিটি ২১ বার)
  var KEYS=[[35,2],[10,81],[7,118],[113,4],[94,5],[94,6]],CAT=function(k){return"বাধা|"+D[k].t};
+ // অডিওর ক্রম: ফাতির ২ ও ইউনুস ৮১ + আ‘রাফ ১১৮ প্রতিবার দোয়াসহ ২১ বার; ফালাক ৪ ও ইনশিরাহ ২১ বার; বাস্তব তালা: ৭ বার ও ৩ দোয়া; শেষে তাহাজ্জুদের দোয়া ১০০ বার। [সূরা,আয়াত,বার,শব্দ-শুরু,শব্দ-শেষ]; "dua" = dua/dN.mp3 (edge-tts)
+ function SEQ(){var o=[],q;
+  for(q=0;q<21;q++)o.push([35,2,1],["dua","d1",1]);
+  for(q=0;q<21;q++)o.push([10,81,1,5,11],[7,118,1],["dua","d2",1]);
+  o.push([113,4,21,1,5],[94,5,21],[94,6,21]);
+  o.push([35,2,7],[10,81,7,5,11],["dua","d3",1],["dua","d4",1],["dua","d5",3]);
+  o.push(["dua","d6",100]);
+  return o}
  function short(t){return t.replace(/ দূর করার রুকইয়াহ$/,"")}
  function plain(k){
   var d=D[k],o=[d.t,"",d.sub,"","আলামত:"];
@@ -51,7 +59,8 @@
   if(a==="cp"){copyText(plain(k)).then(function(){flash(b,"✓ কপি হয়েছে")},function(){flash(b,"হয়নি")});return}
   if(!window.__drXKeys||!window.__drHomePdf||!window.__drHomeAudio){flash(b,"একটু পরে");return}
   var c=CAT(k);window.__drXKeys(c,KEYS);
-  if(a==="pd")window.__drHomePdf("x",c);else window.__drHomeAudio("x",c);
+  if(a==="pd"){window.__drHomePdf("x",c);return}
+  var ca=c+" · দোয়াসহ";window.__drXKeys(ca,SEQ());window.__drHomeAudio("x",ca);
  }
  var b64d=function(s){var r=atob(s),a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a};
  var b64e=function(a){var s="";a=new Uint8Array(a);for(var i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);return btoa(s)};
