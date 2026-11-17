@@ -44,7 +44,7 @@ async function verseCard(ref,isBase){const{s,a,f,t,w}=ref;
  box.append(tx,tb,ft);return box}
 
 let DATA=null;
-const load=async()=>DATA||(DATA=await rsFetch(BASE+"axis-ayat.json?v=3").catch(e=>{DATA=null;throw e}));
+const load=async()=>DATA||(DATA=await rsFetch(BASE+"axis-ayat.json?v=4").catch(e=>{DATA=null;throw e}));
 /* "অবস্থান → শরীরে" ঘরের অডিওতে অঙ্গ ধরে ধরে আয়াত বাজে; অঙ্গের নাম ও আয়াত দৈনন্দিন রুকইয়াহর "শারীরিক → অঙ্গভিত্তিক" তালিকা (app.js এর ORG) থেকে আসে। শুধু দরকারের সময় লোড হয় */
 let ORGS=[],ORGP=null;
 const loadOrg=()=>Promise.resolve();/* অঙ্গ-প্রত্যঙ্গের তালিকা ও অঙ্গের আয়াত আর যোগ হয় না (ব্যবহারকারীর নির্দেশে বাদ); ORGS সব সময় খালি */
