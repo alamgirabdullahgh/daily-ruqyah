@@ -52,21 +52,34 @@
    b.innerHTML=k?page(k):list();
   });
  };
+
+ // কিবোর্ড কখনো অদৃশ্য অক্ষর/বাংলা সংখ্যা/ফুল-উইডথ চিহ্ন বসিয়ে দেয়; আগে যেমন লেখা তেমন, না মিললে পরিষ্কার করে আবার দেখা হয়
+ var ZW=/[\u200b-\u200f\u2028-\u202f\u2060\ufeff]/g,BNS="০১২৩৪৫৬৭৮৯";
+ function clean(s){try{s=s.normalize("NFKC")}catch(e){}return s.replace(ZW,"").replace(/[০-৯]/g,function(c){return BNS.indexOf(c)})}
+ function pairs(em,pw){var a=[[em,pw],[em,pw.trim()],[clean(em),clean(pw).trim()]],o=[],seen={};a.forEach(function(p){var k=p[0].trim().toLowerCase()+"\n"+p[1];if(!seen[k]){seen[k]=1;o.push(p)}});return o}
+ function attempt(list,i){
+  if(i>=list.length)return Promise.reject(new Error("nomatch"));
+  return derive(list[i][0],list[i][1]).then(function(raw){return open(raw).then(function(){return raw})}).catch(function(){return attempt(list,i+1)});
+ }
  // লগইন ঘর
  function dialog(){
   if(document.getElementById("drLg"))return;
   var w=document.createElement("div");w.id="drLg";w.className="dr-lg";
-  w.innerHTML='<form class="dr-lgb" autocomplete="off"><b>লগইন</b><input type="email" id="drLgE" placeholder="ইমেইল" autocapitalize="none" autocomplete="off"><input type="password" id="drLgP" placeholder="পাসওয়ার্ড" autocomplete="off"><div class="dr-lge" id="drLgM" aria-live="polite"></div><div class="dr-lgr"><button type="button" id="drLgC">বাতিল</button><button type="submit" id="drLgO">লগইন</button></div></form>';
+  w.innerHTML='<form class="dr-lgb" autocomplete="off"><b>লগইন</b><input type="email" id="drLgE" placeholder="ইমেইল" autocapitalize="none" autocomplete="off"><div class="dr-lgp"><input type="password" id="drLgP" placeholder="পাসওয়ার্ড" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"><button type="button" id="drLgS" aria-label="পাসওয়ার্ড দেখান" title="পাসওয়ার্ড দেখান"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div><div class="dr-lge" id="drLgM" aria-live="polite"></div><div class="dr-lgr"><button type="button" id="drLgC">বাতিল</button><button type="submit" id="drLgO">লগইন</button></div></form>';
   document.body.appendChild(w);
   var f=w.firstChild,m=document.getElementById("drLgM"),ok=document.getElementById("drLgO");
   var close=function(){w.remove()};
   document.getElementById("drLgC").onclick=close;
+  var pe=document.getElementById("drLgP"),sb=document.getElementById("drLgS"),ICON_ON='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>',ICON_OFF='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.9 10.9 0 0 1 12 19c-7 0-11-7-11-7a19.8 19.8 0 0 1 5.06-5.94M9.9 4.24A10.9 10.9 0 0 1 12 4c7 0 11 7 11 7a19.9 19.9 0 0 1-3.17 4.19M14.12 14.12A3 3 0 1 1 9.88 9.88"/><path d="M1 1l22 22"/></svg>';
+  sb.onclick=function(){var show=pe.type==="password";pe.type=show?"text":"password";sb.innerHTML=show?ICON_OFF:ICON_ON;var l=show?"পাসওয়ার্ড লুকান":"পাসওয়ার্ড দেখান";sb.setAttribute("aria-label",l);sb.title=l;try{pe.focus();var n=pe.value.length;pe.setSelectionRange(n,n)}catch(e){}};
   w.onclick=function(e){if(e.target===w)close()};
   f.onsubmit=function(e){
    e.preventDefault();var em=document.getElementById("drLgE").value,pw=document.getElementById("drLgP").value;
    if(!em||!pw){m.textContent="ইমেইল ও পাসওয়ার্ড দিন";return}
    ok.disabled=true;m.textContent="যাচাই হচ্ছে…";
-   derive(em,pw).then(function(raw){return open(raw).then(function(){try{localStorage.setItem(KEY,b64e(raw))}catch(e){}close()})}).catch(function(){
+   if(!window.__drBadhaEnc){ok.disabled=false;m.textContent="লুকানো ডেটা লোড হয়নি — অ্যাপ বন্ধ করে আবার খুলুন";return}
+   if(!window.crypto||!crypto.subtle){ok.disabled=false;m.textContent="এই ব্রাউজারে লগইন চলছে না (নিরাপদ https সংযোগ দরকার)";return}
+   attempt(pairs(em,pw),0).then(function(raw){try{localStorage.setItem(KEY,b64e(raw))}catch(e){}close()}).catch(function(){
     ok.disabled=false;m.textContent="ইমেইল বা পাসওয়ার্ড মিলছে না"});
   };
   setTimeout(function(){var i=document.getElementById("drLgE");if(i)i.focus()},50);
