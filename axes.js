@@ -293,7 +293,7 @@ window.__drAxesFit=R=>fit(R);
      /* ক্লিপের সাদা ফ্রেম + দুই পাশে সাদা হ্যান্ডেল (ভিডিও-এডিটরের মতো) */
      const rr=(x,y,w,h,r)=>{g.beginPath();if(g.roundRect)g.roundRect(x,y,w,h,r);else g.rect(x,y,w,h)};
      if(hasR){const xa=X(T0),xb=X(T1),y0=my-5,hh2=mh+10;g.strokeStyle="#fff";g.lineWidth=2;g.strokeRect(xa,y0,xb-xa,hh2);
-      const hnd=(x,left,lab)=>{g.fillStyle=(mode==="h"&&which===(left?0:1))?"#ffe27a":"#fff";rr(left?x-17:x,y0,17,hh2,5);g.fill();g.fillStyle="#222";g.fillRect((left?x-9:x+7),y0+hh2/2-9,2,18);g.fillStyle="#fff";g.font="bold 11px sans-serif";g.textBaseline="bottom";g.textAlign=left?"right":"left";g.fillText(lab,left?x-2:x+2,y0-1)};
+      const hnd=(x,left,lab)=>{g.fillStyle=(mode==="h"&&which===(left?0:1))?"#ffe27a":"#fff";rr(left?x-17:x,y0,17,hh2,5);g.fill();g.fillStyle="#222";g.fillRect((left?x-9:x+7),y0+hh2/2-9,2,18);g.fillStyle="#fff";g.font="bold 11px sans-serif";g.textBaseline="top";g.textAlign=left?"left":"right";g.fillText(lab,left?x+4:x-4,y0+4)};
       hnd(xa,true,"শুরু");hnd(xb,false,"শেষ")}
      else{[[T0,"শুরু"],[T1,"শেষ"]].forEach(([v,lab])=>{if(v==null)return;const x=X(v);g.fillStyle="#fff";g.fillRect(x-1,my-6,2,mh+12);g.font="bold 11px sans-serif";g.textAlign="left";g.textBaseline="bottom";g.fillText(lab,x+3,my-6)})}
      /* মাঝের স্থির প্লেহেড */
