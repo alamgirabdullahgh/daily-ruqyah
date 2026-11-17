@@ -1181,6 +1181,17 @@ body.is-home{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
 
 /* বাধা দূর করার রুকইয়াহ (badha.js) */
 #drBadha{padding:4px 2px 24px}
+/* লকের ভেতরের অপশন: data-lock দেওয়া যেকোনো উপাদান লগইন ছাড়া দেখা যায় না */
+body:not(.dr-unlocked) [data-lock],body:not(.dr-unlocked) #drLogout{display:none!important}
+.dr-logout{width:calc(100% - 24px);font-family:inherit;cursor:pointer;text-align:left}
+.dr-lg{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:20px}
+.dr-lgb{width:100%;max-width:340px;background:var(--card-bg,#fff);color:var(--text-main,#111);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.dr-lgb b{font-size:18px}
+.dr-lgb input{font:inherit;font-size:16px;padding:12px;border-radius:12px;border:1px solid var(--border-light,#ccc);background:transparent;color:inherit}
+.dr-lge{min-height:18px;font-size:13.5px;color:#c0392b}
+.dr-lgr{display:flex;gap:10px;justify-content:flex-end}
+.dr-lgr button{font:inherit;font-weight:700;padding:10px 18px;border-radius:12px;border:0;cursor:pointer;background:var(--primary-light,#e6f2ee);color:var(--primary,#0a6b52)}
+.dr-lgr button[type=submit]{background:var(--primary,#0a6b52);color:#fff}
 .bd-h{font-size:19px;color:var(--primary);margin:6px 2px 12px;display:flex;align-items:center;gap:8px}
 .bd-l{display:flex;flex-direction:column;gap:8px}
 .bd-b{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--border-light);border-radius:14px;background:var(--card-bg);color:var(--text-main);text-decoration:none}
