@@ -3,6 +3,8 @@ on:
   workflow_dispatch:
   push:
     paths: ['tools/editor-harness/**','axes.js']
+permissions:
+  contents: write
 jobs:
   shot:
     runs-on: ubuntu-latest
@@ -25,3 +27,10 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with: {name: shots, path: out}
+      - name: Push screenshots to editor-shots branch
+        if: always()
+        run: |
+          cd out && git init -q && git checkout -q -b editor-shots
+          git config user.name github-actions && git config user.email actions@github.com
+          git add -A && git commit -q -m "shots ${GITHUB_SHA}"
+          git push -f -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" editor-shots
