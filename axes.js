@@ -44,7 +44,7 @@ async function verseCard(ref,isBase){const{s,a,f,t,w}=ref;
  box.append(tx,tb,ft);return box}
 
 let DATA=null;
-const load=async()=>DATA||(DATA=await rsFetch(BASE+"axis-ayat.json?v=6").catch(e=>{DATA=null;throw e}));
+const load=async()=>DATA||(DATA=await rsFetch(BASE+"axis-ayat.json?v=7").catch(e=>{DATA=null;throw e}));
 /* "অবস্থান → শরীরে" ঘরের অডিওতে অঙ্গ ধরে ধরে আয়াত বাজে; অঙ্গের নাম ও আয়াত দৈনন্দিন রুকইয়াহর "শারীরিক → অঙ্গভিত্তিক" তালিকা (app.js এর ORG) থেকে আসে। শুধু দরকারের সময় লোড হয় */
 let ORGS=[],ORGP=null;
 const loadOrg=()=>Promise.resolve();/* অঙ্গ-প্রত্যঙ্গের তালিকা ও অঙ্গের আয়াত আর যোগ হয় না (ব্যবহারকারীর নির্দেশে বাদ); ORGS সব সময় খালি */
@@ -62,7 +62,7 @@ async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").m
  const lg=el("div","ax-lg");lg.append(el("span","rs-gold","সোনালি অংশ")," = মৌলিক অংশ");pn.appendChild(lg);
  sec.appendChild(pn);
  if(C&&window.__drXKeys){const md=R.__mode,cat="অক্ষ "+G.name+" "+G.cols[ci].name+" "+G.cols[ci].opts[oi]+(SFX[md]||""),seen=new Set(),ks=[];
-  [...C.b.map(r=>[r[0],r[1],0,r[2],r[3]]),...(md==="resp"?[]:C.m).map(v=>{const p=v.split(":").map(Number);return[p[0],p[1]]})].forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);ks.push(k)}});
+  [...C.b.map(r=>[r[0],r[1],0,r[2],r[3]]),...(md==="resp"?[]:C.m).map(v=>{const p=v.split(":").map(Number),q=C.mp&&C.mp[v];return q?[p[0],p[1],0,q[0],q[1]]:[p[0],p[1]]})].forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);ks.push(k)}});
   window.__drXKeys(cat,ks);
   const act=el("div","ax-act"),hp=el("div","ax-hp"),ha=el("div","ax-hp");hp.hidden=ha.hidden=true;
   const bp=el("button","ax-ab","📄 PDF"),ba=el("button","ax-ab","🔊 অডিও");bp.type=ba.type="button";
@@ -72,7 +72,7 @@ async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").m
  const b=el("div","rs-v");pn.appendChild(b);
  for(const r of C.b){const c=await verseCard({s:r[0],a:r[1],f:r[2],t:r[3]},true).catch(()=>null);if(my!==R.__g)return;if(c)b.appendChild(c)}
  if(R.__mode==="resp")return;/* প্রতিক্রিয়া ভিত্তিক: প্রতিটি অপশনে শুধু একটি মৌলিক আয়াত; "বাকি আয়াত" শুধু চিকিৎসায় */
- const more=C.m.map(v=>{const p=v.split(":").map(Number);return{s:p[0],a:p[1],w:p[2]||0}});
+ const more=C.m.map(v=>{const p=v.split(":").map(Number),q=C.mp&&C.mp[v];return{s:p[0],a:p[1],w:p[2]||0,f:q?q[0]:0,t:q?q[1]:0}});
  pn.appendChild(el("div","ax-sh","বাকি আয়াত"+(more.length?" ("+bn2(more.length)+"টি)":"")));
  if(!more.length){pn.appendChild(el("div","ax-n","এই ঘরে মৌলিক আয়াতের বাইরে আর কোনো আয়াত নেই।"));return}
  const lst=el("div","rs-v"),btnMore=el("button","rs-more");btnMore.type="button";pn.append(lst,btnMore);
@@ -113,7 +113,7 @@ function fit(R){const rows=[...R.querySelectorAll(".ax-g:not([hidden]) .ax-ro")]
 const SFX={resp:" · প্রতিক্রিয়া",treat:" · চিকিৎসা"},REPN={resp:11,treat:1};
 function regCell(gi,ci,oi,mode){const key=gi+"."+ci+"."+oi,C=DATA.cells[key];if(!C)return null;
  const seen=new Set(),ks=[];
- [...C.b.map(r=>[r[0],r[1],0,r[2],r[3]]),...(mode==="resp"?[]:C.m.map(v=>{const p=v.split(":").map(Number);return[p[0],p[1]]}))].forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);ks.push(k)}});
+ [...C.b.map(r=>[r[0],r[1],0,r[2],r[3]]),...(mode==="resp"?[]:C.m.map(v=>{const p=v.split(":").map(Number),q=C.mp&&C.mp[v];return q?[p[0],p[1],0,q[0],q[1]]:[p[0],p[1]]}))].forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);ks.push(k)}});
  return ks.length?{ks}:null}
 /* স্কোপ: "g0" = পুরো হেডিং · "r0.1" = একটি সারি (যেমন ধরন) · "c0.1.0" = একটি ঘর (যেমন মুগ্ধতা)। আয়াত-তালিকা ক্রমানুসারে */
 function scope(id,sec,mode){const t=id[0],p=id.slice(1).split(".").map(Number),gi=p[0],G=DATA.axes[gi],plist=[],list=[],cells=[];let hasOrg=false;

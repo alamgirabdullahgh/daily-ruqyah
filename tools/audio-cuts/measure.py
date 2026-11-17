@@ -1,4 +1,4 @@
-# ব্যবহার: প্যাক zip খুলে /tmp/pack/x/<আয়াত-নম্বর>.mp3, quran-align Alafasy_128kbps.json → /tmp/qa0/ রেখে python3 tools/audio-cuts/measure.py (শুধু রিপোর্ট ছাপে)
+# ব্যবহার: প্যাক zip খুলে /tmp/pack/x/<আয়াত-নম্বর>.mp3, quran-align Alafasy_128kbps.json → /tmp/qa0/ রেখে সব কাটা মাপে (axis-ayat.json-এর b ও mp থেকে)
 import json,sys,subprocess,numpy as np
 sys.path.insert(0,__import__('os').path.dirname(__import__('os').path.abspath(__file__)))
 import align_lib as L
@@ -21,7 +21,7 @@ def prof(x,hop=0.002,win=0.010):
     h=int(L.SR*hop);w=int(L.SR*win);n=(len(x)-w)//h
     e=np.array([np.sqrt(np.mean(x[i*h:i*h+w]**2)) for i in range(n)])
     return 20*np.log10(e/ e.max()+1e-6),hop
-def pick(db,hop,p,rad=0.10):
+def pick0(db,hop,p,rad=0.10):
     lo=max(0,int((p-rad)/hop));hi=min(len(db),int((p+rad)/hop))
     seg=db[lo:hi];m=seg.min();idx=np.where(seg<=m+1.0)[0]   # plateau within 1 dB of the minimum
     # choose the plateau run nearest to p, take its middle
@@ -30,6 +30,12 @@ def pick(db,hop,p,rad=0.10):
     t=(lo+best.mean())*hop
     ctx=np.median(db[max(0,int((p-0.25)/hop)):int((p+0.25)/hop)])
     return t,m,ctx-m,(len(best))*hop
+def pick(db,hop,p,rad=0.10):
+    a=pick0(db,hop,p,0.10)
+    if a[2]<6:   # ±100 মি.সে.-এ গভীর ফাঁক না পেলে ±200 মি.সে. দেখি, আরও ৫ dB গভীর হলে সেটা
+        b=pick0(db,hop,p,0.20)
+        if b[2]>=a[2]+5: return b
+    return a
 def cut(s,a,f,t):
     N=wcount(s,a);x=L.load(s,a);db,hop=prof(x);st,en=wtimes(s,a,N)
     r={}
