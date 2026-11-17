@@ -1,6 +1,11 @@
 {
- "_doc": "বাধা দূর করার রুকইয়াহ-র দোয়ার অডিও। লেখা বদলে পুশ করলে Actions (.github/workflows/dua-tts.yml) edge-tts দিয়ে আবার বানিয়ে dua/dN.mp3 কমিট করে। কণ্ঠ: Microsoft bn-BD; গতি ×১.২০ (পিচ একই)।",
- "voice": "bn-BD-PradeepNeural",
+ "_doc": "বাধা দূর করার রুকইয়াহ-র দোয়ার অডিও। লেখা বদলে পুশ করলে Actions (.github/workflows/dua-tts.yml) Gemini TTS (Charon) দিয়ে আবার বানিয়ে dua/dN.mp3 কমিট করে। গতি ×১.২০।",
+ "voice": "Charon",
+ "style": "Read the following Bengali supplication slowly, calmly and humbly, in a sincere, soft, heartfelt tone of prayer:",
+ "models": [
+  "gemini-2.5-pro-preview-tts",
+  "gemini-2.5-flash-preview-tts"
+ ],
  "tempo": 1.2,
  "clips": {
   "d1": "হে আল্লাহ! আমার শরীরে থাকা সব ধরনের বাঁধার তালাগুলো খুলে দাও। তুমি খুললে কেউ বন্ধ করতে পারে না।",
