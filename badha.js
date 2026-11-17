@@ -29,10 +29,10 @@
   return o}
  // পার্ট ৪ (ধাপ ৮) — তাহাজ্জুদের দোয়া ১০০ বার
  function SEQT(){return[["dua","d6",100]]}
- var PARTS=[{n:"১",t:"পানি",s:"মাগরিবের আগে: ফাতির ২ ×৭",f:SEQ1,pdf:1},
-  {n:"২",t:"তেল",s:"আয়াতুল কুরসি ×৭; ফালাক+নাস মিলে ১ বার, ×৭",f:SEQ2,pdf:1},
-  {n:"৩–৭",t:"পড়া ও দোয়া",s:"২১ বার ও ৭ বার, দোয়াসহ",f:SEQ,pdf:1},
-  {n:"৮",t:"তাহাজ্জুদ",s:"রাত ৩টায়: দোয়া ১০০ বার",f:SEQT,pdf:0}];
+ var PARTS=[{n:"১",t:"পানি",s:"মাগরিবের আগে: ফাতির ২ ×৭",f:SEQ1,pdf:1,sn:["১"]},
+  {n:"২",t:"তেল",s:"আয়াতুল কুরসি ×৭; ফালাক+নাস মিলে ১ বার, ×৭",f:SEQ2,pdf:1,sn:["২"]},
+  {n:"৩–৭",t:"পড়া ও দোয়া",s:"২১ বার ও ৭ বার, দোয়াসহ",f:SEQ,pdf:1,sn:["৩","৪","৫","৬","৭"]},
+  {n:"৮",t:"তাহাজ্জুদ",s:"রাত ৩টায়: দোয়া ১০০ বার",f:SEQT,pdf:1,sn:["৮"]}];
  // ক্রম থেকে অনন্য [সূরা,আয়াত] (PDF-এর জন্য); "dua" ঘর বাদ
  // ছাঁটা অংশের অনুবাদ-শব্দ পাল্লা (অনুবাদের শব্দ, ১-ভিত্তিক): ফাতির ৩৫:২ শব্দ ১–১৬ = অনুবাদ ১–২৬ ("…তিনি ব্যতিত।"); ইউনুস ১০:৮১ শব্দ ৫–১৭ = অনুবাদ ৮–২৭ ("যা কিছু তোমরা এনেছ… করেন না।")
  var BNR={"35:2:1-16":[1,26],"10:81:5-17":[8,27]};
@@ -46,6 +46,16 @@
  function rows(k){
   return'<section class="bd-c bd-parts"><h3>ধাপ অনুযায়ী অডিও ও PDF</h3>'+PARTS.map(function(p,i){
    return'<div class="bd-pr"><div class="bd-pl"><b>'+esc(p.n)+'</b><span>'+esc(p.t)+'<small>'+esc(p.s)+'</small></span></div><span class="bd-pb">'+(p.pdf?BTN("ps",k,i,SVG.pd,"PDF","ধাপ "+p.n+" — PDF"):'')+BTN("pa",k,i,SVG.au,"অডিও","ধাপ "+p.n+" — অডিও")+'</span></div>'}).join("")+'</section>'}
+// PDF-র লেখা: পাতায় যেমন আছে হুবহু (সময়ের শিরোনাম, ধাপ, নির্দেশনা, আরবি, অনুবাদ, দোয়া); sn = কোন কোন ধাপ (নেই হলে পুরো আমল)
+ function blocksOf(k,sn){var d=D[k],o=[];if(!sn&&d.when)o.push({k:"g",t:d.when});
+  d.steps.forEach(function(s){if(sn&&sn.indexOf(s.n)<0)return;
+   if(s.g)o.push({k:"g",t:s.g});
+   o.push({k:"h",t:"ধাপ "+s.n+(s.h?" — "+s.h:"")});
+   (s.p||[]).forEach(function(x){o.push({k:"p",t:x})});
+   if(s.ar)o.push({k:"ar",t:s.ar});
+   if(s.tr)s.tr.split("\n").forEach(function(x){o.push({k:"tr",t:x})});
+   (s.m||[]).forEach(function(x){o.push({k:"m",t:x})})});
+  return o}
  function short(t){return t.replace(/ দূর করার রুকইয়াহ$/,"")}
  function plain(k){
   var d=D[k],o=[d.t,"",d.sub,"","আলামত:"];
@@ -86,12 +96,12 @@
  function act(a,k,b){
   if(!D||!D[k])return;
   if(a==="cp"){copyText(plain(k)).then(function(){flash(b,"✓ কপি হয়েছে")},function(){flash(b,"হয়নি")});return}
-  if(!window.__drXKeys||!window.__drHomePdf||!window.__drHomeAudio){flash(b,"একটু পরে");return}
+  if(!window.__drXKeys||!window.__drTextDoc||!window.__drHomePdf||!window.__drHomeAudio){flash(b,"একটু পরে");return}
   var c=CAT(k),X=window.__drXKeys,p;
-  if(a==="pd"){X(c,keysOf(SEQALL()));window.__drHomePdf("x",c);return}
+  if(a==="pd"){window.__drTextDoc(c,blocksOf(k));window.__drHomePdf("x",c);return}
   if(a==="au"){var cf=c+" · সম্পূর্ণ আমল";X(cf,SEQALL());window.__drHomeAudio("x",cf);return}
   p=PARTS[+b.getAttribute("data-p")];if(!p)return;
-  if(a==="ps"){var cp=c+" · ধাপ "+p.n+" "+p.t;X(cp,keysOf(p.f()));window.__drHomePdf("x",cp);return}
+  if(a==="ps"){var cp=c+" · ধাপ "+p.n+" "+p.t;window.__drTextDoc(cp,blocksOf(k,p.sn));window.__drHomePdf("x",cp);return}
   if(a==="pa"){var ca=c+" · ধাপ "+p.n+" "+p.t+" (অডিও)";X(ca,p.f());window.__drHomeAudio("x",ca)}
  }
  var b64d=function(s){var r=atob(s),a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a};
