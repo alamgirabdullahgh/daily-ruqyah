@@ -156,9 +156,6 @@ async function playSeq(R,id,sec,btn){const same=R.__pl&&R.__pl.id===id;stopPlay(
  const cellOf=i=>{for(let k=0;k<cells.length;k++)if(i>=cells[k].from&&i<cells[k].to)return k;return -1};
  const orgOf=(c,i)=>{const og=cells[c].og;if(og)for(const x of og)if(i>=x.from&&i<x.to)return x.k;return -1};
  /* শরীরে ঘরে এলে একেবারে নিচে অঙ্গের নাম আটটি কলামে (যত সারি লাগে); যে অঙ্গের আয়াত চলছে সেটি জ্বলে, সাথে "শরীরে" বাটনও */
- let pn=null;const dropPn=()=>{if(pn){pn.remove();pn=null}};
- const mkPn=()=>{pn=el("div","ax-orgs");pn.appendChild(el("div","ax-oh","🫀 অঙ্গ — যে অঙ্গের আয়াত চলছে সেটি জ্বলছে"));const gd=el("div","ax-og");
-  pn.__b=ORGS.map(o=>{const b=el("div","ax-ob",o.name.split(" (")[0]);b.title=o.name;gd.appendChild(b);return b});pn.appendChild(gd);sec.appendChild(pn)};
  const seeIf=b=>{const r=b.getBoundingClientRect();if(r.top<60||r.bottom>innerHeight-60)b.scrollIntoView({behavior:"smooth",block:"center"})};
  let cur=-2,curO=-2;
  const upd=()=>{if(!mk.length&&a.duration)mk=list.map((_,i)=>({i,t:(i+1)/list.length*a.duration}));if(!mk.length)return;
@@ -166,7 +163,6 @@ async function playSeq(R,id,sec,btn){const same=R.__pl&&R.__pl.id===id;stopPlay(
   const newCell=c!==cur;cur=c;curO=o;
   R.querySelectorAll(".ax-now").forEach(x=>x.classList.remove("ax-now"));const C=cells[c];
   if(C.b){C.b.classList.add("ax-now");if(newCell)seeIf(C.b)}
-  if(C.og){if(!pn)mkPn();if(o>=0&&pn.__b[o]){pn.__b[o].classList.add("ax-now");seeIf(pn.__b[o])}}else dropPn();
   tx.textContent="▶ "+G.name+" › "+C.name+(o>=0?" › "+ORGS[o].name:"")+(id[0]!=="c"?"  ("+bn2(c+1)+"/"+bn2(cells.length)+")":"")};
  a.ontimeupdate=upd;a.onplay=upd;a.onended=()=>{if(R.__pl===st)stopPlay(R)};
  try{a.currentTime=0;await a.play()}catch(e){}
