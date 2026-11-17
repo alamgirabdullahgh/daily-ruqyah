@@ -51,7 +51,7 @@
   var d=D[k],o=[d.t,"",d.sub,"","আলামত:"];
   d.sym.forEach(function(s){o.push(s.h);s.l.forEach(function(x){o.push("• "+x)})});
   o.push("",d.when);
-  d.steps.forEach(function(s){o.push("","["+s.n+"] "+(s.h||""));(s.p||[]).forEach(function(x){o.push(x)});if(s.ar)o.push(s.ar);if(s.tr)o.push(s.tr);(s.m||[]).forEach(function(x){o.push(x)})});
+  d.steps.forEach(function(s){if(s.g)o.push("","— "+s.g+" —");o.push("","["+s.n+"] "+(s.h||""));(s.p||[]).forEach(function(x){o.push(x)});if(s.ar)o.push(s.ar);if(s.tr)o.push(s.tr);(s.m||[]).forEach(function(x){o.push(x)})});
   o.push("",d.sign.h);d.sign.l.forEach(function(x){o.push("• "+x)});if(d.note)o.push("",d.note);
   return o.join("\n");
  }
@@ -71,6 +71,7 @@
   h+='<section class="bd-c"><h3>আলামত</h3>'+d.sym.map(function(s){return'<h4>'+esc(s.h)+'</h4>'+UL(s.l)}).join("")+'</section>';
   h+='<section class="bd-c bd-when"><b>'+esc(d.when)+'</b></section>';
   d.steps.forEach(function(s){
+   if(s.g)h+='<h4 class="bd-g2">'+esc(s.g)+'</h4>';
    h+='<section class="bd-c"><h3><span class="bd-n">'+s.n+'</span>'+(s.h?esc(s.h):'')+'</h3>'+P(s.p);
    if(s.ar)h+='<div class="bd-ar" dir="rtl" lang="ar">'+esc(s.ar)+'</div>';
    if(s.tr)h+=s.tr.split("\n").map(function(x){return'<p class="bd-tr">'+esc(x)+'</p>'}).join("");
