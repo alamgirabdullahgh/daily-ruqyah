@@ -18,7 +18,7 @@ jobs:
       - name: Prepare web files
         run: |
           mkdir www
-          cp -r index.html app.js home.js boot.js widget.js alarm.js badha.js symptom.js axes.js reveal.js style.css sw.js manifest.webmanifest icons fonts data www/
+          cp -r index.html app.js home.js boot.js widget.js alarm.js badha.enc.js badha.js symptom.js axes.js reveal.js style.css sw.js manifest.webmanifest icons fonts data www/
       - name: Minify web files
         run: |
           # শুধু APK-র কপি ছোট হয়; রিপোর মূল সোর্স পড়ার মতোই থাকে। কোনো ফাইল ব্যর্থ হলে বিল্ড থামবে
