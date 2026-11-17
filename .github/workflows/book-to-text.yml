@@ -1,0 +1,86 @@
+name: Book to Text (PDF -> ছবি -> OCR, ১০ পৃষ্ঠার ব্যাচ)
+
+# যেকোনো বই: PDF -> প্রতি পৃষ্ঠার ছবি (300 DPI) -> OCR (Tesseract LSTM, ben+eng) -> output/<নাম>.txt ও .json
+# একসাথে ১০ পৃষ্ঠার বেশি ছবি/OCR হয় না (tools/book2text.py)। আরবি বইয়ের জন্য lang = ara+eng দিন।
+on:
+  workflow_dispatch:
+    inputs:
+      pdf_url:
+        description: 'PDF-এর লিংক (Google Drive বা সরাসরি ডাউনলোড লিংক)'
+        required: true
+      name:
+        description: 'বইয়ের নাম (ঐচ্ছিক; ফাঁকা থাকলে PDF-এর নাম)'
+        required: false
+      lang:
+        description: 'ভাষা (ডিফল্ট ben+eng; আরবির জন্য ara+eng)'
+        required: false
+        default: 'ben+eng'
+      dpi:
+        description: 'ছবির DPI (ডিফল্ট 300)'
+        required: false
+        default: '300'
+      first_page:
+        description: 'শুরুর পৃষ্ঠা (ঐচ্ছিক)'
+        required: false
+      last_page:
+        description: 'শেষ পৃষ্ঠা (ঐচ্ছিক)'
+        required: false
+  push:
+    paths:
+      - 'books/**.pdf'
+
+permissions:
+  contents: write
+
+jobs:
+  book:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq tesseract-ocr tesseract-ocr-ben tesseract-ocr-ara tesseract-ocr-eng poppler-utils
+          pip install -q --break-system-packages -U gdown
+      - name: Get PDF(s)
+        env:
+          PDF_URL: ${{ github.event.inputs.pdf_url }}
+        run: |
+          mkdir -p work-pdf
+          if [ -n "$PDF_URL" ]; then
+            if echo "$PDF_URL" | grep -q "drive.google.com"; then
+              FID=$(echo "$PDF_URL" | sed -n 's|.*/d/\([^/?]*\).*|\1|p')
+              [ -z "$FID" ] && FID=$(echo "$PDF_URL" | sed -n 's|.*[?&]id=\([^&]*\).*|\1|p')
+              gdown --id "$FID" -O work-pdf/book.pdf
+            else
+              curl -fL --retry 3 -o work-pdf/book.pdf "$PDF_URL"
+            fi
+          else
+            cp books/*.pdf work-pdf/ 2>/dev/null || true
+          fi
+          ls -l work-pdf
+      - name: OCR in 10-page batches
+        env:
+          NAME: ${{ github.event.inputs.name }}
+          LANGS: ${{ github.event.inputs.lang }}
+          DPI: ${{ github.event.inputs.dpi }}
+          FIRST: ${{ github.event.inputs.first_page }}
+          LAST: ${{ github.event.inputs.last_page }}
+        run: |
+          for f in work-pdf/*.pdf; do
+            args=(--lang "${LANGS:-ben+eng}" --dpi "${DPI:-300}")
+            [ -n "$NAME" ] && args+=(--name "$NAME")
+            [ -n "$FIRST" ] && args+=(--first "$FIRST")
+            [ -n "$LAST" ] && args+=(--last "$LAST")
+            python3 tools/book2text.py "$f" "${args[@]}"
+          done
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add output/*.txt output/*.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "book-to-text: OCR ফলাফল [skip ci]"
+          git pull --rebase -q || true
+          git push
