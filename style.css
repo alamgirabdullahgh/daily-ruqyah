@@ -1263,3 +1263,12 @@ body:not(.dr-unlocked) [data-lock],body:not(.dr-unlocked) #drLogout{display:none
 #drLanding .drq-opts.drq-two:not(.drq-three)>li.drq-ai:first-child .drq-air>.drq-bt,
 .dr-physhost .drq-opts.drq-two>li.drq-ai:nth-child(odd) .drq-air>.drq-bt,
 #drLanding .drq-opts.drq-two>li.drq-whole .drq-air>.drq-bt{flex-direction:row!important}
+
+/* v383: ধরন ও মাধ্যম সারি — বাটন শোয়ানো, একটার নিচে আরেকটা ([অডিও] উপরে, [PDF] নিচে); মাপ ক্ষেত্র/সময়ের নিচের শোয়ানো বাটনের হুবহু (উচ্চতা ২৪, প্রস্থ ফোনের চওড়ার সাথে মিলিয়ে)। উৎস/অবস্থান/উদ্দেশ্য খাড়া আগের মতোই। নামের বাটনের মাপ আগের মতো থাকে, তাই সব সারির বাটন এক লাইনে মেলে */
+.ax-root .ax-r:is([data-r$=".0"],[data-r$=".2"]) .ax-cw .ax-cb{flex-direction:column-reverse!important;justify-content:center;align-items:center;align-self:center;gap:4px;width:59px}
+.ax-root .ax-r:is([data-r$=".0"],[data-r$=".2"]) .ax-cw .ax-cb .ax-mb{flex:none;box-sizing:border-box;width:calc(13.17vw - 5.1px);height:24px;min-height:24px;flex-direction:row;gap:2px;font-size:9px;white-space:nowrap;border-radius:8px;padding:1px 0}
+.ax-root .ax-r:is([data-r$=".0"],[data-r$=".2"]) .ax-cw .ax-cb .ax-mb::first-line{font-size:9px}
+
+/* v383: হেডিং বাটন (বদনজর/জাদু/জিন) — মাপ নামের বাটনের (মুগ্ধতা, হিংসা…) সমান: প্রস্থ ফোনের চওড়ার সাথে মিলিয়ে, উচ্চতা ৫৭; দুই পাশের PDF/অডিওর উচ্চতাও ৫৭ */
+.ax-root .ax-h3 .ax-ga,.ax-root .ax-h3 .ax-hb{height:57px;min-height:57px}
+.ax-root .ax-h3 .ax-hb{width:calc(39.5vw - 70.8px);font-size:17px}
