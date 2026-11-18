@@ -656,6 +656,7 @@ function verses(host,refs,fgl,off){let shown=0,fail=[];const step=15,g=GEN;
  host.appendChild(more);more.onclick=add;
  if("IntersectionObserver"in window){io=new IntersectionObserver(es=>{vis=es[es.length-1].isIntersecting;if(g!==GEN){io.disconnect();return}if(vis&&!fail.length&&shown<refs.length)add()},{rootMargin:"800px 0px"});io.observe(more)}
  add()}
+window.__drVerses=(h,r,f,o)=>{SB.set(new Set());return verses(h,r,f,o)};
 const vset=l=>{const u=new Set();let o=0;l.forEach(f=>f.refs.forEach(r=>{o++;u.add(r.split(":").slice(0,2).join(":"))}));return{o,u:u.size,s:u}};
 const lst=(it,exact)=>it.bn?(ALLF?it.r.forms:it.mf):((exact||it.sc===60||!it.mf)?it.r.forms:it.mf);
 function card(it,exact){const r=it.r,c=el("div","rs-root"),h=el("div","rs-rh"),
@@ -1326,7 +1327,25 @@ const renderOrganTreat=(n,list)=>{GEN++;CURT=null;window.__bq="";window.__sq=n;r
     li.appendChild(air);
     if(it.has)["pdf","au"].forEach(k=>{const h=document.createElement("div");h.className="drq-aup";h.setAttribute("data-k",k);h.hidden=true;h.style.order=String(i*2+2);li.appendChild(h)});
     ul.appendChild(li)});return ul};
-  {const h1=els("div",HS.replace("margin:16px 2px 10px","margin:0 2px 10px")+";position:relative",(ext?(mental?"🧠 মানসিক — ":"🩺 শারীরিক — "):"")+(only==="disease"?"💊 রোগভিত্তিক":"🫀 অঙ্গভিত্তিক"));h1.className="dr-combo-h";const b0=!app&&$("drBack");if(b0){const cb=b0.cloneNode(true);cb.removeAttribute("id");cb.className="dr-backbtn dr-combo-back";cb.onclick=()=>b0.click();h1.appendChild(cb)}if(only==="organ"||only==="disease"){const bt=document.createElement("span");bt.className="drq-bt";const cq=(mental?"মানসিক ":"শারীরিক ")+(only==="disease"?"রোগভিত্তিক":"অঙ্গভিত্তিক");bt.innerHTML='<button type="button" class="drq-pd" data-au="x" data-c="'+cq+'" aria-label="'+cq+' — PDF"><span class="drq-bi">📄</span><span class="drq-bl"> PDF</span></button><button type="button" class="drq-au drq-hv" data-au="x" data-c="'+cq+'" aria-label="'+cq+' — অডিও">🔊<span class="drq-bl"> অডিও</span></button>';h1.appendChild(bt)}host.appendChild(h1)}
+  {const hasBt=only==="organ"||only==="disease",lab0=(ext?(mental?"মানসিক\n":"শারীরিক\n"):"")+(only==="disease"?"রোগভিত্তিক":"অঙ্গভিত্তিক");
+   const h1=els("div",HS.replace("margin:16px 2px 10px","margin:0 2px 10px")+";position:relative",hasBt?"":(ext?(mental?"🧠 মানসিক — ":"🩺 শারীরিক — "):"")+(only==="disease"?"💊 রোগভিত্তিক":"🫀 অঙ্গভিত্তিক"));h1.className="dr-combo-h";const b0=!app&&$("drBack");if(b0){const cb=b0.cloneNode(true);cb.removeAttribute("id");cb.className="dr-backbtn dr-combo-back";cb.onclick=()=>b0.click();h1.appendChild(cb)}
+   /* হেডিং এখন বাটন: বাঁয়ে PDF, ডানে অডিও (তিনটির মাপ সমান); হেডিংয়ে চাপলে নিচের সব অঙ্গ/রোগের আয়াত লিখিতভাবে একসাথে (আয়াত একবারই, PDF/অডিওর তালিকার মতো) */
+   if(hasBt){const bt=document.createElement("span");bt.className="drq-bt";const cq=(mental?"মানসিক ":"শারীরিক ")+(only==="disease"?"রোগভিত্তিক":"অঙ্গভিত্তিক");
+    bt.innerHTML='<button type="button" class="drq-pd" data-au="x" data-c="'+cq+'" aria-label="'+cq+' — PDF"><span class="drq-bi">📄</span><span class="drq-bl"> PDF</span></button><button type="button" class="dr-hb" aria-label="'+cq+' — সব আয়াত লিখিত দেখান"></button><button type="button" class="drq-au drq-hv" data-au="x" data-c="'+cq+'" aria-label="'+cq+' — অডিও">🔊<span class="drq-bl"> অডিও</span></button>';
+    const hb=bt.querySelector(".dr-hb");hb.textContent=lab0;
+    hb.onclick=async()=>{const old=host.querySelector(".dr-hpn"),was=hb.classList.contains("on");if(old)old.remove();hb.classList.remove("on");if(was)return;
+     hb.classList.add("on");const pn=els("div",null);pn.className="dr-hpn";const hd=els("div",null);hd.className="dr-hph";const tt=els("span",null,cq+" — সব আয়াত");const xb=document.createElement("button");xb.type="button";xb.className="dr-hpx";xb.textContent="✕";xb.setAttribute("aria-label","বন্ধ করুন");xb.onclick=()=>{pn.remove();hb.classList.remove("on")};hd.append(tt,xb);
+     const body=els("div",null,"⏳ আয়াত লোড হচ্ছে…");pn.append(hd,body);h1.after(pn);
+     let items;try{items=await window.__drGroupItems(cq)}catch(e){body.textContent="আয়াত লোড করা যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
+     if(!pn.isConnected||!window.__drVerses)return;body.textContent="";const seen=new Set();let tot=0;const secs=[];
+     items.forEach(it=>{const refs=[];it.keys.forEach(k=>{const id=k[0]+":"+k[1];if(!seen.has(id)){seen.add(id);refs.push(id)}});if(refs.length){secs.push({n:it.name,refs});tot+=refs.length}});
+     tt.textContent=cq+" — সব আয়াত ("+bn2(tot)+"টি)";if(!secs.length){body.textContent="এখনো কোনো আয়াত যোগ হয়নি।";return}
+     secs.forEach(x=>{const hh=els("div","margin:14px 2px 6px;padding-bottom:5px;border-bottom:1.5px solid var(--accent);font-weight:800;font-size:15px;color:var(--accent)",x.n+" ("+bn2(x.refs.length)+"টি)"),c=els("div","min-height:140px");c.className="rs-v";body.append(hh,c);
+      let on=false;const go=()=>{if(on)return;on=true;c.style.minHeight="";window.__drVerses(c,x.refs,"",0)};
+      if(!("IntersectionObserver"in window)){go();return}
+      const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){io.disconnect();go()}},{rootMargin:"900px 0px"});io.observe(c)})};
+    h1.appendChild(bt)}
+   host.appendChild(h1)}
   const prO=mental?"মানসিক অঙ্গ":"শারীরিক অঙ্গ",prD=mental?"মানসিক সমস্যা":"শারীরিক রোগ";
   if(only!=="disease")host.appendChild(mkList(organs.map(n=>({name:n,has:true,fn:()=>window.__drOpenOrgan(n)})),prO));
   if(!only){const h2=els("div",HS,mental?"💊 সমস্যাভিত্তিক":"💊 রোগভিত্তিক");h2.className="dr-combo-h2";host.appendChild(h2)}

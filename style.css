@@ -1234,3 +1234,13 @@ body:not(.dr-unlocked) [data-lock],body:not(.dr-unlocked) #drLogout{display:none
 .ax-root .ax-h3 .ax-ga,.ax-root .ax-h3 .ax-hb{flex:none;box-sizing:border-box;width:54px;min-height:46px;height:auto}
 .ax-root .ax-h3 .ax-hb{padding:2px;border:1.5px solid color-mix(in srgb,var(--primary) 55%,transparent);border-radius:10px;background:var(--primary-light);color:var(--primary);font:inherit;font-size:13px;font-weight:800;line-height:1.15;cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;-webkit-tap-highlight-color:transparent}
 .ax-root .ax-h3 .ax-hb.on{background:var(--primary);color:#fff}
+
+/* শারীরিক/মানসিক পাতার হেডিং-বাটন (অঙ্গভিত্তিক/রোগভিত্তিক): বাঁয়ে PDF, মাঝে হেডিং, ডানে অডিও — তিনটির মাপ সমান; চাপলে সব আয়াত লিখিতভাবে */
+.dr-combo-h:has(.dr-hb){background:none;border:0;padding:4px 0;justify-content:center}
+.dr-combo-h .drq-bt:has(.dr-hb){display:flex;align-items:stretch;justify-content:center;gap:6px;margin:0}
+.dr-combo-h .drq-bt:has(.dr-hb) .drq-pd,.dr-combo-h .drq-bt:has(.dr-hb) .drq-au,.dr-combo-h .drq-bt .dr-hb{box-sizing:border-box;width:74px;height:52px;padding:0 3px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:10px;line-height:1.15}
+.dr-combo-h .drq-bt .dr-hb{border:1.5px solid color-mix(in srgb,var(--primary) 55%,transparent);background:var(--primary-light);color:var(--primary);font:inherit;font-size:12.5px;font-weight:800;white-space:pre-line;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dr-combo-h .drq-bt .dr-hb.on{background:var(--primary);color:#fff}
+.dr-hpn{margin:6px 2px 12px;padding:8px 8px 10px;border:1.5px solid color-mix(in srgb,var(--primary) 40%,transparent);border-radius:14px}
+.dr-hph{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:800;color:var(--primary);padding:2px 4px 6px}
+.dr-hpx{border:0;border-radius:8px;padding:3px 10px;background:var(--primary);color:#fff;font:inherit;cursor:pointer}
