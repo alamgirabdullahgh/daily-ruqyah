@@ -1,72 +1,5 @@
 {
- "tasks": [
-  {
-   "id": 46,
-   "text": "noorfashionknitwearmail@gmail.com \n***\nপ্রথম ভিডিও এজেন্ট এ এই ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন কর",
-   "status": "done",
-   "agent": "browser",
-   "target": "claude",
-   "progress": 100,
-   "note": "🤖 Gemini:\nnoorfashionknitwearmail@gmail.com ইমেইল দিয়ে প্রথম ভিডিও এজেন্ট (Google Videos 1) ওয়ার্কস্পেসে লগইন শুরু করে দিয়েছি। কিছুক্ষণের মধ্যে প্রক্রিয়াটি সম্পন্ন হবে।",
-   "created": "2026-11-10 17:23",
-   "updated": "2026-11-10 17:23"
-  },
-  {
-   "id": 47,
-   "text": "alamgirabdullahmail@gmail.com \n***\nদ্বিতীয় ভিডিও এজেন্ট এ এই ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন কর",
-   "status": "done",
-   "agent": "browser",
-   "target": "claude",
-   "progress": 100,
-   "note": "🤖 Gemini:\nalamgirabdullahmail@gmail.com ইমেইল দিয়ে দ্বিতীয় ভিডিও এজেন্টে (Google Videos 2) লগইন করার প্রক্রিয়া সম্পন্ন করেছি।",
-   "created": "2026-11-10 17:27",
-   "updated": "2026-11-10 17:28"
-  },
-  {
-   "id": 48,
-   "text": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts\nএই লিংক দিয়ে ১৭ টি ওয়ার্ক স্পেস তৈরি করে দাও \n17 টা work space তৈরি করার পর \nশুরু থেকে প্রতিটাতে নিচে থাকা সিরিয়াল অনুযায়ী ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন করতে থাকবে \n99alamgir22@gmail.com\n***\n\nalamgirabdullah24@gmail.com\n***\n\nAbrar2001fahad@gmail.com\n***\n\nAlamgir1641999@gmail.com\n***\n\nalamgirabdullah2024@gmail.com\n***\n\nalamgirabdullahall@gmail.com\n***\n\nalamgirabdullahofficial@gmail.com\n***\n\ntalabah2022@gmail.com\n***\n\nruqyahmedicalcenter@gmail.com\n***\n\nraqiabdullahmail@gmail.com \n***\n\nrahgroupmail@gmail.com\n***\n\nalamgirabdullahmail@gmail.com\n***\n\nraqialamgirabdullah@gmail.com\n***\n\nAlamgir.abdullah@yahoo.com\n***",
-   "status": "done",
-   "agent": "browser",
-   "target": "claude",
-   "progress": 100,
-   "note": "🤖 Gemini:\nGemini মাঝপথে সাড়া দেয়নি (gemini-3.7-flash: SocketTimeoutException (timeout)) — কাজ আংশিক হয়ে থাকতে পারে; আবার বললে বাকিটা দেখে নেব।",
-   "created": "2026-11-11 08:35",
-   "updated": "2026-11-11 08:39"
-  },
-  {
-   "id": 49,
-   "text": "অডিও এজেন্ট এর ওয়ার্ক এ স্পেস এর মধ্যে থাকা নামগুলো ডিলিট করে দাও",
-   "status": "done",
-   "agent": "browser",
-   "target": "claude",
-   "progress": 100,
-   "note": "🤖 Gemini:\nঅডিও এজেন্টের ওয়ার্কস্পেসের নামগুলো সরাসরি ব্রাউজার বা সিস্টেম টুল দিয়ে মুছে ফেলা বা রিনেম করার কোনো নির্দিষ্ট কমান্ড আমার টুলের মধ্যে নেই। আপনি চাইলে ব্রাউজারের ওয়ার্কস্পেস সেটিংস থেকে এগুলো manually ডিলিট বা পরিবর্তন করে নিতে পারেন।",
-   "created": "2026-11-11 08:39",
-   "updated": "2026-11-11 08:39"
-  },
-  {
-   "id": 50,
-   "text": "তাহলে অডিও এজেন্ট ওয়ার্ক স্পেসে থাকা \nসবগুলো আইটেম ডিলিট করে দাও",
-   "status": "done",
-   "agent": "browser",
-   "target": "claude",
-   "progress": 100,
-   "note": "🤖 Gemini:\nআমার সিস্টেমের ওয়ার্কস্পেসগুলোর ভেতর থেকে নির্দিষ্ট কোনো পেজের ভেতরের আইটেম বা প্রজেক্ট নিজে থেকে ডিলিট করার কোনো স্বয়ংক্রিয় কমান্ড আমার টুলসে নেই। তাই অডিও এজেন্ট ওয়ার্কস্পেসের ভে তরে থাকা আইটেমগুলো আপনাকে ম্যানুয়ালি ডিলিট করে নিতে হবে।",
-   "created": "2026-11-11 08:50",
-   "updated": "2026-11-11 08:51"
-  },
-  {
-   "id": 51,
-   "text": "অডিও এজেন্টের ওয়ার্ক স্পেস সবগুলো মুছে দাও",
-   "status": "done",
-   "agent": "browser",
-   "target": "claude",
-   "progress": 100,
-   "note": "🤖 Gemini:\nঅডিও এজেন্ট সম্পর্কিত কোনো নির্দিষ্ট ওয়ার্কস্পেস বা সাইট আমার তালিকায় পাওয়া যায়নি। আপনি চাইলে নির্দিষ্ট কোনো সাইট বা নাম উল্লেখ করতে পারেন, তাহলে সে অনুযায়ী ওয়ার্কস্পেস মুছে ফেলতে পারব।",
-   "created": "2026-11-17 03:39",
-   "updated": "2026-11-17 03:43"
-  }
- ],
+ "tasks": [],
  "agents": {
   "claude": {
    "state": "limit",
@@ -79,152 +12,103 @@
    "seen": "2026-11-17 16:39"
   }
  },
- "events": [
-  {
-   "t": "2026-11-10 17:23",
-   "msg": "নতুন কাজ #46 → claude: noorfashionknitwearmail@gmail.com \n***\nপ্রথম ভিডিও এজেন্ট এ "
-  },
-  {
-   "t": "2026-11-10 17:23",
-   "msg": "টাস্ক #46: Gemini শেষ করল"
-  },
-  {
-   "t": "2026-11-10 17:27",
-   "msg": "নতুন কাজ #47 → claude: alamgirabdullahmail@gmail.com \n***\nদ্বিতীয় ভিডিও এজেন্ট এ এ"
-  },
-  {
-   "t": "2026-11-10 17:28",
-   "msg": "টাস্ক #47: Gemini শেষ করল"
-  },
-  {
-   "t": "2026-11-11 08:35",
-   "msg": "নতুন কাজ #48 → claude: https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5"
-  },
-  {
-   "t": "2026-11-11 08:39",
-   "msg": "নতুন কাজ #49 → claude: অডিও এজেন্ট এর ওয়ার্ক এ স্পেস এর মধ্যে থাকা নামগুলো ডিলিট ক"
-  },
-  {
-   "t": "2026-11-11 08:39",
-   "msg": "টাস্ক #48: Gemini শেষ করল"
-  },
-  {
-   "t": "2026-11-11 08:39",
-   "msg": "টাস্ক #49: Gemini শেষ করল"
-  },
-  {
-   "t": "2026-11-11 08:50",
-   "msg": "নতুন কাজ #50 → claude: তাহলে অডিও এজেন্ট ওয়ার্ক স্পেসে থাকা \nসবগুলো আইটেম ডিলিট কর"
-  },
-  {
-   "t": "2026-11-11 08:51",
-   "msg": "টাস্ক #50: Gemini শেষ করল"
-  },
-  {
-   "t": "2026-11-17 03:39",
-   "msg": "নতুন কাজ #51 → claude: অডিও এজেন্টের ওয়ার্ক স্পেস সবগুলো মুছে দাও"
-  },
-  {
-   "t": "2026-11-17 03:43",
-   "msg": "টাস্ক #51: Gemini শেষ করল"
-  }
- ],
+ "events": [],
  "seq": 51,
  "sites_backup": [
   {
    "id": "s1794132254333",
    "n": "99alamgir22@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132265333",
    "n": "alamgirabdullah24@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132273461",
    "n": "abrar2001fahad@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132277355",
    "n": "alamgir1641999@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132281171",
    "n": "alamgirabdullah2024@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132284785",
    "n": "alamgirabdullahall@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132289006",
    "n": "alamgirabdullahofficial@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132294840",
    "n": "talabah2022@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132298475",
    "n": "ruqyahmedicalcenter@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132302842",
    "n": "raqiabdullahmail@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132306487",
    "n": "Reserve",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132310107",
    "n": "alamgirabdullahmail@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132313945",
    "n": "raqialamgirabdullah@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132317213",
    "n": "ruqyahhavenofficial@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132320639",
    "n": "ruqyah.haven.jessore@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132324506",
    "n": "noorfashionknitwearmail@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794272392197",
    "n": "alamgir.abdullah@yahoo.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794509698939",
    "n": "sharminakter12625@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794932066464",
    "n": "noorfashionknitwear@gmail.com",
-   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
   }
  ]
 }
