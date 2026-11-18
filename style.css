@@ -1244,3 +1244,12 @@ body:not(.dr-unlocked) [data-lock],body:not(.dr-unlocked) #drLogout{display:none
 .dr-hpn{margin:6px 2px 12px;padding:8px 8px 10px;border:1.5px solid color-mix(in srgb,var(--primary) 40%,transparent);border-radius:14px}
 .dr-hph{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:800;color:var(--primary);padding:2px 4px 6px}
 .dr-hpx{border:0;border-radius:8px;padding:3px 10px;background:var(--primary);color:#fff;font:inherit;cursor:pointer}
+
+/* সারির মাঝে ফাঁকা বাড়ানো (ঘন লাগছিল); এক হেডিংয়ের শেষ সারি আর পরের হেডিং লেগে যেত — এখন আলাদা ফাঁকা; হেডিংয়ের তিন বাটনের উচ্চতা সমান */
+.ax-root .ax-r{margin:0 0 14px}
+.ax-root .ax-tb{margin:12px 0 0}
+.ax-root .ax-g{margin:0 0 6px}
+.ax-root .ax-g+.ax-g:not([hidden]){margin-top:30px;padding-top:22px;border-top:1px dashed color-mix(in srgb,var(--primary) 35%,transparent)}
+.ax-root .zs>h3.ax-h3{align-items:stretch}
+.ax-root .ax-h3 .ax-ga,.ax-root .ax-h3 .ax-hb{height:50px;min-height:50px}
+.ax-root .ax-h3 .ax-hb{font-size:14.5px}

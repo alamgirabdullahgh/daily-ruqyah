@@ -129,10 +129,8 @@ function buildGroup(gi,g){const sec=el("section","ax-g zs");sec.dataset.slug=g.s
  sec.appendChild(tb);return sec}
 
 /* সব ঘরের লেখা একই মাপে: পুরো চার্টের সবচেয়ে চাপা ঘরটা যে মাপে আঁটে, সব বাটনে সেই এক মাপ (দৃশ্যমান অবস্থায় মাপা যায়) */
-function fitH(R){/* পুরো চার্ট এক স্ক্রিনে: নিচের নেভিগেশন বাদে যতটুকু জায়গা, তার চেয়ে লম্বা হলে ছোট করে আঁটানো */
- const gs=[...R.querySelectorAll(".ax-g:not([hidden])")];if(!gs.length||R.querySelector(".ax-p"))return;
- gs.forEach(g=>g.style.zoom="");const g=gs[0],r=g.getBoundingClientRect();if(!r.height)return;
- const avail=innerHeight-64-r.top,z=Math.max(.6,Math.min(1,avail/r.height));if(z<1)gs.forEach(x=>x.style.zoom=z.toFixed(3))}
+function fitH(R){/* আগে পুরো চার্ট এক স্ক্রিনে আঁটাতে ছোট (zoom) করা হতো; এখন আর নয় — সারির ফাঁকা বেশি, পাতা স্ক্রল হয়, লেখা ছোট হয় না */
+ R.querySelectorAll(".ax-g").forEach(g=>{g.style.zoom=""})}
 function fit(R){const rows=[...R.querySelectorAll(".ax-g:not([hidden]) .ax-ro")].filter(o=>o.querySelector(".ax-c")&&o.querySelector(".ax-c").clientWidth);
  if(rows.length){const all=rows.flatMap(o=>[...o.querySelectorAll(".ax-c")]);let s=17;all.forEach(b=>b.style.fontSize=s+"px");while(s>13&&all.some(b=>b.scrollWidth>b.clientWidth)){s-=.25;all.forEach(b=>b.style.fontSize=s+"px")}}
  const hs=[...R.querySelectorAll(".ax-g:not([hidden]) .ax-rh")].filter(h=>h.clientWidth);
