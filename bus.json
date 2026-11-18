@@ -1,5 +1,17 @@
 {
- "tasks": [],
+ "tasks": [
+  {
+   "id": 54,
+   "text": "AI Studio ওয়ার্কস্পেসগুলো থেকে এপিআই কি বের করো",
+   "status": "queued",
+   "agent": "",
+   "target": "claude",
+   "progress": 0,
+   "note": "",
+   "created": "2026-11-18 08:00",
+   "updated": "2026-11-18 08:00"
+  }
+ ],
  "agents": {
   "claude": {
    "state": "limit",
@@ -12,8 +24,13 @@
    "seen": "2026-11-17 16:39"
   }
  },
- "events": [],
- "seq": 53,
+ "events": [
+  {
+   "t": "2026-11-18 08:00",
+   "msg": "নতুন কাজ #54 → claude: AI Studio ওয়ার্কস্পেসগুলো থেকে এপিআই কি বের করো"
+  }
+ ],
+ "seq": 54,
  "sites_backup": [
   {
    "id": "s1794132254333",
