@@ -10,17 +10,6 @@
    "note": "🤖 Gemini:\nএআই স্টুডিওর জন্য পাঁচটি নতুন ওয়ার্কস্পেস সফলভাবে তৈরি করে এই পাঁচটি জিমেইল দিয়ে লগইন প্রক্রিয়া শুরু করেছি। এপিআই কি (API Key) তৈরির প্রক্রিয়াটি স্বয়ংক্রিয়ভাবে সম্পন্ন করা সম্ভব নয়, তাই সেটি আপনাকে নিজে থেকে করে নিতে হবে।",
    "created": "2026-11-18 07:31",
    "updated": "2026-11-18 07:32"
-  },
-  {
-   "id": 53,
-   "text": "দেখো নতুনভাবে সিস্টেম করা হয়েছে এ পি আই কি তৈরি করার চেষ্টা করে দেখো",
-   "status": "queued",
-   "agent": "",
-   "target": "claude",
-   "progress": 0,
-   "note": "Gemini: কোডিং এজেন্টকে দেওয়া হলো",
-   "created": "2026-11-18 07:47",
-   "updated": "2026-11-18 07:47"
   }
  ],
  "agents": {
@@ -51,6 +40,10 @@
   {
    "t": "2026-11-18 07:47",
    "msg": "টাস্ক #53: Gemini এজেন্টে পাঠাল"
+  },
+  {
+   "t": "2026-11-18 07:59",
+   "msg": "কাজ #53 বাতিল করা হলো"
   }
  ],
  "seq": 53,
@@ -58,122 +51,122 @@
   {
    "id": "s1794132254333",
    "n": "99alamgir22@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132265333",
    "n": "alamgirabdullah24@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132273461",
    "n": "abrar2001fahad@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132277355",
    "n": "alamgir1641999@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132281171",
    "n": "alamgirabdullah2024@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132284785",
    "n": "alamgirabdullahall@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132289006",
    "n": "alamgirabdullahofficial@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132294840",
    "n": "talabah2022@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132298475",
    "n": "ruqyahmedicalcenter@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132302842",
    "n": "raqiabdullahmail@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132306487",
    "n": "Reserve",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132310107",
    "n": "alamgirabdullahmail@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132313945",
    "n": "raqialamgirabdullah@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132317213",
    "n": "ruqyahhavenofficial@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132320639",
    "n": "ruqyah.haven.jessore@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794132324506",
    "n": "noorfashionknitwearmail@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794272392197",
    "n": "alamgir.abdullah@yahoo.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794509698939",
    "n": "sharminakter12625@gmail.com",
-   "u": "https:\/\/claude.ai\/code"
+   "u": "https://claude.ai/code"
   },
   {
    "id": "s1794932066464",
    "n": "noorfashionknitwear@gmail.com",
-   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
   },
   {
    "id": "s1794987087646",
    "n": "99alamgir22@gmail.com",
-   "u": "https:\/\/aistudio.google.com"
+   "u": "https://aistudio.google.com"
   },
   {
    "id": "s1794987087647",
    "n": "alamgirabdullah24@gmail.com",
-   "u": "https:\/\/aistudio.google.com"
+   "u": "https://aistudio.google.com"
   },
   {
    "id": "s1794987087648",
    "n": "abrar2001fahad@gmail.com",
-   "u": "https:\/\/aistudio.google.com"
+   "u": "https://aistudio.google.com"
   },
   {
    "id": "s1794987087649",
    "n": "alamgir1641999@gmail.com",
-   "u": "https:\/\/aistudio.google.com"
+   "u": "https://aistudio.google.com"
   },
   {
    "id": "s1794987087650",
    "n": "alamgirabdullah2024@gmail.com",
-   "u": "https:\/\/aistudio.google.com"
+   "u": "https://aistudio.google.com"
   }
  ]
 }
