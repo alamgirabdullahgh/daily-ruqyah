@@ -1267,10 +1267,9 @@ body:not(.dr-unlocked) [data-lock],body:not(.dr-unlocked) #drLogout{display:none
 /* v386: বদনজর কার্ডের মাপ সব জায়গায় — নামের বাটন উচ্চতা ৪৬ (প্রস্থ সর্বোচ্চ ৯৭, জায়গা কম হলে যতটা আঁটে); PDF/অডিও বাটন ৪৬×৩৪ শোয়ানো, খাড়া হলে ৩৪×৪৬ (শুধু ঘুরানো)। চার্ট (হেডিং, সারির নাম, সব সারি) ও হোমের শারীরিক/তালিকা সবখানে */
 .ax-root .ax-mb,.ax-root .ax-ga,.ax-root .ax-rb .ax-mb,.ax-root .ax-h3 .ax-ga{box-sizing:border-box!important;width:34px!important;min-width:34px!important;height:46px!important;min-height:46px!important;padding:1px 0!important;border-radius:8px!important;flex:none!important;font-size:8.5px!important}
 .ax-root .ax-mb::first-line,.ax-root .ax-ga::first-line{font-size:12px!important}
-.ax-root .ax-ro.ax-3 .ax-cb .ax-mb,.ax-root .ax-r:is([data-r$=".0"],[data-r$=".2"]) .ax-cw .ax-cb .ax-mb{width:46px!important;min-width:46px!important;height:34px!important;min-height:34px!important;font-size:9px!important}
-.ax-root .ax-ro.ax-3 .ax-cb .ax-mb::first-line,.ax-root .ax-r:is([data-r$=".0"],[data-r$=".2"]) .ax-cw .ax-cb .ax-mb::first-line{font-size:9px!important}
+.ax-root .ax-ro.ax-3 .ax-cb .ax-mb{width:46px!important;min-width:46px!important;height:34px!important;min-height:34px!important;font-size:9px!important}
+.ax-root .ax-ro.ax-3 .ax-cb .ax-mb::first-line{font-size:9px!important}
 .ax-root .ax-ro.ax-3 .ax-cb{justify-content:space-between}
-.ax-root .ax-r:is([data-r$=".0"],[data-r$=".2"]) .ax-cw .ax-cb{flex-direction:column-reverse!important;justify-content:center;align-items:center;gap:4px;width:71px!important}
 .ax-root .ax-ro:not(.ax-3) .ax-cw .ax-cb{align-self:center!important;width:71px!important}
 .ax-root .ax-ro:not(.ax-3)>.ax-cw{align-items:center}
 .ax-root .ax-cw .ax-c{height:46px!important;min-height:46px!important;max-width:97px}
