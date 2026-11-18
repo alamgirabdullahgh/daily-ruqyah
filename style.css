@@ -1255,3 +1255,11 @@ body:not(.dr-unlocked) [data-lock],body:not(.dr-unlocked) #drLogout{display:none
 .ax-root .ax-h3 .ax-hb{font-size:14.5px}
 /* ধরন সারির মৌলিক বাটনে ছোট তারা (শুধু চিহ্ন, আর কিছু বদলায় না) */
 .ax-root .ax-c .ax-st{position:absolute;top:2px;right:5px;font-size:11px;line-height:1;color:#c9a227;pointer-events:none}
+/* বাটনের পাশে সবসময় অডিও: বাম পাশের জোড়া [PDF][অডিও][নাম], ডান পাশের ও নিচের জোড়া [নাম][অডিও][PDF] — চার্ট (সব পাতা ও হোমের ট্যাব) ও হোমের তালিকা সবখানে */
+.ax-root .ax-cw .ax-cb{flex-direction:row-reverse}
+.ax-root .ax-ro:not(.ax-3)>.ax-cw:first-child .ax-cb{flex-direction:row}
+.ax-root .ax-ro:not(.ax-3):not(:has(>.ax-cw:nth-child(3)))>.ax-cw:first-child .ax-cb{flex-direction:row}
+.drq-opts .drq-bt{flex-direction:row-reverse!important}
+#drLanding .drq-opts.drq-two:not(.drq-three)>li.drq-ai:first-child .drq-air>.drq-bt,
+.dr-physhost .drq-opts.drq-two>li.drq-ai:nth-child(odd) .drq-air>.drq-bt,
+#drLanding .drq-opts.drq-two>li.drq-whole .drq-air>.drq-bt{flex-direction:row!important}
