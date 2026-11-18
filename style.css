@@ -1272,3 +1272,17 @@ body:not(.dr-unlocked) [data-lock],body:not(.dr-unlocked) #drLogout{display:none
 /* v383: হেডিং বাটন (বদনজর/জাদু/জিন) — মাপ নামের বাটনের (মুগ্ধতা, হিংসা…) সমান: প্রস্থ ফোনের চওড়ার সাথে মিলিয়ে, উচ্চতা ৫৭; দুই পাশের PDF/অডিওর উচ্চতাও ৫৭ */
 .ax-root .ax-h3 .ax-ga,.ax-root .ax-h3 .ax-hb{height:57px;min-height:57px}
 .ax-root .ax-h3 .ax-hb{width:calc(39.5vw - 70.8px);font-size:17px}
+
+/* v384: চার্টের সব PDF/অডিও বাটন এক মাপের — শোয়ানো: প্রস্থ --bw × উচ্চতা ২৪; খাড়া: প্রস্থ ২৪ × উচ্চতা --bw (শুধু ঘুরানো, মাপ একই)। হেডিংয়ের দুই পাশ, সারির নামের ঘর, দুই ঘর/তিন ঘরের সারি সবখানে */
+.ax-root{--bw:calc(13.17vw - 5.1px)}
+.ax-root .ax-mb,.ax-root .ax-ga,.ax-root .ax-rb .ax-mb,.ax-root .ax-h3 .ax-ga{box-sizing:border-box!important;width:24px!important;min-width:24px!important;height:var(--bw)!important;min-height:var(--bw)!important;padding:1px 0!important;border-radius:8px!important;font-size:8px!important;flex:none!important}
+.ax-root .ax-mb::first-line,.ax-root .ax-ga::first-line{font-size:12px!important}
+.ax-root .ax-ro.ax-3 .ax-cb .ax-mb,.ax-root .ax-r:is([data-r$=".0"],[data-r$=".2"]) .ax-cw .ax-cb .ax-mb{width:var(--bw)!important;min-width:var(--bw)!important;height:24px!important;min-height:24px!important;font-size:9px!important}
+.ax-root .ax-ro.ax-3 .ax-cb .ax-mb::first-line,.ax-root .ax-r:is([data-r$=".0"],[data-r$=".2"]) .ax-cw .ax-cb .ax-mb::first-line{font-size:9px!important}
+.ax-root .ax-ro.ax-3 .ax-cb{justify-content:space-between}
+.ax-root .ax-ro:not(.ax-3) .ax-cw .ax-cb{width:51px!important}
+.ax-root .ax-rb{align-self:center}
+.ax-root .ax-h3 .ax-hb{width:calc(39.5vw - 62.8px)}
+.ax-root .ax-h3 .ax-hb{height:calc(var(--bw) + 26px)!important;min-height:calc(var(--bw) + 26px)!important}
+.ax-root .ax-h3 .ax-ga{align-self:center}
+.ax-root .ax-ro:not(.ax-3) .ax-cw .ax-cb{align-self:center!important}
