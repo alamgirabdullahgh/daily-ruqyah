@@ -36,6 +36,11 @@ public class MainActivity extends BridgeActivity {
         super.onCreate(savedInstanceState);
         try {
             WebView w = getBridge().getWebView();
+            // পুরো অ্যাপে দুই আঙুলে চিমটি কেটে লেখা জুম (বড়/ছোট) করে পড়া যাবে; জুমের +/- বোতাম দেখানো হবে না
+            android.webkit.WebSettings ws = w.getSettings();
+            ws.setSupportZoom(true);
+            ws.setBuiltInZoomControls(true);
+            ws.setDisplayZoomControls(false);
             w.addJavascriptInterface(new Dl(), "DRDl");
             // অডিও প্লেয়ারের তিন-ডট মেনুর "Download" (blob:) ধরে একই সেভারে পাঠায়
             w.setDownloadListener((url, ua, cd, mime, len) -> {
