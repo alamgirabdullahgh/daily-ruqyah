@@ -1229,3 +1229,8 @@ body:not(.dr-unlocked) [data-lock],body:not(.dr-unlocked) #drLogout{display:none
 .bd-pb .bd-a{flex:none;width:54px;padding:7px 2px}
 .bd-top .bd-acts{max-width:none}
 .bd-top .bd-a small{white-space:normal;text-align:center;line-height:1.25}
+
+/* হেডিং-বাটন: বদনজর/জাদু/জিন — বাঁয়ে PDF, মাঝে হেডিং, ডানে অডিও; তিনটির মাপ সমান */
+.ax-root .ax-h3 .ax-ga,.ax-root .ax-h3 .ax-hb{flex:none;box-sizing:border-box;width:54px;min-height:46px;height:auto}
+.ax-root .ax-h3 .ax-hb{padding:2px;border:1.5px solid color-mix(in srgb,var(--primary) 55%,transparent);border-radius:10px;background:var(--primary-light);color:var(--primary);font:inherit;font-size:13px;font-weight:800;line-height:1.15;cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.ax-root .ax-h3 .ax-hb.on{background:var(--primary);color:#fff}

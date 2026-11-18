@@ -56,7 +56,7 @@ const loadOrg=()=>Promise.resolve();/* অঙ্গ-প্রত্যঙ্গ�
 const isBodyCell=(c,n)=>c.name==="অবস্থান"&&n==="শরীরে";
 const hasBody=id=>{const t=id[0];if(t==="g")return true;const p=id.slice(1).split(".").map(Number);return t==="r"?DATA.axes[p[0]].cols[p[1]].name==="অবস্থান":isBodyCell(DATA.axes[p[0]].cols[p[1]],DATA.axes[p[0]].cols[p[1]].opts[p[2]])};
 
-function closePanel(R){R.__g=(R.__g||0)+1;R.querySelectorAll(".ax-p").forEach(x=>x.remove());R.querySelectorAll(".ax-c.on").forEach(x=>x.classList.remove("on"))}
+function closePanel(R){R.__g=(R.__g||0)+1;R.querySelectorAll(".ax-p").forEach(x=>x.remove());R.querySelectorAll(".ax-c.on,.ax-hb.on").forEach(x=>x.classList.remove("on"))}
 
 async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").map(Number),G=DATA.axes[gi],C=DATA.cells[key];
  const R=btn.closest(".ax-root");closePanel(R);const my=R.__g;btn.classList.add("on");
@@ -92,11 +92,36 @@ async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").m
  await add();
  if(my===GEN&&"IntersectionObserver"in window&&shown<more.length){io=new IntersectionObserver(es=>{if(my!==R.__g){io.disconnect();return}if(es[es.length-1].isIntersecting&&!busy&&shown<more.length)add()},{rootMargin:"600px 0px"});io.observe(btnMore)}}
 
+/* হেডিং-বাটন (বদনজর/জাদু/জিন): চাপলে ওই হেডিংয়ের নিচের সব ঘরের আয়াত, ঘরের ক্রমে, ঘরের নামের সাব-হেডিংসহ লিখিতভাবে একসাথে। প্রতিক্রিয়া পাতায় শুধু মৌলিক আয়াত, অন্যত্র মৌলিক + বাকি সব (PDF/অডিওর তালিকার মতোই) */
+async function openGroup(btn){const gi=+btn.dataset.g,G=DATA.axes[gi],R=btn.closest(".ax-root");closePanel(R);const my=R.__g;btn.classList.add("on");
+ const sec=btn.closest(".ax-g"),pn=el("div","ax-p"),md=R.__mode;
+ const q=[];let cnt=0;
+ G.cols.forEach((c,ci)=>c.opts.forEach((n,oi)=>{const key=gi+"."+ci+"."+oi,C=DATA.cells[key];if(!C)return;
+  const rs=C.b.map(r=>({ref:{s:r[0],a:r[1],f:r[2],t:r[3],ck:key,id:"b|"+r[0]+":"+r[1],cn:n},base:true}));
+  if(md!=="resp")C.m.forEach(v=>{const p=v.split(":").map(Number),qq=C.mp&&C.mp[v];rs.push({ref:{s:p[0],a:p[1],w:p[2]||0,f:qq?qq[0]:0,t:qq?qq[1]:0,ck:key,id:"m|"+v,cn:n},base:false})});
+  if(rs.length){q.push({head:c.name+" › "+n});rs.forEach(r=>{q.push(r);cnt++})}}));
+ const hd=el("div","ax-ph"),x=el("button","ax-x","✕");x.type="button";x.setAttribute("aria-label","বন্ধ করুন");x.onclick=()=>closePanel(R);
+ hd.append(el("span",null,G.name+" — সব আয়াত"+(cnt?" ("+bn2(cnt)+"টি)":"")),x);pn.append(hd);
+ const lg=el("div","ax-lg");lg.append(el("span","rs-gold","সোনালি অংশ")," = মৌলিক অংশ");pn.appendChild(lg);
+ sec.querySelector(".ax-h3").after(pn);
+ if(!q.length){pn.appendChild(el("div","ax-n","এই হেডিংয়ের আয়াত এখনো যোগ হয়নি।"));return}
+ const lst=el("div","rs-v"),btnMore=el("button","rs-more");btnMore.type="button";pn.append(lst,btnMore);
+ let pos=0,done=0,busy=false,io=null;
+ const add=async()=>{if(busy)return;busy=true;btnMore.disabled=true;btnMore.textContent="আয়াত লোড হচ্ছে…";let n=0;
+  while(pos<q.length&&n<STEP){const it=q[pos++];if(it.head){lst.appendChild(el("div","ax-sh",it.head));continue}
+   const c=await verseCard(it.ref,it.base).catch(()=>null);if(my!==R.__g){io&&io.disconnect();return}if(c)lst.appendChild(c);n++;done++}
+  busy=false;btnMore.disabled=false;
+  if(pos<q.length)btnMore.textContent="আরও আয়াত দেখান ("+bn2(cnt-done)+" বাকি)";else{btnMore.style.display="none";io&&io.disconnect()}};
+ btnMore.onclick=add;await add();
+ if("IntersectionObserver"in window&&pos<q.length){io=new IntersectionObserver(es=>{if(my!==R.__g){io.disconnect();return}if(es[es.length-1].isIntersecting&&!busy&&pos<q.length)add()},{rootMargin:"600px 0px"});io.observe(btnMore)}}
+
 /* লক্ষণ ভিত্তিক রোগ নির্ণয় পাতার চার্টের একই ছক (সাতটি হেডিং, প্রতিটির নিচে অপশন) */
 const AUL="🔊\nঅডিও",PDL="📄\nPDF";
 const mkb=(cls,id,txt,lab)=>{const b=el("button",cls,txt==="🔊"?AUL:txt==="📄"?PDL:txt);b.type="button";b.dataset.s=id;b.setAttribute("aria-label",lab);return b};
 function buildGroup(gi,g){const sec=el("section","ax-g zs");sec.dataset.slug=g.slug;
- {const h=el("h3","ax-h3");h.append(el("span",null,g.name),mkb("ax-pd ax-ga","g"+gi,"📄",g.name+" — PDF"),mkb("ax-au ax-ga","g"+gi,"🔊",g.name+" — অডিও"));sec.appendChild(h)}
+ {const h=el("h3","ax-h3"),hb=el("button","ax-hb",g.name);hb.type="button";hb.dataset.g=gi;hb.setAttribute("aria-label",g.name+" — সব আয়াত লিখিত দেখান");
+  /* হেডিং এখন বাটন: বাঁয়ে PDF, ডানে অডিও; চাপলে এই হেডিংয়ের নিচের সব ঘরের আয়াত লিখিতভাবে একসাথে */
+  h.append(mkb("ax-pd ax-ga","g"+gi,"📄",g.name+" — PDF"),hb,mkb("ax-au ax-ga","g"+gi,"🔊",g.name+" — অডিও"));sec.appendChild(h)}
  const tb=el("div","ax-tb");
  g.cols.forEach((c,ci)=>{const r=el("div","ax-r"),o=el("div","ax-ro");r.dataset.r=gi+"."+ci;
   c.opts.forEach((n,oi)=>{const k=gi+"."+ci+"."+oi,w=el("div","ax-cw"),b=el("button","ax-c",n);b.type="button";b.dataset.k=k;const cb=el("div","ax-cb");cb.append(mkb("ax-pd ax-mb","c"+k,"📄",n+" — PDF"),mkb("ax-au ax-mb","c"+k,"🔊",n+" — অডিও"));w.append(b,cb);o.appendChild(w)});
@@ -195,6 +220,8 @@ async function mount(R,slug,full,title,mode){if(!R)return;R.__mode=mode||"";
   if(full){R.appendChild(el("h2","ax-t",title||"সাতটি অক্ষ"));}
   DATA.axes.forEach((g,gi)=>R.appendChild(buildGroup(gi,g)));
   R.addEventListener("click",e=>{const ab=e.target.closest&&e.target.closest(".ax-au,.ax-pd");if(ab){const sec=ab.closest(".ax-g");if(ab.classList.contains("ax-au"))playSeq(R,ab.dataset.s,sec,ab);else openPdf(R,ab.dataset.s,sec);return}
+   const hb=e.target.closest&&e.target.closest(".ax-hb");if(hb){if(hb.classList.contains("on")){closePanel(R);return}
+    openGroup(hb).then(()=>{const p=hb.closest(".ax-g").querySelector(".ax-p");if(p&&p.getBoundingClientRect().top>innerHeight*.7)p.scrollIntoView({behavior:"smooth",block:"start"})}).catch(()=>{});return}
    const b=e.target.closest&&e.target.closest(".ax-c");if(!b)return;if(b.classList.contains("on")){closePanel(R);return}
    openCell(b).then(()=>{const p=b.closest(".ax-g").querySelector(".ax-p");if(p&&p.getBoundingClientRect().top>innerHeight*.7)p.scrollIntoView({behavior:"smooth",block:"start"})}).catch(()=>{})});
   R.dataset.ready="1";R.__ld=0}
