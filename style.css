@@ -1253,3 +1253,5 @@ body:not(.dr-unlocked) [data-lock],body:not(.dr-unlocked) #drLogout{display:none
 .ax-root .zs>h3.ax-h3{align-items:stretch}
 .ax-root .ax-h3 .ax-ga,.ax-root .ax-h3 .ax-hb{height:50px;min-height:50px}
 .ax-root .ax-h3 .ax-hb{font-size:14.5px}
+/* ধরন সারির মৌলিক বাটনে ছোট তারা (শুধু চিহ্ন, আর কিছু বদলায় না) */
+.ax-root .ax-c .ax-st{position:absolute;top:2px;right:5px;font-size:11px;line-height:1;color:#c9a227;pointer-events:none}
