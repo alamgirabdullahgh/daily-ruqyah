@@ -3,11 +3,11 @@
   {
    "id": 54,
    "text": "AI Studio ওয়ার্কস্পেসগুলো থেকে এপিআই কি বের করো",
-   "status": "queued",
-   "agent": "",
+   "status": "running",
+   "agent": "browser",
    "target": "claude",
-   "progress": 0,
-   "note": "",
+   "progress": 15,
+   "note": "🤖 Gemini কাজ করছে…",
    "created": "2026-11-18 08:00",
    "updated": "2026-11-18 08:00"
   }
@@ -35,122 +35,122 @@
   {
    "id": "s1794132254333",
    "n": "99alamgir22@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132265333",
    "n": "alamgirabdullah24@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132273461",
    "n": "abrar2001fahad@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132277355",
    "n": "alamgir1641999@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132281171",
    "n": "alamgirabdullah2024@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132284785",
    "n": "alamgirabdullahall@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132289006",
    "n": "alamgirabdullahofficial@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132294840",
    "n": "talabah2022@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132298475",
    "n": "ruqyahmedicalcenter@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132302842",
    "n": "raqiabdullahmail@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132306487",
    "n": "Reserve",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132310107",
    "n": "alamgirabdullahmail@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132313945",
    "n": "raqialamgirabdullah@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132317213",
    "n": "ruqyahhavenofficial@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132320639",
    "n": "ruqyah.haven.jessore@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794132324506",
    "n": "noorfashionknitwearmail@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794272392197",
    "n": "alamgir.abdullah@yahoo.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794509698939",
    "n": "sharminakter12625@gmail.com",
-   "u": "https://claude.ai/code"
+   "u": "https:\/\/claude.ai\/code"
   },
   {
    "id": "s1794932066464",
    "n": "noorfashionknitwear@gmail.com",
-   "u": "https://aistudio.google.com/generate-speech?model=gemini-2.5-pro-preview-tts"
+   "u": "https:\/\/aistudio.google.com\/generate-speech?model=gemini-2.5-pro-preview-tts"
   },
   {
    "id": "s1794987087646",
    "n": "99alamgir22@gmail.com",
-   "u": "https://aistudio.google.com"
+   "u": "https:\/\/aistudio.google.com"
   },
   {
    "id": "s1794987087647",
    "n": "alamgirabdullah24@gmail.com",
-   "u": "https://aistudio.google.com"
+   "u": "https:\/\/aistudio.google.com"
   },
   {
    "id": "s1794987087648",
    "n": "abrar2001fahad@gmail.com",
-   "u": "https://aistudio.google.com"
+   "u": "https:\/\/aistudio.google.com"
   },
   {
    "id": "s1794987087649",
    "n": "alamgir1641999@gmail.com",
-   "u": "https://aistudio.google.com"
+   "u": "https:\/\/aistudio.google.com"
   },
   {
    "id": "s1794987087650",
    "n": "alamgirabdullah2024@gmail.com",
-   "u": "https://aistudio.google.com"
+   "u": "https:\/\/aistudio.google.com"
   }
  ]
 }
