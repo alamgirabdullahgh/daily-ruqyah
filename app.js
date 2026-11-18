@@ -364,7 +364,7 @@ window.__drSave=(b,u)=>saveBlob(b,(u&&AFN.get(u))||window.__lastFN||"quran-audio
 // অ্যাপে (APK): নেটিভ শেয়ার-শিট, MIME application/octet-stream — WhatsApp তাই ডকুমেন্ট ধরে; ফাইলের নাম/.mp3 একই থাকে।
 // সাধারণ ব্রাউজারে: Web Share (ব্রাউজার নিজের নিয়মে MIME ঠিক করে)।
 async function shareBlob(blob,name){
- const DOC="application/octet-stream";
+ const DOC="audio/mpeg";
  if(window.DRDl&&DRDl.endShare){
   try{const id="s"+Date.now(),S=3*512*1024;DRDl.begin(id,name,DOC);
    for(let o=0;o<blob.size;o+=S){const u8=new Uint8Array(await blob.slice(o,o+S).arrayBuffer());let b="";for(let i=0;i<u8.length;i+=8192)b+=String.fromCharCode.apply(null,u8.subarray(i,i+8192));DRDl.chunk(id,btoa(b))}

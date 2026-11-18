@@ -176,8 +176,8 @@ public class MainActivity extends BridgeActivity {
                 if (sn != null) u = AudioShareProvider.uri(MainActivity.this, sn);
                 if (u == null) { toast("শেয়ার করা যায়নি (এই ফোনের Android পুরনো)"); return; }
                 Intent i = new Intent(Intent.ACTION_SEND);
-                // অডিও MIME দিলে WhatsApp "অডিও" ধরে ১৬MB-এ আটকায়; তাই সবসময় সাধারণ ফাইল (ডকুমেন্ট) হিসেবে পাঠানো হয়
-                i.setType("application/octet-stream");
+                // সঠিক MIME (audio/mpeg): WhatsApp-এ "BIN" হয় না, যে কেউ খুলে বাজাতে পারে। (octet-stream দিলে BIN হয়ে ফাইল খুলত না)
+                i.setType("audio/mpeg");
                 i.putExtra(Intent.EXTRA_STREAM, u);
                 i.setClipData(android.content.ClipData.newRawUri("", u));
                 i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

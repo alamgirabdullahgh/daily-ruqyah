@@ -39,7 +39,11 @@ public class AudioShareProvider extends ContentProvider {
 
     @Override public boolean onCreate() { return true; }
 
-    @Override public String getType(Uri uri) { return "application/octet-stream"; }
+    @Override public String getType(Uri uri) {
+        String n = uri.getLastPathSegment();
+        if (n != null) { String l = n.toLowerCase(); if (l.endsWith(".m4a")) return "audio/mp4"; if (l.endsWith(".ogg")) return "audio/ogg"; if (l.endsWith(".wav")) return "audio/wav"; }
+        return "audio/mpeg";
+    }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
