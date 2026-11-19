@@ -16,6 +16,7 @@
 <style>html.dr-boot body{visibility:hidden}</style>
 <script>document.documentElement.classList.add("dr-boot");setTimeout(function(){document.documentElement.classList.remove("dr-boot")},3500)</script>
 <link rel="stylesheet" href="style.css?v=158">
+<link rel="stylesheet" href="note.css?v=1">
 </head>
 <body class="is-home">
 <header class="dr-top" id="drHero">
@@ -33,6 +34,8 @@
  <a class="dr-nav" href="#badha" data-nav="badha" data-lock><i>🔓</i><span class="nv"><b>বাধা দূর করার রুকইয়াহ</b><small>সব ধরনের বাধার আলামত, ১১ দিনের আমল</small></span><u aria-hidden="true">›</u></a>
  <div class="dr-side-sec">কুরআন</div>
  <a class="dr-nav" href="#read/arbn" data-nav="read/arbn"><i class="ar">عب</i><span class="nv"><b>সম্পূর্ণ কুরআন</b><small>আরবি ও বাংলা অনুবাদসহ</small></span><u aria-hidden="true">›</u></a>
+ <div class="dr-side-sec">নোট</div>
+ <a class="dr-nav" href="#note" data-nav="note"><i>📝</i><span class="nv"><b>Daily Note</b><small>সীমাহীন নোট, ফোনেই জমা থাকে</small></span><u aria-hidden="true">›</u></a>
  <div class="dr-side-sec">অডিও ও অ্যালার্ম</div>
  <a class="dr-nav" href="#alarm" data-nav="alarm"><i>⏰</i><span class="nv"><b>রুকইয়াহ অডিও অ্যালার্ম</b><small>সময় ঠিক করে নিজে থেকে বাজবে</small></span><u aria-hidden="true">›</u></a>
 <button class="dr-nav dr-logout" id="drLogout" type="button"><i>🔒</i><span class="nv"><b>লগআউট</b><small>লুকানো অপশন আবার লুকিয়ে ফেলুন</small></span></button>
@@ -57,6 +60,7 @@
 </div>
 <div class="rs-box dr-reader" id="drReader" hidden></div>
 <div class="rs-box" id="drAlarm" hidden></div>
+<div class="rs-box" id="drNote" hidden></div>
 <div class="rs-box" id="drBadha" hidden></div>
 </main>
 <script>(function(){var h=location.hash;if(!h||h==="#"||h==="#home"||h==="#/home"){var l=document.getElementById("drLanding");if(l)l.hidden=false}})();</script>
@@ -68,8 +72,9 @@
 <script>try{window.__drLanding&&window.__drLanding()}catch(e){}document.documentElement.classList.remove("dr-boot")</script>
 <script defer src="symptom.js?v=17"></script>
 <script defer src="axes.js?v=43"></script>
-<script defer src="app.js?v=138"></script>
+<script defer src="app.js?v=139"></script>
 <script defer src="alarm.js?v=21"></script>
+<script defer src="note.js?v=3"></script>
 <script defer src="badha.enc.js?v=3"></script>
 <script defer src="badha.js?v=16"></script>
 <script defer src="reveal.js?v=1"></script>
