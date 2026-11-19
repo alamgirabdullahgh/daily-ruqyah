@@ -1,0 +1,66 @@
+name: adhan-compare
+# ইউটিউবের মূল আজান (Tareq Mohammed) নামিয়ে dua/adhan.mp3-র সাথে অডিও-ফিঙ্গারপ্রিন্টে মেলায়। অডিও কোথাও জমা হয় না; শুধু লেখা ফল adhan-compare ব্রাঞ্চে যায়
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: টুলস
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg libchromaprint-tools
+          pip install -q -U yt-dlp numpy
+      - name: খোঁজা ও নামানো
+        run: |
+          mkdir -p work res
+          yt-dlp --flat-playlist --print "%(id)s | %(title)s | %(channel)s | %(duration)s" "ytsearch8:The Greatest of Calls The Adhaan Heart Soothing Recitation Tareq Mohammed" > res/search.txt 2>res/search.err || true
+          cat res/search.txt res/search.err
+          i=0
+          while IFS='|' read -r id rest; do
+            id=$(echo $id); i=$((i+1)); [ $i -gt 4 ] && break
+            yt-dlp -q -f bestaudio -o "work/yt_$id.%(ext)s" "https://www.youtube.com/watch?v=$id" 2>>res/dl.err || echo "নামানো যায়নি: $id" >> res/dl.err
+          done < res/search.txt
+          ls -la work; cat res/dl.err 2>/dev/null | tail -5
+      - name: মেলানো
+        run: |
+          cat > cmp.py <<'PY'
+          import subprocess, glob, numpy as np, os
+          def fp(path):
+              wav = "/tmp/x.wav"
+              subprocess.run(["ffmpeg","-loglevel","error","-y","-i",path,"-ac","1","-ar","11025",wav],check=True)
+              out = subprocess.run(["fpcalc","-raw","-length","600",wav],capture_output=True,text=True).stdout
+              raw = [l for l in out.splitlines() if l.startswith("FINGERPRINT=")][0].split("=")[1]
+              return np.array([int(x) for x in raw.split(",")],dtype=np.uint32)
+          def dur(path):
+              return float(subprocess.run(["ffprobe","-v","error","-show_entries","format=duration","-of","csv=p=0",path],capture_output=True,text=True).stdout.strip())
+          def sim(a,b):
+              # সব অফসেটে ফিঙ্গারপ্রিন্টের বিট-মিল; সেরা অফসেট (প্রতি আইটেম ≈0.124 সেকেন্ড)
+              best=(0,0)
+              for off in range(-250,251):
+                  if off>=0: x,y=a[off:],b
+                  else: x,y=a,b[-off:]
+                  n=min(len(x),len(y))
+                  if n<100: continue
+                  v=np.bitwise_xor(x[:n],y[:n])
+                  bits=np.unpackbits(v.view(np.uint8)).reshape(n,32).sum(1)
+                  s=1-bits.mean()/32
+                  if s>best[0]: best=(s,off)
+              return best
+          mine="dua/adhan.mp3"; A=fp(mine); lines=[f"আমার ফাইল: {mine}, দৈর্ঘ্য {dur(mine):.1f}s"]
+          for f in sorted(glob.glob("work/yt_*")):
+              try:
+                  B=fp(f); s,off=sim(A,B)
+                  lines.append(f"{os.path.basename(f)}: দৈর্ঘ্য {dur(f):.1f}s, মিল {s*100:.1f}% (অফসেট {off*0.1238:.1f}s) [র‍্যান্ডম ≈৫০%, একই রেকর্ডিং ≈৮০%+]")
+              except Exception as e:
+                  lines.append(f"{f}: ত্রুটি {e}")
+          open("res/compare.txt","w",encoding="utf-8").write("\n".join(lines)+"\n"); print("\n".join(lines))
+          PY
+          python3 cmp.py
+      - name: ফল জমা (adhan-compare ব্রাঞ্চ)
+        run: |
+          mkdir /tmp/out && cp res/* /tmp/out/
+          git config user.name "github-actions"; git config user.email "actions@users.noreply.github.com"
+          git checkout --orphan adhan-compare && git rm -rf -q . && cp /tmp/out/* . && git add . && git commit -q -m "adhan compare result" && git push -f origin adhan-compare
