@@ -1,5 +1,6 @@
 # কাজের খাতা (নতুন থেকে পুরনো ওপরে)
 
+- ✅ **সাধারণ আজান বদল + আজানের কণ্ঠ খোঁজা** (2026-11-19 14:38) — main-এ পুশ (d4ba832): dua/adhan.mp3 (আগের বড় নামের ফাইল সরানো) সাধারণ আজান হিসেবে অফলাইনে বাজে। Shazam (workflow adhan-identify, ফল adhan-id ব্রাঞ্চে) ৫টি অংশেই মিলেছে: 'The Greatest of Calls: the Adhaan Heart Soothing Recitation' — চ্যানেল 'Anacheed For Ever'; মুয়াজ্জিনের নাম মেলেনি। ফোনে নতুন APK-তে আজান বাজা যাচাই বাকি
 - ✅ **অডিও শেয়ার: ডকুমেন্ট + .mp3 নাম** (2026-11-19 14:18) — main-এ পুশ (3dbb1dd): শেয়ার আবার AudioShareProvider দিয়ে, MIME application/x-mp3 (audio/* হলে ১৬MB সীমা, octet-stream হলে .bin); APK বিল্ড শেষে WhatsApp-এ ফোনে যাচাই বাকি। ব্যর্থ হলে পরের ধাপ: অ্যাপে আলাদা বোতাম/অন্য MIME পরীক্ষা
 - ✅ **Daily Note অটো-সেভ** (2026-11-19 04:37) — main-এ পুশ: ২৫০ms অটো-সেভ, ← চাপলে সেভ শেষ হয়ে তবে বের হয়, hashchange/blur/pagehide/visibility ও ২ সেকেন্ডের ঘড়িতে সেভ; headless পরীক্ষা পাস
 - 🔄 **Daily Note: APK-তে ফাঁকা পাতা** (2026-11-19 04:26) — কারণ: build-apk.yml-এর কপি তালিকায় note.js/note.css ছিল না। যোগ করে পুশ; APK বিল্ড শেষ হলে ফোনে যাচাই বাকি
