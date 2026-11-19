@@ -24,6 +24,30 @@ jobs:
             yt-dlp -q -f bestaudio -o "work/yt_$id.%(ext)s" "https://www.youtube.com/watch?v=$id" 2>>res/dl.err || echo "নামানো যায়নি: $id" >> res/dl.err
           done < res/search.txt
           ls -la work; cat res/dl.err 2>/dev/null | tail -5
+      - name: অফিসিয়াল প্রিভিউ (iTunes/Deezer)
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request, urllib.parse
+          def get(u):
+              return json.load(urllib.request.urlopen(urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0"}),timeout=30))
+          log=[]
+          try:
+              r=get("https://itunes.apple.com/search?"+urllib.parse.urlencode({"term":"Anacheed For Ever Greatest of Calls Adhaan","entity":"song","limit":10}))
+              for x in r.get("results",[]):
+                  log.append(f"itunes: {x.get('trackName')} | {x.get('artistName')} | {x.get('trackTimeMillis')}ms | {x.get('previewUrl')}")
+                  if x.get("previewUrl") and "adhaan" in (x.get("trackName") or "").lower():
+                      open("work/pv_itunes.m4a","wb").write(urllib.request.urlopen(x["previewUrl"],timeout=60).read()); break
+          except Exception as e: log.append(f"itunes ত্রুটি: {e}")
+          try:
+              r=get("https://api.deezer.com/search?"+urllib.parse.urlencode({"q":"Anacheed For Ever Greatest of Calls Adhaan"}))
+              for x in r.get("data",[]):
+                  log.append(f"deezer: {x.get('title')} | {x.get('artist',{}).get('name')} | {x.get('duration')}s | {x.get('preview')}")
+                  if x.get("preview") and "adhaan" in (x.get("title") or "").lower():
+                      open("work/pv_deezer.mp3","wb").write(urllib.request.urlopen(x["preview"],timeout=60).read()); break
+          except Exception as e: log.append(f"deezer ত্রুটি: {e}")
+          open("res/preview.txt","w",encoding="utf-8").write("\n".join(log)+"\n"); print("\n".join(log))
+          PY
+          ls -la work
       - name: মেলানো
         run: |
           cat > cmp.py <<'PY'
@@ -39,18 +63,18 @@ jobs:
           def sim(a,b):
               # সব অফসেটে ফিঙ্গারপ্রিন্টের বিট-মিল; সেরা অফসেট (প্রতি আইটেম ≈0.124 সেকেন্ড)
               best=(0,0)
-              for off in range(-250,251):
+              for off in range(-len(b)+60,len(a)-60):
                   if off>=0: x,y=a[off:],b
                   else: x,y=a,b[-off:]
                   n=min(len(x),len(y))
-                  if n<100: continue
+                  if n<60: continue
                   v=np.bitwise_xor(x[:n],y[:n])
                   bits=np.unpackbits(v.view(np.uint8)).reshape(n,32).sum(1)
                   s=1-bits.mean()/32
                   if s>best[0]: best=(s,off)
               return best
           mine="dua/adhan.mp3"; A=fp(mine); lines=[f"আমার ফাইল: {mine}, দৈর্ঘ্য {dur(mine):.1f}s"]
-          for f in sorted(glob.glob("work/yt_*")):
+          for f in sorted(glob.glob("work/*")):
               try:
                   B=fp(f); s,off=sim(A,B)
                   lines.append(f"{os.path.basename(f)}: দৈর্ঘ্য {dur(f):.1f}s, মিল {s*100:.1f}% (অফসেট {off*0.1238:.1f}s) [র‍্যান্ডম ≈৫০%, একই রেকর্ডিং ≈৮০%+]")
