@@ -39,11 +39,16 @@ public class AudioShareProvider extends ContentProvider {
 
     @Override public boolean onCreate() { return true; }
 
-    @Override public String getType(Uri uri) {
-        String n = uri.getLastPathSegment();
-        if (n != null) { String l = n.toLowerCase(); if (l.endsWith(".m4a")) return "audio/mp4"; if (l.endsWith(".ogg")) return "audio/ogg"; if (l.endsWith(".wav")) return "audio/wav"; }
-        return "audio/mpeg";
+    // WhatsApp ধরন ঠিক করে MIME দেখে: audio/* হলে "অডিও" (১৬MB সীমা), application/octet-stream হলে ডকুমেন্ট কিন্তু নামের শেষে .bin বসে।
+    // তাই এখানে অডিও নয় এমন নির্দিষ্ট ধরন (application/x-<ext>) দেওয়া হয়: ডকুমেন্ট হিসেবে যায় (সীমা নেই), আর নাম/এক্সটেনশন (.mp3) অক্ষত থাকে।
+    public static String docMime(String name) {
+        String ext = "mp3";
+        if (name != null) { int d = name.lastIndexOf('.'); if (d >= 0) ext = name.substring(d + 1).toLowerCase(); }
+        if (!ext.matches("[a-z0-9]{1,5}")) ext = "mp3";
+        return "application/x-" + ext;
     }
+
+    @Override public String getType(Uri uri) { return docMime(uri.getLastPathSegment()); }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {

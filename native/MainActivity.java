@@ -124,7 +124,7 @@ public class MainActivity extends BridgeActivity {
                     String safe = name.replace("/", "-");
                     int dot = safe.lastIndexOf('.');
                     String ext = dot >= 0 ? safe.substring(dot + 1).toLowerCase() : "";
-                    if (!ext.matches("[a-z0-9]{1,5}")) ext = "mp3";
+                    if (!ext.matches("[a-z0-9]{1,5}")) { ext = "mp3"; safe = safe + ".mp3"; }
                     // লিংকে শুধু ইংরেজি নাম (WhatsApp যাতে .mp3 চেনে); পাঠানোর সময় দেখানোর নাম আসল বাংলা নামই থাকে
                     String fileName = "share" + System.currentTimeMillis() + "." + ext;
                     o = new FileOutputStream(new File(d, fileName));
@@ -176,8 +176,8 @@ public class MainActivity extends BridgeActivity {
                 if (sn != null) u = AudioShareProvider.uri(MainActivity.this, sn);
                 if (u == null) { toast("শেয়ার করা যায়নি (এই ফোনের Android পুরনো)"); return; }
                 Intent i = new Intent(Intent.ACTION_SEND);
-                // সঠিক MIME (audio/mpeg): WhatsApp-এ "BIN" হয় না, যে কেউ খুলে বাজাতে পারে। (octet-stream দিলে BIN হয়ে ফাইল খুলত না)
-                i.setType("audio/mpeg");
+                // অডিও নয় এমন নির্দিষ্ট ধরন (application/x-mp3): WhatsApp ডকুমেন্ট হিসেবে পাঠায় (১৬MB সীমা নেই) আর নামে .mp3 থাকে (octet-stream দিলে .bin হতো, audio/* দিলে ১৬MB সীমা)
+                i.setType(sn != null ? AudioShareProvider.docMime(sn) : "audio/mpeg");
                 i.putExtra(Intent.EXTRA_STREAM, u);
                 i.setClipData(android.content.ClipData.newRawUri("", u));
                 i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

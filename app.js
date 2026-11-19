@@ -361,10 +361,10 @@ function nameAudio(au,url,name){AFN.set(url,name);const set=()=>{window.__lastFN
 function hiddenDl(url,name){const a=document.createElement("a");a.href=url;a.download=name;a.hidden=true;a.style.cssText="display:none;pointer-events:none";a.setAttribute("aria-hidden","true");a.tabIndex=-1;a.onclick=e=>{e.preventDefault();e.stopPropagation()};return a}
 window.__drSave=(b,u)=>saveBlob(b,(u&&AFN.get(u))||window.__lastFN||"quran-audio.mp3");
 // ---------- শেয়ার: অডিও ফাইলই যায়, কিন্তু WhatsApp-এ "ডকুমেন্ট" হিসেবে (অডিও হিসেবে গেলে ১৬MB সীমা থাকে, ডকুমেন্টে থাকে না) ----------
-// অ্যাপে (APK): নেটিভ শেয়ার-শিট, MIME application/octet-stream — WhatsApp তাই ডকুমেন্ট ধরে; ফাইলের নাম/.mp3 একই থাকে।
+// অ্যাপে (APK): নেটিভ শেয়ার-শিট; ফাইল শেয়ারের ক্যাশে যায় ও MIME application/x-mp3 হয় — WhatsApp তাই ডকুমেন্ট ধরে (১৬MB সীমা নেই); নাম/.mp3 একই থাকে।
 // সাধারণ ব্রাউজারে: Web Share (ব্রাউজার নিজের নিয়মে MIME ঠিক করে)।
 async function shareBlob(blob,name){
- const DOC="audio/mpeg";
+ const DOC="application/octet-stream"; // শুধু নেটিভকে বলে "শেয়ারের ক্যাশে রাখো"; শেয়ারের আসল MIME নেটিভ ঠিক করে (AudioShareProvider.docMime)
  if(window.DRDl&&DRDl.endShare){
   try{const id="s"+Date.now(),S=3*512*1024;DRDl.begin(id,name,DOC);
    for(let o=0;o<blob.size;o+=S){const u8=new Uint8Array(await blob.slice(o,o+S).arrayBuffer());let b="";for(let i=0;i<u8.length;i+=8192)b+=String.fromCharCode.apply(null,u8.subarray(i,i+8192));DRDl.chunk(id,btoa(b))}
