@@ -1,0 +1,43 @@
+name: adhan-identify
+# dua/adhan.mp3 কার অডিও তা খোঁজে: Shazam ফিঙ্গারপ্রিন্ট (শুরু/মাঝ/শেষের অংশ) — ফল adhan-id ব্রাঞ্চের adhan-id-result.txt-এ জমা হয়
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  identify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: টুলস
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg libchromaprint-tools
+          pip install -q shazamio
+      - name: অংশ কেটে চেনা
+        run: |
+          mkdir -p cut
+          ffprobe -v error -show_entries format=duration -of csv=p=0 dua/adhan.mp3 | tee cut/dur.txt
+          for t in 0 20 60 120 180; do ffmpeg -loglevel error -y -ss $t -t 20 -i dua/adhan.mp3 -ac 1 -ar 44100 cut/p$t.wav; done
+          fpcalc -length 120 dua/adhan.mp3 > cut/chromaprint.txt || true
+          cat > id.py <<'PY'
+          import asyncio, glob, json
+          from shazamio import Shazam
+          async def main():
+              sh = Shazam(); out = []
+              for f in sorted(glob.glob("cut/p*.wav")):
+                  try:
+                      r = await sh.recognize(f)
+                      tr = r.get("track")
+                      out.append(f"{f}: " + (f"{tr.get('title')} — {tr.get('subtitle')} ({tr.get('url','')})" if tr else "কিছু মেলেনি"))
+                  except Exception as e:
+                      out.append(f"{f}: ত্রুটি {e}")
+              open("cut/result.txt","w",encoding="utf-8").write("\n".join(out)+"\n")
+              print("\n".join(out))
+          asyncio.run(main())
+          PY
+          python3 id.py
+      - name: ফল জমা (adhan-id ব্রাঞ্চ)
+        run: |
+          mkdir /tmp/res && cp cut/result.txt /tmp/res/adhan-id-result.txt && cp cut/chromaprint.txt cut/dur.txt /tmp/res/
+          git config user.name "github-actions"; git config user.email "actions@users.noreply.github.com"
+          git checkout --orphan adhan-id && git rm -rf -q . && cp /tmp/res/* . && git add . && git commit -q -m "adhan identify result" && git push -f origin adhan-id

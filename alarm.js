@@ -571,10 +571,10 @@
     return { root: root, start: function () { loc(); start(); }, stop: stop };
   }
 
-  /* ===== আজান (অটোমেটিক এলার্ম কার্ডের তৃতীয় ট্যাব): অনলাইন থেকে চলে (GitHub-এ রাখা অডিও); ফজরের আজানে "আস-সালাতু খাইরুম মিনান নাউম" থাকে ===== */
+  /* ===== আজান (অটোমেটিক এলার্ম কার্ডের তৃতীয় ট্যাব): ফজরের আজান অনলাইন থেকে চলে; সাধারণ আজান অ্যাপের ভেতরের ফাইল (dua/adhan.mp3, অফলাইনে বাজে); ফজরের আজানে "আস-সালাতু খাইরুম মিনান নাউম" থাকে ===== */
   var AZ = [
     { k: "fajr", n: "ফজরের আজান", s: "", u: "https://raw.githubusercontent.com/AalianKhan/adhans/master/adhan_fajr.mp3" },
-    { k: "norm", n: "সাধারণ আজান", s: "", u: "https://raw.githubusercontent.com/AalianKhan/adhans/master/adhan.mp3" }
+    { k: "norm", n: "সাধারণ আজান", s: "", u: "dua/adhan.mp3" }
   ];
   function adhanPane() {
     var root = el("div", "dsy-az"), au = new Audio(), cur = null, rows = {};
