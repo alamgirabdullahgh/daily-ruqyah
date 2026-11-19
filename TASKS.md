@@ -1,5 +1,6 @@
 # কাজের খাতা (নতুন থেকে পুরনো ওপরে)
 
+- ✅ **Daily Note অটো-সেভ** (2026-11-19 04:37) — main-এ পুশ: ২৫০ms অটো-সেভ, ← চাপলে সেভ শেষ হয়ে তবে বের হয়, hashchange/blur/pagehide/visibility ও ২ সেকেন্ডের ঘড়িতে সেভ; headless পরীক্ষা পাস
 - 🔄 **Daily Note: APK-তে ফাঁকা পাতা** (2026-11-19 04:26) — কারণ: build-apk.yml-এর কপি তালিকায় note.js/note.css ছিল না। যোগ করে পুশ; APK বিল্ড শেষ হলে ফোনে যাচাই বাকি
 - ✅ **Daily Note নকশা (Notepad Free-ধাঁচ)** (2026-11-19 04:19) — main-এ পুশ: বাদামি টুলবার, হলদে কার্ড, Last edit, ✓/＋, SORT, ড্রয়ার (Notes/Categories/Backup/Trash), ⋮ মেনু (Select all/Import/Export), এডিটরে SAVE/UNDO + ১৩টি মেনু; headless পরীক্ষা পাস। ফোনে APK-তে পরীক্ষা বাকি
 - 🔄 **Daily Note নকশা (Notepad Free-ধাঁচ)** (2026-11-19 04:17) — note.js/note.css নতুন করে লেখা হয়েছে (তালিকা, ড্রয়ার, SORT, ⋮, এডিটর মেনু, ট্র্যাশ, ক্যাটাগরি, ব্যাকআপ); এখন headless পরীক্ষা বাকি, তারপর main-এ পুশ
