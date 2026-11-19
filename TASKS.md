@@ -1,5 +1,6 @@
 # কাজের খাতা (নতুন থেকে পুরনো ওপরে)
 
+- ✅ **অডিও শেয়ার: ডকুমেন্ট + .mp3 নাম** (2026-11-19 14:18) — main-এ পুশ (3dbb1dd): শেয়ার আবার AudioShareProvider দিয়ে, MIME application/x-mp3 (audio/* হলে ১৬MB সীমা, octet-stream হলে .bin); APK বিল্ড শেষে WhatsApp-এ ফোনে যাচাই বাকি। ব্যর্থ হলে পরের ধাপ: অ্যাপে আলাদা বোতাম/অন্য MIME পরীক্ষা
 - ✅ **Daily Note অটো-সেভ** (2026-11-19 04:37) — main-এ পুশ: ২৫০ms অটো-সেভ, ← চাপলে সেভ শেষ হয়ে তবে বের হয়, hashchange/blur/pagehide/visibility ও ২ সেকেন্ডের ঘড়িতে সেভ; headless পরীক্ষা পাস
 - 🔄 **Daily Note: APK-তে ফাঁকা পাতা** (2026-11-19 04:26) — কারণ: build-apk.yml-এর কপি তালিকায় note.js/note.css ছিল না। যোগ করে পুশ; APK বিল্ড শেষ হলে ফোনে যাচাই বাকি
 - ✅ **Daily Note নকশা (Notepad Free-ধাঁচ)** (2026-11-19 04:19) — main-এ পুশ: বাদামি টুলবার, হলদে কার্ড, Last edit, ✓/＋, SORT, ড্রয়ার (Notes/Categories/Backup/Trash), ⋮ মেনু (Select all/Import/Export), এডিটরে SAVE/UNDO + ১৩টি মেনু; headless পরীক্ষা পাস। ফোনে APK-তে পরীক্ষা বাকি
