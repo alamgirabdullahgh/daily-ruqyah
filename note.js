@@ -386,6 +386,7 @@
   function snap() { return { t: $("ntTi").value, b: $("ntTx").value }; }
   function pushHist() {
     clearTimeout(hT);
+    if (!H || !$("ntTi") || !$("ntTx")) return;
     var s = snap(), l = H[hi];
     if (l && l.t === s.t && l.b === s.b) return;
     H.length = hi + 1; H.push(s); if (H.length > 100) H.shift(); hi = H.length - 1; undoState();
@@ -395,7 +396,7 @@
     var s = H[hi]; $("ntTi").value = s.t; $("ntTx").value = s.b; cur.t = s.t; cur.text = s.b; touch(); undoState();
   }
   function undoState() { var u = $("ntUndo"); if (u) u.disabled = hi <= 0; }
-  function touch() { dirty = true; clearTimeout(saveT); saveT = setTimeout(flush, 500); }
+  function touch() { dirty = true; clearTimeout(saveT); saveT = setTimeout(flush, 250); }
   function bg(c) { var e = host.querySelector(".nt-edcard"); if (e) e.style.background = c || ""; }
 
   function openEditor(id) {
@@ -424,7 +425,7 @@
         var v = ta.value, ss = ta.selectionStart, ls = v.lastIndexOf("\n", ss - 1) + 1, ch = v.charAt(ls);
         if (ss - ls <= 1 && (ch === "☐" || ch === "☑")) { ta.value = v.slice(0, ls) + (ch === "☐" ? "☑" : "☐") + v.slice(ls + 1); ta.setSelectionRange(ss, ss); edit(); }
       });
-      $("ntBk").onclick = function () { history.length > 1 ? (location.hash = "#note") : (location.hash = "#note"); };
+      $("ntBk").onclick = function () { var go = function () { location.hash = "#note"; }; flush().then(go, go); };
       $("ntSave").onclick = function () { dirty = true; flush().then(function () { toast("Saved"); }); };
       $("ntUndo").onclick = function () { applyHist(hi - 1); };
       $("ntMore").onclick = function (e) { e.stopPropagation(); editMenu(); };
@@ -499,6 +500,10 @@
     return putNote(c.meta, c.text).then(function () { c.saved = true; }, function () { dirty = true; var t = host.querySelector(".nt-toast"); if (t) toast("⚠ Could not save"); });
   }
   addEventListener("pagehide", flush);
+  addEventListener("hashchange", flush);
+  addEventListener("blur", flush);
+  addEventListener("freeze", flush);
+  setInterval(function () { if (dirty) flush(); }, 2000);
   document.addEventListener("visibilitychange", function () { if (document.hidden) flush(); });
 
   window.DRNOTE = {
