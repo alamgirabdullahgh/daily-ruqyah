@@ -1,5 +1,6 @@
 # কাজের খাতা (নতুন থেকে পুরনো ওপরে)
 
+- ✅ **আজানের কণ্ঠ: উৎসে খোঁজা** (2026-11-19 14:41) — Shazam-এর 'Anacheed For Ever' আসলে ডিস্ট্রিবিউটর/চ্যানেলের নাম। দুটি আলাদা পোস্টে (টেলিগ্রাম, পিন্টারেস্ট) একই শিরোনামের YouTube ভিডিও 'The Greatest of Calls: The Adhaan Heart Soothing Recitation by Tareq Mohammed' লেখা আছে, অর্থাৎ কণ্ঠ সম্ভবত ক্বারী তারেক মোহাম্মদ; সরাসরি YouTube পাতা দেখে নিশ্চিত করা যায়নি। অ্যাপে এখনো ক্রেডিট যোগ করা হয়নি
 - ✅ **সাধারণ আজান বদল + আজানের কণ্ঠ খোঁজা** (2026-11-19 14:38) — main-এ পুশ (d4ba832): dua/adhan.mp3 (আগের বড় নামের ফাইল সরানো) সাধারণ আজান হিসেবে অফলাইনে বাজে। Shazam (workflow adhan-identify, ফল adhan-id ব্রাঞ্চে) ৫টি অংশেই মিলেছে: 'The Greatest of Calls: the Adhaan Heart Soothing Recitation' — চ্যানেল 'Anacheed For Ever'; মুয়াজ্জিনের নাম মেলেনি। ফোনে নতুন APK-তে আজান বাজা যাচাই বাকি
 - ✅ **অডিও শেয়ার: ডকুমেন্ট + .mp3 নাম** (2026-11-19 14:18) — main-এ পুশ (3dbb1dd): শেয়ার আবার AudioShareProvider দিয়ে, MIME application/x-mp3 (audio/* হলে ১৬MB সীমা, octet-stream হলে .bin); APK বিল্ড শেষে WhatsApp-এ ফোনে যাচাই বাকি। ব্যর্থ হলে পরের ধাপ: অ্যাপে আলাদা বোতাম/অন্য MIME পরীক্ষা
 - ✅ **Daily Note অটো-সেভ** (2026-11-19 04:37) — main-এ পুশ: ২৫০ms অটো-সেভ, ← চাপলে সেভ শেষ হয়ে তবে বের হয়, hashchange/blur/pagehide/visibility ও ২ সেকেন্ডের ঘড়িতে সেভ; headless পরীক্ষা পাস
