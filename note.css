@@ -1,30 +1,69 @@
-/* Daily Note */
+/* Daily Note — Notepad-ধাঁচ (বাদামি টুলবার, হলদে কার্ড) */
 #drNote{padding:0}
-.nt-wrap{position:relative;display:flex;flex-direction:column;min-height:calc(100vh - 200px);min-height:calc(100dvh - 200px);padding:4px 0 90px}
-.nt-head{display:flex;align-items:baseline;gap:10px;margin:2px 4px 10px}
-.nt-head h2{margin:0;font-family:var(--font-head);font-size:22px;color:var(--primary)}
-.nt-cnt{font-size:13px;color:var(--text-muted)}
-.nt-search input{width:100%;height:46px;border:1px solid var(--border);border-radius:14px;background:var(--card-bg);padding:0 16px;font:inherit;font-size:16px;color:var(--text-main);outline:none}
-.nt-search input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(10,82,64,.12)}
-.nt-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
-.nt-item{position:relative;display:block;text-decoration:none;color:inherit;background:var(--card-bg);border:1px solid var(--border-light);border-radius:16px;padding:12px 14px 10px;box-shadow:0 1px 3px rgba(5,46,36,.06)}
-.nt-item:active{background:var(--primary-light)}
-.nt-item b{display:block;font-size:16.5px;color:var(--text-main);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:6px}
-.nt-item small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:3px;font-size:14px;line-height:1.5;color:var(--text-sub)}
-.nt-item span{display:block;margin-top:6px;font-size:12px;color:var(--text-muted)}
-.nt-pin{position:absolute;top:8px;right:10px;font-style:normal;font-size:13px}
-.nt-item:has(.nt-pin) b{padding-right:24px}
-.nt-more{margin:6px auto 0;border:1px solid var(--border);background:var(--card-bg);color:var(--primary);border-radius:12px;padding:10px 18px;font:inherit;font-weight:700}
-.nt-empty{text-align:center;color:var(--text-muted);padding:60px 20px;line-height:1.9}
-.nt-fab{position:fixed;right:18px;bottom:calc(84px + env(safe-area-inset-bottom));width:58px;height:58px;border:0;border-radius:50%;background:linear-gradient(135deg,#0a5240,#0d6650);color:#f6e9c4;font-size:30px;line-height:1;box-shadow:0 6px 18px rgba(5,46,36,.35),0 0 0 2px rgba(216,178,90,.7);z-index:30}
+html.nt-lock,html.nt-lock body{overflow:hidden}
+.nt-root{position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;background:#fffff2;color:#2b2418;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.nt-root button{font-family:inherit;cursor:pointer}
+.nt-tb{flex:none;display:flex;align-items:center;gap:2px;min-height:56px;box-sizing:content-box;padding:env(safe-area-inset-top,0px) 6px 0 4px;background:linear-gradient(90deg,#8f7553,#9b8060);color:#fff;border-bottom:4px solid #e8e1c6}
+.nt-tt{flex:1;min-width:0;font-size:21px;padding-left:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nt-tbb{flex:none;width:44px;height:44px;border:0;background:none;color:#fff;display:grid;place-items:center;border-radius:50%;padding:0}
+.nt-tbb:active,.nt-tbt:active{background:rgba(255,255,255,.18)}
+.nt-tbt{flex:none;border:0;background:none;color:#fff;font-weight:500;letter-spacing:.6px;padding:0 12px;height:44px;font-size:15px;border-radius:8px}
+.nt-tbt:disabled{opacity:.5}
+.nt-qi{flex:1;min-width:0;height:40px;border:0;border-radius:8px;padding:0 12px;font:inherit;font-size:16px;background:#fffffa;color:#2b2418;outline:0}
+.nt-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:7px 5px 170px}
+.nt-list{display:flex;flex-direction:column;gap:6px}
+.nt-card{position:relative;background:linear-gradient(#fbf9c6,#fdfcd9);border:1.5px solid #86704f;border-radius:10px;padding:15px 14px 7px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.nt-card b{display:block;font-weight:400;font-size:19px;line-height:1.35;color:#25200f;word-break:break-word}
+.nt-card span{display:block;text-align:right;margin-top:12px;font-size:14.5px;font-style:italic;color:#4d4330}
+.nt-card.sel{outline:3px solid #6a553f;outline-offset:-2px}
+.nt-card.sel::after{content:"✓";position:absolute;top:6px;right:10px;width:24px;height:24px;border-radius:50%;background:#6a553f;color:#fff;font-size:15px;line-height:24px;text-align:center}
+.nt-more{margin:8px auto;border:1.5px solid #86704f;background:#fbf9c6;color:#4d4330;border-radius:10px;padding:10px 18px;font-size:15px}
+.nt-empty{text-align:center;color:#6b6149;padding:70px 20px;line-height:1.9;font-size:17px}
+.nt-fabs{position:absolute;right:16px;bottom:calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:14px;z-index:3}
+.nt-fab{width:58px;height:58px;border:0;border-radius:50%;background:#6c5841;color:#fff;display:grid;place-items:center;box-shadow:0 4px 10px rgba(0,0,0,.35);padding:0}
+.nt-fab svg{width:30px;height:30px}
+.nt-fab-s{width:48px;height:48px}
+.nt-fab-s svg{width:26px;height:26px}
 .nt-fab:active{transform:scale(.95)}
-.nt-bar{display:flex;align-items:center;gap:4px;margin-bottom:8px}
-.nt-ib{width:42px;height:42px;border:0;border-radius:12px;background:var(--card-bg);box-shadow:0 0 0 1px var(--border-light);font-size:19px;color:var(--primary)}
-.nt-ib.on{background:var(--accent-light);box-shadow:0 0 0 1.5px var(--accent)}
-.nt-del{color:var(--danger)}
-.nt-st{flex:1;font-size:13px;color:var(--text-muted);padding-left:8px}
-.nt-tx{flex:1;width:100%;min-height:calc(100vh - 330px);min-height:calc(100dvh - 330px);resize:none;border:1px solid var(--border-light);border-radius:16px;background:var(--card-bg);padding:14px;font:inherit;font-size:17px;line-height:1.75;color:var(--text-main);outline:none}
-.nt-tx:focus{border-color:var(--primary)}
-.nt-foot{display:flex;justify-content:space-between;margin:8px 6px 0;font-size:12.5px;color:var(--text-muted)}
-.nt-toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(10px);background:#052e24;color:#f6e9c4;padding:9px 16px;border-radius:20px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:60}
+.nt-selmode .nt-fabs{display:none!important}
+/* মেনু */
+.nt-pop{position:fixed;z-index:9100;top:calc(env(safe-area-inset-top,0px) + 8px);right:8px;min-width:230px;max-width:calc(100vw - 16px);max-height:calc(100vh - 24px);overflow-y:auto;background:#fafafa;border-radius:6px;box-shadow:0 6px 24px rgba(0,0,0,.35);padding:4px 0}
+.nt-pop button{display:block;width:100%;text-align:left;padding:0 24px;height:48px;border:0;background:none;font-size:17px;color:#222}
+.nt-pop button:active{background:#ececec}
+.nt-pop button:disabled{color:#aaa}
+/* ড্রয়ার */
+.nt-dw{position:absolute;inset:0;z-index:9050;visibility:hidden;transition:visibility 0s .22s}
+.nt-dw.on{visibility:visible;transition:none}
+.nt-dws{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;transition:opacity .2s}
+.nt-dw.on .nt-dws{opacity:1}
+.nt-dp{position:absolute;left:0;top:0;bottom:0;width:68%;max-width:330px;background:#ffffd9;transform:translateX(-102%);transition:transform .22s;overflow-y:auto;box-shadow:2px 0 12px rgba(0,0,0,.3)}
+.nt-dw.on .nt-dp{transform:none}
+.nt-dh{height:calc(98px + env(safe-area-inset-top,0px));box-sizing:border-box;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px 14px;display:flex;align-items:flex-end;background:linear-gradient(135deg,#8f7553,#9b8060);color:#fff;font-size:21px}
+.nt-di{display:flex;align-items:center;gap:26px;width:100%;height:58px;padding:0 22px;border:0;background:none;color:#2b2418;font-size:17px;text-align:left}
+.nt-di svg{flex:none;color:#5a5240}
+.nt-di span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nt-di.on{background:rgba(120,100,60,.15)}
+.nt-di:active{background:rgba(120,100,60,.22)}
+.nt-dsep{height:1px;background:#d9d6b4;margin:6px 0}
+.nt-dlab{padding:14px 22px 4px;font-size:15px;color:#6b6149}
+/* এডিটর */
+.nt-edcard{flex:1;min-height:0;display:flex;flex-direction:column;margin:4px 4px calc(4px + env(safe-area-inset-bottom,0px));padding:6px 10px 8px;background:linear-gradient(#f8f6c3,#fdfcd8);border:1.5px solid #86704f;border-radius:12px}
+.nt-ti{flex:none;width:100%;box-sizing:border-box;border:0;border-bottom:1.5px solid #86704f;background:transparent;font:inherit;font-size:20px;padding:6px 2px 4px;color:#25200f;outline:0}
+.nt-ti::placeholder{color:#7a705a}
+.nt-tx{flex:1;min-height:0;width:100%;box-sizing:border-box;border:0;background:transparent;resize:none;font:inherit;font-size:19px;line-height:1.55;padding:12px 2px;color:#25200f;outline:0}
+.nt-find,.nt-fmt{flex:none;display:flex;gap:6px;align-items:center;padding:6px 8px;background:#f2ecc2;border-bottom:1px solid #d6cd9b}
+.nt-find[hidden],.nt-fmt[hidden]{display:none}
+.nt-find input{flex:1;min-width:0;height:38px;border:1px solid #b9ae82;border-radius:8px;padding:0 10px;font:inherit;font-size:16px;background:#fffff6;outline:0}
+.nt-find button,.nt-fmt button{min-width:40px;height:38px;border:1px solid #b9ae82;border-radius:8px;background:#fffff0;color:#4d4330;font-size:16px;padding:0 10px}
+/* খুদে বার্তা ও ডায়ালগ */
+.nt-toast{position:absolute;left:50%;bottom:calc(110px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(10px);background:#3b3226;color:#fff;padding:9px 16px;border-radius:20px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:9200;white-space:nowrap}
 .nt-toast.on{opacity:1;transform:translateX(-50%)}
+.nt-modal{position:absolute;inset:0;z-index:9150;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:20px}
+.nt-mc{width:100%;max-width:380px;max-height:80vh;overflow-y:auto;background:#ffffe6;border-radius:12px;padding:16px}
+.nt-mc h3{margin:0 0 10px;font-size:19px;font-weight:500}
+.nt-mr{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid #e3dfb8}
+.nt-mr span{flex:1;font-size:17px;word-break:break-word}
+.nt-mr button{width:40px;height:40px;border:0;background:none;font-size:18px;color:#5a5240}
+.nt-ma{display:block;width:100%;margin-top:10px;height:44px;border:1.5px solid #86704f;border-radius:10px;background:#fbf9c6;color:#4d4330;font-size:16px}
+.nt-mdone{background:#6c5841;color:#fff;border-color:#6c5841}
+@media print{.nt-tb,.nt-find,.nt-fmt,.nt-toast{display:none!important}.nt-root{position:static}.nt-edcard{border:0;background:none}}
