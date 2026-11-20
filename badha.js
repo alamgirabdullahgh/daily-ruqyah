@@ -31,7 +31,7 @@
  function SEQT(){return[["dua","d6",100]]}
  var PARTS=[{n:"১",t:"পানি",s:"মাগরিবের আগে: ফাতির ২ ×৭",f:SEQ1,pdf:1,sn:["১"]},
   {n:"২",t:"তেল",s:"আয়াতুল কুরসি ×৭; ফালাক+নাস মিলে ১ বার, ×৭",f:SEQ2,pdf:1,sn:["২"]},
-  {n:"৩–৭",t:"পড়া ও দোয়া",s:"শুধু আয়াত (দোয়া বাদ), পুরো সেট ১১ বার",f:SEQ,pdf:1,sn:["৩","৪","৫","৬","৭"]},
+  {n:"৩–৭",t:"পড়া ও দোয়া",at:" (শুধু আয়াত ×১১)",s:"শুধু আয়াত (দোয়া বাদ), পুরো সেট ১১ বার",f:SEQ,pdf:1,sn:["৩","৪","৫","৬","৭"]},
   {n:"৮",t:"তাহাজ্জুদ",s:"রাত ৩টায়: দোয়া ১০০ বার",f:SEQT,pdf:1,sn:["৮"]}];
  // ক্রম থেকে অনন্য [সূরা,আয়াত] (PDF-এর জন্য); "dua" ঘর বাদ
  // ছাঁটা অংশের অনুবাদ-শব্দ পাল্লা (অনুবাদের শব্দ, ১-ভিত্তিক): ফাতির ৩৫:২ শব্দ ১–১৬ = অনুবাদ ১–২৬ ("…তিনি ব্যতিত।"); ইউনুস ১০:৮১ শব্দ ৫–১৭ = অনুবাদ ৮–২৭ ("যা কিছু তোমরা এনেছ… করেন না।")
@@ -101,10 +101,10 @@
   if(!window.__drXKeys||!window.__drTextDoc||!window.__drHomePdf||!window.__drHomeAudio){flash(b,"একটু পরে");return}
   var c=CAT(k),X=window.__drXKeys,p;
   if(a==="pd"){window.__drTextDoc(c,blocksOf(k));window.__drHomePdf("x",c);return}
-  if(a==="au"){var cf=c+" · সম্পূর্ণ আমল";X(cf,SEQALL());window.__drHomeAudio("x",cf);return}
+  if(a==="au"){var cf=c+" · সম্পূর্ণ আমল (শুধু আয়াত)";X(cf,SEQALL());window.__drHomeAudio("x",cf);return}
   p=PARTS[+b.getAttribute("data-p")];if(!p)return;
   if(a==="ps"){var cp=c+" · ধাপ "+p.n+" "+p.t;window.__drTextDoc(cp,blocksOf(k,p.sn));window.__drHomePdf("x",cp);return}
-  if(a==="pa"){var ca=c+" · ধাপ "+p.n+" "+p.t+" (অডিও)";X(ca,p.f());window.__drHomeAudio("x",ca)}
+  if(a==="pa"){var ca=c+" · ধাপ "+p.n+" "+p.t+(p.at||"")+" (অডিও)";X(ca,p.f());window.__drHomeAudio("x",ca)}
  }
  var b64d=function(s){var r=atob(s),a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a};
  var b64e=function(a){var s="";a=new Uint8Array(a);for(var i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);return btoa(s)};
