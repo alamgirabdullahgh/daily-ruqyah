@@ -50,10 +50,10 @@
  var BTN=function(act,k,i,svg,lbl,al){return'<button type="button" class="bd-a" data-act="'+act+'" data-k="'+k+'"'+(i==null?'':' data-p="'+i+'"')+' aria-label="'+esc(al||lbl)+'" title="'+esc(al||lbl)+'">'+svg+'<small>'+esc(lbl)+'</small></button>'};
  // পাতার মাথায়: পুরো আমলের PDF ও সম্পূর্ণ অডিও
  function topActs(k){return'<span class="bd-acts">'+BTN("cp",k,null,SVG.cp,"কপি")+BTN("pd",k,null,SVG.pd,"পুরো আমল PDF")+BTN("au",k,null,SVG.au,"সম্পূর্ণ অডিও")+'</span>'}
- // প্রতিটি ধাপের আলাদা সারি: নাম + নিজের PDF ও অডিও (দৈনন্দিন রুকইয়াহর "শারীরিক" তালিকার মতো)
+ // প্রতিটি ধাপের আলাদা সারি: নাম + নিজের PDF (অডিও শুধু একটাই: সম্পূর্ণ অডিও) (দৈনন্দিন রুকইয়াহর "শারীরিক" তালিকার মতো)
  function rows(k){
-  return'<section class="bd-c bd-parts"><h3>ধাপ অনুযায়ী অডিও ও PDF</h3>'+PARTS.map(function(p,i){
-   return'<div class="bd-pr"><div class="bd-pl"><b>'+esc(p.n)+'</b><span>'+esc(p.t)+'<small>'+esc(p.s)+'</small></span></div><span class="bd-pb">'+(p.pdf?BTN("ps",k,i,SVG.pd,"PDF","ধাপ "+p.n+" — PDF"):'')+BTN("pa",k,i,SVG.au,"অডিও","ধাপ "+p.n+" — অডিও")+'</span></div>'}).join("")+'</section>'}
+  return'<section class="bd-c bd-parts"><h3>ধাপ অনুযায়ী PDF</h3>'+PARTS.map(function(p,i){
+   return'<div class="bd-pr"><div class="bd-pl"><b>'+esc(p.n)+'</b><span>'+esc(p.t)+'<small>'+esc(p.s)+'</small></span></div><span class="bd-pb">'+(p.pdf?BTN("ps",k,i,SVG.pd,"PDF","ধাপ "+p.n+" — PDF"):'')+'</span></div>'}).join("")+'</section>'}
 // PDF-র লেখা: পাতায় যেমন আছে হুবহু (সময়ের শিরোনাম, ধাপ, নির্দেশনা, আরবি, অনুবাদ, দোয়া); sn = কোন কোন ধাপ (নেই হলে পুরো আমল)
  function blocksOf(k,sn){var d=D[k],o=[];
   if(!sn){o.push({k:"g",t:"আলামত"});d.sym.forEach(function(s){o.push({k:"h",t:s.h});s.l.forEach(function(x){o.push({k:"p",t:"• "+x})})});if(d.when)o.push({k:"g",t:d.when})}
@@ -121,7 +121,6 @@
   if(a==="au"){var cf=c+" · সম্পূর্ণ আমল";X(cf,SEQALL());window.__drHomeAudio("x",cf);return}
   p=PARTS[+b.getAttribute("data-p")];if(!p)return;
   if(a==="ps"){var cp=c+" · ধাপ "+p.n+" "+p.t;window.__drTextDoc(cp,blocksOf(k,p.sn));window.__drHomePdf("x",cp);return}
-  if(a==="pa"){var ca=c+" · ধাপ "+p.n+" "+p.t+" (অডিও)";X(ca,p.f());window.__drHomeAudio("x",ca)}
  }
  var b64d=function(s){var r=atob(s),a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a};
  var b64e=function(a){var s="";a=new Uint8Array(a);for(var i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);return btoa(s)};
