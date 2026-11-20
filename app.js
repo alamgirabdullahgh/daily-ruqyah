@@ -891,15 +891,13 @@ const homeRep=(kind,cat)=>kind==="x"&&/^বাধা\|/.test(String(cat))?{rep:2
 window.__drSfx={resp:SFX_R,treat:SFX_T};
 /* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */
 /* ===== স্থায়ী ভাণ্ডার: একবার বানানো অডিও/PDF ফোনের ভেতরে (Cache Storage) জমা থাকে। অ্যাপ বন্ধ করে আবার খুললেও আর নতুন করে বানাতে হয় না — বোতাম চাপলেই সাথে সাথে। কোড/তালিকা বদলালে PREV বাড়ালে পুরনোগুলো মুছে নতুন করে বানায়। ===== */
-const EDV=(()=>{try{return localStorage.getItem("drEdV")||""}catch(e){return""}})(),PREV="p20"+EDV,PREC="dr-pre-"+PREV; /* মালিকের সম্পাদনা (✂ কাস্টমাইজ) বদলালে drEdV বদলায় — তাই জমানো অডিও/PDF নতুন করে তৈরি হয় */
+const EDV=(()=>{try{return localStorage.getItem("drEdV")||""}catch(e){return""}})(),PREV="p21"+EDV,PREC="dr-pre-"+PREV; /* মালিকের সম্পাদনা (✂ কাস্টমাইজ) বদলালে drEdV বদলায় — তাই জমানো অডিও/PDF নতুন করে তৈরি হয় */
 const preUrl=(t,k)=>"https://dr.local/pre/"+t+"/"+encodeURIComponent(k);
 const PRE={
  async get(t,k){try{const c=await caches.open(PREC),r=await c.match(preUrl(t,k));if(!r)return null;const m=await c.match(preUrl(t,k)+"/meta");let meta={};try{meta=m?await m.json():{}}catch(e){}return{blob:await r.blob(),meta}}catch(e){return null}},
  async put(t,k,blob,meta){try{const c=await caches.open(PREC);await c.put(preUrl(t,k)+"/meta",new Response(JSON.stringify(meta||{}),{headers:{"Content-Type":"application/json"}}));await c.put(preUrl(t,k),new Response(blob,{headers:{"Content-Type":blob.type||"application/octet-stream"}}))}catch(e){console.error("pre-put",e)}},
  async gc(){try{for(const n of await caches.keys())if(n.indexOf("dr-pre-")===0&&n!==PREC)await caches.delete(n)}catch(e){}}
 };
-PRE.dropOld=async(t,k,keep)=>{try{const c=await caches.open(PREC),p0=preUrl(t,k+"|"),kp=preUrl(t,keep);for(const r of await c.keys()){const u=r.url;if(u.indexOf(p0)!==0||u.indexOf(kp)===0)continue;if(/^[0-9.]*(%23[^\/]*)?(\/meta)?$/.test(u.slice(p0.length)))await c.delete(r)}}catch(e){}}; /* একই অডিওর পুরনো সংস্করণ (তালিকা বদলানোর আগের) মুছে ফেলে */
-const listSig=l=>{const t=JSON.stringify(l);let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return(h>>>0).toString(36)+"-"+l.length}; /* আয়াতের তালিকার ছাপ: তালিকা বদলালে ছাপ বদলায় */
 PRE.gc();try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 window.__drPre=PRE;
 const audKey=k=>k+"|"+spdOf();
@@ -924,12 +922,10 @@ function homePdf(kind,cat,say){const td=kind==="x"?TDOC.get(cat):null,k=kind+"|"
 /* জোড়া অডিওও আগে থেকে বানানো থাকে: ফোনে অফলাইন অডিও নামানো থাকলে (সব আয়াত) ব্যাকগ্রাউন্ডে প্রতিটি ক্যাটাগরির ফাইল জোড়া হয়ে বসে; বোতাম চাপলে সাথে সাথে বাজে ও ডাউনলোড/শেয়ার করা যায় */
 const HAUD=new Map();
 function homeAudio(kind,cat,say){const k=kind+"|"+cat;let e=HAUD.get(k);
- if(!e){e={say:()=>{},out:el("div")};e.p=(async()=>{const{rep,set}=homeRep(kind,cat);e.rep=rep;e.set=set;const SG=kind==="x"&&/^বাধা\|/.test(String(cat));let list=null,ck=audKey(k);/* বাধা-রুকইয়াহর অডিও: জমার চাবিতে আয়াত-তালিকার ছাপ থাকে, তালিকা বদলালে পুরনো জমা আর মেলে না */
-   if(SG){list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty");ck=ck+"#"+listSig(list)}
-   const hit=await PRE.get("aud",ck);if(hit&&hit.blob&&hit.blob.size>2048){e.n=(hit.meta&&hit.meta.n)||0;preAudioInto(e.out,hit.blob,homeTitle(kind,cat));e.cached=true;e.done=true;return e}
-   if(!list){list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty")}e.n=list.length;const st={};
+ if(!e){e={say:()=>{},out:el("div")};e.p=(async()=>{const{rep,set}=homeRep(kind,cat);e.rep=rep;e.set=set;const hit=await PRE.get("aud",audKey(k));if(hit&&hit.blob&&hit.blob.size>2048){e.n=(hit.meta&&hit.meta.n)||0;preAudioInto(e.out,hit.blob,homeTitle(kind,cat));e.cached=true;e.done=true;return e}
+   const list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty");e.n=list.length;const st={};
    await mergeAudio(list,e.out,t=>e.say(t),{rep,set,memo:true,noplay:true,name:homeTitle(kind,cat),stat:st});e.done=true;
-   try{const a=e.out.querySelector("audio");if(a&&st.ok&&!st.bad){const b=await(await fetch(a.src)).blob();if(b.size>2048){await PRE.put("aud",ck,b,{n:list.length});if(SG)await PRE.dropOld("aud",k,ck)}}}catch(x){console.error(x)}return e})().catch(err=>{HAUD.delete(k);throw err});HAUD.set(k,e)}
+   try{const a=e.out.querySelector("audio");if(a&&st.ok&&!st.bad){const b=await(await fetch(a.src)).blob();if(b.size>2048)PRE.put("aud",audKey(k),b,{n:list.length})}}catch(x){console.error(x)}return e})().catch(err=>{HAUD.delete(k);throw err});HAUD.set(k,e)}
  if(say)e.say=say;return e}
 let HPRE=false;
 /* তৈরির অগ্রগতি: স্ক্রিনে ছোট লাইভ সূচক + ফোনের নোটিফিকেশন (মিনিমাইজ করলেও দেখা যায়, অ্যাপ জেগে থাকে) */
