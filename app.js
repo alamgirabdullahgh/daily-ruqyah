@@ -344,7 +344,7 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=k=>
  if(opt&&opt.onmarks){try{const pb=[0];for(const c of mp3)pb.push(pb[pb.length-1]+c.length);opt.onmarks(marks.map((m,k)=>({i:oi[k],t:pb[Math.min(m,mp3.length)]*8/64000})).filter(x=>x.i!=null))}catch(e){console.error(e)}}
  if(opt&&opt.stat){opt.stat.ok=ok;opt.stat.bad=bad}const SR=ST(),parts=[];for(let q=0;q<SR;q++)for(const c of mp3)parts.push(c);const blob=new Blob(parts,{type:"audio/mpeg"}),ext="mp3";
  const url=URL.createObjectURL(blob),au=document.createElement("audio");au.controls=true;au.src=url;au.style.cssText="display:block;width:100%;margin-top:8px";
- const FN=(String((opt&&opt.name)||window.__sq||"").trim().replace(/\s*[,،，、]\s*/g,"-").replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g," ").replace(/^[-_.]+|[-_.]+$/g,"").slice(0,60)||"quran-audio")+"."+ext;nameAudio(au,url,FN);const dl=els("a","display:none;pointer-events:none;flex-direction:column;align-items:center;gap:1px;flex:none;margin:0;padding:6px 12px;border-radius:12px;font-size:13px;background:var(--primary);color:#fff;text-decoration:none;font-weight:600;line-height:1.3","");dl.href=url;{const t1=document.createElement("span"),t2=document.createElement("span");t1.textContent="⬇ Download";t2.textContent=(Math.round(blob.size/1048576*10)/10)+" MB";t2.style.cssText="font-size:12px;font-weight:400;opacity:.9";dl.append(t1,t2)}dl.download=FN;dl.setAttribute("aria-hidden","true");dl.tabIndex=-1;dl.onclick=e=>{e.preventDefault();e.stopPropagation()};{const row=els("div","display:flex;align-items:center;gap:8px;margin-top:8px"),sh=document.createElement("button");au.style.cssText="flex:1 1 0;min-width:0;width:100%;margin:0";sh.type="button";sh.title="শেয়ার";sh.setAttribute("aria-label","শেয়ার");sh.style.cssText="flex:none;width:42px;height:42px;border-radius:50%;border:0;background:var(--primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0";
+ const FN=(String((opt&&opt.name)||window.__sq||"").trim().replace(/\s*[,،，、]\s*/g,"-").replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g," ").replace(/^[-_.]+|[-_.]+$/g,"").slice(0,60)||"আয়াতের অডিও")+"."+ext;nameAudio(au,url,FN);const dl=els("a","display:none;pointer-events:none;flex-direction:column;align-items:center;gap:1px;flex:none;margin:0;padding:6px 12px;border-radius:12px;font-size:13px;background:var(--primary);color:#fff;text-decoration:none;font-weight:600;line-height:1.3","");dl.href=url;{const t1=document.createElement("span"),t2=document.createElement("span");t1.textContent="⬇ Download";t2.textContent=(Math.round(blob.size/1048576*10)/10)+" MB";t2.style.cssText="font-size:12px;font-weight:400;opacity:.9";dl.append(t1,t2)}dl.download=FN;dl.setAttribute("aria-hidden","true");dl.tabIndex=-1;dl.onclick=e=>{e.preventDefault();e.stopPropagation()};{const row=els("div","display:flex;align-items:center;gap:8px;margin-top:8px"),sh=document.createElement("button");au.style.cssText="flex:1 1 0;min-width:0;width:100%;margin:0";sh.type="button";sh.title="শেয়ার";sh.setAttribute("aria-label","শেয়ার");sh.style.cssText="flex:none;width:42px;height:42px;border-radius:50%;border:0;background:var(--primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0";
   sh.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 16.1c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>';
   sh.onclick=()=>shareBlob(blob,FN);row.append(au,sh);out.append(row,dl)};
  note("✅ "+bn2(ok)+"টি আয়াতের অডিও একটি ফাইলে তৈরি হয়েছে"+(SR>1?" · পুরো সেট "+bn2(SR)+" বার":"")+(cutN?" (অংশ কাটা: "+bn2(cutN)+"টি আয়াত)":"")+(bad?" · "+bn2(bad)+"টির অডিও পাওয়া যায়নি, বাদ গেছে":"")+(AS.net?" · "+bn2(AS.net)+"টি আয়াত নেট থেকে এসেছে (ফোনে ফাইল ছিল না)":""));if(!(opt&&opt.noplay))au.play().catch(()=>{})}
@@ -498,7 +498,7 @@ async function ayatPdfBuild(list,title,say){
   imgs.push(new Uint8Array(await bl.arrayBuffer()));cv.width=cv.height=0;
   await new Promise(r=>setTimeout(r))}
  say("⏳ PDF ফাইল জোড়া হচ্ছে…");
- const pdf=jpegPdf(imgs,W,H),nm=("আয়াত-"+String(title).replace(/[\\\/:*?"<>|\n\r]+/g," ").trim().slice(0,40)).trim()+".pdf";
+ const pdf=jpegPdf(imgs,W,H),nm=("আয়াত "+String(title).replace(/[\\\/:*?"<>|\n\r]+/g," ").trim().slice(0,40)).trim()+".pdf";
  return{pdf,nm,imgs,N}}
 /* লেখা-ভিত্তিক PDF (বাধা দূর করার রুকইয়াহ): আমলের লেখা পাতায় যেমন আছে হুবহু তেমন — নির্দেশনা, আরবি আয়াত, অনুবাদ, দোয়া। ব্লক: {k:"g|h|p|ar|tr|m",t} */
 const TDOC=new Map();window.__drTextDoc=(c,b)=>{TDOC.set(c,b)};
@@ -598,7 +598,7 @@ async function symPdfBuild(cat,say){
   imgs.push(new Uint8Array(await bl.arrayBuffer()));cv.width=cv.height=0;
   await new Promise(r=>setTimeout(r))}
  say("⏳ PDF ফাইল জোড়া হচ্ছে…");
- const pdf=jpegPdf(imgs,W,H),nm=("সিমটম-ডায়াগনোসিস-"+(cat==="সব"?"বদনজর-জাদু-জিন":cat)).trim()+".pdf";
+ const pdf=jpegPdf(imgs,W,H),nm=homeTitle("sym",cat).trim()+".pdf";
  return{pdf,nm,imgs,N}}
 async function ayatPdf(list,title,say){const r=await ayatPdfBuild(list,title,say);await saveBlob(r.pdf,r.nm);return r.N}
 function audioBar(info,all,cb,title){if(!all.length)return;const box=els("div","margin-top:8px"),note=els("div","font-size:12px;color:var(--text-muted);margin-top:4px"),out=el("div"),row=els("div","display:flex;flex-wrap:wrap;gap:6px;align-items:center");
@@ -884,7 +884,13 @@ window.__drGroupItems=cat=>{if(GRPC[cat])return GRPP[cat]||(GRPP[cat]=Promise.al
 const groupKeys=cat=>window.__drGroupItems(cat).then(items=>{const seen=new Set(),out=[];items.forEach(it=>it.keys.forEach(k=>{const i=k[0]+":"+k[1];if(!seen.has(i)){seen.add(i);out.push(k)}}));return out});
 let ORGP=null;window.__drOrgans=()=>ORGP||(ORGP=(async()=>{const out=[];for(const o of ORG){const t=TOPICS.find(x=>x.name===o[0]);if(!t)continue;const keys=await topicKeys(t);let base=null;/* অঙ্গের মূল (মৌলিক) আয়াত: অঙ্গের প্রধান (প্রথম) শব্দ-রুটে সরাসরি মেলা আয়াতগুলোর মধ্যে কুরআনের ক্রমে প্রথমটি; না মিললে অঙ্গের তালিকার প্রথম আয়াত */try{const k1=await topicKeys({terms:[o[2][0]]});base=k1[0]||null}catch(e){}out.push({name:o[0],keys,base:base||keys[0]||null})}return out})().catch(e=>{ORGP=null;throw e}));
 const homeKeys=(kind,cat)=>kind==="x"&&(GRPN[cat]||GRPC[cat])?groupKeys(cat):kind==="x"?Promise.resolve().then(()=>{const v=XKEYS.get(cat);return typeof v==="function"?v():(v||[])}):kind==="resp"?respKeys(cat):kind==="phys"?bodyKeys(DISEASE.file):kind==="ment"?bodyKeys(MENTAL.file):treatKeys(cat);
-const homeTitle=(kind,cat)=>kind==="x"&&/^বাধা\|/.test(String(cat))?String(cat).slice(5).replace(/ · সম্পূর্ণ আমল$/,""):kind==="x"?(/^(শারীরিক রোগ|মানসিক সমস্যা)\|/.test(String(cat))?String(cat).split("|").slice(1).join(" "):String(cat).replace("|"," ")):kind==="sym"?"সিমটম ডায়াগনোসিস "+(cat==="সব"?"বদনজর জাদু জিন":cat):kind==="phys"||kind==="ment"?"দৈনন্দিন রুকইয়াহ "+cat:(kind==="resp"?"রেসপন্স ডায়াগনোসিস":"ট্রিটমেন্ট")+" "+(cat==="সব"?"বদনজর জাদু জিন":cat);
+const homeTitle=(kind,cat)=>{const c=String(cat==null?"":cat),all=c==="সব"?"বদনজর জাদু জিন":c;
+ if(kind==="x"){if(/^বাধা\|/.test(c))return c.slice(5).replace(/ · সম্পূর্ণ আমল$/,"").replace(/ · /g," ");if(/^(শারীরিক রোগ|মানসিক সমস্যা)\|/.test(c))return c.split("|").slice(1).join(" ");return c.replace("|"," ")}
+ if(kind==="sym")return"লক্ষণ ভিত্তিক রোগ নির্ণয় "+all;
+ if(kind==="resp")return"প্রতিক্রিয়া ভিত্তিক রোগ নির্ণয় "+all;
+ if(kind==="treat")return"চিকিৎসা "+all;
+ if(kind==="phys"||kind==="ment"){const w=kind==="phys"?"শারীরিক":"মানসিক";return"দৈনন্দিন রুকইয়াহ "+((c===""||c==="সব"||c==="দৈনন্দিন")?w:c)}
+ return c||"ডেইলি রুকইয়াহ"};
 /* পুনরাবৃত্তি: রেসপন্স ডায়াগনোসিস — প্রতিটি আয়াত ১১ বার, পুরো সেট ৩ বার; ট্রিটমেন্ট — প্রতিটি আয়াত ৩ বার, সেট ১ বার */
 const SFX_R=" · প্রতিক্রিয়া",SFX_T=" · চিকিৎসা";
 const homeRep=(kind,cat)=>kind==="x"&&/^বাধা\|/.test(String(cat))?{rep:21,set:1}:kind==="resp"?{rep:11,set:1}:kind==="treat"?{rep:1,set:1}:kind==="x"&&String(cat).endsWith(SFX_R)?{rep:11,set:1}:kind==="x"&&String(cat).endsWith(SFX_T)?{rep:1,set:1}:kind==="x"&&/^অক্ষ /.test(String(cat))?{rep:3,set:1}:{rep:11,set:1};/* শারীরিক/মানসিক (অঙ্গ, রোগ, সব): প্রতিটি আয়াত ১১ বার, সেট একবার */
@@ -906,13 +912,13 @@ const SHSVG='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
 const DLSVG='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>';
 /* গোল আইকন-বোতাম (শেয়ার/ডাউনলোড): সব জায়গায় একই চেহারা */
 const iconBtn=(svg,label,fn)=>{const b=document.createElement("button");b.type="button";b.title=label;b.setAttribute("aria-label",label);b.style.cssText="flex:none;width:42px;height:42px;border-radius:50%;border:0;background:var(--primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0";b.innerHTML=svg;b.onclick=fn;return b};
-const fileNm=(t,ext)=>(String(t||"file").trim().replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g," ").replace(/^[-_.]+|[-_.]+$/g,"").slice(0,60)||"file")+"."+ext;
+const fileNm=(t,ext)=>(String(t||"file").trim().replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g," ").replace(/^[-_.]+|[-_.]+$/g,"").slice(0,60)||"ডেইলি রুকইয়াহ")+"."+ext;
 /* ভাণ্ডার থেকে ফেরত আসা অডিও-ফাইল: mergeAudio-র ফলের মতোই [প্লেয়ার | ⬇ | শেয়ার] সারি */
 const preAudioInto=(out,blob,name)=>{out.textContent="";const nm=fileNm(name,"mp3"),au=document.createElement("audio");au.controls=true;au.src=URL.createObjectURL(blob);au.style.cssText="flex:1 1 0;min-width:0;width:100%;margin:0";
  const row=els("div","display:flex;align-items:center;gap:8px;margin-top:8px");nameAudio(au,au.src,nm);row.append(au,iconBtn(SHSVG,"শেয়ার",()=>shareBlob(blob,nm)));out.append(row,hiddenDl(au.src,nm));return au};
 const HPDF=new Map();
 async function prePdfGet(k){const h=await PRE.get("pdf",k);if(!h||!h.blob)return null;const m=h.meta||{},lens=m.lens||[];
- const r={pdf:h.blob,nm:m.nm||"file.pdf",N:m.N||lens.length,cached:true};
+ const r={pdf:h.blob,nm:m.nm||"ডেইলি রুকইয়াহ.pdf",N:m.N||lens.length,cached:true};
  if(lens.length)r.imgsP=async()=>{const g=await PRE.get("img",k);if(!g||!g.blob)return[];const ab=await g.blob.arrayBuffer(),out=[];let o=0;for(const n of lens){out.push(new Uint8Array(ab,o,n));o+=n}return out};
  return r}
 async function prePdfPut(k,r){if(!r||!r.pdf)return;try{const lens=(r.imgs||[]).map(u=>u.length);if(lens.length)await PRE.put("img",k,new Blob(r.imgs,{type:"application/octet-stream"}),{});await PRE.put("pdf",k,r.pdf,{nm:r.nm,N:r.N,lens})}catch(e){console.error(e)}}
@@ -962,8 +968,8 @@ async function prebuildAll(){
 /* ===== অডিও/PDF বাটন: পাতার সাজ একটুও বদলায় না। তৈরির অগ্রগতি নিচে ভাসমান একটি বক্সে (dock) দেখায়; তৈরি হলে নিজে ডাউনলোড হয়, বক্সে শেয়ার/প্লেয়ার/(PDF-এ) দেখার বোতাম থাকে ===== */
 const dockEl=()=>{let d=document.getElementById("drDock");if(!d){d=els("div","position:fixed;left:8px;right:8px;bottom:calc(68px + env(safe-area-inset-bottom,0px));z-index:9999;background:var(--card-bg,#fff);border:1.5px solid var(--primary);border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.28);padding:10px 12px;max-height:68vh;overflow:auto");d.id="drDock";document.body.appendChild(d)}return d};
 const dockOpen=title=>{const d=dockEl();d.hidden=false;d.textContent="";const hd=els("div","display:flex;align-items:center;gap:8px;margin-bottom:4px"),t=els("div","flex:1;min-width:0;font-weight:800;color:var(--primary);font-size:14px",title||""),x=mkBtn("✕",()=>{d.hidden=true;d.textContent=""});x.style.cssText+=";flex:none;margin:0;padding:2px 10px;width:auto";hd.append(t,x);const n=els("div","font-size:13px;color:var(--text-muted);margin:2px 0"),body=el("div");d.append(hd,n,body);return{n,body}};
-const dockName=(cat,kind)=>String(cat||kind||"file").split("|").pop().trim().replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g," ").slice(0,60)||"file";
-window.__drDockSave=async(kind,cat,job)=>{const title=String(cat||"").split("|").pop().trim(),ctx=dockOpen(title),isP=kind==="pdf";ctx.n.textContent="⏳ প্রস্তুত হচ্ছে…";
+const dockName=(cat,kind)=>String(homeTitle(kind,cat)||"").trim().replace(/[\\\/:*?"<>|\u0000-\u001f]+/g,"-").replace(/\s+/g," ").replace(/^[-_.\s]+|[-_.\s]+$/g,"").slice(0,60).trim()||"ডেইলি রুকইয়াহ";
+window.__drDockSave=async(kind,cat,job,ttl)=>{const title=ttl||String(cat||"").split("|").pop().trim(),ctx=dockOpen(title),isP=kind==="pdf";ctx.n.textContent="⏳ প্রস্তুত হচ্ছে…";
  let r;try{r=await job(t=>{ctx.n.textContent=t})}catch(e){console.error(e);ctx.n.textContent=/empty/.test(String(e&&e.message))?"এখানে এখনো কিছু যোগ করা হয়নি":(isP?"PDF বানানো যায়নি":"অডিও তৈরি করা যায়নি")+" — ইন্টারনেট দেখে আবার চেষ্টা করুন";return}
  const {blob,name}=r;ctx.n.textContent=isP?"✅ PDF তৈরি — নিচে পড়ুন; ডাউনলোড বা শেয়ার চাইলে বোতাম চাপুন":"✅ অডিও তৈরি — বাজছে";
  /* নিজে থেকে ডাউনলোড হয় না: ডাউনলোড শুধু ⬇ চাপলে */
@@ -973,7 +979,7 @@ window.__drDockSave=async(kind,cat,job)=>{const title=String(cat||"").split("|")
   try{const arr=r.imgs||(await r.imgsP());arr.forEach(u8=>{const im=document.createElement("img");im.loading="lazy";im.style.cssText="display:block;width:100%;height:auto";im.src=URL.createObjectURL(new Blob([u8],{type:"image/jpeg"}));pg.appendChild(im)})}catch(e){console.error(e);pg.textContent="পাতা দেখানো যায়নি — ⬇ চাপলে ফাইল পাবেন"}}
  else{const au=document.createElement("audio");au.controls=true;au.src=URL.createObjectURL(blob);au.style.cssText="flex:1 1 0;min-width:0;width:100%;margin:0";const row=els("div","display:flex;align-items:center;gap:8px;margin-top:8px");nameAudio(au,au.src,name);row.append(au,sh);ctx.body.append(row,hiddenDl(au.src,name));au.play().catch(()=>{})}};
 const PDFC=new Map();
-window.__drHomePdf=(kind,cat,host)=>{const key=kind+"|"+cat;return window.__drDockSave("pdf",cat,async note=>{let r=PDFC.get(key);if(!r){r=await homePdf(kind,cat,t=>note(t));PDFC.set(key,r)}return{blob:r.pdf,name:r.nm,imgs:r.imgs,imgsP:r.imgsP}})};
+window.__drHomePdf=(kind,cat,host)=>{const key=kind+"|"+cat;return window.__drDockSave("pdf",cat,async note=>{let r=PDFC.get(key);if(!r){r=await homePdf(kind,cat,t=>note(t));PDFC.set(key,r)}return{blob:r.pdf,name:fileNm(homeTitle(kind,cat),"pdf"),imgs:r.imgs,imgsP:r.imgsP}},homeTitle(kind,cat))};
 /* অডিও: চাপলেই সাথে সাথে বাজে (আয়াত একটার পর একটা, নির্ধারিত পুনরাবৃত্তিসহ); পাশাপাশি পেছনে একটি ফাইল জোড়া হয় — তৈরি হলে নিচে প্লেয়ার, শেয়ার ও ডাউনলোড আসে */
 /* একটি হেডিংয়ের সব ঘরের আয়াত একটাই অডিও ফাইলে (প্রতিটি ঘরের আয়াত পরপর, প্রতিটি ৩ বার); cb তে প্রতিটি আয়াতের শেষ-সময় (সেকেন্ড) আসে, যাতে বাজার সময় কোন ঘর চলছে বোঝা যায় */
 const AXM=new Map(); /* আয়াত→এনকোড-করা MP3 টুকরো: ঘর, সারি ও হেডিংয়ের অডিও একই আয়াত বারবার এনকোড করে না */
@@ -983,7 +989,7 @@ window.__drGroupAudio=async(list,out,note,name,cb,rep)=>{const k=audKey("g|"+nam
  try{const a=out.querySelector("audio");if(a&&marks&&st.ok&&!st.bad){const b=await(await fetch(a.src)).blob();if(b.size>2048)PRE.put("aud",k,b,{marks})}}catch(e){console.error(e)}};
 window.__drHomePdfPre=cat=>homePdf("x",cat);
 const AUB=new Map();
-window.__drHomeAudio=(kind,cat,host)=>{const key=kind+"|"+cat,name=dockName(cat,kind)+".mp3";return window.__drDockSave("audio",cat,async note=>{let b=AUB.get(key);if(!b){const e=homeAudio(kind,cat,t=>note("⬇ "+t));if(!e.done)note("⏳ অডিও জোড়া লাগছে — হলেই বাজবে…");await e.p;const a=e.out.querySelector("audio");if(!a)throw new Error("empty");b=await(await fetch(a.src)).blob();AUB.set(key,b)}return{blob:b,name}})};
+window.__drHomeAudio=(kind,cat,host)=>{const key=kind+"|"+cat,name=dockName(cat,kind)+".mp3";return window.__drDockSave("audio",cat,async note=>{let b=AUB.get(key);if(!b){const e=homeAudio(kind,cat,t=>note("⬇ "+t));if(!e.done)note("⏳ অডিও জোড়া লাগছে — হলেই বাজবে…");await e.p;const a=e.out.querySelector("audio");if(!a)throw new Error("empty");b=await(await fetch(a.src)).blob();AUB.set(key,b)}return{blob:b,name}},homeTitle(kind,cat))};
 async function run(topic){window.__bq="";GEN++;CURT=null;{const gp=document.getElementById("drGit");if(gp)gp.remove()}if(topic&&!topic.terms)topic=null;const raw=topic?topic.name:$("rsQ").value;window.__sq=(topic&&topic.fname)||raw;const q=nz(raw),out=$("rsOut"),info=$("rsInfo");out.innerHTML="";if(!R)info.textContent="⏳ ডেটা লোড হচ্ছে… (প্রথমবার ইন্টারনেট ধীর হলে সময় লাগে, পরে দ্রুত হবে)";
  if(topic)return runMulti(topic.terms,out,info,topic.intro,topic.ordered);
  {const parts=raw.split(/[,،，、]/).map(x=>x.trim()).filter(Boolean);if(parts.length>1)return runMulti(parts,out,info)}
