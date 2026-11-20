@@ -404,7 +404,8 @@
           infoEl.textContent = "";
           return show();
         }
-        var toks = Array.from(new Set(N.tokens(raw)));
+        var hraw = raw; try { var ht = window.SearchResolve && window.SearchResolve.hadithTerms(raw); if (ht) hraw = ht.replace(/^সূরা\s+/, ""); } catch (e2) {}
+        var toks = Array.from(new Set(N.tokens(hraw)));
         if (!toks.length) return message("বাংলা বা আরবি অক্ষরে শব্দ লিখুন (ইংরেজি অক্ষরে সার্চ চলে না)। সংকলনের নাম ও নম্বর দিয়েও খোঁজা যায়, যেমন: বুখারী ১");
         var lists = await Promise.all(toks.map(postingsSyn));
         if (my !== gen) return;

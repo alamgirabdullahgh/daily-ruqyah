@@ -24,7 +24,7 @@ jobs:
           # শুধু APK-র কপি ছোট হয়; রিপোর মূল সোর্স পড়ার মতোই থাকে। কোনো ফাইল ব্যর্থ হলে বিল্ড থামবে
           npm i --prefix /tmp/mt terser esbuild >/dev/null 2>&1
           cd www
-          for f in app.js home.js boot.js widget.js alarm.js badha.js symptom.js axes.js reveal.js sw.js data/sunnah.js data/principles.js data/response-signs.js data/hadith-norm.js data/hadith.js; do
+          for f in app.js home.js boot.js widget.js alarm.js badha.js symptom.js axes.js reveal.js sw.js data/sunnah.js data/principles.js data/response-signs.js data/hadith-norm.js data/search-resolve.js data/hadith.js; do
             /tmp/mt/node_modules/.bin/terser "$f" -c -m --comments false --ecma 2020 -o "$f" || exit 1
           done
           /tmp/mt/node_modules/.bin/esbuild style.css --minify --outfile=style.css --allow-overwrite || exit 1
