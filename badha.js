@@ -29,6 +29,14 @@
  function SEQ(){var o=[],r;for(r=0;r<3;r++)o=o.concat(SEQ_ONE());return o}
  // পার্ট ৪ (ধাপ ৮) — তাহাজ্জুদের দোয়া ১০০ বার
  function SEQT(){return[["dua","d6",100]]}
+ // নতুন অপশন: শরীরে ও শরীরের বাইরের সব ধরনের গিঁট ধ্বংসের রুকইয়াহ (এনক্রিপ্ট-ডেটা D-র বাইরে, নিজস্ব)।
+ // এক সেট = সূরা ফালাক (১–৫; ৪ নম্বর আয়াত ৭ বার) তারপর সূরা নাস (১–৬; ৬ নম্বর আয়াত ৭ বার); প্রতিটি সেটেই এই ৭ বার; পুরো সেট ১১ বার; শুধু আয়াত।
+ var GH={k:"gith",t:"শরীরে এবং শরীরের বাহিরে থাকা সব ধরনের গিট ধ্বংসের রুকইয়াহ",icon:"🪢"};
+ function SEQG_ONE(){var o=[],i;
+  for(i=1;i<=5;i++)o.push(i===4?[113,4,7]:[113,i,1]);
+  for(i=1;i<=6;i++)o.push(i===6?[114,6,7]:[114,i,1]);
+  return o}
+ function SEQG(){var o=[],r;for(r=0;r<11;r++)o=o.concat(SEQG_ONE());return o}
  var PARTS=[{n:"১",t:"পানি",s:"মাগরিবের আগে: ফাতির ২ ×৭",f:SEQ1,pdf:1,sn:["১"]},
   {n:"২",t:"তেল",s:"আয়াতুল কুরসি ×৭; ফালাক+নাস মিলে ১ বার, ×৭",f:SEQ2,pdf:1,sn:["২"]},
   {n:"৩–৭",t:"পড়া ও দোয়া",s:"শুধু আয়াত (দোয়া বাদ), পুরো সেট ৩ বার",f:SEQ,pdf:1,sn:["৩","৪","৫","৬","৭"]},
@@ -75,9 +83,14 @@
   return'<span class="bd-acts"><button type="button" class="bd-a" data-act="cp" data-k="'+k+'" aria-label="কপি" title="কপি">'+SVG.cp+'<small>কপি</small></button><button type="button" class="bd-a" data-act="pd" data-k="'+k+'" aria-label="PDF" title="PDF">'+SVG.pd+'<small>PDF</small></button><button type="button" class="bd-a" data-act="au" data-k="'+k+'" aria-label="অডিও" title="অডিও">'+SVG.au+'<small>অডিও</small></button></span>';
  }
  function list(){
-  return'<h2 class="bd-h">🔓 বাধা দূর করার রুকইয়াহ</h2><div class="bd-g">'+Object.keys(D).map(function(k){var d=D[k];return'<div class="bd-cell"><a class="bd-bt" href="#badha/'+k+'"><i>'+d.icon+'</i><b>'+esc(short(d.t))+'</b></a>'+acts(k)+'</div>'}).join("")+'</div>';
+  return'<h2 class="bd-h">🔓 বাধা দূর করার রুকইয়াহ</h2><div class="bd-g">'+Object.keys(D).map(function(k){var d=D[k];return'<div class="bd-cell"><a class="bd-bt" href="#badha/'+k+'"><i>'+d.icon+'</i><b>'+esc(short(d.t))+'</b></a>'+acts(k)+'</div>'}).join("")+'<div class="bd-cell"><a class="bd-bt" href="#badha/'+GH.k+'"><i>'+GH.icon+'</i><b>'+esc(GH.t)+'</b></a><span class="bd-acts">'+BTN("au",GH.k,null,SVG.au,"অডিও")+'</span></div></div>';
+ }
+ function pageGH(){
+  return'<a class="bd-back" href="#badha">← বাধা দূর করার রুকইয়াহ</a><h2 class="bd-h"><i>'+GH.icon+'</i> '+esc(GH.t)+'</h2><div class="bd-top"><span class="bd-acts">'+BTN("au",GH.k,null,SVG.au,"সম্পূর্ণ অডিও")+'</span></div>'+
+   '<section class="bd-c"><h3>অডিওর ক্রম</h3>'+UL(["এক সেট: সূরা ফালাক (১–৫ আয়াত) তারপর সূরা নাস (১–৬ আয়াত)","সূরা ফালাকের ৪ নম্বর আয়াত প্রতি সেটে ৭ বার","সূরা নাসের ৬ নম্বর আয়াত প্রতি সেটে ৭ বার","এই পুরো সেট ১১ বার","শুধু আয়াত, দোয়া নেই"])+'</section>';
  }
  function page(k){
+  if(k===GH.k)return pageGH();
   var d=D[k];if(!d)return list();
   var h='<a class="bd-back" href="#badha">← বাধা দূর করার রুকইয়াহ</a><h2 class="bd-h"><i>'+d.icon+'</i> '+esc(d.t)+'</h2><div class="bd-top">'+topActs(k)+'</div>'+rows(k);
   h+='<section class="bd-c"><h3>আলামত</h3>'+d.sym.map(function(s){return'<h4>'+esc(s.h)+'</h4>'+UL(s.l)}).join("")+'</section>';
@@ -96,6 +109,10 @@
  }
  function flash(b,t){var o=b.querySelector("small"),old=o.textContent;o.textContent=t;setTimeout(function(){o.textContent=old},1600)}
  function act(a,k,b){
+  if(k===GH.k&&D){
+   if(a!=="au")return;
+   if(!window.__drXKeys||!window.__drHomeAudio){flash(b,"একটু পরে");return}
+   var cg="বাধা|"+GH.t+" · সম্পূর্ণ আমল";window.__drXKeys(cg,SEQG());window.__drHomeAudio("x",cg);return}
   if(!D||!D[k])return;
   if(a==="cp"){copyText(plain(k)).then(function(){flash(b,"✓ কপি হয়েছে")},function(){flash(b,"হয়নি")});return}
   if(!window.__drXKeys||!window.__drTextDoc||!window.__drHomePdf||!window.__drHomeAudio){flash(b,"একটু পরে");return}
