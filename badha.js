@@ -19,19 +19,19 @@
  function SEQ2(){var o=[[2,255,7]],q,i;
   for(q=0;q<7;q++){for(i=1;i<=5;i++)o.push([113,i,1]);for(i=1;i<=6;i++)o.push([114,i,1])}
   return o}
- // পার্ট ৩ (ধাপ ৩–৭) — শুধু আয়াত (দোয়া বাদ): আগের ক্রম হুবহু (ফাতির ২ ×২১; ইউনুস ৮১ (শব্দ ৫–১৭) + আ‘রাফ ১১৮ ×২১; ফালাক ৪ ×২১; ইনশিরাহ ৫-৬ জোড়ায় ×২১ — এখানেই শেষ), এই পুরো সেট ১১ বার
+ // পার্ট ৩ (ধাপ ৩–৭) — শুধু আয়াত (দোয়া বাদ): আগের ক্রম হুবহু (ফাতির ২ ×২১; ইউনুস ৮১ (শব্দ ৫–১৭) + আ‘রাফ ১১৮ ×২১; ফালাক ৪ ×২১; ইনশিরাহ ৫-৬ জোড়ায় ×২১ — এখানেই শেষ), এই পুরো সেট ৩ বার
  function SEQ_ONE(){var o=[],q;
   for(q=0;q<21;q++)o.push(FT(1));
   for(q=0;q<21;q++)o.push([10,81,1,5,17],[7,118,1]);
   o.push([113,4,21,1,5]);
   for(q=0;q<21;q++)o.push([94,5,1],[94,6,1]);
   return o}
- function SEQ(){var o=[],r;for(r=0;r<11;r++)o=o.concat(SEQ_ONE());return o}
+ function SEQ(){var o=[],r;for(r=0;r<3;r++)o=o.concat(SEQ_ONE());return o}
  // পার্ট ৪ (ধাপ ৮) — তাহাজ্জুদের দোয়া ১০০ বার
  function SEQT(){return[["dua","d6",100]]}
  var PARTS=[{n:"১",t:"পানি",s:"মাগরিবের আগে: ফাতির ২ ×৭",f:SEQ1,pdf:1,sn:["১"]},
   {n:"২",t:"তেল",s:"আয়াতুল কুরসি ×৭; ফালাক+নাস মিলে ১ বার, ×৭",f:SEQ2,pdf:1,sn:["২"]},
-  {n:"৩–৭",t:"পড়া ও দোয়া",at:" (শুধু আয়াত ×১১)",s:"শুধু আয়াত (দোয়া বাদ), পুরো সেট ১১ বার",f:SEQ,pdf:1,sn:["৩","৪","৫","৬","৭"]},
+  {n:"৩–৭",t:"পড়া ও দোয়া",at:" (শুধু আয়াত ×৩)",s:"শুধু আয়াত (দোয়া বাদ), পুরো সেট ৩ বার",f:SEQ,pdf:1,sn:["৩","৪","৫","৬","৭"]},
   {n:"৮",t:"তাহাজ্জুদ",s:"রাত ৩টায়: দোয়া ১০০ বার",f:SEQT,pdf:1,sn:["৮"]}];
  // ক্রম থেকে অনন্য [সূরা,আয়াত] (PDF-এর জন্য); "dua" ঘর বাদ
  // ছাঁটা অংশের অনুবাদ-শব্দ পাল্লা (অনুবাদের শব্দ, ১-ভিত্তিক): ফাতির ৩৫:২ শব্দ ১–১৬ = অনুবাদ ১–২৬ ("…তিনি ব্যতিত।"); ইউনুস ১০:৮১ শব্দ ৫–১৭ = অনুবাদ ৮–২৭ ("যা কিছু তোমরা এনেছ… করেন না।")
@@ -101,7 +101,7 @@
   if(!window.__drXKeys||!window.__drTextDoc||!window.__drHomePdf||!window.__drHomeAudio){flash(b,"একটু পরে");return}
   var c=CAT(k),X=window.__drXKeys,p;
   if(a==="pd"){window.__drTextDoc(c,blocksOf(k));window.__drHomePdf("x",c);return}
-  if(a==="au"){var cf=c+" · সম্পূর্ণ আমল (শুধু আয়াত)";X(cf,SEQALL());window.__drHomeAudio("x",cf);return}
+  if(a==="au"){var cf=c+" · সম্পূর্ণ আমল (শুধু আয়াত ×৩)";X(cf,SEQALL());window.__drHomeAudio("x",cf);return}
   p=PARTS[+b.getAttribute("data-p")];if(!p)return;
   if(a==="ps"){var cp=c+" · ধাপ "+p.n+" "+p.t;window.__drTextDoc(cp,blocksOf(k,p.sn));window.__drHomePdf("x",cp);return}
   if(a==="pa"){var ca=c+" · ধাপ "+p.n+" "+p.t+(p.at||"")+" (অডিও)";X(ca,p.f());window.__drHomeAudio("x",ca)}
