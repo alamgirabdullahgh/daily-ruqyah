@@ -19,13 +19,12 @@
  function SEQ2(){var o=[[2,255,7]],q,i;
   for(q=0;q<7;q++){for(i=1;i<=5;i++)o.push([113,i,1]);for(i=1;i<=6;i++)o.push([114,i,1])}
   return o}
- // পার্ট ৩ (ধাপ ৩–৭) — শুধু আয়াত (দোয়া বাদ): আগের ক্রম হুবহু (ফাতির ২ ×২১; ইউনুস ৮১ (শব্দ ৫–১৭) + আ‘রাফ ১১৮ ×২১; ফালাক ৪ ×২১; ইনশিরাহ ৫-৬ জোড়ায় ×২১; ফাতির ২ ×৭ + ইউনুস ৮১ ×৭), এই পুরো সেট ১১ বার
+ // পার্ট ৩ (ধাপ ৩–৭) — শুধু আয়াত (দোয়া বাদ): আগের ক্রম হুবহু (ফাতির ২ ×২১; ইউনুস ৮১ (শব্দ ৫–১৭) + আ‘রাফ ১১৮ ×২১; ফালাক ৪ ×২১; ইনশিরাহ ৫-৬ জোড়ায় ×২১ — এখানেই শেষ), এই পুরো সেট ১১ বার
  function SEQ_ONE(){var o=[],q;
   for(q=0;q<21;q++)o.push(FT(1));
   for(q=0;q<21;q++)o.push([10,81,1,5,17],[7,118,1]);
   o.push([113,4,21,1,5]);
   for(q=0;q<21;q++)o.push([94,5,1],[94,6,1]);
-  o.push(FT(7),[10,81,7,5,17]);
   return o}
  function SEQ(){var o=[],r;for(r=0;r<11;r++)o=o.concat(SEQ_ONE());return o}
  // পার্ট ৪ (ধাপ ৮) — তাহাজ্জুদের দোয়া ১০০ বার
@@ -39,7 +38,7 @@
  var BNR={"35:2:1-16":[1,26],"10:81:5-17":[8,27]};
  // PDF-এর তালিকা: ছাঁটা অংশ থাকলে [সূরা,আয়াত,0,শব্দ-শুরু,শব্দ-শেষ,অনুবাদ-শুরু,অনুবাদ-শেষ] (অডিওর কাটের সাথে একই)
  function keysOf(seq){var o=[],seen={};seq.forEach(function(x){if(typeof x[0]!=="number")return;var id=x[0]+":"+x[1];if(seen[id])return;seen[id]=1;var r=x[3]&&x[4]?BNR[id+":"+x[3]+"-"+x[4]]:null;o.push(r?[x[0],x[1],0,x[3],x[4],r[0],r[1]]:[x[0],x[1]])});return o}
- function SEQALL(){return SEQ1().concat(SEQ2(),SEQ(),SEQT())}
+ function SEQALL(){return SEQ1().concat(SEQ2(),SEQ())}
  var BTN=function(act,k,i,svg,lbl,al){return'<button type="button" class="bd-a" data-act="'+act+'" data-k="'+k+'"'+(i==null?'':' data-p="'+i+'"')+' aria-label="'+esc(al||lbl)+'" title="'+esc(al||lbl)+'">'+svg+'<small>'+esc(lbl)+'</small></button>'};
  // পাতার মাথায়: পুরো আমলের PDF ও সম্পূর্ণ অডিও
  function topActs(k){return'<span class="bd-acts">'+BTN("cp",k,null,SVG.cp,"কপি")+BTN("pd",k,null,SVG.pd,"পুরো আমল PDF")+BTN("au",k,null,SVG.au,"সম্পূর্ণ অডিও")+'</span>'}
