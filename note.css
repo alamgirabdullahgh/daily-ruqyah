@@ -67,6 +67,9 @@ html.nt-lock,html.nt-lock body{overflow:hidden}
 .nt-ma{display:block;width:100%;margin-top:10px;height:44px;border:1.5px solid #86704f;border-radius:10px;background:#fbf9c6;color:#4d4330;font-size:16px}
 .nt-mdone{background:#6c5841;color:#fff;border-color:#6c5841}
 @media print{.nt-tb,.nt-find,.nt-fmt,.nt-toast{display:none!important}.nt-root{position:static}.nt-edcard{border:0;background:none}}
-/* নোট তালিকা: নিচের নেভিগেশন বারের (সার্চ/হোম/মেনু) ওপরে শেষ হয়, বার ঢাকা পড়ে না। এডিটর (.nt-ed) পুরো স্ক্রিনেই থাকে */
-.nt-root:not(.nt-ed){bottom:calc(60px + env(safe-area-inset-bottom,0px))}
-html.kb .nt-root:not(.nt-ed){bottom:0}
+/* নোটের সব পাতা (তালিকা ও এডিটর): নিচের নেভিগেশন বারের (সার্চ/হোম/মেনু) ওপরে শেষ হয়, বার সব সময় দেখা যায়। কিবোর্ড খুললে বার নিজেই সরে যায় (html.kb), তখন নিচ পর্যন্ত নামে */
+.nt-root{bottom:calc(60px + env(safe-area-inset-bottom,0px))}
+html.kb .nt-root{bottom:0}
+.nt-fabs{bottom:18px}
+.nt-toast{bottom:110px}
+.nt-edcard{margin-bottom:4px}
