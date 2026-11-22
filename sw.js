@@ -1,7 +1,7 @@
-const V="dr-shell-v411";
+const V="dr-shell-v412";
 // ডেইলি রুকিয়া — অফলাইনে অ্যাপ খোলার জন্য। আয়াতের বড় ডেটা অ্যাপ নিজেই (Cache API "rs-…") জমা রাখে, তাই এখানে শুধু অ্যাপের কাঠামো।
 
-const SHELL=["./","index.html","style.css?v=158","data/search-resolve.js?v=1","app.js?v=149","home.js?v=42","alarm.js?v=22","note.js?v=5","note.css?v=4","badha.enc.js?v=4","badha.js?v=27","data/sunnah.json?v=1","data/sunnah.js?v=1","data/principles.js?v=7","data/response-signs.js?v=1","symptom.js?v=17","axes.js?v=43","data/axis-ayat.json?v=9","data/audio-cuts.json?v=4","widget.js?v=33","boot.js?v=10","reveal.js?v=1","manifest.webmanifest","icons/icon-192.png","icons/icon-512.png","fonts/indopak-waqf-lazim.woff2","fonts/noto-sans-bengali-bengali-wght.woff2","fonts/noto-sans-bengali-latin-wght.woff2","data/lame.min.js?v=1","data/hadith-norm.js?v=2","data/hadith.js?v=17"];
+const SHELL=["./","index.html","style.css?v=158","data/search-resolve.js?v=1","app.js?v=149","home.js?v=42","alarm.js?v=22","note.js?v=5","note.css?v=5","badha.enc.js?v=4","badha.js?v=27","data/sunnah.json?v=1","data/sunnah.js?v=1","data/principles.js?v=7","data/response-signs.js?v=1","symptom.js?v=17","axes.js?v=43","data/axis-ayat.json?v=9","data/audio-cuts.json?v=4","widget.js?v=33","boot.js?v=10","reveal.js?v=1","manifest.webmanifest","icons/icon-192.png","icons/icon-512.png","fonts/indopak-waqf-lazim.woff2","fonts/noto-sans-bengali-bengali-wght.woff2","fonts/noto-sans-bengali-latin-wght.woff2","data/lame.min.js?v=1","data/hadith-norm.js?v=2","data/hadith.js?v=17"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith("dr-shell-")&&k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener("fetch",e=>{

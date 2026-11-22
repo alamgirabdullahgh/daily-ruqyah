@@ -73,3 +73,5 @@ html.kb .nt-root{bottom:0}
 .nt-fabs{bottom:18px}
 .nt-toast{bottom:110px}
 .nt-edcard{margin-bottom:4px}
+/* অ্যাপের সাইডমেনু (z 50) ও স্ক্রিম (z 40) যেন নোটের ওপরে আসে: নোট পাতা ৩৫ (হেডার/নেভ ৩০-এর ওপরে, স্ক্রিমের নিচে) */
+.nt-root{z-index:35}
