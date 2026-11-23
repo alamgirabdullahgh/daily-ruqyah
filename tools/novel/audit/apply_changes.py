@@ -21,8 +21,9 @@ for r in open('tools/novel/audit/changes.md',encoding='utf-8'):
     for i,l in enumerate(lines):
         if l.startswith(n+'.'):
             if expand(ref)<=verses(l): print('আছে:',n,ref); break
-            assert l.rstrip().endswith(')'), n
-            lines[i]=l.rstrip()[:-1]+', '+ref+')'; added+=1; print('যোগ:',n,ref); break
+            if l.rstrip().endswith(')'): lines[i]=l.rstrip()[:-1]+', '+ref+')'
+            else: lines[i]=l.rstrip()+' ('+ref+')'  # ব্র্যাকেট না থাকলে নতুন ব্র্যাকেট
+            added+=1; print('যোগ:',n,ref); break
     else: print('ঘটনা পাওয়া যায়নি',n); sys.exit(1)
 open(chart,'w',encoding='utf-8').write('\n'.join(lines))
 after=set().union(*[verses(l) for l in lines if re.match(r'[০-৯]+\.',l)])
