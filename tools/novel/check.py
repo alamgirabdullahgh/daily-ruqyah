@@ -22,7 +22,7 @@ for n in want:
     try: p=open(f'novel/prose/{n:03d}.md',encoding='utf-8').read()
     except FileNotFoundError: p=''
     have=set()
-    for m in re.finditer(r'\(([০-৯]+:[০-৯]+(?:[-–][০-৯]+)?(?:[,،] *[০-৯]+:?[০-৯]*)*)\)',p):
+    for m in re.finditer(r'\(([^()]*[০-৯]+:[০-৯]+[^()]*)\)',p):
         have|=verses(m.group(1).replace('–','-'))
     miss=sorted(need-have)
     tot+=len(miss)
