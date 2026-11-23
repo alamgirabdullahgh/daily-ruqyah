@@ -23,4 +23,4 @@ for n in map(int,sys.argv[1:]):
         s,r=tolat(t).split(':');a,b=(r.split('-') if '-' in r else (r,r))
         for v in range(int(a),int(b)+1):
             if (s,v) in seen: continue
-            seen.add((s,v)); print(f'  [{s}:{v}] {bnv(int(s),v)[:170]}')
+            seen.add((s,v)); print(f'  [{s}:{v}] {bnv(int(s),v)[:150]}')
