@@ -895,6 +895,12 @@ const homeTitle=(kind,cat)=>{const c=String(cat==null?"":cat),all=c==="সব"?"
 const SFX_R=" · প্রতিক্রিয়া",SFX_T=" · চিকিৎসা";
 const homeRep=(kind,cat)=>kind==="x"&&/^বাধা\|/.test(String(cat))?{rep:21,set:1}:kind==="resp"?{rep:11,set:1}:kind==="treat"?{rep:1,set:1}:kind==="x"&&String(cat).endsWith(SFX_R)?{rep:11,set:1}:kind==="x"&&String(cat).endsWith(SFX_T)?{rep:1,set:1}:kind==="x"&&/^অক্ষ /.test(String(cat))?{rep:3,set:1}:{rep:11,set:1};/* শারীরিক/মানসিক (অঙ্গ, রোগ, সব): প্রতিটি আয়াত ১১ বার, সেট একবার */
 window.__drSfx={resp:SFX_R,treat:SFX_T};
+/* অঙ্গের অডিওর নিয়ম: প্রতিটি অঙ্গ মোট ১১ আয়াত-পাঠ। অঙ্গের আয়াত ১১টি বা বেশি হলে প্রতিটি একবার (রিপিট নেই); ১১টির কম হলে ১১ পূর্ণ করতে ভাগ করে রিপিট (যেমন ২টি আয়াত = ৫ + ৬ বার)। পুরো সেট একবারই */
+const ORGCAT=c=>/^(শারীরিক|মানসিক)( ও মানসিক)? অঙ্গ/.test(String(c));
+const orgRep=keys=>{const sn=new Set(),u=[];keys.forEach(k=>{const i=k[0]+":"+k[1];if(!sn.has(i)){sn.add(i);u.push(k)}});const n=u.length;if(!n)return u;if(n>=11)return u.map(k=>[k[0],k[1],1]);const b=Math.floor(11/n),x=11%n;return u.map((k,i)=>[k[0],k[1],b+(i>=n-x?1:0)])};
+window.__drOrgRep=orgRep;
+const orgList=async cat=>{if(GRPN[cat]||GRPC[cat]){const items=await window.__drGroupItems(cat);return items.flatMap(it=>orgRep(it.keys))}const v=XKEYS.get(cat);return orgRep(typeof v==="function"?await v():(v||[]))};
+
 /* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */
 /* ===== স্থায়ী ভাণ্ডার: একবার বানানো অডিও/PDF ফোনের ভেতরে (Cache Storage) জমা থাকে। অ্যাপ বন্ধ করে আবার খুললেও আর নতুন করে বানাতে হয় না — বোতাম চাপলেই সাথে সাথে। কোড/তালিকা বদলালে PREV বাড়ালে পুরনোগুলো মুছে নতুন করে বানায়। ===== */
 const EDV=(()=>{try{return localStorage.getItem("drEdV")||""}catch(e){return""}})(),PREV="p25"+EDV,PREC="dr-pre-"+PREV; /* মালিকের সম্পাদনা (✂ কাস্টমাইজ) বদলালে drEdV বদলায় — তাই জমানো অডিও/PDF নতুন করে তৈরি হয় */
@@ -928,10 +934,10 @@ function homePdf(kind,cat,say){const td=kind==="x"?TDOC.get(cat):null,k=kind+"|"
 /* জোড়া অডিওও আগে থেকে বানানো থাকে: ফোনে অফলাইন অডিও নামানো থাকলে (সব আয়াত) ব্যাকগ্রাউন্ডে প্রতিটি ক্যাটাগরির ফাইল জোড়া হয়ে বসে; বোতাম চাপলে সাথে সাথে বাজে ও ডাউনলোড/শেয়ার করা যায় */
 const HAUD=new Map();
 function homeAudio(kind,cat,say){const k=kind+"|"+cat;let e=HAUD.get(k);
- if(!e){e={say:()=>{},out:el("div")};e.p=(async()=>{const{rep,set}=homeRep(kind,cat);e.rep=rep;e.set=set;const hit=await PRE.get("aud",audKey(k));if(hit&&hit.blob&&hit.blob.size>2048){e.n=(hit.meta&&hit.meta.n)||0;preAudioInto(e.out,hit.blob,homeTitle(kind,cat));e.cached=true;e.done=true;return e}
-   const list=await homeKeys(kind,cat);if(!list.length)throw new Error("empty");e.n=list.length;const st={};
+ if(!e){e={say:()=>{},out:el("div")};e.p=(async()=>{const{rep,set}=homeRep(kind,cat);e.rep=rep;e.set=set;const oc=kind==="x"&&ORGCAT(cat),ak=oc?"v2|"+k:k;const hit=await PRE.get("aud",audKey(ak));if(hit&&hit.blob&&hit.blob.size>2048){e.n=(hit.meta&&hit.meta.n)||0;preAudioInto(e.out,hit.blob,homeTitle(kind,cat));e.cached=true;e.done=true;return e}
+   const list=oc?await orgList(cat):await homeKeys(kind,cat);if(!list.length)throw new Error("empty");e.n=list.length;const st={};
    await mergeAudio(list,e.out,t=>e.say(t),{rep,set,memo:true,noplay:true,name:homeTitle(kind,cat),stat:st});e.done=true;
-   try{const a=e.out.querySelector("audio");if(a&&st.ok&&!st.bad){const b=await(await fetch(a.src)).blob();if(b.size>2048)PRE.put("aud",audKey(k),b,{n:list.length})}}catch(x){console.error(x)}return e})().catch(err=>{HAUD.delete(k);throw err});HAUD.set(k,e)}
+   try{const a=e.out.querySelector("audio");if(a&&st.ok&&!st.bad){const b=await(await fetch(a.src)).blob();if(b.size>2048)PRE.put("aud",audKey(ak),b,{n:list.length})}}catch(x){console.error(x)}return e})().catch(err=>{HAUD.delete(k);throw err});HAUD.set(k,e)}
  if(say)e.say=say;return e}
 let HPRE=false;
 /* তৈরির অগ্রগতি: স্ক্রিনে ছোট লাইভ সূচক + ফোনের নোটিফিকেশন (মিনিমাইজ করলেও দেখা যায়, অ্যাপ জেগে থাকে) */
@@ -983,7 +989,7 @@ window.__drHomePdf=(kind,cat,host)=>{const key=kind+"|"+cat;return window.__drDo
 /* অডিও: চাপলেই সাথে সাথে বাজে (আয়াত একটার পর একটা, নির্ধারিত পুনরাবৃত্তিসহ); পাশাপাশি পেছনে একটি ফাইল জোড়া হয় — তৈরি হলে নিচে প্লেয়ার, শেয়ার ও ডাউনলোড আসে */
 /* একটি হেডিংয়ের সব ঘরের আয়াত একটাই অডিও ফাইলে (প্রতিটি ঘরের আয়াত পরপর, প্রতিটি ৩ বার); cb তে প্রতিটি আয়াতের শেষ-সময় (সেকেন্ড) আসে, যাতে বাজার সময় কোন ঘর চলছে বোঝা যায় */
 const AXM=new Map(); /* আয়াত→এনকোড-করা MP3 টুকরো: ঘর, সারি ও হেডিংয়ের অডিও একই আয়াত বারবার এনকোড করে না */
-window.__drGroupAudio=async(list,out,note,name,cb,rep)=>{const k=audKey("g|"+name),hit=await PRE.get("aud",k);
+window.__drGroupAudio=async(list,out,note,name,cb,rep)=>{const k=audKey((/অঙ্গভিত্তিক/.test(String(name))?"g2|":"g|")+name),hit=await PRE.get("aud",k);
  if(hit&&hit.blob&&hit.blob.size>2048&&hit.meta&&hit.meta.marks){preAudioInto(out,hit.blob,name);try{cb&&cb(hit.meta.marks)}catch(e){}return}
  let marks=null;const st={};await mergeAudio(list,out,note,{rep:rep||(/^অক্ষ /.test(String(name))?3:11),set:1,noplay:true,name,onmarks:m=>{marks=m;if(cb)cb(m)},memo:true,memoMap:AXM,stat:st});
  try{const a=out.querySelector("audio");if(a&&marks&&st.ok&&!st.bad){const b=await(await fetch(a.src)).blob();if(b.size>2048)PRE.put("aud",k,b,{marks})}}catch(e){console.error(e)}};
@@ -1369,7 +1375,7 @@ const renderOrganTreat=(n,list)=>{GEN++;CURT=null;window.__bq="";window.__sq=n;r
     let items,list=[],segs=[],seen={},out=els("div",null);
     try{items=await window.__drGroupItems(cat)}catch(e){return fail(e)}
     if(st.stop||LVS!==st)return;
-    items.forEach((it,k)=>{const f=list.length;it.keys.forEach(x=>{const id=x[0]+":"+x[1];if(!seen[id]){seen[id]=1;list.push(x)}});if(list.length>f)segs.push({k,from:f,to:list.length})});
+    const OR=/অঙ্গভিত্তিক/.test(cat);items.forEach((it,k)=>{const f=list.length;if(OR)window.__drOrgRep(it.keys).forEach(x=>list.push(x));else it.keys.forEach(x=>{const id=x[0]+":"+x[1];if(!seen[id]){seen[id]=1;list.push(x)}});if(list.length>f)segs.push({k,from:f,to:list.length})});
     if(!list.length)return fail(new Error("empty"));
     nt.textContent="⏳ অডিও প্রস্তুত হচ্ছে…";let marks=null;
     try{await window.__drGroupAudio(list,out,t=>{if(LVS===st)nt.textContent="⏳ "+t},cat+" +লাইভ",m=>{marks=m});if(!out.querySelector("audio"))throw new Error("noaudio")}catch(e){return fail(e)}
