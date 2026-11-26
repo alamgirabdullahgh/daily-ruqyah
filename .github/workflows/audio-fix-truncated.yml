@@ -1,0 +1,64 @@
+name: Audio fix truncated verses
+# কাটা (অসম্পূর্ণ) আয়াত-ফাইল আবার নামিয়ে audio-pack-32k-120 রিলিজের zip-এ বসায়।
+# ২:১১৮ (125.mp3), ২:১২১ (128.mp3), ৩৭:১৫২ (3940.mp3)।
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Tools
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Download and encode (same settings as the pack), check duration
+        run: |
+          mkdir -p src out
+          # surah ayah everyayah-id global expected-pack-seconds
+          cat > list.txt <<'EOF'
+          2 118 002118 125 23.4
+          2 121 002121 128 18.4
+          37 152 037152 3940 16.1
+          EOF
+          while read s v p n exp; do
+            ok=0
+            for i in 1 2 3 4 5; do
+              curl -sf --max-time 90 -o src/$p.mp3 https://everyayah.com/data/Alafasy_128kbps/$p.mp3 || { sleep $((i*3)); continue; }
+              ffmpeg -v error -y -i src/$p.mp3 -ac 1 -af atempo=1.2 -ar 22050 -c:a libmp3lame -b:a 32k out/$n.mp3 || { sleep $((i*3)); continue; }
+              d=$(ffprobe -v error -show_entries format=duration -of csv=p=0 out/$n.mp3)
+              echo "$s:$v -> $n.mp3 duration $d expected ~$exp"
+              if python3 -c "import sys; sys.exit(0 if abs(float('$d')-float('$exp'))<=1.5 else 1)"; then ok=1; break; fi
+              sleep $((i*3))
+            done
+            test "$ok" = 1 || { echo "FAILED $s:$v"; exit 1; }
+          done < list.txt
+          ls -l out
+      - name: Replace in release zips
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p zips
+          for z in s002 s037; do
+            gh release download audio-pack-32k-120 -p "$z.zip" -D zips --clobber
+          done
+          python3 - <<'PY'
+          import zipfile, shutil, os
+          fix = {'s002.zip': ['125', '128'], 's037.zip': ['3940']}
+          for zn, ids in fix.items():
+              src = os.path.join('zips', zn)
+              dst = src + '.new'
+              with zipfile.ZipFile(src) as zi, zipfile.ZipFile(dst, 'w', zipfile.ZIP_STORED) as zo:
+                  names = set(zi.namelist())
+                  for i in ids:
+                      assert i + '.mp3' in names, (zn, i)
+                  for info in zi.infolist():
+                      base = info.filename[:-4] if info.filename.endswith('.mp3') else info.filename
+                      if base in ids:
+                          zo.write('out/%s.mp3' % base, info.filename)
+                      else:
+                          zo.writestr(info, zi.read(info.filename))
+              shutil.move(dst, src)
+              print('fixed', zn, ids)
+          PY
+          gh release upload audio-pack-32k-120 zips/s002.zip zips/s037.zip --clobber
