@@ -109,6 +109,26 @@ def cut_audio(src, start, length, work, n):
     return wav if os.path.isfile(wav) else None
 
 
+def resources():
+    """মেমরি/ডিস্কের হিসাব (রানার মাঝপথে মরলে কারণ বোঝার জন্য)।"""
+    a = sh(["free", "-m"]).stdout.strip().splitlines()[:2]
+    b = sh(["df", "-h", "/", os.path.expanduser("~")]).stdout.strip().splitlines()[:3]
+    return "\n".join(a + b)
+
+
+def push_partial(jobdir, note):
+    """Actions-এর ভেতরে চললে result.md রিপোতে পুশ করে; থেমে গেলেও ফল থাকে।"""
+    if not os.environ.get("GITHUB_ACTIONS"):
+        return
+    ref = os.environ.get("GITHUB_REF", "")
+    sh(["git", "config", "user.name", "github-actions"])
+    sh(["git", "config", "user.email", "actions@github.com"])
+    sh(["git", "add", "-f", os.path.join(jobdir, "result.md")])
+    sh(["git", "commit", "-qm", "media partial: " + note])
+    sh(["git", "pull", "-q", "--rebase", "origin", ref.replace("refs/heads/", "")])
+    sh(["git", "push", "-q", "origin", "HEAD:" + ref])
+
+
 def fmt(t):
     return f"{int(t // 60):02d}:{t % 60:05.2f}"
 
@@ -177,6 +197,7 @@ def run_whisper(src):
 
 def run_all(src, question, work, save=lambda t: None):
     res = []
+    save("(শুরু: Whisper চলছে)")
     try:
         res += ["## Whisper (ট্রান্সক্রিপশন)", run_whisper(src), ""]
     except BaseException:
@@ -201,7 +222,9 @@ def main(jobdir):
     try:
         with tempfile.TemporaryDirectory() as work:
             def save(t):
-                open(os.path.join(jobdir, "result.md"), "w", encoding="utf-8").write("\n".join(res + [t, "", "(চলমান — আংশিক ফল)"]))
+                open(os.path.join(jobdir, "result.md"), "w", encoding="utf-8").write(
+                    "\n".join(res + [t, "", "(চলমান — আংশিক ফল)", "```", resources(), "```"]))
+                push_partial(jobdir, "ধাপ শেষ")
             res += [run_all(src, question, work, save)]
     except BaseException:
         res += ["## ওপেন মডেল ব্যর্থ", "```", traceback.format_exc()[-1500:], "```", ""]
