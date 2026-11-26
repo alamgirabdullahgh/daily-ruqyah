@@ -111,7 +111,11 @@ def run_open(src, question, work):
         text = (p.stdout or "").strip()
         if p.returncode or not text:
             text = f"(ব্যর্থ: কোড {p.returncode}) " + (p.stderr or "")[-400:]
+        diag = [l for l in (p.stderr or "").splitlines()
+                if any(k in l.lower() for k in ("audio", "mmproj", "projector", "clip", "mtmd", "unsupported", "warn", "error", "image"))]
         lines += [f"### {fmt(a)} – {fmt(b)}", text, ""]
+        if diag:
+            lines += ["<details><summary>নির্ণয় (stderr)</summary>", "", "```", "\n".join(diag[-25:]), "```", "</details>", ""]
     return "\n".join(lines)
 
 
