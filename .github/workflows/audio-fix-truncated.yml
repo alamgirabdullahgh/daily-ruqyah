@@ -1,6 +1,6 @@
 name: Audio fix truncated verses
 # কাটা (অসম্পূর্ণ) আয়াত-ফাইল আবার নামিয়ে audio-pack-32k-120 রিলিজের zip-এ বসায়।
-# ২:১১৮ (125.mp3), ২:১২১ (128.mp3), ৩৭:১৫২ (3940.mp3)।
+# ২:১১৮ (125.mp3), ২:১২১ (128.mp3)। (৩৭:১৫২ কাটা নয়: আয়াতটা সত্যিই ৫.৬ সে., মডেলে ৪/৪ শব্দ মিলেছে।)
 on:
   workflow_dispatch:
 permissions:
@@ -19,7 +19,6 @@ jobs:
           cat > list.txt <<'EOF'
           2 118 002118 125 23.4
           2 121 002121 128 18.4
-          37 152 037152 3940 16.1
           EOF
           while read s v p n exp; do
             ok=0
@@ -39,12 +38,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p zips
-          for z in s002 s037; do
-            gh release download audio-pack-32k-120 -p "$z.zip" -D zips --clobber
-          done
+          gh release download audio-pack-32k-120 -p s002.zip -D zips --clobber
           python3 - <<'PY'
           import zipfile, shutil, os
-          fix = {'s002.zip': ['125', '128'], 's037.zip': ['3940']}
+          fix = {'s002.zip': ['125', '128']}
           for zn, ids in fix.items():
               src = os.path.join('zips', zn)
               dst = src + '.new'
@@ -61,4 +58,4 @@ jobs:
               shutil.move(dst, src)
               print('fixed', zn, ids)
           PY
-          gh release upload audio-pack-32k-120 zips/s002.zip zips/s037.zip --clobber
+          gh release upload audio-pack-32k-120 zips/s002.zip --clobber
