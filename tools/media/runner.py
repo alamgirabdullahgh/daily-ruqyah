@@ -96,7 +96,7 @@ def run_open(src, question, work):
     segs, has_audio = segments(src, work)
     lines = [f"(ওপেন মডেল: {OPEN_MODEL}, llama.cpp: {asset}; {len(segs)} অংশ)", ""]
     for n, (a, b, imgs) in enumerate(segs):
-        cmd = [cli, "-hf", OPEN_MODEL, "-n", "400", "--temp", "0.2"]
+        cmd = [cli, "-hf", OPEN_MODEL, "--jinja", "-n", "400", "--temp", "0.2"]
         for f in imgs:
             cmd += ["--image", f]
         if has_audio:
