@@ -109,6 +109,8 @@ def cmd_apply(a):
     p = f'{ROOT}/data/audio-cuts.json'
     cuts = json.load(open(p, encoding='utf-8'))
     new = json.load(open(a.file))
+    if isinstance(new, list):  # measure/refine-এর আউটপুট: [{key,start,end,...}]
+        new = {r['key']: {'start': r['start'], 'end': r['end']} for r in new if r.get('start') is not None and r.get('end') is not None and not r.get('suspect')}
     add = {k: [round(v['start'], 3), round(v['end'], 3)] if isinstance(v, dict) else [round(v[0], 3), round(v[1], 3)] for k, v in new.items()}
     cuts['cuts'].update(add)
     json.dump(cuts, open(p, 'w', encoding='utf-8'), ensure_ascii=False)
