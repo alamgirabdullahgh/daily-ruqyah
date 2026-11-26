@@ -22,7 +22,9 @@ jobs:
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
           pip install -q faster-whisper
       - uses: actions/cache@v4
-        with: {path: ~/.cache/huggingface, key: hf-whisper-${{ inputs.model }}}
+        with:
+          path: ~/.cache/huggingface
+          key: hf-whisper-${{ inputs.model }}
       - name: Listen and watch
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
