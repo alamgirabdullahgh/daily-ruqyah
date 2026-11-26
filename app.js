@@ -311,7 +311,7 @@ function smoothAyah(ch,sr){const n=ch.length;let pk=0;for(let i=0;i<n;i++){const
  let e=0;for(let i=a;i<b;i++)e+=ch[i]*ch[i];const rms=Math.sqrt(e/m)||0.1;let g=Math.max(0.6,Math.min(1.8,0.1/rms));g=Math.min(g,0.97/pk);
  const fi=Math.min(Math.round(sr*0.02),m>>1),fo=Math.min(Math.round(sr*0.04),m>>1),o=new Int16Array(m);
  for(let k=0;k<m;k++){let v=ch[a+k]*g;if(k<fi)v*=k/fi;else if(m-k<fo)v*=(m-k)/fo;v=Math.max(-1,Math.min(1,v));o[k]=v<0?v*32768:v*32767}return o}
-let CUTP=null;const loadCuts=()=>CUTP||(CUTP=rsFetch(BASE+"audio-cuts.json?v=10").then(j=>{const c=j.cuts||{};try{const e=(JSON.parse(localStorage.getItem("drEd")||"{}")||{}).cuts;if(e)Object.assign(c,e)}catch(x){}return c}).catch(e=>{CUTP=null;throw e}));
+let CUTP=null;const loadCuts=()=>CUTP||(CUTP=rsFetch(BASE+"audio-cuts.json?v=11").then(j=>{const c=j.cuts||{};try{const e=(JSON.parse(localStorage.getItem("drEd")||"{}")||{}).cuts;if(e)Object.assign(c,e)}catch(x){}return c}).catch(e=>{CUTP=null;throw e}));
 /* কাটা টুকরো: শুধু ঠিক এই অংশ, সামনে-পিছনে ৬ মি.সে. মসৃণ ফেড (ক্লিক নেই), শূন্য ফাঁক; ভলিউম smoothAyah-এর মতোই সমান করা — তাই পরপর জোড়া লাগলে আলাদা বোঝা যায় না */
 function roomTone(ch,sr){const w=Math.round(sr*0.25),h=Math.round(sr*0.05);if(!ch||ch.length<w*2)return null;let best=1e9,bi=0;for(let i=0;i+w<=ch.length;i+=h){let e=0;for(let k=i;k<i+w;k+=4)e+=ch[k]*ch[k];if(e<best){best=e;bi=i}}const t=Float32Array.from(ch.subarray(bi,bi+w));let m=0;for(let k=0;k<t.length;k++)m+=t[k];m/=t.length;for(let k=0;k<t.length;k++)t[k]-=m;return t}
 function cutPcm(ch,sr,tone){const n=ch.length;if(!n)return new Int16Array(0);let pk=0,e=0;for(let i=0;i<n;i++){const v=Math.abs(ch[i]);if(v>pk)pk=v;e+=ch[i]*ch[i]}
@@ -901,7 +901,7 @@ const homeRep=(kind,cat)=>kind==="x"&&/^বাধা\|/.test(String(cat))?{rep:2
 window.__drSfx={resp:SFX_R,treat:SFX_T};
 /* অঙ্গের অডিওর নিয়ম: প্রতিটি অঙ্গ মোট ১১ আয়াত-পাঠ। অঙ্গের আয়াত ১১টি বা বেশি হলে প্রতিটি একবার (রিপিট নেই); ১১টির কম হলে ১১ পূর্ণ করতে ভাগ করে রিপিট (যেমন ২টি আয়াত = ৫ + ৬ বার)। পুরো সেট একবারই */
 const ORGCAT=c=>/^(শারীরিক|মানসিক)( ও মানসিক)? অঙ্গ/.test(String(c));
-let ORGR=null;const loadOrgR=()=>ORGR?Promise.resolve(ORGR):rsFetch(BASE+"organ-ranges.json?v=2").then(j=>ORGR=j||{}).catch(()=>ORGR={});window.__drOrgRL=loadOrgR;loadOrgR();
+let ORGR=null;const loadOrgR=()=>ORGR?Promise.resolve(ORGR):rsFetch(BASE+"organ-ranges.json?v=3").then(j=>ORGR=j||{}).catch(()=>ORGR={});window.__drOrgRL=loadOrgR;loadOrgR();
 /* শারীরিক→অঙ্গভিত্তিক: আয়াতের শুধু মার্ক-করা অংশ (data/organ-ranges.json, কাট audio-cuts.json-এ); না থাকলে পুরো আয়াত */
 const orgSeg=(k,rep)=>{const r=ORGR&&ORGR[k[0]+":"+k[1]];return r&&r.length?r.map(p=>[k[0],k[1],rep,p[0],p[1]]):[[k[0],k[1],rep]]};
 const orgRep=keys=>{const sn=new Set(),u=[];keys.forEach(k=>{const i=k[0]+":"+k[1];if(!sn.has(i)){sn.add(i);u.push(k)}});const n=u.length;if(!n)return u;if(n>=11)return u.flatMap(k=>orgSeg(k,1));const b=Math.floor(11/n),x=11%n;return u.flatMap((k,i)=>orgSeg(k,b+(i>=n-x?1:0)))};
@@ -910,7 +910,7 @@ const orgList=async cat=>{await loadOrgR();if(GRPN[cat]||GRPC[cat]){const items=
 
 /* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */
 /* ===== স্থায়ী ভাণ্ডার: একবার বানানো অডিও/PDF ফোনের ভেতরে (Cache Storage) জমা থাকে। অ্যাপ বন্ধ করে আবার খুললেও আর নতুন করে বানাতে হয় না — বোতাম চাপলেই সাথে সাথে। কোড/তালিকা বদলালে PREV বাড়ালে পুরনোগুলো মুছে নতুন করে বানায়। ===== */
-const EDV=(()=>{try{return localStorage.getItem("drEdV")||""}catch(e){return""}})(),PREV="p27"+EDV,PREC="dr-pre-"+PREV; /* মালিকের সম্পাদনা (✂ কাস্টমাইজ) বদলালে drEdV বদলায় — তাই জমানো অডিও/PDF নতুন করে তৈরি হয় */
+const EDV=(()=>{try{return localStorage.getItem("drEdV")||""}catch(e){return""}})(),PREV="p28"+EDV,PREC="dr-pre-"+PREV; /* মালিকের সম্পাদনা (✂ কাস্টমাইজ) বদলালে drEdV বদলায় — তাই জমানো অডিও/PDF নতুন করে তৈরি হয় */
 const preUrl=(t,k)=>"https://dr.local/pre/"+t+"/"+encodeURIComponent(k);
 const PRE={
  async get(t,k){try{const c=await caches.open(PREC),r=await c.match(preUrl(t,k));if(!r)return null;const m=await c.match(preUrl(t,k)+"/meta");let meta={};try{meta=m?await m.json():{}}catch(e){}return{blob:await r.blob(),meta}}catch(e){return null}},
