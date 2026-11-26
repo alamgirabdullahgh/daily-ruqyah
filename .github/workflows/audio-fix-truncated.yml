@@ -38,7 +38,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p zips
-          gh release download audio-pack-32k-120 -p s002.zip -D zips --clobber
+          gh release download audio-pack-32k-120 --repo "$GITHUB_REPOSITORY" -p s002.zip -D zips --clobber
           python3 - <<'PY'
           import zipfile, shutil, os
           fix = {'s002.zip': ['125', '128']}
@@ -58,4 +58,4 @@ jobs:
               shutil.move(dst, src)
               print('fixed', zn, ids)
           PY
-          gh release upload audio-pack-32k-120 zips/s002.zip --clobber
+          gh release upload audio-pack-32k-120 --repo "$GITHUB_REPOSITORY" zips/s002.zip --clobber
