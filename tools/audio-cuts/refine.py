@@ -10,6 +10,10 @@ def score(s, a, lo, hi, st, en, exp):
     out, lp = C.decode(y); d = [C.nz(w[0]) for w in C.dwords(out)]; e = [C.nz(x) for x in exp]
     n, m = len(e), len(d); G = -0.35; S = np.zeros((n + 1, m + 1)); T = np.zeros((n + 1, m + 1), np.int8); S[:, 0] = np.arange(n + 1) * G; S[0, :] = np.arange(m + 1) * G; T[1:, 0] = 1; T[0, 1:] = 2
     sim = np.array([[difflib.SequenceMatcher(None, e[i], d[j]).ratio() if (e[i] and d[j]) else 0 for j in range(m)] for i in range(n)]) if n and m else np.zeros((n, m))
+    # কাটা-প্রান্তের শব্দ: মডেল শব্দের অংশ শোনে (যেমন "ولكن"→"و"); প্রথম/শেষ চাওয়া-শব্দের সাথে অংশ-মিল হলে ০.৭ ধরি
+    if n and m:
+        for (ii, jj) in ((0, 0), (n - 1, m - 1)):
+            if e[ii] and d[jj] and sim[ii, jj] <= 0.4 and len(d[jj]) >= 1 and (e[ii].startswith(d[jj]) or e[ii].endswith(d[jj])) and len(d[jj]) <= len(e[ii]) * 0.8: sim[ii, jj] = 0.7
     for i in range(1, n + 1):
         for j in range(1, m + 1):
             c = [S[i - 1, j - 1] + (sim[i - 1, j - 1] - 0.4 if sim[i - 1, j - 1] > 0.4 else -9), S[i - 1, j] + G, S[i, j - 1] + G]; k = int(np.argmax(c)); S[i, j] = c[k]; T[i, j] = k
