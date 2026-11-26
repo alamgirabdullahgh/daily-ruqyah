@@ -1,0 +1,29 @@
+# অডিও শোনা ও ভিডিও দেখা (শুধু ওপেন মডেল, কোনো কী লাগে না): tools/media/job.py যে media-job/* ব্রাঞ্চ পাঠায়, শুধু তাতেই চলে।
+name: Media senses
+on:
+  push:
+    branches: ['media-job/**']
+permissions:
+  contents: write
+jobs:
+  senses:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tools
+        run: command -v ffmpeg >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/llama.cpp
+          key: llama-gemma4-e4b
+      - name: Listen / watch
+        env:
+          GH_API_TOKEN: ${{ github.token }}
+        run: python3 tools/media/runner.py job
+      - name: Publish result
+        if: always()
+        run: |
+          [ -f job/result.md ] || echo "ব্যর্থ: ফল তৈরি হয়নি। রান: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > job/result.md
+          git config user.name github-actions; git config user.email actions@github.com
+          git add job/result.md && git commit -qm "media result" && git push -q origin "HEAD:$GITHUB_REF"
