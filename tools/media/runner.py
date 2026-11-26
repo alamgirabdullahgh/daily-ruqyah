@@ -89,21 +89,22 @@ def fmt(t):
     return f"{int(t // 60):02d}:{t % 60:05.2f}"
 
 
-def run_open(src, question, work):
+def run_open(src, question, work, model=None):
+    model = model or OPEN_MODEL
     cli, libdir, asset = llama_cli(work)
     env = dict(os.environ)
     env["LD_LIBRARY_PATH"] = libdir + ":" + env.get("LD_LIBRARY_PATH", "")
     segs, has_audio = segments(src, work)
-    lines = [f"(ওপেন মডেল: {OPEN_MODEL}, llama.cpp: {asset}; {len(segs)} অংশ)", ""]
+    lines = [f"(ওপেন মডেল: {model}, llama.cpp: {asset}; {len(segs)} অংশ)", ""]
     for n, (a, b, imgs) in enumerate(segs):
-        cmd = [cli, "-hf", OPEN_MODEL, "--jinja", "-n", "400", "--temp", "0.2"]
+        cmd = [cli, "-hf", model, "--jinja", "-n", "700", "--temp", "0.2", "--reasoning-budget", "0"]
         for f in imgs:
             cmd += ["--image", f]
         if has_audio:
             wav = cut_audio(src, a, b - a, work, n)
             if wav:
                 cmd += ["--audio", wav]
-        prompt = question
+        prompt = "<__media__>" * (len(imgs) + (1 if "--audio" in cmd else 0)) + question
         if len(segs) > 1:
             prompt += f"\n(এটা পুরো ফাইলের {fmt(a)} – {fmt(b)} অংশ। শুধু এই অংশ নিয়ে বলো।)"
         cmd += ["-p", prompt]
@@ -119,6 +120,38 @@ def run_open(src, question, work):
     return "\n".join(lines)
 
 
+ENSEMBLE = [   # সব ফ্রি ওপেন-ওয়েট মডেল; একটা ব্যর্থ হলে বাকিগুলো চলে
+    "ggml-org/gemma-4-E4B-it-GGUF",
+    "ggml-org/Qwen2.5-Omni-3B-GGUF",
+    "ggml-org/Voxtral-Mini-3B-2507-GGUF",
+]
+
+
+def run_whisper(src):
+    from faster_whisper import WhisperModel
+    m = WhisperModel("medium", device="cpu", compute_type="int8")
+    segs, info = m.transcribe(src, vad_filter=True, word_timestamps=False)
+    out = [f"(Whisper medium; ভাষা: {info.language} {info.language_probability:.2f})", ""]
+    for g in segs:
+        out.append(f"[{fmt(g.start)} – {fmt(g.end)}] {g.text.strip()}")
+    return "\n".join(out)
+
+
+def run_all(src, question, work):
+    res = []
+    try:
+        res += ["## Whisper (ট্রান্সক্রিপশন)", run_whisper(src), ""]
+    except BaseException:
+        res += ["## Whisper ব্যর্থ", "```", traceback.format_exc()[-800:], "```", ""]
+    for m in ENSEMBLE:
+        try:
+            res += [f"## {m}", run_open(src, question, work, m), ""]
+        except BaseException:
+            res += [f"## {m} ব্যর্থ", "```", traceback.format_exc()[-800:], "```", ""]
+    res += ["## তুলনার নোট", "মডেলগুলোর উত্তর আলাদা রাখা হয়েছে; যেখানে অমিল, সেখানে কোনোটাকেই যাচাই-হওয়া ধরা হয়নি। সময়ের জন্য Whisper-এর টাইমস্ট্যাম্প বেশি ভরসাযোগ্য; কুরআনের চূড়ান্ত যাচাই মালিকের কানে।"]
+    return "\n".join(res)
+
+
 def main(jobdir):
     req = json.load(open(os.path.join(jobdir, "request.json"), encoding="utf-8"))
     src = os.path.join(jobdir, req["file"])
@@ -126,7 +159,7 @@ def main(jobdir):
     res = [f"# ফল: {req['file']}", f"প্রশ্ন: {question}", ""]
     try:
         with tempfile.TemporaryDirectory() as work:
-            res += ["## ওপেন মডেল শুনে/দেখে বলল", run_open(src, question, work), ""]
+            res += [run_all(src, question, work)]
     except BaseException:
         res += ["## ওপেন মডেল ব্যর্থ", "```", traceback.format_exc()[-1500:], "```", ""]
     open(os.path.join(jobdir, "result.md"), "w", encoding="utf-8").write("\n".join(res))

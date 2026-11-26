@@ -12,11 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Tools
-        run: command -v ffmpeg >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+        run: (command -v ffmpeg >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)); pip install -q faster-whisper
       - uses: actions/cache@v4
         with:
-          path: ~/.cache/llama.cpp
-          key: llama-gemma4-e4b
+          path: |
+            ~/.cache/llama.cpp
+            ~/.cache/huggingface
+          key: media-ensemble-v1
       - name: Listen / watch
         env:
           GH_API_TOKEN: ${{ github.token }}
