@@ -27,6 +27,30 @@ def sh(cmd, **kw):
     return subprocess.run(cmd, capture_output=True, text=True, errors="replace", **kw)
 
 
+# চিন্তা (thinking) বন্ধের চেষ্টা: যে ফ্ল্যাগ বাইনারি চেনে না, সেটা বাদ দিয়ে আবার চলে
+OPTIONAL_FLAGS = [
+    ["--chat-template-kwargs", '{"enable_thinking":false}'],
+    ["--reasoning-budget", "0"],
+]
+
+
+def run_with_fallback(base, optional, **kw):
+    """optional ফ্ল্যাগসহ চালায়; 'invalid argument: X' এলে ওই ফ্ল্যাগ বাদ দিয়ে আবার।"""
+    opts = [list(o) for o in optional]
+    while True:
+        cmd = list(base)
+        # ফ্ল্যাগগুলো -p-র আগে বসাতে: base-এর শেষ দুটো ["-p", prompt]
+        cmd = cmd[:-2] + [x for o in opts for x in o] + cmd[-2:]
+        p = sh(cmd, **kw)
+        bad = re.search(r"invalid argument: (\S+)", p.stderr or "")
+        if p.returncode and bad:
+            keep = [o for o in opts if o[0] != bad.group(1)]
+            if len(keep) < len(opts):
+                opts = keep
+                continue
+        return p, opts
+
+
 def llama_cli(work):
     """llama.cpp-এর তৈরি-করা সর্বশেষ Linux বাইনারি।"""
     h = {"Accept": "application/vnd.github+json"}
@@ -97,7 +121,7 @@ def run_open(src, question, work, model=None):
     segs, has_audio = segments(src, work)
     lines = [f"(ওপেন মডেল: {model}, llama.cpp: {asset}; {len(segs)} অংশ)", ""]
     for n, (a, b, imgs) in enumerate(segs):
-        cmd = [cli, "-hf", model, "--jinja", "-n", "700", "--temp", "0.2", "--reasoning-budget", "0"]
+        cmd = [cli, "-hf", model, "--jinja", "-n", "1200", "--temp", "0.2"]
         for f in imgs:
             cmd += ["--image", f]
         if has_audio:
@@ -108,7 +132,7 @@ def run_open(src, question, work, model=None):
         if len(segs) > 1:
             prompt += f"\n(এটা পুরো ফাইলের {fmt(a)} – {fmt(b)} অংশ। শুধু এই অংশ নিয়ে বলো।)"
         cmd += ["-p", prompt]
-        p = sh(cmd, env=env, timeout=1500)
+        p, used = run_with_fallback(cmd, OPTIONAL_FLAGS, env=env, timeout=1500)
         text = (p.stdout or "").strip()
         if p.returncode or not text:
             text = f"(ব্যর্থ: কোড {p.returncode}) " + (p.stderr or "")[-400:]
@@ -120,10 +144,11 @@ def run_open(src, question, work, model=None):
     return "\n".join(lines)
 
 
-ENSEMBLE = [   # সব ফ্রি ওপেন-ওয়েট মডেল; একটা ব্যর্থ হলে বাকিগুলো চলে
+ENSEMBLE = [   # সব ফ্রি ওপেন-ওয়েট মডেল; একটা ব্যর্থ হলে বাকিগুলো চলে (অডিও-সক্ষম ছোটগুলো আগে)
+    "ggml-org/Qwen2.5-Omni-3B-GGUF",
+    "ggml-org/Voxtral-Mini-3B-2507-GGUF",
     "ggml-org/gemma-4-E4B-it-GGUF",
     "ggml-org/Qwen2.5-Omni-7B-GGUF",
-    "ggml-org/Voxtral-Mini-3B-2507-GGUF",
     "ggml-org/Qwen2.5-VL-7B-Instruct-GGUF",   # ভিডিওর ছবি দেখার জন্য
     "ggml-org/gemma-3-12b-it-GGUF",
 ]
@@ -131,26 +156,39 @@ ENSEMBLE = [   # সব ফ্রি ওপেন-ওয়েট মডেল; 
 
 def run_whisper(src):
     from faster_whisper import WhisperModel
-    m = WhisperModel("large-v3", device="cpu", compute_type="int8")
-    segs, info = m.transcribe(src, vad_filter=True, word_timestamps=False)
-    out = [f"(Whisper large-v3; ভাষা: {info.language} {info.language_probability:.2f})", ""]
+    last = None
+    for name in ("large-v3", "small"):
+        try:
+            m = WhisperModel(name, device="cpu", compute_type="int8")
+            segs, info = m.transcribe(src, vad_filter=False, word_timestamps=False)
+            segs = list(segs)
+            break
+        except Exception as e:   # মেমরি/ডাউনলোড সমস্যায় ছোট মডেল
+            last = e
+    else:
+        raise last
+    out = [f"(Whisper {name}; ভাষা: {info.language} {info.language_probability:.2f})", ""]
+    if not segs:
+        out.append("(কোনো কথা ধরা পড়েনি)")
     for g in segs:
         out.append(f"[{fmt(g.start)} – {fmt(g.end)}] {g.text.strip()}")
     return "\n".join(out)
 
 
-def run_all(src, question, work):
+def run_all(src, question, work, save=lambda t: None):
     res = []
     try:
         res += ["## Whisper (ট্রান্সক্রিপশন)", run_whisper(src), ""]
     except BaseException:
         res += ["## Whisper ব্যর্থ", "```", traceback.format_exc()[-800:], "```", ""]
+    save("\n".join(res))
     for m in ENSEMBLE:
         try:
             res += [f"## {m}", run_open(src, question, work, m), ""]
             sh(["rm", "-rf", os.path.expanduser("~/.cache/llama.cpp")])   # ১৪GB ডিস্ক বাঁচাতে
         except BaseException:
             res += [f"## {m} ব্যর্থ", "```", traceback.format_exc()[-800:], "```", ""]
+        save("\n".join(res))
     res += ["## তুলনার নোট", "মডেলগুলোর উত্তর আলাদা রাখা হয়েছে; যেখানে অমিল, সেখানে কোনোটাকেই যাচাই-হওয়া ধরা হয়নি। সময়ের জন্য Whisper-এর টাইমস্ট্যাম্প বেশি ভরসাযোগ্য; কুরআনের চূড়ান্ত যাচাই মালিকের কানে।"]
     return "\n".join(res)
 
@@ -162,7 +200,9 @@ def main(jobdir):
     res = [f"# ফল: {req['file']}", f"প্রশ্ন: {question}", ""]
     try:
         with tempfile.TemporaryDirectory() as work:
-            res += [run_all(src, question, work)]
+            def save(t):
+                open(os.path.join(jobdir, "result.md"), "w", encoding="utf-8").write("\n".join(res + [t, "", "(চলমান — আংশিক ফল)"]))
+            res += [run_all(src, question, work, save)]
     except BaseException:
         res += ["## ওপেন মডেল ব্যর্থ", "```", traceback.format_exc()[-1500:], "```", ""]
     open(os.path.join(jobdir, "result.md"), "w", encoding="utf-8").write("\n".join(res))
