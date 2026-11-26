@@ -1,0 +1,41 @@
+name: Senses (free listen/watch)
+on:
+  workflow_dispatch:
+    inputs:
+      id:       {description: "senses-in ব্রাঞ্চের ফোল্ডার-নাম", required: true}
+      question: {description: "প্রশ্ন", required: false, default: "কী শোনা/দেখা যায়, সময়সহ বলো"}
+      lang:     {description: "ভাষা (ar, bn, en; ফাঁকা = অটো)", required: false, default: ""}
+      model:    {description: "whisper মডেল (small/medium/large-v3)", required: false, default: "medium"}
+      fps:      {description: "ভিডিওর ছবি/সেকেন্ড", required: false, default: "1"}
+permissions:
+  contents: write
+jobs:
+  senses:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with: {ref: senses-in, path: in}
+      - name: Tools
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          pip install -q faster-whisper
+      - uses: actions/cache@v4
+        with: {path: ~/.cache/huggingface, key: hf-whisper-${{ inputs.model }}}
+      - name: Listen and watch
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          python3 tools/media/remote_senses.py "in/${{ inputs.id }}" out \
+            --question "${{ inputs.question }}" --lang "${{ inputs.lang }}" \
+            --model "${{ inputs.model }}" --fps "${{ inputs.fps }}"
+      - name: Publish result to senses-out
+        run: |
+          git config --global user.name "senses-bot"; git config --global user.email "noreply@github.com"
+          D=$(mktemp -d)
+          git clone -q --depth 1 --branch senses-out "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$D" 2>/dev/null \
+            || { git init -q "$D"; git -C "$D" checkout -q -b senses-out; git -C "$D" remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"; }
+          rm -rf "$D/${{ inputs.id }}"; mkdir -p "$D/${{ inputs.id }}"; cp -r out/. "$D/${{ inputs.id }}/"
+          git -C "$D" add -A; git -C "$D" commit -q -m "senses: ${{ inputs.id }}"; git -C "$D" push -q origin senses-out
