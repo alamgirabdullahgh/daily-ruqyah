@@ -311,19 +311,23 @@ function smoothAyah(ch,sr){const n=ch.length;let pk=0;for(let i=0;i<n;i++){const
  let e=0;for(let i=a;i<b;i++)e+=ch[i]*ch[i];const rms=Math.sqrt(e/m)||0.1;let g=Math.max(0.6,Math.min(1.8,0.1/rms));g=Math.min(g,0.97/pk);
  const fi=Math.min(Math.round(sr*0.02),m>>1),fo=Math.min(Math.round(sr*0.04),m>>1),o=new Int16Array(m);
  for(let k=0;k<m;k++){let v=ch[a+k]*g;if(k<fi)v*=k/fi;else if(m-k<fo)v*=(m-k)/fo;v=Math.max(-1,Math.min(1,v));o[k]=v<0?v*32768:v*32767}return o}
-let CUTP=null;const loadCuts=()=>CUTP||(CUTP=rsFetch(BASE+"audio-cuts.json?v=8").then(j=>{const c=j.cuts||{};try{const e=(JSON.parse(localStorage.getItem("drEd")||"{}")||{}).cuts;if(e)Object.assign(c,e)}catch(x){}return c}).catch(e=>{CUTP=null;throw e}));
+let CUTP=null;const loadCuts=()=>CUTP||(CUTP=rsFetch(BASE+"audio-cuts.json?v=9").then(j=>{const c=j.cuts||{};try{const e=(JSON.parse(localStorage.getItem("drEd")||"{}")||{}).cuts;if(e)Object.assign(c,e)}catch(x){}return c}).catch(e=>{CUTP=null;throw e}));
 /* কাটা টুকরো: শুধু ঠিক এই অংশ, সামনে-পিছনে ৬ মি.সে. মসৃণ ফেড (ক্লিক নেই), শূন্য ফাঁক; ভলিউম smoothAyah-এর মতোই সমান করা — তাই পরপর জোড়া লাগলে আলাদা বোঝা যায় না */
-function cutPcm(ch,sr){const n=ch.length;if(!n)return new Int16Array(0);let pk=0,e=0;for(let i=0;i<n;i++){const v=Math.abs(ch[i]);if(v>pk)pk=v;e+=ch[i]*ch[i]}
+function roomTone(ch,sr){const w=Math.round(sr*0.25),h=Math.round(sr*0.05);if(!ch||ch.length<w*2)return null;let best=1e9,bi=0;for(let i=0;i+w<=ch.length;i+=h){let e=0;for(let k=i;k<i+w;k+=4)e+=ch[k]*ch[k];if(e<best){best=e;bi=i}}const t=Float32Array.from(ch.subarray(bi,bi+w));let m=0;for(let k=0;k<t.length;k++)m+=t[k];m/=t.length;for(let k=0;k<t.length;k++)t[k]-=m;return t}
+function cutPcm(ch,sr,tone){const n=ch.length;if(!n)return new Int16Array(0);let pk=0,e=0;for(let i=0;i<n;i++){const v=Math.abs(ch[i]);if(v>pk)pk=v;e+=ch[i]*ch[i]}
  if(pk<=0.0005)return new Int16Array(n);const rms=Math.sqrt(e/n)||0.1;let g=Math.max(0.6,Math.min(1.8,0.1/rms));g=Math.min(g,0.97/pk);
- const f=Math.min(Math.round(sr*0.006),n>>1),o=new Int16Array(n);
- for(let k=0;k<n;k++){let v=ch[k]*g;if(k<f)v*=0.5-0.5*Math.cos(Math.PI*k/f);else if(n-k<f)v*=0.5-0.5*Math.cos(Math.PI*(n-k)/f);v=Math.max(-1,Math.min(1,v));o[k]=v<0?v*32768:v*32767}return o}
+ /* জোড়া: আগের অংশ ৪০ মি.সে. ধরে আস্তে শেষ, তারপর ওই রেকর্ডিংয়েরই নিচু পরিবেশ-আওয়াজে ভরা ০.১৬ সে. বিরতি (নিঃশব্দ নয়; ওভারল্যাপ নেই), পরের অংশ ২৫ মি.সে. ধরে আস্তে শুরু */
+ const fo=Math.min(Math.round(sr*0.04),n>>1),fi=Math.min(Math.round(sr*0.025),n>>1),G=tone?Math.round(sr*0.16):0,o=new Int16Array(n+G);
+ for(let k=0;k<n;k++){let v=ch[k]*g;if(k<fi)v*=0.5-0.5*Math.cos(Math.PI*k/fi);if(n-k<fo)v*=0.5-0.5*Math.cos(Math.PI*(n-k)/fo);v=Math.max(-1,Math.min(1,v));o[k]=v<0?v*32768:v*32767}
+ for(let k=0;k<G;k++){const env=Math.pow(Math.sin(Math.PI*(k+0.5)/G),2),q=Math.floor(k/tone.length)%2?tone.length-1-(k%tone.length):k%tone.length;let v=tone[q]*g*0.5*env;v=Math.max(-1,Math.min(1,v));o[n+k]=v<0?v*32768:v*32767}
+ return o}
 async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=k=>k[2]||(opt&&opt.rep?opt.rep:repOf(k[0],k[1])),ST=()=>opt&&opt.set?opt.set:setAll();
  // কোনো সীমা নেই: প্রতিটি আয়াত নামিয়েই সাথে সাথে MP3-তে এনকোড হয়, মেমোরিতে শুধু ছোট MP3 টুকরো জমে — তাই হাজারো আয়াতেও একটাই ফাইল
  out.textContent="";let L=null;try{L=await loadLame()}catch(e){console.error(e)}
  if(!L){note("MP3 বানানোর লাইব্রেরি পাওয়া যায়নি (ইন্টারনেট দেখুন), তাই আয়াতগুলো ক্রমানুসারে একটার পর একটা চলছে");playList(ST()>1?Array.from({length:ST()},()=>list).flat():list,out);return}
  let CUTS=null;if(list.some(k=>k[3])){try{CUTS=await loadCuts()}catch(e){console.error(e);CUTS=null}}
  const cutKey=k=>k[3]?k[0]+":"+k[1]+":"+k[3]+"-"+k[4]:null,anyCut=!!(CUTS&&list.some(k=>{const c=cutKey(k);return c&&CUTS[c]})); /* কাটা অংশ থাকলে পুরো ফাইল একটাই এনকোডারে ধারাবাহিক — আলাদা MP3 টুকরোর জোড়ায় যে সামান্য ফাঁক থাকে তা এড়াতে */
- const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));AS.loc=AS.net=0;let pool=null,sw=null;try{if(!anyCut)pool=await mkEncPool();else sw=await mkStreamEnc(sr)}catch(e){console.error(e);pool=null;sw=null}const jobs=[],marks=[],oi=[],memo=(opt&&opt.memoMap)||new Map(),MK=x=>x[0]+":"+x[1]+(x[2]?"*"+x[2]:"");
+ const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));AS.loc=AS.net=0;let pool=null,sw=null;try{if(!anyCut)pool=await mkEncPool();else sw=await mkStreamEnc(sr)}catch(e){console.error(e);pool=null;sw=null}const jobs=[],marks=[],oi=[],memo=(opt&&opt.memoMap)||new Map(),MK=x=>x[0]+":"+x[1]+(x[2]?"*"+x[2]:"")+(x[3]?":"+x[3]+"-"+x[4]:"");
  let wl=null;try{wl=await navigator.wakeLock.request("screen")}catch(e){}
  const push=pcm=>{for(let i=0;i<pcm.length;i+=B){const m=enc.encodeBuffer(pcm.subarray(i,i+B));if(m.length)mp3.push(new Uint8Array(m))}};
  const W=6,pf=[],get=i=>pf[i]||(pf[i]=fetchAud(list[i][0],list[i][1]).then(ab=>ab?ctx.decodeAudioData(ab).then(d=>({d,off:!!ab.__off}),()=>({err:1})):null).catch(()=>null));/* সামনের ১৪টি আয়াত একসাথে আনা ও ডিকোড হয় (আগে ৪টি, ডিকোড ক্রমে); এনকোডার ওয়ার্কারগুলো তাই বসে থাকে না */let ok=0,bad=0,cutN=0;
@@ -332,7 +336,7 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=k=>
   note("অডিও প্রস্তুত ও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+(bad?" (বাদ: "+bn2(bad)+")":"")+"…");
   const dr=await get(i);pf[i]=null;
   if(!dr){bad++;if(!ok&&bad>=5)break;continue}
-  try{if(dr.err)throw 0;const d=dr.d;let ch=d.getChannelData(0),cr=null;if(CUTS&&dr.off&&list[i][3])cr=CUTS[cutKey(list[i])]||null;if(cr){const a0=Math.max(0,Math.round(cr[0]*sr)),b0=Math.min(ch.length,Math.round(cr[1]*sr));if(b0-a0>sr*0.1)ch=ch.subarray(a0,b0);else cr=null}const pcm=list[i][0]==="dua"?smoothAyah(ch,sr):cr?cutPcm(tsm(ch,sr,spdOf()),sr):smoothAyah(tsm(ch,sr,spdOf()),sr),rp=RP(list[i]);/* "dua" ক্লিপ আগেই ×১.২০ করা (edge-tts), তাই আবার গতি বদলানো হয় না */if(cr)cutN++;
+  try{if(dr.err)throw 0;const d=dr.d;let ch=d.getChannelData(0),cr=null;const full=ch;if(CUTS&&dr.off&&list[i][3])cr=CUTS[cutKey(list[i])]||null;if(cr){const a0=Math.max(0,Math.round(cr[0]*sr)),b0=Math.min(ch.length,Math.round(cr[1]*sr));if(b0-a0>sr*0.1)ch=ch.subarray(a0,b0);else cr=null}const pcm=list[i][0]==="dua"?smoothAyah(ch,sr):cr?cutPcm(tsm(ch,sr,spdOf()),sr,roomTone(full,sr)):smoothAyah(tsm(ch,sr,spdOf()),sr),rp=RP(list[i]);/* "dua" ক্লিপ আগেই ×১.২০ করা (edge-tts), তাই আবার গতি বদলানো হয় না */if(cr)cutN++;
     if(pool){const fl=new Int16Array(pcm.length+gap.length);fl.set(pcm);fl.set(gap,pcm.length);await pool.room();{const jb={p:null,pcm:fl,rp};jb.p=pool.run(fl,sr).then(c=>{if(c)jb.pcm=null;return c});/* এনকোড হলেই কাঁচা PCM ছেড়ে দেওয়া হয়: আগে হাজারো আয়াতের PCM শেষ পর্যন্ত মেমোরিতে জমে ফোনে অ্যাপ সাদা হয়ে বেরিয়ে যেত */jobs.push(jb);if(opt&&opt.memo)memo.set(MK(list[i]),jb)}}else if(sw){await sw.push(pcm,rp,cr?0:gap.length);marks.push(marks.length+1)}else{for(let q=0;q<rp;q++){push(pcm);if(!cr)push(gap)}marks.push(mp3.length)}
     oi.push(i);ok++}catch(e){bad++;if(!ok&&bad>=5)break}
   if(i%10===0)await new Promise(r=>setTimeout(r))}
@@ -897,13 +901,16 @@ const homeRep=(kind,cat)=>kind==="x"&&/^বাধা\|/.test(String(cat))?{rep:2
 window.__drSfx={resp:SFX_R,treat:SFX_T};
 /* অঙ্গের অডিওর নিয়ম: প্রতিটি অঙ্গ মোট ১১ আয়াত-পাঠ। অঙ্গের আয়াত ১১টি বা বেশি হলে প্রতিটি একবার (রিপিট নেই); ১১টির কম হলে ১১ পূর্ণ করতে ভাগ করে রিপিট (যেমন ২টি আয়াত = ৫ + ৬ বার)। পুরো সেট একবারই */
 const ORGCAT=c=>/^(শারীরিক|মানসিক)( ও মানসিক)? অঙ্গ/.test(String(c));
-const orgRep=keys=>{const sn=new Set(),u=[];keys.forEach(k=>{const i=k[0]+":"+k[1];if(!sn.has(i)){sn.add(i);u.push(k)}});const n=u.length;if(!n)return u;if(n>=11)return u.map(k=>[k[0],k[1],1]);const b=Math.floor(11/n),x=11%n;return u.map((k,i)=>[k[0],k[1],b+(i>=n-x?1:0)])};
+let ORGR=null;const loadOrgR=()=>ORGR?Promise.resolve(ORGR):rsFetch(BASE+"organ-ranges.json?v=1").then(j=>ORGR=j||{}).catch(()=>ORGR={});window.__drOrgRL=loadOrgR;loadOrgR();
+/* শারীরিক→অঙ্গভিত্তিক: আয়াতের শুধু মার্ক-করা অংশ (data/organ-ranges.json, কাট audio-cuts.json-এ); না থাকলে পুরো আয়াত */
+const orgSeg=(k,rep)=>{const r=ORGR&&ORGR[k[0]+":"+k[1]];return r&&r.length?r.map(p=>[k[0],k[1],rep,p[0],p[1]]):[[k[0],k[1],rep]]};
+const orgRep=keys=>{const sn=new Set(),u=[];keys.forEach(k=>{const i=k[0]+":"+k[1];if(!sn.has(i)){sn.add(i);u.push(k)}});const n=u.length;if(!n)return u;if(n>=11)return u.flatMap(k=>orgSeg(k,1));const b=Math.floor(11/n),x=11%n;return u.flatMap((k,i)=>orgSeg(k,b+(i>=n-x?1:0)))};
 window.__drOrgRep=orgRep;
-const orgList=async cat=>{if(GRPN[cat]||GRPC[cat]){const items=await window.__drGroupItems(cat);return items.flatMap(it=>orgRep(it.keys))}const v=XKEYS.get(cat);return orgRep(typeof v==="function"?await v():(v||[]))};
+const orgList=async cat=>{await loadOrgR();if(GRPN[cat]||GRPC[cat]){const items=await window.__drGroupItems(cat);return items.flatMap(it=>orgRep(it.keys))}const v=XKEYS.get(cat);return orgRep(typeof v==="function"?await v():(v||[]))};
 
 /* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */
 /* ===== স্থায়ী ভাণ্ডার: একবার বানানো অডিও/PDF ফোনের ভেতরে (Cache Storage) জমা থাকে। অ্যাপ বন্ধ করে আবার খুললেও আর নতুন করে বানাতে হয় না — বোতাম চাপলেই সাথে সাথে। কোড/তালিকা বদলালে PREV বাড়ালে পুরনোগুলো মুছে নতুন করে বানায়। ===== */
-const EDV=(()=>{try{return localStorage.getItem("drEdV")||""}catch(e){return""}})(),PREV="p25"+EDV,PREC="dr-pre-"+PREV; /* মালিকের সম্পাদনা (✂ কাস্টমাইজ) বদলালে drEdV বদলায় — তাই জমানো অডিও/PDF নতুন করে তৈরি হয় */
+const EDV=(()=>{try{return localStorage.getItem("drEdV")||""}catch(e){return""}})(),PREV="p26"+EDV,PREC="dr-pre-"+PREV; /* মালিকের সম্পাদনা (✂ কাস্টমাইজ) বদলালে drEdV বদলায় — তাই জমানো অডিও/PDF নতুন করে তৈরি হয় */
 const preUrl=(t,k)=>"https://dr.local/pre/"+t+"/"+encodeURIComponent(k);
 const PRE={
  async get(t,k){try{const c=await caches.open(PREC),r=await c.match(preUrl(t,k));if(!r)return null;const m=await c.match(preUrl(t,k)+"/meta");let meta={};try{meta=m?await m.json():{}}catch(e){}return{blob:await r.blob(),meta}}catch(e){return null}},
@@ -1375,7 +1382,7 @@ const renderOrganTreat=(n,list)=>{GEN++;CURT=null;window.__bq="";window.__sq=n;r
     let items,list=[],segs=[],seen={},out=els("div",null);
     try{items=await window.__drGroupItems(cat)}catch(e){return fail(e)}
     if(st.stop||LVS!==st)return;
-    const OR=/অঙ্গভিত্তিক/.test(cat);items.forEach((it,k)=>{const f=list.length;if(OR)window.__drOrgRep(it.keys).forEach(x=>list.push(x));else it.keys.forEach(x=>{const id=x[0]+":"+x[1];if(!seen[id]){seen[id]=1;list.push(x)}});if(list.length>f)segs.push({k,from:f,to:list.length})});
+    try{await window.__drOrgRL()}catch(e){}const OR=/অঙ্গভিত্তিক/.test(cat);items.forEach((it,k)=>{const f=list.length;if(OR)window.__drOrgRep(it.keys).forEach(x=>list.push(x));else it.keys.forEach(x=>{const id=x[0]+":"+x[1];if(!seen[id]){seen[id]=1;list.push(x)}});if(list.length>f)segs.push({k,from:f,to:list.length})});
     if(!list.length)return fail(new Error("empty"));
     nt.textContent="⏳ অডিও প্রস্তুত হচ্ছে…";let marks=null;
     try{await window.__drGroupAudio(list,out,t=>{if(LVS===st)nt.textContent="⏳ "+t},cat+" +লাইভ",m=>{marks=m});if(!out.querySelector("audio"))throw new Error("noaudio")}catch(e){return fail(e)}
