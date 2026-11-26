@@ -18,7 +18,7 @@ import urllib.request
 
 OPEN_MODEL = "ggml-org/gemma-4-E4B-it-GGUF"
 SEGMENT = 28.0      # Gemma 4-এর অডিও-ঘর ৩০ সেকেন্ডের
-MAX_SEGMENTS = 40   # প্রায় ১৮ মিনিট
+MAX_SEGMENTS = 10**6  # সীমা নেই (শুধু ৬ ঘণ্টার জব-সীমা)
 FRAMES = 6          # প্রতি অংশে ছবি
 IMG_EXT = (".png", ".jpg", ".jpeg", ".webp")
 
@@ -122,16 +122,18 @@ def run_open(src, question, work, model=None):
 
 ENSEMBLE = [   # সব ফ্রি ওপেন-ওয়েট মডেল; একটা ব্যর্থ হলে বাকিগুলো চলে
     "ggml-org/gemma-4-E4B-it-GGUF",
-    "ggml-org/Qwen2.5-Omni-3B-GGUF",
+    "ggml-org/Qwen2.5-Omni-7B-GGUF",
     "ggml-org/Voxtral-Mini-3B-2507-GGUF",
+    "ggml-org/Qwen2.5-VL-7B-Instruct-GGUF",   # ভিডিওর ছবি দেখার জন্য
+    "ggml-org/gemma-3-12b-it-GGUF",
 ]
 
 
 def run_whisper(src):
     from faster_whisper import WhisperModel
-    m = WhisperModel("medium", device="cpu", compute_type="int8")
+    m = WhisperModel("large-v3", device="cpu", compute_type="int8")
     segs, info = m.transcribe(src, vad_filter=True, word_timestamps=False)
-    out = [f"(Whisper medium; ভাষা: {info.language} {info.language_probability:.2f})", ""]
+    out = [f"(Whisper large-v3; ভাষা: {info.language} {info.language_probability:.2f})", ""]
     for g in segs:
         out.append(f"[{fmt(g.start)} – {fmt(g.end)}] {g.text.strip()}")
     return "\n".join(out)
@@ -146,6 +148,7 @@ def run_all(src, question, work):
     for m in ENSEMBLE:
         try:
             res += [f"## {m}", run_open(src, question, work, m), ""]
+            sh(["rm", "-rf", os.path.expanduser("~/.cache/llama.cpp")])   # ১৪GB ডিস্ক বাঁচাতে
         except BaseException:
             res += [f"## {m} ব্যর্থ", "```", traceback.format_exc()[-800:], "```", ""]
     res += ["## তুলনার নোট", "মডেলগুলোর উত্তর আলাদা রাখা হয়েছে; যেখানে অমিল, সেখানে কোনোটাকেই যাচাই-হওয়া ধরা হয়নি। সময়ের জন্য Whisper-এর টাইমস্ট্যাম্প বেশি ভরসাযোগ্য; কুরআনের চূড়ান্ত যাচাই মালিকের কানে।"]
