@@ -31,6 +31,7 @@ def sh(cmd, **kw):
 OPTIONAL_FLAGS = [
     ["--chat-template-kwargs", '{"enable_thinking":false}'],
     ["--reasoning-budget", "0"],
+    ["--repeat-penalty", "1.15"],
 ]
 
 
@@ -148,7 +149,9 @@ def run_open(src, question, work, model=None):
             wav = cut_audio(src, a, b - a, work, n)
             if wav:
                 cmd += ["--audio", wav]
-        prompt = "<__media__>" * (len(imgs) + (1 if "--audio" in cmd else 0)) + question
+        hint = ("\n(Listen to the attached audio. First transcribe any speech exactly as spoken, "
+                "in its original language, then briefly describe other sounds. If you hear nothing, say so.)")
+        prompt = "<__media__>" * (len(imgs) + (1 if "--audio" in cmd else 0)) + question + hint
         if len(segs) > 1:
             prompt += f"\n(এটা পুরো ফাইলের {fmt(a)} – {fmt(b)} অংশ। শুধু এই অংশ নিয়ে বলো।)"
         cmd += ["-p", prompt]
@@ -174,13 +177,23 @@ ENSEMBLE = [   # সব ফ্রি ওপেন-ওয়েট মডেল; 
 ]
 
 
+def load_audio_np(src):
+    import numpy as np
+    p = subprocess.run(["ffmpeg", "-v", "error", "-i", src, "-vn", "-ac", "1", "-ar", "16000",
+                        "-f", "f32le", "-"], capture_output=True)
+    if p.returncode or not p.stdout:
+        raise RuntimeError("ffmpeg ডিকোড ব্যর্থ: " + p.stderr.decode("utf-8", "replace")[:300])
+    return np.frombuffer(p.stdout, dtype=np.float32)
+
+
 def run_whisper(src):
     from faster_whisper import WhisperModel
+    audio = load_audio_np(src)
     last = None
     for name in ("large-v3", "small"):
         try:
             m = WhisperModel(name, device="cpu", compute_type="int8")
-            segs, info = m.transcribe(src, vad_filter=False, word_timestamps=False)
+            segs, info = m.transcribe(audio, vad_filter=False, word_timestamps=False)
             segs = list(segs)
             break
         except Exception as e:   # মেমরি/ডাউনলোড সমস্যায় ছোট মডেল
