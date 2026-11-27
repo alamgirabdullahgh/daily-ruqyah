@@ -235,7 +235,7 @@ const repAll=()=>{try{return repClamp(localStorage.getItem("rsRep"))}catch(e){}r
 const setAll=()=>{try{return repClamp(localStorage.getItem("rsSet"))}catch(e){}return 1}; // পুরো সেট একটানা কতবার
 const REPBX=[];
 const numBox=(cls,val,on)=>{const i=document.createElement("input");i.type="number";i.min="1";i.max="999";i.step="1";i.inputMode="numeric";i.className=cls;i.value=String(val);i.onchange=()=>{const v=repClamp(i.value);i.value=String(v);on(v)};i.onfocus=()=>{try{i.select()}catch(e){}};return i};
-function spdBox(){const l=el("label","rs-rb"),sp=el("span","rs-rt","গতি"),i=document.createElement("input");i.type="number";i.min="0.8";i.max="1.6";i.step="0.05";i.inputMode="decimal";i.className="rs-num";i.value=String(spdOf());i.onchange=()=>{const v=spdClamp(i.value);i.value=String(v);try{localStorage.setItem("rsSpd",String(v))}catch(e){}};i.onfocus=()=>{try{i.select()}catch(e){}};l.append(sp,i,el("span",null,"×"));return l}
+function spdBox(){const l=el("label","rs-rb"),sp=el("span","rs-rt","গতি"),i=document.createElement("input");i.type="number";i.min="0.8";i.max="1.6";i.step="0.05";i.inputMode="decimal";i.className="rs-num";i.value=String(spdOf());i.onchange=()=>{const v=spdClamp(i.value);i.value=String(v);try{localStorage.setItem("rsSpd2",String(v))}catch(e){}};i.onfocus=()=>{try{i.select()}catch(e){}};l.append(sp,i,el("span",null,"×"));return l}
 function repCtl(){const w=el("div","rs-rep"),mk=(t,key,val,cb)=>{const l=el("label","rs-rb"),sp=el("span","rs-rt",t),b=numBox("rs-num",val,v=>{try{localStorage.setItem(key,String(v))}catch(e){}cb&&cb(v)});l.append(sp,b,el("span",null,"বার"));return l};
  w.append(mk("প্রতিটি আয়াত","rsRep",repAll(),()=>{for(let n=REPBX.length;n--;){const x=REPBX[n];if(!x.i.isConnected)REPBX.splice(n,1);else if(!REP.has(x.k))x.i.value=String(repAll())}}),mk("পুরো সেট","rsSet",setAll()));return w}
 const repOf=(s,a)=>REP.get(s+":"+a)||repAll();
@@ -296,9 +296,9 @@ async function rangeSegs(s,a,x,sr,rg){const t=((await chunk("a",s))||[])[a-1];if
  const W=words.map(w=>Math.max(1,nz(w,true).length)),b=wordBounds(x,sr,W);if(!b)return null;const lo=Math.max(1,rg[0]),hi=Math.min(N,rg[1]);if(hi<lo||(lo===1&&hi===N))return null;const mg=Math.round(sr*0.04);
  return[[Math.max(0,b[lo-1]-mg),Math.min(x.length,b[hi]+mg)]]}
 // পুরো আয়াত অক্ষত রেখে শুধু শুরু-শেষের ফাঁকা নীরবতা ছাঁটা + ভলিউম সমান + ছোট ফেড: ফলে আয়াত জোড়ার জায়গা (এমনকি ভিন্ন সূরার আয়াত) কানে ধরা পড়ে না
-/* গতি: পিচ না বদলে সময় ছোট করা (WSOLA); rate>1 মানে দ্রুত। ডিফল্ট ১.১৫ */
-const spdClamp=v=>{v=parseFloat(v);return v>=0.8&&v<=1.6?Math.round(v*100)/100:1.15};
-const spdOf=()=>{try{const v=localStorage.getItem("rsSpd");return v==null?1.15:spdClamp(v)}catch(e){}return 1.15};
+/* গতি: পিচ না বদলে সময় ছোট করা (WSOLA); rate>1 মানে দ্রুত। ডিফল্ট ১.০০ (সাধারণ গতি) */
+const spdClamp=v=>{v=parseFloat(v);return v>=0.8&&v<=1.6?Math.round(v*100)/100:1};
+const spdOf=()=>{try{const v=localStorage.getItem("rsSpd2");return v==null?1:spdClamp(v)}catch(e){}return 1};
 function tsm(x,sr,rate){if(!(rate>1.005||rate<0.995))return x;const n=x.length,N=2*Math.round(sr*0.015),H=N/2,Ha=H*rate,D=Math.round(sr*0.008),L=Math.ceil(n/rate)+N,y=new Float32Array(L),nw=new Float32Array(L),w=new Float32Array(N);
  if(n<N*3)return x;for(let i=0;i<N;i++)w[i]=0.5-0.5*Math.cos(2*Math.PI*i/N);let prev=0,end=0;
  for(let k=0;;k++){const o=k*H;if(o+N>L)break;let s=Math.round(k*Ha);
@@ -911,7 +911,7 @@ const orgList=async cat=>{await loadOrgR();if(GRPN[cat]||GRPC[cat]){const items=
 
 /* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */
 /* ===== স্থায়ী ভাণ্ডার: একবার বানানো অডিও/PDF ফোনের ভেতরে (Cache Storage) জমা থাকে। অ্যাপ বন্ধ করে আবার খুললেও আর নতুন করে বানাতে হয় না — বোতাম চাপলেই সাথে সাথে। কোড/তালিকা বদলালে PREV বাড়ালে পুরনোগুলো মুছে নতুন করে বানায়। ===== */
-const EDV=(()=>{try{return localStorage.getItem("drEdV")||""}catch(e){return""}})(),PREV="p30"+EDV,PREC="dr-pre-"+PREV; /* মালিকের সম্পাদনা (✂ কাস্টমাইজ) বদলালে drEdV বদলায় — তাই জমানো অডিও/PDF নতুন করে তৈরি হয় */
+const EDV=(()=>{try{return localStorage.getItem("drEdV")||""}catch(e){return""}})(),PREV="p31"+EDV,PREC="dr-pre-"+PREV; /* মালিকের সম্পাদনা (✂ কাস্টমাইজ) বদলালে drEdV বদলায় — তাই জমানো অডিও/PDF নতুন করে তৈরি হয় */
 const preUrl=(t,k)=>"https://dr.local/pre/"+t+"/"+encodeURIComponent(k);
 const PRE={
  async get(t,k){try{const c=await caches.open(PREC),r=await c.match(preUrl(t,k));if(!r)return null;const m=await c.match(preUrl(t,k)+"/meta");let meta={};try{meta=m?await m.json():{}}catch(e){}return{blob:await r.blob(),meta}}catch(e){return null}},
