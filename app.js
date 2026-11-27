@@ -175,6 +175,7 @@ async function offNative(p){
   setTimeout(poll,2500)};
  poll()}
 async function offAuto(){
+ return; /* মালিকের নির্দেশ: ব্যাকগ্রাউন্ড অফলাইন অডিও ডাউনলোড বন্ধ (৩২kbps মান খারাপ); জোড়ার সময় ১২৮kbps সরাসরি আনা হয় */
  try{const np=NAO();if(np){offNative(np);return}
   if(OFFRUN||!window.caches)return;
   if(lsGet("drOff64","")!=="1"){try{await caches.delete(OFFC)}catch(e){}lsSet("drOff64","1")} // আগের (১২৮kbps) ফাইল মুছে ৬৪kbps-এ নতুন করে
@@ -183,7 +184,7 @@ async function offAuto(){
 window.addEventListener("load",()=>setTimeout(offAuto,3000));
 window.addEventListener("online",()=>{OFFTRY=0;offAuto()});
 const AS={loc:0,net:0}; // মার্জে কয়টা আয়াত ফোনের ফাইল থেকে, কয়টা নেট থেকে এল
-async function fetchAud(s,a){if(s==="dua"){const r=await fetch(new URL("dua/"+a+".mp3",location.href).href);if(!r.ok)throw new Error("dua");AS.net++;return await r.arrayBuffer()}if(offOn()){const b=await offGet(s,a);if(b){AS.loc++;try{b.__off=1}catch(e){}return b}}let e;for(const u of audUrls(s,a)){try{const r=await fetch(u);if(r.ok){AS.net++;return await r.arrayBuffer()}}catch(x){e=x}}throw e||new Error("audio")}
+async function fetchAud(s,a){if(s==="dua"){const r=await fetch(new URL("dua/"+a+".mp3",location.href).href);if(!r.ok)throw new Error("dua");AS.net++;return await r.arrayBuffer()}if(offOn()){const p3=n=>String(n).padStart(3,"0");for(const u of["https://everyayah.com/data/Alafasy_128kbps/"+p3(s)+p3(a)+".mp3","https://cdn.islamic.network/quran/audio/128/ar.alafasy/"+gNum(s,a)+".mp3"]){try{const r=await fetch(u);if(r.ok){const b=await r.arrayBuffer();if(b.byteLength>1024){AS.net++;try{b.__hq=1}catch(x){}return b}}}catch(x){}}}let e;for(const u of audUrls(s,a)){try{const r=await fetch(u);if(r.ok){AS.net++;return await r.arrayBuffer()}}catch(x){e=x}}throw e||new Error("audio")}
 /* ───── MP3 এনকোডিং একাধিক কোরে (Web Worker পুল): প্রতিটি আয়াত আলাদা এনকোড হয়ে ক্রমানুসারে জোড়া লাগে; Worker না চললে আগের মতো মূল থ্রেডে ───── */
 function encWorkerMain(){self.onmessage=function(e){var d=e.data;try{var en=new lamejs.Mp3Encoder(1,d.sr,64),o=[],t=0,p=d.pcm,i,m;for(i=0;i<p.length;i+=1152){m=en.encodeBuffer(p.subarray(i,i+1152));if(m.length){o.push(new Uint8Array(m));t+=m.length}}m=en.flush();if(m.length){o.push(new Uint8Array(m));t+=m.length}var r=new Uint8Array(t),q=0;for(i=0;i<o.length;i++){r.set(o[i],q);q+=o[i].length}self.postMessage({mp3:r},[r.buffer])}catch(x){self.postMessage({err:String(x)})}}}
 function encMain(L,p,sr){const en=new L.Mp3Encoder(1,sr,64),o=[];let t=0,m;for(let i=0;i<p.length;i+=1152){m=en.encodeBuffer(p.subarray(i,i+1152));if(m.length){o.push(new Uint8Array(m));t+=m.length}}m=en.flush();if(m.length){o.push(new Uint8Array(m));t+=m.length}const r=new Uint8Array(t);let q=0;for(const x of o){r.set(x,q);q+=x.length}return r}
@@ -330,13 +331,13 @@ async function mergeAudio(list,out,note,opt){if(!list.length)return;const RP=k=>
  const sr=22050,AC=window.AudioContext||window.webkitAudioContext,ctx=new AC({sampleRate:sr}),enc=new L.Mp3Encoder(1,sr,64),mp3=[],B=1152,gap=new Int16Array(Math.round(sr*0.12));AS.loc=AS.net=0;let pool=null,sw=null;try{if(!anyCut)pool=await mkEncPool();else sw=await mkStreamEnc(sr)}catch(e){console.error(e);pool=null;sw=null}const jobs=[],marks=[],oi=[],memo=(opt&&opt.memoMap)||new Map(),MK=x=>x[0]+":"+x[1]+(x[2]?"*"+x[2]:"")+(x[3]?":"+x[3]+"-"+x[4]:"");
  let wl=null;try{wl=await navigator.wakeLock.request("screen")}catch(e){}
  const push=pcm=>{for(let i=0;i<pcm.length;i+=B){const m=enc.encodeBuffer(pcm.subarray(i,i+B));if(m.length)mp3.push(new Uint8Array(m))}};
- const W=6,pf=[],get=i=>pf[i]||(pf[i]=fetchAud(list[i][0],list[i][1]).then(ab=>ab?ctx.decodeAudioData(ab).then(d=>({d,off:!!ab.__off}),()=>({err:1})):null).catch(()=>null));/* সামনের ১৪টি আয়াত একসাথে আনা ও ডিকোড হয় (আগে ৪টি, ডিকোড ক্রমে); এনকোডার ওয়ার্কারগুলো তাই বসে থাকে না */let ok=0,bad=0,cutN=0;
+ const W=6,pf=[],get=i=>pf[i]||(pf[i]=fetchAud(list[i][0],list[i][1]).then(ab=>ab?ctx.decodeAudioData(ab).then(d=>({d,off:!!ab.__off,hq:!!ab.__hq}),()=>({err:1})):null).catch(()=>null));/* সামনের ১৪টি আয়াত একসাথে আনা ও ডিকোড হয় (আগে ৪টি, ডিকোড ক্রমে); এনকোডার ওয়ার্কারগুলো তাই বসে থাকে না */let ok=0,bad=0,cutN=0;
  for(let i=0;i<list.length;i++){for(let j=i;j<Math.min(i+W,list.length);j++)if(!(opt&&opt.memo&&memo.has(MK(list[j]))))get(j);
   if(opt&&opt.memo&&pool&&memo.has(MK(list[i]))){jobs.push(memo.get(MK(list[i])));oi.push(i);ok++;if(i%200===0){note("অডিও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+"…");await new Promise(r=>setTimeout(r))}continue}
   note("অডিও প্রস্তুত ও জোড়া লাগানো হচ্ছে "+bn2(i+1)+"/"+bn2(list.length)+(bad?" (বাদ: "+bn2(bad)+")":"")+"…");
   const dr=await get(i);pf[i]=null;
   if(!dr){bad++;if(!ok&&bad>=5)break;continue}
-  try{if(dr.err)throw 0;const d=dr.d;let ch=d.getChannelData(0),cr=null;const full=ch;if(CUTS&&dr.off&&list[i][3])cr=CUTS[cutKey(list[i])]||null;if(cr){const a0=Math.max(0,Math.round(cr[0]*sr)),b0=Math.min(ch.length,Math.round(cr[1]*sr));if(b0-a0>sr*0.1)ch=ch.subarray(a0,b0);else cr=null}const pcm=list[i][0]==="dua"?smoothAyah(ch,sr):cr?cutPcm(tsm(ch,sr,spdOf()),sr,roomTone(full,sr)):smoothAyah(tsm(ch,sr,spdOf()),sr),rp=RP(list[i]);/* "dua" ক্লিপ আগেই ×১.২০ করা (edge-tts), তাই আবার গতি বদলানো হয় না */if(cr)cutN++;
+  try{if(dr.err)throw 0;const d=dr.d;let ch=d.getChannelData(0),cr=null;const full=ch;if(CUTS&&(dr.off||dr.hq)&&list[i][3]){cr=CUTS[cutKey(list[i])]||null;if(cr&&dr.hq)cr=[cr[0]*1.2,cr[1]*1.2]} /* কাটের সময় ×১.২০ প্যাকের হিসাবে লেখা; ১২৮kbps মূল গতির ফাইলে ×১.২০ */if(cr){const a0=Math.max(0,Math.round(cr[0]*sr)),b0=Math.min(ch.length,Math.round(cr[1]*sr));if(b0-a0>sr*0.1)ch=ch.subarray(a0,b0);else cr=null}const pcm=list[i][0]==="dua"?smoothAyah(ch,sr):cr?cutPcm(tsm(ch,sr,spdOf()),sr,roomTone(full,sr)):smoothAyah(tsm(ch,sr,spdOf()),sr),rp=RP(list[i]);/* "dua" ক্লিপ আগেই ×১.২০ করা (edge-tts), তাই আবার গতি বদলানো হয় না */if(cr)cutN++;
     if(pool){const fl=new Int16Array(pcm.length+gap.length);fl.set(pcm);fl.set(gap,pcm.length);await pool.room();{const jb={p:null,pcm:fl,rp};jb.p=pool.run(fl,sr).then(c=>{if(c)jb.pcm=null;return c});/* এনকোড হলেই কাঁচা PCM ছেড়ে দেওয়া হয়: আগে হাজারো আয়াতের PCM শেষ পর্যন্ত মেমোরিতে জমে ফোনে অ্যাপ সাদা হয়ে বেরিয়ে যেত */jobs.push(jb);if(opt&&opt.memo)memo.set(MK(list[i]),jb)}}else if(sw){await sw.push(pcm,rp,cr?0:gap.length);marks.push(marks.length+1)}else{for(let q=0;q<rp;q++){push(pcm);if(!cr)push(gap)}marks.push(mp3.length)}
     oi.push(i);ok++}catch(e){bad++;if(!ok&&bad>=5)break}
   if(i%10===0)await new Promise(r=>setTimeout(r))}
@@ -910,7 +911,7 @@ const orgList=async cat=>{await loadOrgR();if(GRPN[cat]||GRPC[cat]){const items=
 
 /* PDF আগে থেকে বানানো থাকে (হোম খোলার কিছুক্ষণ পর ব্যাকগ্রাউন্ডে); বোতাম চাপলে সাথে সাথে পড়া ও ডাউনলোড */
 /* ===== স্থায়ী ভাণ্ডার: একবার বানানো অডিও/PDF ফোনের ভেতরে (Cache Storage) জমা থাকে। অ্যাপ বন্ধ করে আবার খুললেও আর নতুন করে বানাতে হয় না — বোতাম চাপলেই সাথে সাথে। কোড/তালিকা বদলালে PREV বাড়ালে পুরনোগুলো মুছে নতুন করে বানায়। ===== */
-const EDV=(()=>{try{return localStorage.getItem("drEdV")||""}catch(e){return""}})(),PREV="p29"+EDV,PREC="dr-pre-"+PREV; /* মালিকের সম্পাদনা (✂ কাস্টমাইজ) বদলালে drEdV বদলায় — তাই জমানো অডিও/PDF নতুন করে তৈরি হয় */
+const EDV=(()=>{try{return localStorage.getItem("drEdV")||""}catch(e){return""}})(),PREV="p30"+EDV,PREC="dr-pre-"+PREV; /* মালিকের সম্পাদনা (✂ কাস্টমাইজ) বদলালে drEdV বদলায় — তাই জমানো অডিও/PDF নতুন করে তৈরি হয় */
 const preUrl=(t,k)=>"https://dr.local/pre/"+t+"/"+encodeURIComponent(k);
 const PRE={
  async get(t,k){try{const c=await caches.open(PREC),r=await c.match(preUrl(t,k));if(!r)return null;const m=await c.match(preUrl(t,k)+"/meta");let meta={};try{meta=m?await m.json():{}}catch(e){}return{blob:await r.blob(),meta}}catch(e){return null}},
