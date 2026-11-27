@@ -38,17 +38,17 @@ async function verseCard(ref,isBase){const{s,a,f,t,w}=ref;
  if(isBase)box.appendChild(el("div","ax-bd","মৌলিক আয়াত"));
  const tx=el("div","rs-vt rs-ar"),tb=el("div","rs-vb");
  const aPort=f?[f-1,Math.min(t,aw.length)-1]:null,aHit=w?[w-1,w-1]:null;
- const bPort=f?bnPortion(al,[f,t],aw.length,bw.length):null;let bHit=null;if(w){const r=alRange(al,w);if(r)bHit=[r[0],Math.min(r[1],bw.length-1)]}
+ let bPort=f?bnPortion(al,[f,t],aw.length,bw.length):null;const bAuto=bPort?[bPort[0]+1,bPort[1]+1]:null;if(ref.bn&&ref.bn.length===2&&ref.bn[0]>=1&&ref.bn[1]>=ref.bn[0])bPort=[ref.bn[0]-1,Math.min(ref.bn[1],bw.length)-1];let bHit=null;if(w){const r=alRange(al,w);if(r)bHit=[r[0],Math.min(r[1],bw.length-1)]}
  paint(tx,aw,aPort,aHit);paint(tb,bw,bPort,bHit);
  const ft=el("div","rs-vf"),rf=el("div","rs-vr");rf.append("সূরা ",el("span","rs-ar",SN[s-1])," — "+bn2(s)+":"+bn2(a));ft.append(rf);
- if(ref.ck&&window.__drEditOpen&&document.body.classList.contains("dr-unlocked")){const eb=el("button","ed-btn","✂ কাস্টমাইজ");eb.type="button";eb.onclick=()=>window.__drEditOpen({s,a,f:f||0,t:t||0,ck:ref.ck,id:ref.id,aw,cn:ref.cn});ft.append(eb)}
+ if(ref.ck&&window.__drEditOpen&&document.body.classList.contains("dr-unlocked")){const eb=el("button","ed-btn","✂ কাস্টমাইজ");eb.type="button";eb.onclick=()=>window.__drEditOpen({s,a,f:f||0,t:t||0,ck:ref.ck,id:ref.id,aw,bw,al,bn:ref.bn||null,bAuto,cn:ref.cn});ft.append(eb)}
   box.append(tx,tb,ft);return box}
 
 let DATA=null;
 const EDO=()=>{try{return JSON.parse(localStorage.getItem("drEd")||"{}")||{}}catch(e){return{}}};
 /* মালিকের ✂ কাস্টমাইজে বদলানো মার্ক (শুধু এই ফোনে): cells[ঘর]["b|সূরা:আয়াত"] বা ["m|<m-এর লেখা>"] = [শুরু-শব্দ, শেষ-শব্দ] */
 function applyEd(D){const o=EDO().cells||{};for(const ck in o){const C=D.cells&&D.cells[ck];if(!C)continue;for(const id in o[ck]){const v=o[ck][id],ty=id[0],rest=id.slice(2);
-  if(ty==="b"){const p=rest.split(":").map(Number),r=C.b.find(x=>x[0]===p[0]&&x[1]===p[1]);if(r){r[2]=v[0];r[3]=v[1]}}else{C.mp=C.mp||{};C.mp[rest]=v}}}return D}
+  if(ty==="n"){C.bnr=C.bnr||{};C.bnr[rest]=v}else if(ty==="b"){const p=rest.split(":").map(Number),r=C.b.find(x=>x[0]===p[0]&&x[1]===p[1]);if(r){r[2]=v[0];r[3]=v[1]}}else{C.mp=C.mp||{};C.mp[rest]=v}}}return D}
 const load=async()=>{if(DATA)return DATA;try{DATA=applyEd(await rsFetch(BASE+"axis-ayat.json?v=9"))}catch(e){DATA=null;throw e}return DATA};
 /* "অবস্থান → শরীরে" ঘরের অডিওতে অঙ্গ ধরে ধরে আয়াত বাজে; অঙ্গের নাম ও আয়াত দৈনন্দিন রুকইয়াহর "শারীরিক → অঙ্গভিত্তিক" তালিকা (app.js এর ORG) থেকে আসে। শুধু দরকারের সময় লোড হয় */
 let ORGS=[],ORGP=null;
@@ -75,9 +75,9 @@ async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").m
   act.append(bp,ba);pn.append(act,hp,ha)}
  if(!C){pn.appendChild(el("div","ax-n","এই ঘরের আয়াত এখনো যোগ হয়নি।"));return}
  const b=el("div","rs-v");pn.appendChild(b);
- for(const r of C.b){const c=await verseCard({s:r[0],a:r[1],f:r[2],t:r[3],ck:key,id:"b|"+r[0]+":"+r[1],cn:G.cols[ci].opts[oi]},true).catch(()=>null);if(my!==R.__g)return;if(c)b.appendChild(c)}
+ for(const r of C.b){const c=await verseCard({s:r[0],a:r[1],f:r[2],t:r[3],ck:key,id:"b|"+r[0]+":"+r[1],bn:C.bnr&&C.bnr["b|"+r[0]+":"+r[1]],cn:G.cols[ci].opts[oi]},true).catch(()=>null);if(my!==R.__g)return;if(c)b.appendChild(c)}
  if(R.__mode==="resp")return;/* প্রতিক্রিয়া ভিত্তিক: প্রতিটি অপশনে শুধু একটি মৌলিক আয়াত; "বাকি আয়াত" শুধু চিকিৎসায় */
- const more=C.m.map(v=>{const p=v.split(":").map(Number),q=C.mp&&C.mp[v];return{s:p[0],a:p[1],w:p[2]||0,f:q?q[0]:0,t:q?q[1]:0,ck:key,id:"m|"+v,cn:G.cols[ci].opts[oi]}});
+ const more=C.m.map(v=>{const p=v.split(":").map(Number),q=C.mp&&C.mp[v];return{s:p[0],a:p[1],w:p[2]||0,f:q?q[0]:0,t:q?q[1]:0,ck:key,id:"m|"+v,bn:C.bnr&&C.bnr["m|"+v],cn:G.cols[ci].opts[oi]}});
  pn.appendChild(el("div","ax-sh","বাকি আয়াত"+(more.length?" ("+bn2(more.length)+"টি)":"")));
  if(!more.length){pn.appendChild(el("div","ax-n","এই ঘরে মৌলিক আয়াতের বাইরে আর কোনো আয়াত নেই।"));return}
  const lst=el("div","rs-v"),btnMore=el("button","rs-more");btnMore.type="button";pn.append(lst,btnMore);
@@ -97,8 +97,8 @@ async function openGroup(btn){const gi=+btn.dataset.g,G=DATA.axes[gi],R=btn.clos
  const sec=btn.closest(".ax-g"),pn=el("div","ax-p"),md=R.__mode;
  const q=[];let cnt=0;
  G.cols.forEach((c,ci)=>c.opts.forEach((n,oi)=>{const key=gi+"."+ci+"."+oi,C=DATA.cells[key];if(!C)return;
-  const rs=C.b.map(r=>({ref:{s:r[0],a:r[1],f:r[2],t:r[3],ck:key,id:"b|"+r[0]+":"+r[1],cn:n},base:true}));
-  if(md!=="resp")C.m.forEach(v=>{const p=v.split(":").map(Number),qq=C.mp&&C.mp[v];rs.push({ref:{s:p[0],a:p[1],w:p[2]||0,f:qq?qq[0]:0,t:qq?qq[1]:0,ck:key,id:"m|"+v,cn:n},base:false})});
+  const rs=C.b.map(r=>({ref:{s:r[0],a:r[1],f:r[2],t:r[3],ck:key,id:"b|"+r[0]+":"+r[1],bn:C.bnr&&C.bnr["b|"+r[0]+":"+r[1]],cn:n},base:true}));
+  if(md!=="resp")C.m.forEach(v=>{const p=v.split(":").map(Number),qq=C.mp&&C.mp[v];rs.push({ref:{s:p[0],a:p[1],w:p[2]||0,f:qq?qq[0]:0,t:qq?qq[1]:0,ck:key,id:"m|"+v,bn:C.bnr&&C.bnr["m|"+v],cn:n},base:false})});
   if(rs.length){q.push({head:c.name+" › "+n});rs.forEach(r=>{q.push(r);cnt++})}}));
  const hd=el("div","ax-ph"),x=el("button","ax-x","✕");x.type="button";x.setAttribute("aria-label","বন্ধ করুন");x.onclick=()=>closePanel(R);
  hd.append(el("span",null,G.name+" — সব আয়াত"+(cnt?" ("+bn2(cnt)+"টি)":"")),x);pn.append(hd);
@@ -235,30 +235,41 @@ window.__drAxesFit=R=>fit(R);
 
 /* ===== মালিকের ✂ কাস্টমাইজ: শুধু আয়াত ও আয়াতের অর্থের মার্ক (কোন শব্দ থেকে কোন শব্দ)। অডিও মার্ক/কাটার অপশন নেই। শুধু লগইন করা (dr-unlocked) অবস্থায় দেখা যায়; বদল শুধু এই ফোনে জমে (localStorage drEd) ও সাথে সাথে অ্যাপে কাজ করে; "কপি" দিয়ে সব বদল নিয়ে রিপোতে স্থায়ী করা যায় ===== */
 (function(){
- if(!document.getElementById("edCss")){const s=document.createElement("style");s.id="edCss";s.textContent=".ed-btn{margin-top:6px;padding:7px 12px;border-radius:10px;border:1px solid #c9a227;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}body:not(.dr-unlocked) .ed-btn{display:none!important}.ed-m{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.55);overflow:auto;padding:10px}.ed-b{background:var(--card-bg,#fff);color:var(--text-main,#111);border-radius:16px;padding:14px;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px}.ed-b h4{margin:0;font-size:16px}.ed-ws{direction:rtl;line-height:2.3}.ed-w{display:inline-block;padding:2px 8px;margin:2px;border-radius:8px;border:1px solid #aaa;font-size:22px;cursor:pointer}.ed-w.on{background:#e8c25a;color:#000;border-color:#c9a227}.ed-r{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.ed-k{padding:7px 10px;border-radius:10px;border:1px solid #999;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}.ed-k.p{background:#2e7d32;color:#fff;border-color:#2e7d32}.ed-k.d{border-color:#c62828;color:#c62828}.ed-n{font-size:13px;opacity:.8}";document.head.appendChild(s)}
+ if(!document.getElementById("edCss")){const s=document.createElement("style");s.id="edCss";s.textContent=".ed-btn{margin-top:6px;padding:7px 12px;border-radius:10px;border:1px solid #c9a227;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}body:not(.dr-unlocked) .ed-btn{display:none!important}.ed-m{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.55);overflow:auto;padding:10px}.ed-b{background:var(--card-bg,#fff);color:var(--text-main,#111);border-radius:16px;padding:14px;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px}.ed-b h4{margin:0;font-size:16px}.ed-ws{direction:rtl;line-height:2.3}.ed-w{display:inline-block;padding:2px 8px;margin:2px;border-radius:8px;border:1px solid #aaa;font-size:22px;cursor:pointer}.ed-w.on{background:#e8c25a;color:#000;border-color:#c9a227}.ed-r{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.ed-k{padding:7px 10px;border-radius:10px;border:1px solid #999;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}.ed-k.p{background:#2e7d32;color:#fff;border-color:#2e7d32}.ed-k.d{border-color:#c62828;color:#c62828}.ed-n{font-size:13px;opacity:.8}.ed-bs{direction:ltr;line-height:2}.ed-wb{font-size:16px!important}";document.head.appendChild(s)}
  window.__drEditOpen=async function(o){
   if(!document.body.classList.contains("dr-unlocked"))return;
-  const{s,a,ck,id,aw}=o;let f=o.f||0,t=o.t||0;const f0=f,t0=t;
+  const{s,a,ck,id,aw}=o,bw=o.bw||[],al=o.al,nid="n|"+id;let f=o.f||0,t=o.t||0;const f0=f,t0=t;
+  /* অর্থ (বাংলা) মার্ক: বাংলা শব্দ-নম্বর ১ থেকে। হাতে না বদলালে আরবির মার্ক থেকে অ্যালাইনমেন্টে নিজে নির্ধারিত হয় */
+  let bf=0,bt=0,bTouched=!!(o.bn&&o.bn.length===2);const bc=o.bn||o.bAuto;if(bc){bf=bc[0];bt=bc[1]}const bf0=bf,bt0=bt;
   const m=el("div","ed-m"),b=el("div","ed-b");m.appendChild(b);
   const close=()=>{m.remove()};
   const hd=el("div","ed-r");hd.append(el("h4",null,"✂ সূরা "+bn2(s)+":"+bn2(a)+(o.cn?" — "+o.cn:"")));const x=el("button","ed-k","✕");x.type="button";x.onclick=close;x.style.marginLeft="auto";hd.append(x);b.append(hd);
-  b.append(el("div","ed-n","মার্ক: শুরু-শব্দ ও শেষ-শব্দে চাপুন (দুটো আলাদা শব্দে চাপলে মাঝেরটুকু সোনালি)।"));
+  b.append(el("div","ed-n","১) আরবি মার্ক: শুরু-শব্দ ও শেষ-শব্দে চাপুন (দুটো আলাদা শব্দে চাপলে মাঝেরটুকু সোনালি)। অডিও ডাউনলোডে ঠিক এই মার্ক-করা আরবি অংশটুকুই কেটে জোড়া লাগবে।"));
   const ws=el("div","ed-ws rs-ar");b.append(ws);const sel=el("div","ed-n");b.append(sel);
-  const paintW=()=>{ws.textContent="";aw.forEach((w,i)=>{const c=el("span","ed-w"+(f&&i+1>=f&&i+1<=t?" on":""),w);c.onclick=()=>{if(f&&t&&f===t&&i+1!==f){f=Math.min(f,i+1);t=Math.max(t,i+1)}else{f=t=i+1}paintW()};ws.append(c)});sel.textContent=f?"মার্ক: শব্দ "+bn2(f)+" থেকে "+bn2(t)+(f!==f0||t!==t0?" (বদলানো)":""):"এই আয়াতে এখনো মার্ক নেই — শব্দে চাপুন"};
+  b.append(el("div","ed-n","২) অর্থ মার্ক: বাংলা অর্থের শুরু-শব্দ ও শেষ-শব্দে চাপুন। না চাপলে আরবির মার্কের সাথে মিলিয়ে নিজে ঠিক হবে।"));
+  const bs=el("div","ed-ws ed-bs");b.append(bs);const bsel=el("div","ed-n");b.append(bsel);
+  const autoB=()=>{const r=f?bnPortion(al,[f,t],aw.length,bw.length):null;if(r){bf=r[0]+1;bt=r[1]+1}else{bf=bt=0}};
+  const paintB=()=>{bs.textContent="";if(!bw.length){bsel.textContent="এই আয়াতের অর্থ পাওয়া যায়নি";return}
+   bw.forEach((w,i)=>{const c=el("span","ed-w ed-wb"+(bf&&i+1>=bf&&i+1<=bt?" on":""),w);c.onclick=()=>{bTouched=true;if(bf&&bt&&bf===bt&&i+1!==bf){const lo=Math.min(bf,i+1),hi=Math.max(bt,i+1);bf=lo;bt=hi}else{bf=bt=i+1}paintB()};bs.append(c)});
+   bsel.textContent=bf?"অর্থ মার্ক: শব্দ "+bn2(bf)+" থেকে "+bn2(bt)+(bTouched?(bf!==bf0||bt!==bt0?" (আপনার বদলানো)":" (আপনার আগের মার্ক)"):" (আরবির সাথে মিলিয়ে নিজে ঠিক)"):"অর্থে এখনো মার্ক নেই — শব্দে চাপুন"};
+  const paintW=()=>{ws.textContent="";aw.forEach((w,i)=>{const c=el("span","ed-w"+(f&&i+1>=f&&i+1<=t?" on":""),w);c.onclick=()=>{if(f&&t&&f===t&&i+1!==f){f=Math.min(f,i+1);t=Math.max(t,i+1)}else{f=t=i+1}if(!bTouched)autoB();paintW();paintB()};ws.append(c)});sel.textContent=f?"আরবি মার্ক: শব্দ "+bn2(f)+" থেকে "+bn2(t)+(f!==f0||t!==t0?" (বদলানো)":""):"এই আয়াতে এখনো মার্ক নেই — শব্দে চাপুন"};
+  const bact=el("div","ed-r"),ba=el("button","ed-k","↻ অর্থ আরবির সাথে মেলান");ba.type="button";ba.onclick=()=>{bTouched=false;autoB();paintB()};bact.append(ba);b.append(bact);
   const act=el("div","ed-r"),sv=el("button","ed-k p","💾 সংরক্ষণ"),rs=el("button","ed-k d","↩ আগের অবস্থায়");sv.type=rs.type="button";
   const bump=()=>{try{localStorage.setItem("drEdV",Date.now().toString(36))}catch(e){}};
-  sv.onclick=()=>{if(!f){alert("আগে শব্দে চেপে মার্ক ঠিক করুন");return}
-   const ed=EDO();ed.cells=ed.cells||{};
-   if(f!==f0||t!==t0){ed.cells[ck]=ed.cells[ck]||{};ed.cells[ck][id]=[f,t]}
+  sv.onclick=()=>{if(!f&&!bf){alert("আগে শব্দে চেপে মার্ক ঠিক করুন");return}
+   const ed=EDO();ed.cells=ed.cells||{};const C=ed.cells[ck]=ed.cells[ck]||{};
+   if(f&&(f!==f0||t!==t0))C[id]=[f,t];
+   if(bTouched&&bf&&(bf!==bf0||bt!==bt0))C[nid]=[bf,bt];else if(!bTouched)delete C[nid];
+   if(!Object.keys(C).length)delete ed.cells[ck];
    try{localStorage.setItem("drEd",JSON.stringify(ed))}catch(e){alert("ফোনে জমানো যায়নি");return}bump();alert("✓ সংরক্ষিত। অ্যাপ নতুন করে লোড হচ্ছে।");location.reload()};
-  rs.onclick=()=>{if(!confirm("এই আয়াতের আপনার বদল মুছে মূল অবস্থায় ফিরবে?"))return;const ed=EDO();if(ed.cells&&ed.cells[ck])delete ed.cells[ck][id];try{localStorage.setItem("drEd",JSON.stringify(ed))}catch(e){}bump();location.reload()};
+  rs.onclick=()=>{if(!confirm("এই আয়াতের আপনার বদল (আরবি ও অর্থ দুটোই) মুছে মূল অবস্থায় ফিরবে?"))return;const ed=EDO();if(ed.cells&&ed.cells[ck]){delete ed.cells[ck][id];delete ed.cells[ck][nid]}try{localStorage.setItem("drEd",JSON.stringify(ed))}catch(e){}bump();location.reload()};
   act.append(sv,rs);b.append(act);
   const n=Object.values(EDO().cells||{}).reduce((q,c)=>q+Object.keys(c).length,0);
   const ex=el("div","ed-r");const cp=el("button","ed-k","📋 সব বদল কপি ("+bn2(n)+"টি)"),dl=el("button","ed-k","⬇ ফাইল");cp.type=dl.type="button";
   cp.onclick=async()=>{const j=JSON.stringify(EDO());try{await navigator.clipboard.writeText(j);cp.textContent="✓ কপি হয়েছে"}catch(e){const ta=document.createElement("textarea");ta.value=j;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");cp.textContent="✓ কপি হয়েছে"}catch(x){cp.textContent="কপি হয়নি"}ta.remove()}};
   dl.onclick=()=>{const u=URL.createObjectURL(new Blob([JSON.stringify(EDO(),null,1)],{type:"application/json"})),A=document.createElement("a");A.href=u;A.download="dr-edits.json";A.click();setTimeout(()=>URL.revokeObjectURL(u),3000)};
   ex.append(cp,dl);b.append(ex,el("div","ed-n","কপি করা লেখা আমাকে (Claude) পাঠালে আমি রিপোতে স্থায়ী করে দেব, তখন সবার অ্যাপে ঠিক হবে। এই বদল শুধু এই ফোনে থাকে।"));
-  document.body.appendChild(m);paintW();
+  document.body.appendChild(m);paintW();paintB();
  };
 })();
 })();
