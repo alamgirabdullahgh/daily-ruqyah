@@ -61,7 +61,7 @@ function closePanel(R){R.__g=(R.__g||0)+1;R.querySelectorAll(".ax-p").forEach(x=
 /* অঙ্গ-স্তর: প্রতিটি গ্রুপের "অবস্থান → শরীরে" ঘরের নিচে অঙ্গ। প্রতিক্রিয়ায় শুধু অঙ্গের মৌলিক অংশ; অন্যথায় মৌলিক + গ্রুপ-নির্দিষ্ট বাকি + অঙ্গের সব আয়াত।
    ডেটা data/organ-axis.json (tools/organ-axis/build.py); সারি/গ্রুপের জোড়া অডিওতে অঙ্গ যোগ হয় না, প্রতি অঙ্গের নিজের অডিও ও PDF। */
 let OAX=null;
-const loadOax=async()=>OAX||(OAX=await rsFetch(BASE+"organ-axis.json?v=1"));
+const loadOax=async()=>OAX||(OAX=await rsFetch(BASE+"organ-axis.json?v=2"));
 async function organLayer(R,my,G,wrap){let D;try{D=await loadOax()}catch(e){wrap.appendChild(el("div","ax-n","অঙ্গের তালিকা লোড হয়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"));return}
  if(my!==R.__g)return;
  const grid=el("div","ax-og"),body=el("div");wrap.append(el("div","ax-sh","শরীরের কোন অঙ্গে?"),grid,body);let g2=0;
@@ -70,7 +70,7 @@ async function organLayer(R,my,G,wrap){let D;try{D=await loadOax()}catch(e){wrap
    const md=R.__mode,C=D.organs[name][G.slug],ttl=G.name+" › শরীরে › "+name,cat="অক্ষ "+G.name+" শরীরে "+name+(SFX[md]||""),box=el("div","rs-v");
    const hd=el("div","ax-ph");hd.append(el("span",null,ttl));body.append(hd,box);
    let rest=[];
-   if(md!=="resp"){let all=[];try{const o=(await window.__drOrgans()).find(x=>x.name===name);all=o?o.keys:[]}catch(e){console.error(e);box.appendChild(el("div","ax-n","অঙ্গের বাকি আয়াত লোড হয়নি।"))}
+   if(md!=="resp"){let all=(D.all||{})[name];try{if(!all){const o=(await window.__drOrgans()).find(x=>x.name===name);all=o?o.keys:[]}}catch(e){console.error(e);all=[];box.appendChild(el("div","ax-n","অঙ্গের বাকি আয়াত লোড হয়নি।"))}
     if(stale())return;const seen=new Set([C.b[0]+":"+C.b[1]]);
     [...C.m,...all.map(k=>[k[0],k[1],k[3]||0,k[4]||0])].forEach(k=>{const i=k[0]+":"+k[1];if(!seen.has(i)){seen.add(i);rest.push(k)}})}
    const ks=[[C.b[0],C.b[1],0,C.b[2],C.b[3]],...rest.map(k=>k[2]?[k[0],k[1],0,k[2],k[3]]:[k[0],k[1]])];
