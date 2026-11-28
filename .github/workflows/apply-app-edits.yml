@@ -30,7 +30,7 @@ jobs:
           python3 tools/bump-axis-data-version.py
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/axis-ayat.json axes.js sw.js
+          git add data/axis-ayat.json axes.js index.html sw.js
           git commit -m "অ্যাপ থেকে পাঠানো আয়াত-মার্ক বদল চার্টের ডেটায় বসানো (স্বয়ংক্রিয়)"
           git pull --rebase origin main
           git push origin HEAD:main
