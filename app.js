@@ -1264,14 +1264,14 @@ const DISEASE={file:"quran-disease.json?v="+DV+"x10",title:"💊 শারীর
    const list=[];for(const [j,x] of T)for(let k=0;k<11;k++)list.push(B[(11*j+k)%B.length],x);
    await mergeAudio(list,e.out,t=>e.say(t),{rep:1,set:1,memo:true,noplay:true,name:"শরীরের গিঁট ধ্বংসের রুকইয়াহ "+kind+" (টিক করা অঙ্গ)"});e.done=true;return e})();return e}
  window.__drGitAudio=gitAudio;window.__drGitCount=k=>{const C=GITN[k],tp=C.types?TOPICS.find(x=>x.name===C.types):null;return 1+gitGroups(C).length};
- window.__drGit=(host,kind,before,uid)=>{const C=GITN[kind];if(!C||!host)return;const gid=uid?"drGit-"+uid:"drGit",old=document.getElementById(gid);if(old)old.remove();
+ window.__drGit=(host,kind,before,uid)=>{const C=GITN[kind];if(!C||!host)return;const gid=uid?"drGit-"+uid:"drGit",old=document.getElementById(gid);if(old){old.querySelectorAll("audio").forEach(a=>{try{a.pause()}catch(e){}});old.remove()}
   const box=els("div","margin:14px 0 16px;padding:12px 12px 14px;border-radius:14px;background:var(--primary-light,#e6efe9);border:1.5px solid var(--accent)");box.id=gid;
   box.append(els("div","font-weight:800;font-size:17px;line-height:1.6;color:var(--accent);text-align:center;margin:0 0 8px","শরীরের প্রতিটি পয়েন্টে থাকা "+C.noun+" গিঁট ধ্বংসের রুকইয়াহ"));
   box.append(els("div","font-size:13.5px;line-height:1.7;color:var(--text-main);margin:0 0 10px","অডিও তৈরি হবে এভাবে: শরীরের একটি অঙ্গের আয়াত স্থির থাকে; তার সাথে "+C.noun.replace(/র$/,"")+"র ১১টি আলাদা আয়াত একটার পর একটা আঘাত করে — আয়াত-১, অঙ্গ, আয়াত-২, অঙ্গ, আয়াত-৩, অঙ্গ… ১১ বার। এরপর পরের অঙ্গে একইভাবে। এভাবে অঙ্গে থাকা গিঁটগুলো ভাঙা হয়।"));
   const tpD=C.types?TOPICS.find(x=>x.name===C.types):null,names=[C.types?"সব "+C.noun.replace(/র$/,""):C.noun.replace(/র$/,"")].concat(gitGroups(C).map(g=>g.name));
   const rw=els("div","display:flex;flex-direction:column;gap:8px");
   names.forEach((nm,i)=>{const sv=i===0?"":String(i-1),r=els("div","border-radius:12px;background:var(--card-bg);border:1px solid var(--border-light);padding:8px 10px"),hd=els("div","display:flex;align-items:center;gap:8px"),host2=els("div","margin-top:6px"),stt=els("div","font-size:12.5px;color:var(--text-muted)");host2.hidden=true;
-   const b=mkBtn("🔊 অডিও",async()=>{if(!host2.hidden){host2.hidden=true;return}host2.hidden=false;host2.textContent="";const g=gitAudio(kind,sv,t=>stt.textContent=t);stt.textContent=g.done?"":"⏳ তৈরি হচ্ছে…";host2.append(stt);try{await g.p;stt.textContent="";host2.append(g.out);const au=g.out.querySelector("audio");au&&au.play().catch(()=>{})}catch(x){console.error(x);stt.textContent="অডিও তৈরি করা যায়নি"}});
+   const b=mkBtn("🔊 অডিও",async()=>{if(!host2.hidden){host2.hidden=true;host2.querySelectorAll("audio").forEach(a=>{try{a.pause()}catch(e){}});return}host2.hidden=false;host2.textContent="";const g=gitAudio(kind,sv,t=>stt.textContent=t);stt.textContent=g.done?"":"⏳ তৈরি হচ্ছে…";host2.append(stt);try{await g.p;stt.textContent="";host2.append(g.out);const au=g.out.querySelector("audio");if(au&&!host2.hidden&&host2.isConnected)au.play().catch(()=>{})}catch(x){console.error(x);stt.textContent="অডিও তৈরি করা যায়নি"}});
    b.style.cssText+=";margin:0;flex:none";hd.append(els("b","flex:1;font-size:15.5px;line-height:1.5",nm),b);r.append(hd,host2);rw.append(r)});
   box.append(rw);
   box.append(els("div","font-weight:700;color:var(--accent);margin:12px 0 4px","📍 অডিও শোনার সময় যে অঙ্গে সমস্যা বা প্রতিক্রিয়া হবে, সাথে সাথে এই তালিকায় সেই অঙ্গে টিক দিন"));
@@ -1279,7 +1279,7 @@ const DISEASE={file:"quran-disease.json?v="+DV+"x10",title:"💊 শারীর
   ORG.forEach(o=>{const nm=o[0].split(" (")[0],lb=els("label","display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:var(--card-bg);border:1px solid var(--border-light);font-size:14.5px;cursor:pointer"),cb=document.createElement("input");cb.type="checkbox";cb.checked=mk.has(nm);cb.style.cssText="width:20px;height:20px;accent-color:var(--primary);flex:none";cb.onchange=()=>{if(cb.checked)mk.add(nm);else mk.delete(nm);gitSave(kind,mk)};lb.append(cb,els("span",null,nm));grid.append(lb)});
   box.append(grid);const clr=mkBtn("✖ সব টিক মুছুন",()=>{mk.clear();gitSave(kind,mk);grid.querySelectorAll("input").forEach(c=>c.checked=false)});clr.style.margin="10px 0 0";box.append(clr);
    {const stt2=els("div","font-size:12.5px;color:var(--text-muted);margin-top:8px"),h2=els("div","margin-top:6px");
-   const gb=mkBtn("🔊 টিক করা অঙ্গের অডিও তৈরি করুন",async()=>{h2.textContent="";if(!mk.size){stt2.textContent="আগে অন্তত একটি অঙ্গে টিক দিন";return}stt2.textContent="⏳ টিক করা "+mk.size+"টি অঙ্গের অডিও তৈরি হচ্ছে…";const g=gitTickAudio(kind,new Set(mk),t=>stt2.textContent=t);try{await g.p;stt2.textContent="";h2.append(g.out);const au=g.out.querySelector("audio");au&&au.play().catch(()=>{})}catch(x){console.error(x);stt2.textContent="অডিও তৈরি করা যায়নি"}});
+   const gb=mkBtn("🔊 টিক করা অঙ্গের অডিও তৈরি করুন",async()=>{h2.textContent="";if(!mk.size){stt2.textContent="আগে অন্তত একটি অঙ্গে টিক দিন";return}stt2.textContent="⏳ টিক করা "+mk.size+"টি অঙ্গের অডিও তৈরি হচ্ছে…";const g=gitTickAudio(kind,new Set(mk),t=>stt2.textContent=t);try{await g.p;stt2.textContent="";h2.append(g.out);const au=g.out.querySelector("audio");if(au&&h2.isConnected&&!h2.hidden)au.play().catch(()=>{})}catch(x){console.error(x);stt2.textContent="অডিও তৈরি করা যায়নি"}});
    gb.style.margin="10px 0 0";gb.style.display="block";box.append(gb,stt2,h2)}
  if(before&&before.parentNode)before.parentNode.insertBefore(box,before);else host.prepend(box)};
 window.__drOpenDisease=()=>showDiag(DISEASE);window.__drOpenMental=()=>showDiag(MENTAL);
@@ -1601,3 +1601,12 @@ drUpdater();
 window.__drFit=function(root){try{(root||document).querySelectorAll(".rs-pair>button,.dsy-fit").forEach(b=>{b.style.fontSize="";if(!b.clientWidth)return;let f=parseFloat(getComputedStyle(b).fontSize)||12.5;while(b.scrollWidth>b.clientWidth+.5&&f>8.5){f-=.5;b.style.fontSize=f+"px"}})}catch(e){}};
 window.addEventListener("resize",()=>window.__drFit());
 new MutationObserver(()=>{clearTimeout(window.__drFitT);window.__drFitT=setTimeout(()=>window.__drFit(),60)}).observe(document.documentElement,{childList:true,subtree:true});
+
+/* ভাসমান "অডিও বন্ধ করুন": যে অডিও চলছে অথচ পর্দায় প্লেয়ার দেখা যাচ্ছে না (লুকানো/সরানো), তার জন্য */
+(function(){try{const A=new Set(),op=HTMLMediaElement.prototype.play;HTMLMediaElement.prototype.play=function(){A.add(this);return op.apply(this,arguments)};
+const pill=document.createElement("button");pill.type="button";pill.textContent="🔇 অডিও চলছে (প্লেয়ার লুকানো) — বন্ধ করুন";
+pill.style.cssText="position:fixed;left:50%;transform:translateX(-50%);bottom:76px;z-index:99999;padding:10px 16px;border-radius:24px;border:0;background:#b3261e;color:#fff;font:700 14px/1.4 inherit;box-shadow:0 2px 10px rgba(0,0,0,.35);display:none;max-width:92vw";
+const hiddenPlaying=a=>{if(a.paused||a.ended)return false;if(!a.isConnected)return true;const r=a.getBoundingClientRect();return !a.offsetParent||r.width<2||r.height<2};
+pill.onclick=()=>{A.forEach(a=>{try{a.pause()}catch(e){}});pill.style.display="none"};
+const tick=()=>{let h=false;A.forEach(a=>{if(a.paused&&!a.isConnected)A.delete(a);else if(hiddenPlaying(a))h=true});pill.style.display=h?"block":"none"};
+const add=()=>{document.body.appendChild(pill);setInterval(tick,800)};document.body?add():document.addEventListener("DOMContentLoaded",add)}catch(e){console.error(e)}})();
