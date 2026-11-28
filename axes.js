@@ -268,7 +268,36 @@ window.__drAxesFit=R=>fit(R);
   const ex=el("div","ed-r");const cp=el("button","ed-k","📋 সব বদল কপি ("+bn2(n)+"টি)"),dl=el("button","ed-k","⬇ ফাইল");cp.type=dl.type="button";
   cp.onclick=async()=>{const j=JSON.stringify(EDO());try{await navigator.clipboard.writeText(j);cp.textContent="✓ কপি হয়েছে"}catch(e){const ta=document.createElement("textarea");ta.value=j;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");cp.textContent="✓ কপি হয়েছে"}catch(x){cp.textContent="কপি হয়নি"}ta.remove()}};
   dl.onclick=()=>{const u=URL.createObjectURL(new Blob([JSON.stringify(EDO(),null,1)],{type:"application/json"})),A=document.createElement("a");A.href=u;A.download="dr-edits.json";A.click();setTimeout(()=>URL.revokeObjectURL(u),3000)};
-  ex.append(cp,dl);b.append(ex,el("div","ed-n","কপি করা লেখা আমাকে (Claude) পাঠালে আমি রিপোতে স্থায়ী করে দেব, তখন সবার অ্যাপে ঠিক হবে। এই বদল শুধু এই ফোনে থাকে।"));
+  /*GH-SYNC-BEGIN*/
+  const GH={repo:"alamgirabdullahgh/daily-ruqyah",path:"data/app-edits.json",br:"main"};
+  const ghTok=()=>{try{return localStorage.getItem("drGhTok")||""}catch(e){return""}};
+  const ghAsk=()=>{const x=prompt("GitHub টোকেন দিন — শুধু এই রিপোর জন্য বানানো (Contents: Read and write)। এটা শুধু এই ফোনে থাকবে, কোথাও পাঠানো হয় না; ফাঁকা রেখে ঠিক চাপলে মুছে যাবে।",ghTok());if(x===null)return false;try{if(x.trim())localStorage.setItem("drGhTok",x.trim());else localStorage.removeItem("drGhTok")}catch(e){}return !!x.trim()};
+  const b64=s=>btoa(unescape(encodeURIComponent(s))),un64=s=>decodeURIComponent(escape(atob(String(s).replace(/\s/g,""))));
+  const cnt=o=>Object.values((o&&o.cells)||{}).reduce((q,c)=>q+Object.keys(c).length,0);
+  async function ghPush(){
+   if(!ghTok()&&!ghAsk())return"টোকেন ছাড়া পাঠানো যায় না";
+   const H={Authorization:"Bearer "+ghTok(),Accept:"application/vnd.github+json"},U="https://api.github.com/repos/"+GH.repo+"/contents/"+GH.path;
+   let sha=null,remote=null;
+   const g=await fetch(U+"?ref="+GH.br,{headers:H,cache:"no-store"});
+   if(g.status===200){const j=await g.json();sha=j.sha;try{remote=JSON.parse(un64(j.content))}catch(e){remote=null}}
+   else if(g.status===401||g.status===403)return"টোকেন কাজ করছে না (মেয়াদ বা অনুমতি দেখুন)";
+   else if(g.status!==404)return"রিপো পড়া যায়নি ("+g.status+")";
+   const loc=EDO();
+   if(!cnt(loc)&&cnt(remote)){
+    if(confirm("এই ফোনে কোনো বদল নেই, কিন্তু রিপোতে "+cnt(remote)+"টি বদল আছে। রিপোর বদলগুলো এই ফোনে নামাব? (রিপোতে কিছু বদলাবে না)")){try{localStorage.setItem("drEd",JSON.stringify(remote));localStorage.setItem("drEdV",Date.now().toString(36))}catch(e){return"ফোনে জমানো যায়নি"}location.reload()}
+    return"কিছু পাঠানো হয়নি"}
+   if(!cnt(loc)&&!cnt(remote))return"পাঠানোর মতো কোনো বদল নেই";
+   const body={message:"অ্যাপ থেকে আয়াত-মার্ক বদল ("+cnt(loc)+"টি)",content:b64(JSON.stringify(loc,null,1)+"\n"),branch:GH.br};if(sha)body.sha=sha;
+   const p=await fetch(U,{method:"PUT",headers:Object.assign({"Content-Type":"application/json"},H),body:JSON.stringify(body)});
+   if(p.status===200||p.status===201)return"✓ রিপোতে গেছে ("+cnt(loc)+"টি)। ১-২ মিনিটে চার্টের ডেটায় বসে সবার অ্যাপে নতুন হবে";
+   if(p.status===409||p.status===422)return"রিপো ইতিমধ্যে বদলে গেছে, আবার চেপে দেখুন";
+   if(p.status===401||p.status===403)return"টোকেনের লেখার অনুমতি নেই (Contents: Read and write লাগবে)";
+   return"পাঠানো যায়নি ("+p.status+")"}
+  /*GH-SYNC-END*/
+  const up=el("button","ed-k p","☁ রিপোতে পাঠান"),tk=el("button","ed-k","🔑 টোকেন");up.type=tk.type="button";
+  up.onclick=async()=>{up.disabled=true;const o=up.textContent;up.textContent="পাঠানো হচ্ছে…";let r;try{r=await ghPush()}catch(e){r="নেট বা অনুমতির সমস্যা — পাঠানো যায়নি"}up.disabled=false;up.textContent=o;alert(r)};
+  tk.onclick=()=>{ghAsk()};
+  ex.append(cp,dl,up,tk);b.append(ex,el("div","ed-n","☁ রিপোতে পাঠান চাপলে আপনার সব বদল রিপোতে স্থায়ী হয় ও কিছুক্ষণে সবার অ্যাপে ঠিক হয় (প্রথমবার শুধু একটা টোকেন দিতে হবে, সেটা এই ফোনেই থাকে)। না চাপলে বদল শুধু এই ফোনে থাকে। কপি/ফাইল শুধু ব্যাকআপের জন্য।"));
   document.body.appendChild(m);paintW();paintB();
  };
 })();

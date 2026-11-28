@@ -1,0 +1,36 @@
+# অ্যাপে ✂ কাস্টমাইজ করে "☁ রিপোতে পাঠান" চাপলে data/app-edits.json বদলায়।
+# এই ওয়ার্কফ্লো তখন চার্টের ডেটা (data/axis-ayat.json) নতুন করে বানায় (tools/build-axis-ayat.py, যেটা app-edits.json বসায়),
+# ক্যাশ-ভার্সন বাড়ায় এবং main-এ কমিট করে — ফলে বদল রিপোর ডেটায় স্থায়ী হয় ও সবার অ্যাপে আসে।
+name: Apply app edits
+on:
+  push:
+    branches: [main]
+    paths: ["data/app-edits.json"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: apply-app-edits
+  cancel-in-progress: false
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: ডেটা নতুন করে বানানো
+        run: python3 tools/build-axis-ayat.py
+      - name: বদল থাকলে ভার্সন বাড়িয়ে কমিট
+        run: |
+          if git diff --quiet -- data/axis-ayat.json; then
+            echo "ডেটায় নতুন কিছু নেই"; exit 0
+          fi
+          python3 tools/bump-axis-data-version.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/axis-ayat.json axes.js sw.js
+          git commit -m "অ্যাপ থেকে পাঠানো আয়াত-মার্ক বদল চার্টের ডেটায় বসানো (স্বয়ংক্রিয়)"
+          git pull --rebase origin main
+          git push origin HEAD:main

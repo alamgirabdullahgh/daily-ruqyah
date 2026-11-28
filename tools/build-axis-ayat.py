@@ -305,6 +305,30 @@ def main():
     if miss:
         sys.exit("PORT-এ নেই: " + ", ".join(miss))
 
+    # অ্যাপে ✂ কাস্টমাইজ করে "☁ রিপোতে পাঠান" দিলে বদল data/app-edits.json-এ আসে; এখানে অ্যাপের applyEd-এর হুবহু একই নিয়মে বসে
+    # (cells[ঘর]["b|সূরা:আয়াত"] = [শুরু, শেষ]; ["n|…"] = অর্থের মার্ক → bnr; ["m|…"] = বাকি আয়াতের মার্ক → mp)
+    ep = D / "app-edits.json"
+    if ep.exists():
+        ed = json.loads(ep.read_text(encoding="utf-8") or "{}") or {}
+        applied = 0
+        for ck, ids in (ed.get("cells") or {}).items():
+            C = cells.get(ck)
+            if not C:
+                continue
+            for id_, v in ids.items():
+                ty, rest = id_[0], id_[2:]
+                if ty == "n":
+                    C.setdefault("bnr", {})[rest] = v
+                elif ty == "b":
+                    s_, a_ = [int(x) for x in rest.split(":")[:2]]
+                    for r in C["b"]:
+                        if r[0] == s_ and r[1] == a_:
+                            r[2], r[3] = v[0], v[1]
+                else:
+                    C.setdefault("mp", {})[rest] = v
+                applied += 1
+        print(f"অ্যাপ-থেকে-পাঠানো বদল বসেছে: {applied}টি")
+
     out = {
         "_doc": "সাত-অক্ষের চার্টের আয়াত। ঘরের চাবি গ্রুপ.অক্ষ.অপশন। b = মৌলিক আয়াত [সূরা, আয়াত, শুরু-শব্দ, শেষ-শব্দ] (আরবি শব্দ-নম্বর ১ থেকে; এই অংশ মার্ক হয়); m = বাকি আয়াত (\"সূরা:আয়াত\" বা \"সূরা:আয়াত:শব্দ\")। tools/build-axis-ayat.py দিয়ে তৈরি — হাতে বদলাবেন না, স্ক্রিপ্ট বদলে আবার চালান।",
         "v": 2,
