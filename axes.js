@@ -61,7 +61,7 @@ function closePanel(R){R.__g=(R.__g||0)+1;R.querySelectorAll(".ax-p").forEach(x=
 /* অঙ্গ-স্তর: প্রতিটি গ্রুপের "অবস্থান → শরীরে" ঘরের নিচে অঙ্গ। প্রতিক্রিয়ায় শুধু অঙ্গের মৌলিক অংশ; অন্যথায় মৌলিক + গ্রুপ-নির্দিষ্ট বাকি + অঙ্গের সব আয়াত।
    ডেটা data/organ-axis.json (tools/organ-axis/build.py); সারি/গ্রুপের জোড়া অডিওতে অঙ্গ যোগ হয় না, প্রতি অঙ্গের নিজের অডিও ও PDF। */
 let OAX=null;
-const loadOax=async()=>OAX||(OAX=await rsFetch(BASE+"organ-axis.json?v=3"));
+const loadOax=async()=>OAX||(OAX=await rsFetch(BASE+"organ-axis.json?v=4"));
 async function organLayer(R,my,G,wrap){let D;try{D=await loadOax()}catch(e){wrap.appendChild(el("div","ax-n","অঙ্গের তালিকা লোড হয়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"));return}
  if(my!==R.__g)return;
  const grid=el("div","ax-og"),body=el("div");wrap.append(el("div","ax-sh","শরীরের কোন অঙ্গে?"),grid,body);let g2=0;
