@@ -20,6 +20,11 @@ for gi, G in enumerate(ax["axes"]):
         for oi, o in enumerate(col["opts"]):
             b = ax["cells"][f"{gi}.{ci}.{oi}"]["b"][0]
             items.append((b[0], b[1], b[2], b[3], f"অক্ষ:{G['name']}›{col['name']}›{o}"))
+og = json.load(open(D / "organ-axis.json", encoding="utf-8"))
+for n, v in og["organs"].items():
+    for g, c in v.items():
+        b = c["b"]
+        items.append((b[0], b[1], b[2], b[3], f"অঙ্গ:{g}›{n}"))
 by = collections.defaultdict(list)
 for i in items:
     by[(i[0], i[1])].append(i)

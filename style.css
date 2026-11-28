@@ -955,6 +955,9 @@ body.is-home .drq-tk.drq-tkbar{margin:0 0 3px}
 .ax-root .ax-x{flex:none;border:0;background:transparent;color:var(--text-muted);font-size:18px;line-height:1;padding:4px 6px;cursor:pointer}
 .ax-root .ax-lg{padding:0 6px 8px;font-size:12.5px;color:var(--text-muted)}
 .ax-root .ax-sh{margin:14px 6px 6px;font-weight:800;font-size:14px;color:var(--accent)}
+.ax-og{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px;padding:0 4px}
+.ax-ob{border:1.5px solid var(--primary);border-radius:10px;padding:8px 4px;background:var(--card-bg);color:var(--primary);font:inherit;font-size:13.5px;font-weight:700;line-height:1.35;cursor:pointer}
+.ax-ob.on{background:var(--primary);color:#fff}
 .ax-root .ax-n{padding:8px 8px;font-size:13px;color:var(--text-muted)}
 .ax-root .ax-bd{display:inline-block;margin:10px 14px 0;padding:1px 11px;border-radius:10px;background:var(--accent);color:#fff;font-size:11.5px;font-weight:700}
 .ax-root .ax-base{background:var(--accent-light)}

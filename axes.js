@@ -58,6 +58,35 @@ const hasBody=id=>{const t=id[0];if(t==="g")return true;const p=id.slice(1).spli
 
 function closePanel(R){R.__g=(R.__g||0)+1;R.querySelectorAll(".ax-p").forEach(x=>x.remove());R.querySelectorAll(".ax-c.on,.ax-hb.on").forEach(x=>x.classList.remove("on"))}
 
+/* অঙ্গ-স্তর: প্রতিটি গ্রুপের "অবস্থান → শরীরে" ঘরের নিচে অঙ্গ। প্রতিক্রিয়ায় শুধু অঙ্গের মৌলিক অংশ; অন্যথায় মৌলিক + গ্রুপ-নির্দিষ্ট বাকি + অঙ্গের সব আয়াত।
+   ডেটা data/organ-axis.json (tools/organ-axis/build.py); সারি/গ্রুপের জোড়া অডিওতে অঙ্গ যোগ হয় না, প্রতি অঙ্গের নিজের অডিও ও PDF। */
+let OAX=null;
+const loadOax=async()=>OAX||(OAX=await rsFetch(BASE+"organ-axis.json?v=1"));
+async function organLayer(R,my,G,wrap){let D;try{D=await loadOax()}catch(e){wrap.appendChild(el("div","ax-n","অঙ্গের তালিকা লোড হয়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"));return}
+ if(my!==R.__g)return;
+ const grid=el("div","ax-og"),body=el("div");wrap.append(el("div","ax-sh","শরীরের কোন অঙ্গে?"),grid,body);let g2=0;
+ D.order.forEach(name=>{const b=el("button","ax-ob",name);b.type="button";b.onclick=async()=>{const on=b.classList.contains("on"),n=++g2,stale=()=>my!==R.__g||n!==g2;
+   grid.querySelectorAll(".on").forEach(x=>x.classList.remove("on"));body.textContent="";if(on)return;b.classList.add("on");
+   const md=R.__mode,C=D.organs[name][G.slug],ttl=G.name+" › শরীরে › "+name,cat="অক্ষ "+G.name+" শরীরে "+name+(SFX[md]||""),box=el("div","rs-v");
+   const hd=el("div","ax-ph");hd.append(el("span",null,ttl));body.append(hd,box);
+   let rest=[];
+   if(md!=="resp"){let all=[];try{const o=(await window.__drOrgans()).find(x=>x.name===name);all=o?o.keys:[]}catch(e){console.error(e);box.appendChild(el("div","ax-n","অঙ্গের বাকি আয়াত লোড হয়নি।"))}
+    if(stale())return;const seen=new Set([C.b[0]+":"+C.b[1]]);
+    [...C.m,...all.map(k=>[k[0],k[1],k[3]||0,k[4]||0])].forEach(k=>{const i=k[0]+":"+k[1];if(!seen.has(i)){seen.add(i);rest.push(k)}})}
+   const ks=[[C.b[0],C.b[1],0,C.b[2],C.b[3]],...rest.map(k=>k[2]?[k[0],k[1],0,k[2],k[3]]:[k[0],k[1]])];
+   if(window.__drXKeys){window.__drXKeys(cat,ks);const act=el("div","ax-act"),hp=el("div","ax-hp"),ha=el("div","ax-hp");hp.hidden=ha.hidden=true;
+    const bp=el("button","ax-ab","📄 PDF"),ba=el("button","ax-ab","🔊 অডিও");bp.type=ba.type="button";
+    bp.onclick=()=>window.__drHomePdf&&window.__drHomePdf("x",cat,hp);ba.onclick=()=>window.__drHomeAudio&&window.__drHomeAudio("x",cat,ha);
+    act.append(bp,ba);hd.after(act,hp,ha)}
+   const ref=k=>({s:k[0],a:k[1],f:k[2],t:k[3],cn:name});
+   const c=await verseCard(ref(C.b),true).catch(()=>null);if(stale())return;if(c)box.appendChild(c);
+   if(md==="resp")return;
+   const lst=el("div","rs-v"),more=el("button","rs-more");more.type="button";body.append(el("div","ax-sh","বাকি আয়াত ("+bn2(rest.length)+"টি)"),lst,more);
+   let i=0,busy=false;const add=async()=>{if(busy)return;busy=true;more.disabled=true;more.textContent="আয়াত লোড হচ্ছে…";
+    for(const end=Math.min(rest.length,i+STEP);i<end;i++){const v=await verseCard(ref(rest[i]),false).catch(()=>null);if(stale())return;if(v)lst.appendChild(v)}
+    busy=false;more.disabled=false;if(i<rest.length)more.textContent="আরও আয়াত দেখান ("+bn2(rest.length-i)+" বাকি)";else more.style.display="none"};
+   more.onclick=add;await add()};grid.appendChild(b)})}
+
 async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").map(Number),G=DATA.axes[gi],C=DATA.cells[key];
  const R=btn.closest(".ax-root");closePanel(R);const my=R.__g;btn.classList.add("on");
  const sec=btn.closest(".ax-g"),pn=el("div","ax-p");
@@ -74,6 +103,7 @@ async function openCell(btn){const key=btn.dataset.k,[gi,ci,oi]=key.split(".").m
   bp.onclick=()=>window.__drHomePdf&&window.__drHomePdf("x",cat,hp);ba.onclick=()=>window.__drHomeAudio&&window.__drHomeAudio("x",cat,ha);
   act.append(bp,ba);pn.append(act,hp,ha)}
  if(!C){pn.appendChild(el("div","ax-n","এই ঘরের আয়াত এখনো যোগ হয়নি।"));return}
+ if(isBodyCell(G.cols[ci],G.cols[ci].opts[oi])){const w=el("div");pn.appendChild(w);organLayer(R,my,G,w);pn.appendChild(el("div","ax-sh","এই ঘরের আয়াত"))}
  const b=el("div","rs-v");pn.appendChild(b);
  for(const r of C.b){const c=await verseCard({s:r[0],a:r[1],f:r[2],t:r[3],ck:key,id:"b|"+r[0]+":"+r[1],bn:C.bnr&&C.bnr["b|"+r[0]+":"+r[1]],cn:G.cols[ci].opts[oi]},true).catch(()=>null);if(my!==R.__g)return;if(c)b.appendChild(c)}
  if(R.__mode==="resp")return;/* প্রতিক্রিয়া ভিত্তিক: প্রতিটি অপশনে শুধু একটি মৌলিক আয়াত; "বাকি আয়াত" শুধু চিকিৎসায় */
