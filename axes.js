@@ -62,13 +62,25 @@ function closePanel(R){R.__g=(R.__g||0)+1;R.querySelectorAll(".ax-p").forEach(x=
    ডেটা data/organ-axis.json (tools/organ-axis/build.py); সারি/গ্রুপের জোড়া অডিওতে অঙ্গ যোগ হয় না, প্রতি অঙ্গের নিজের অডিও ও PDF। */
 let OAX=null;
 const loadOax=async()=>OAX||(OAX=await rsFetch(BASE+"organ-axis.json?v=4"));
+let CP=null;
+const loadCp=async()=>{if(CP)return CP;try{CP=await rsFetch(BASE+"chart-points.json?v=1")}catch(e){CP={regions:[]}}return CP};
+const CPK={nazar:"n",jin:"j",jadu:"s"};
+function cpFor(cp,name,slug){const k=CPK[slug];let f=0,b=0,s=0;const sym=[];
+ (cp.regions||[]).filter(r=>r.organ===name).forEach(r=>{const a=r[k]||[0,0,0];f+=a[0];b+=a[1];s+=a[2];((r.sym||{})[k]||[]).forEach(x=>{if(!sym.includes(x))sym.push(x)})});
+ return{n:(f+b)||s,f,b,s,sym}}
 async function organLayer(R,my,G,wrap){let D;try{D=await loadOax()}catch(e){wrap.appendChild(el("div","ax-n","অঙ্গের তালিকা লোড হয়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"));return}
- if(my!==R.__g)return;
- const grid=el("div","ax-og"),body=el("div");wrap.append(el("div","ax-sh","শরীরের কোন অঙ্গে?"),grid,body);let g2=0;
- D.order.forEach(name=>{const b=el("button","ax-ob",name);b.type="button";b.onclick=async()=>{const on=b.classList.contains("on"),n=++g2,stale=()=>my!==R.__g||n!==g2;
+ const cp=await loadCp();if(my!==R.__g)return;
+ const grid=el("div","ax-og"),body=el("div");wrap.append(el("div","ax-sh","শরীরের কোন অঙ্গে?"),el("div","ax-n","● সংখ্যা = ছকে (Ashefaa রুকইয়া ছক, অভিজ্ঞতা-ভিত্তিক) এই গ্রুপের বিন্দুর সংখ্যা। বিন্দুওয়ালা অঙ্গ আগে।"),grid,body);let g2=0;
+ const INF={};D.order.forEach(nm=>INF[nm]=cpFor(cp,nm,G.slug));
+ [...D.order].sort((a,c)=>(INF[c].n>0)-(INF[a].n>0)||INF[c].n-INF[a].n).forEach(name=>{const I=INF[name],b=el("button","ax-ob"+(I.n?" cp":""),name+(I.n?" ●"+bn2(I.n):""));b.type="button";b.onclick=async()=>{const on=b.classList.contains("on"),n=++g2,stale=()=>my!==R.__g||n!==g2;
    grid.querySelectorAll(".on").forEach(x=>x.classList.remove("on"));body.textContent="";if(on)return;b.classList.add("on");
    const md=R.__mode,C=D.organs[name][G.slug],ttl=G.name+" › শরীরে › "+name,cat="অক্ষ "+G.name+" শরীরে "+name+(SFX[md]||""),box=el("div","rs-v");
-   const hd=el("div","ax-ph");hd.append(el("span",null,ttl));body.append(hd,box);
+   const hd=el("div","ax-ph");hd.append(el("span",null,ttl));body.append(hd);
+   if(I.n||I.sym.length){const cb=el("div","ax-cp");cb.append(el("b",null,"ছকের তথ্য"));
+    if(I.n)cb.append(el("div",null,"বিন্দু: সামনে "+bn2(I.f)+" · পিছনে "+bn2(I.b)+" · পাশ "+bn2(I.s)));
+    I.sym.forEach(x=>cb.append(el("div",null,"• লক্ষণ: "+x)));body.append(cb)}
+   else body.append(el("div","ax-n","ছকে এই অঙ্গে এই গ্রুপের বিন্দু নেই।"));
+   body.append(box);
    let rest=[];
    if(md!=="resp"){let all=(D.all||{})[name];try{if(!all){const o=(await window.__drOrgans()).find(x=>x.name===name);all=o?o.keys:[]}}catch(e){console.error(e);all=[];box.appendChild(el("div","ax-n","অঙ্গের বাকি আয়াত লোড হয়নি।"))}
     if(stale())return;const seen=new Set([C.b[0]+":"+C.b[1]]);
