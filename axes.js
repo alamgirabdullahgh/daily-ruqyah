@@ -70,17 +70,12 @@ function cpFor(cp,name,slug){const k=CPK[slug];let f=0,b=0,s=0;const sym=[];
  return{n:(f+b)||s,f,b,s,sym}}
 async function organLayer(R,my,G,wrap){let D;try{D=await loadOax()}catch(e){wrap.appendChild(el("div","ax-n","অঙ্গের তালিকা লোড হয়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন"));return}
  const cp=await loadCp();if(my!==R.__g)return;
- const grid=el("div","ax-og"),body=el("div");wrap.append(el("div","ax-sh","শরীরের কোন অঙ্গে?"),el("div","ax-n","● সংখ্যা = ছকে (Ashefaa রুকইয়া ছক, অভিজ্ঞতা-ভিত্তিক) এই গ্রুপের বিন্দুর সংখ্যা। বিন্দুওয়ালা অঙ্গ আগে।"),grid,body);let g2=0;
- const INF={};D.order.forEach(nm=>INF[nm]=cpFor(cp,nm,G.slug));
- [...D.order].sort((a,c)=>(INF[c].n>0)-(INF[a].n>0)||INF[c].n-INF[a].n).forEach(name=>{const I=INF[name],b=el("button","ax-ob"+(I.n?" cp":""),name+(I.n?" ●"+bn2(I.n):""));b.type="button";b.onclick=async()=>{const on=b.classList.contains("on"),n=++g2,stale=()=>my!==R.__g||n!==g2;
+ const grid=el("div","ax-og"),body=el("div");wrap.append(el("div","ax-sh","শরীরের কোন অঙ্গে?"),grid,body);let g2=0;
+ D.order.filter(nm=>cpFor(cp,nm,G.slug).n>0).forEach(name=>{const b=el("button","ax-ob",name);b.type="button";b.onclick=async()=>{const on=b.classList.contains("on"),n=++g2,stale=()=>my!==R.__g||n!==g2;
    grid.querySelectorAll(".on").forEach(x=>x.classList.remove("on"));body.textContent="";if(on)return;b.classList.add("on");
    const md=R.__mode,C=D.organs[name][G.slug],ttl=G.name+" › শরীরে › "+name,cat="অক্ষ "+G.name+" শরীরে "+name+(SFX[md]||""),box=el("div","rs-v");
-   const hd=el("div","ax-ph");hd.append(el("span",null,ttl));body.append(hd);
-   if(I.n||I.sym.length){const cb=el("div","ax-cp");cb.append(el("b",null,"ছকের তথ্য"));
-    if(I.n)cb.append(el("div",null,"বিন্দু: সামনে "+bn2(I.f)+" · পিছনে "+bn2(I.b)+" · পাশ "+bn2(I.s)));
-    I.sym.forEach(x=>cb.append(el("div",null,"• লক্ষণ: "+x)));body.append(cb)}
-   else body.append(el("div","ax-n","ছকে এই অঙ্গে এই গ্রুপের বিন্দু নেই।"));
-   body.append(box);
+   const hd=el("div","ax-ph");hd.append(el("span",null,ttl));
+   body.append(hd,box);
    let rest=[];
    if(md!=="resp"){let all=(D.all||{})[name];try{if(!all){const o=(await window.__drOrgans()).find(x=>x.name===name);all=o?o.keys:[]}}catch(e){console.error(e);all=[];box.appendChild(el("div","ax-n","অঙ্গের বাকি আয়াত লোড হয়নি।"))}
     if(stale())return;const seen=new Set([C.b[0]+":"+C.b[1]]);
